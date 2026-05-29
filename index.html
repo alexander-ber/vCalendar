@@ -1,0 +1,103 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>vCalendar Panchang POC</title>
+    <link rel="stylesheet" href="styles.css">
+  </head>
+  <body>
+    <main class="app-shell">
+      <header class="topbar">
+        <div>
+          <p class="eyebrow">Gaudiya Vaishnava Panchang POC</p>
+          <h1>vCalendar</h1>
+        </div>
+        <div class="header-actions">
+          <button id="languageToggle" class="language-toggle" type="button" aria-pressed="false">RU</button>
+          <button id="themeToggle" class="theme-toggle" type="button" aria-pressed="false">
+            <span class="theme-toggle-track">
+              <span class="theme-toggle-thumb"></span>
+            </span>
+            <span id="themeLabel">Day</span>
+          </button>
+          <div class="engine-badge">Strict internal mode</div>
+        </div>
+      </header>
+
+      <section class="controls" aria-label="Calendar controls">
+        <label>
+          <span data-i18n="location">Location</span>
+          <select id="locationSelect">
+            <option value="maalot">Maalot, Israel</option>
+          </select>
+        </label>
+        <label>
+          <span data-i18n="periodFrom">From</span>
+          <input id="periodFromInput" type="date" value="2026-05-01">
+        </label>
+        <label>
+          <span data-i18n="periodTo">To</span>
+          <input id="periodToInput" type="date" value="2026-05-31">
+        </label>
+        <label class="check-label">
+          <input id="eventsOnlyInput" type="checkbox">
+          <span data-i18n="eventsOnly">Only days with events</span>
+        </label>
+        <label>
+          <span data-i18n="eventFilters">Event filters</span>
+          <select id="eventFilterSelect" class="event-filter-select" multiple>
+            <option value="ekadashi" selected>Ekadashi</option>
+            <option value="parana" selected>Parana</option>
+            <option value="purushottama" selected>Purushottama</option>
+            <option value="festival" selected>Festivals</option>
+            <option value="vaishnavaAppearance" selected>Vaishnava appearances</option>
+            <option value="vaishnavaDisappearance" selected>Vaishnava disappearances</option>
+            <option value="deityTemple" selected>Deity / temple days</option>
+          </select>
+        </label>
+        <button id="renderButton" type="button">Generate</button>
+      </section>
+
+      <section class="summary" aria-live="polite">
+        <div>
+          <span class="summary-label" data-i18n="location">Location</span>
+          <strong id="summaryLocation">-</strong>
+        </div>
+        <div>
+          <span class="summary-label" data-i18n="timezone">Timezone</span>
+          <strong id="summaryTimezone">-</strong>
+        </div>
+        <div>
+          <span class="summary-label" data-i18n="engine">Engine</span>
+          <strong data-i18n="engineValue">Local browser JS</strong>
+        </div>
+      </section>
+
+      <section class="calendar-wrap">
+        <div class="section-head">
+          <button id="prevMonthTop" class="icon-button" type="button" aria-label="Previous month">‹</button>
+          <h2 id="calendarTitle">April 2026</h2>
+          <button id="nextMonthTop" class="icon-button" type="button" aria-label="Next month">›</button>
+          <span id="calendarStatus">Local calculation</span>
+        </div>
+        <div id="masaNotice" class="masa-notice" hidden></div>
+        <div id="calendarHeader" class="calendar-header"></div>
+        <div id="calendarGrid" class="calendar-grid">
+          <div class="calendar-loading" data-i18n="loading">Loading calendar...</div>
+        </div>
+        <div class="month-nav bottom-nav">
+          <button id="prevMonthBottom" class="nav-button" type="button">‹ <span data-i18n="previousMonth">Previous month</span></button>
+          <button id="nextMonthBottom" class="nav-button" type="button"><span data-i18n="nextMonth">Next month</span> ›</button>
+        </div>
+      </section>
+
+      <section class="details">
+        <h2 data-i18n="selectedDay">Selected Day</h2>
+        <div id="dayDetails" class="details-body" data-i18n="selectDay">Select a day in the calendar.</div>
+      </section>
+    </main>
+
+    <script type="module" src="js/app.js?v=20260529-7"></script>
+  </body>
+</html>

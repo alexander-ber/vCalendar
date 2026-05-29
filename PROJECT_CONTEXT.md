@@ -550,6 +550,58 @@ S == 2 → kshaya masa
 
 This is the core formula.
 
+Important: this formula classifies the lunar interval. It does not by itself define the final Gaudiya/CSM display name shown to the user.
+
+### 8.5.1 Gaudiya / CSM Display Model
+
+The UI should distinguish between:
+
+```text
+calculation_month = Amavasya-to-Amavasya interval used for Sankranti counting
+display_masa      = Gaudiya/CSM masa label shown in the calendar
+```
+
+When an Adhika/Purushottama month appears, it can be inserted between two halves of the same normal masa in the CSM calendar display.
+
+Example from the official Maalot-Tarshiha 2026 calendar:
+
+```text
+Trivikrama masa (1st half)
+Purushottama masa
+Trivikrama masa (2nd half)
+Vamana masa
+```
+
+This means the official calendar is not saying that Purushottama is inside Trivikrama as a calculation error. It is showing the Gaudiya/CSM display structure:
+
+```text
+normal masa, Krishna paksha half
+→ inserted Adhika/Purushottama lunar month
+→ same normal masa, Gaura paksha half
+```
+
+Implementation rule:
+
+```text
+1. Detect Adhika/Purushottama by the Amavasya-to-Amavasya Sankranti rule.
+2. If the current day is inside that Adhika interval, display "Purushottama masa".
+3. If a normal masa is interrupted by an Adhika interval, display its two visible parts as:
+   - "{masa} masa (1st half)"
+   - "{masa} masa (2nd half)"
+4. Do not solve this by hardcoded Gregorian overrides. The split must come from the lunar/solar calculation model.
+```
+
+For the Maalot-Tarshiha 2026 validation case, expected display order is:
+
+```text
+May 2026 before Purushottama: Trivikrama masa (1st half)
+Adhika interval:              Purushottama masa
+After Adhika interval:        Trivikrama masa (2nd half)
+Then:                         Vamana masa
+```
+
+This is a display/naming correction on top of the same Adhika detection formula, not a replacement of the formula.
+
 ### 8.6 Why Adhika Occurs
 
 Average durations:
@@ -584,7 +636,11 @@ But do not calculate it by interval. Always compute by the Sankranti rule.
   "masa": {
     "name": "Jyeshtha",
     "type": "adhika | normal | kshaya",
-    "display_name": "Purushottama / Adhika Jyeshtha",
+    "calculation_model": "amavasya_to_amavasya_sankranti_count",
+    "display_model": "gaudiya_csm",
+    "display_name": "Purushottama masa",
+    "display_part": "full | first_half | second_half | null",
+    "normal_masa_name": "Trivikrama",
     "start_new_moon_utc": "timestamp",
     "end_new_moon_utc": "timestamp",
     "sankranti_count": 0,
