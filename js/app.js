@@ -72,6 +72,8 @@ const I18N = {
     events: "Events",
     eventDetails: "Event details",
     biography: "Biography",
+    benefits: "Benefits",
+    story: "Story",
     descriptionPending: "Description has not been added to the event database yet.",
     biographyPending: "Biography has not been added to the event database yet.",
     noEvents: "No matched events.",
@@ -143,6 +145,8 @@ const I18N = {
     events: "События",
     eventDetails: "Подробности событий",
     biography: "Биография",
+    benefits: "Блага",
+    story: "История",
     descriptionPending: "Описание ещё не добавлено в базу событий.",
     biographyPending: "Биография ещё не добавлена в базу событий.",
     noEvents: "Нет найденных событий.",
@@ -789,13 +793,15 @@ function renderEventDetail(event) {
   const isBioEvent = event.type === "vaishnava_appearance" || event.type === "vaishnava_disappearance";
   const heading = isBioEvent ? tr("biography") : tr("events");
   const description = localizeEventDescription(event) || eventNarrativeFallback(event, isBioEvent);
+  const structuredNotes = renderEventStructuredNotes(event);
   return `
     <article class="event-detail-card ${eventClass(event)}">
       <div>
         <span>${heading}</span>
         <strong>${localizeEventName(event)}</strong>
       </div>
-      <p>${description}</p>
+      ${structuredNotes}
+      ${structuredNotes ? "" : `<p>${description}</p>`}
     </article>
   `;
 }
@@ -803,6 +809,18 @@ function renderEventDetail(event) {
 function eventNarrativeFallback(event, isBioEvent) {
   if (isBioEvent) return tr("biographyPending");
   return tr("descriptionPending");
+}
+
+function renderEventStructuredNotes(event) {
+  const benefits = localizedEventField(event, "benefits");
+  const story = localizedEventField(event, "story");
+  if (!benefits && !story) return "";
+  return `
+    <dl class="event-notes">
+      ${benefits ? `<div><dt>${tr("benefits")}</dt><dd>${benefits}</dd></div>` : ""}
+      ${story ? `<div><dt>${tr("story")}</dt><dd>${story}</dd></div>` : ""}
+    </dl>
+  `;
 }
 
 function localizeAvailability(value) {
