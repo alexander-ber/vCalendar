@@ -1,7 +1,7 @@
 import { addDaysToLocalDate, formatDateTime, formatTime, toIsoDate } from "./date-utils.js?v=20260528-8";
 import { dayAstronomy, tithiInfo } from "./astronomy-adapter.js?v=20260528-8";
 import { computeParana } from "./parana-engine.js?v=20260529-1";
-import { EKADASHI_DB } from "./ekadashi-data.js?v=20260528-8";
+import { EKADASHI_DB } from "./ekadashi-data.js?v=20260530-2";
 import { MASA_NAMES } from "./masa-engine.js?v=20260528-8";
 
 function isEkadashi(number) {
@@ -88,6 +88,7 @@ export function classifyEkadashi(day, nextDay, location, rules) {
     name: record.name,
     ekadashi_id: record.id,
     description: record.description,
+    i18n: record.i18n,
     type: "ekadashi",
     category: "vrata",
     classification,
@@ -123,6 +124,7 @@ function classifyVyanjuliMahadvadashi(previousDay, day, nextDay, location, rules
     name: record.name,
     ekadashi_id: record.id,
     description: record.description,
+    i18n: record.i18n,
     type: "ekadashi",
     category: "vrata",
     classification: "vyanjuli_mahadvadashi",
@@ -140,12 +142,19 @@ function classifyVyanjuliMahadvadashi(previousDay, day, nextDay, location, rules
 }
 
 function noFastNoticeForEkadashiDay(day, ekadashi) {
+  const ekadashiNameRu = ekadashi.i18n?.ru?.name || ekadashi.name;
   return {
     id: `ekadashi_no_fast_${day.date}`,
     name: `${day.lunar.tithi_at_sunrise.name} - no fast`,
     type: "ekadashi_notice",
     category: "vrata",
-    description: `${ekadashi.name} fast is observed on ${ekadashi.fast_date} because ${ekadashi.classification.replaceAll("_", " ")} applies.`
+    description: `${ekadashi.name} fast is observed on ${ekadashi.fast_date} because ${ekadashi.classification.replaceAll("_", " ")} applies.`,
+    i18n: {
+      ru: {
+        name: `${day.lunar.tithi_at_sunrise.name.replace("Gaura", "Гаура").replace("Krishna", "Кришна").replace("Ekadashi", "Экадаши")} — без поста`,
+        description: `Пост ${ekadashiNameRu} соблюдается ${ekadashi.fast_date}, потому что применяется правило ${ekadashi.classification.replaceAll("_", " ")}.`
+      }
+    }
   };
 }
 
@@ -154,6 +163,11 @@ export function paranaEventForDate(date, ekadashi, timezone) {
   const absoluteEnd = ekadashi.parana.absolute_end;
   const absoluteEndLabel =
     absoluteEnd && toIsoDate(absoluteEnd, timezone) === date ? formatTime(absoluteEnd, timezone) : formatDateTime(absoluteEnd, timezone);
+  const ekadashiNameRu = ekadashi.i18n?.ru?.name || ekadashi.name;
+  const description =
+    ekadashi.parana.preferred_window_status === "unavailable_after_hari_vasara"
+      ? "Preferred pratah-kala window is unavailable because Hari-vasara ends after it."
+      : "Parana window calculated from Dvadashi, sunrise, and Hari-vasara.";
   return {
     id: `parana_${ekadashi.id}`,
     name: `Parana for ${ekadashi.name}`,
@@ -165,10 +179,16 @@ export function paranaEventForDate(date, ekadashi, timezone) {
       absolute_end: absoluteEndLabel,
       preferred_window_status: ekadashi.parana.preferred_window_status || "available"
     },
-    description:
-      ekadashi.parana.preferred_window_status === "unavailable_after_hari_vasara"
-        ? "Preferred pratah-kala window is unavailable because Hari-vasara ends after it."
-        : "Parana window calculated from Dvadashi, sunrise, and Hari-vasara."
+    description,
+    i18n: {
+      ru: {
+        name: `Паран для ${ekadashiNameRu}`,
+        description:
+          ekadashi.parana.preferred_window_status === "unavailable_after_hari_vasara"
+            ? "Желательное окно пратах-калы недоступно, потому что Хари-васара заканчивается позже."
+            : "Окно парана рассчитано по Двадаши, восходу и Хари-васаре."
+      }
+    }
   };
 }
 

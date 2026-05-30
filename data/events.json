@@ -13,7 +13,14 @@
     "fasting_rule": "fast_until_moonrise",
     "allow_in_adhika": false,
     "priority": "highest",
-    "source_status": "confirmed"
+    "source_status": "confirmed",
+    "i18n": {
+      "ru": {
+        "name": "Шри Гаура Пурнима",
+        "description": "День явления: Шри Гаура Пурнима. Календарь определяет его по настроенному правилу титхи."
+      }
+    },
+    "description": "Appearance day festival for Sri Chaitanya Mahaprabhu. The calendar matches it by the configured tithi rule."
   },
   {
     "id": "rama_navami",
@@ -29,7 +36,14 @@
     "fasting_rule": "fast_until_noon",
     "allow_in_adhika": false,
     "priority": "highest",
-    "source_status": "confirmed"
+    "source_status": "confirmed",
+    "i18n": {
+      "ru": {
+        "name": "Шри Рама Навами",
+        "description": "День явления: Шри Рама Навами. Календарь определяет его по настроенному правилу титхи."
+      }
+    },
+    "description": "Appearance day festival for Lord Ramachandra. The calendar matches it by the configured tithi rule."
   },
   {
     "id": "nrsimha_chaturdashi",
@@ -45,7 +59,14 @@
     "fasting_rule": "fast_until_sunset",
     "allow_in_adhika": false,
     "priority": "highest",
-    "source_status": "confirmed"
+    "source_status": "confirmed",
+    "i18n": {
+      "ru": {
+        "name": "Шри Нрисимха Чатурдаши",
+        "description": "День явления: Шри Нрисимха Чатурдаши. Календарь определяет его по настроенному правилу титхи."
+      }
+    },
+    "description": "Appearance day festival for Lord Nrsimhadev. The calendar matches it by the configured tithi rule."
   },
   {
     "id": "janmashtami",
@@ -61,7 +82,14 @@
     "fasting_rule": "fast_until_midnight",
     "allow_in_adhika": false,
     "priority": "highest",
-    "source_status": "confirmed"
+    "source_status": "confirmed",
+    "i18n": {
+      "ru": {
+        "name": "Шри Кришна Джанмаштами",
+        "description": "День явления: Шри Кришна Джанмаштами. Календарь определяет его по настроенному правилу титхи."
+      }
+    },
+    "description": "Appearance day festival for Lord Krishna. The calendar matches it by the configured tithi rule."
   },
   {
     "id": "balarama_purnima",
@@ -77,7 +105,14 @@
     "fasting_rule": "fast_until_noon",
     "allow_in_adhika": false,
     "priority": "highest",
-    "source_status": "confirmed"
+    "source_status": "confirmed",
+    "i18n": {
+      "ru": {
+        "name": "Шри Баларама Пурнима",
+        "description": "День явления: Шри Баларама Пурнима. Календарь определяет его по настроенному правилу титхи."
+      }
+    },
+    "description": "Appearance day festival for Lord Balarama. The calendar matches it by the configured tithi rule."
   },
   {
     "id": "bhakti_prapanna_tirtha_appearance",
@@ -93,7 +128,14 @@
     "timing_rule": "sunrise_based",
     "allow_in_adhika": false,
     "priority": "medium",
-    "source_status": "user_confirmed_tithi_rule"
+    "source_status": "user_confirmed_tithi_rule",
+    "i18n": {
+      "ru": {
+        "name": "Явление Шрилы Бхакти Прапанны Тиртхи Госвами Махараджа",
+        "description": "Памятный день явления: Явление Шрилы Бхакти Прапанны Тиртхи Госвами Махараджа. Событие привязано к вайшнавскому титхи, указанному в базе календаря."
+      }
+    },
+    "description": "Commemoration of the appearance day of Srila Bhakti Prapanna Tirtha Goswami Maharaj. This event is matched by the Vaishnava tithi rule stored in the calendar database."
   },
   {
     "id": "akshaya_tritiya",
@@ -108,7 +150,14 @@
     "timing_rule": "sunrise_based",
     "allow_in_adhika": false,
     "priority": "high",
-    "source_status": "confirmed"
+    "source_status": "confirmed",
+    "i18n": {
+      "ru": {
+        "name": "Акшая Трития",
+        "description": "Праздничный день: Акшая Трития. Календарь определяет его по настроенному правилу титхи."
+      }
+    },
+    "description": "Festival day connected with Akshaya Tritiya. The calendar matches it by the configured tithi rule."
   },
   {
     "id": "parashurama_jayanti",
@@ -123,7 +172,14 @@
     "timing_rule": "sunrise_based",
     "allow_in_adhika": false,
     "priority": "medium",
-    "source_status": "confirmed"
+    "source_status": "confirmed",
+    "i18n": {
+      "ru": {
+        "name": "Парашурама Джаянти",
+        "description": "День явления: Парашурама Джаянти. Календарь определяет его по настроенному правилу титхи."
+      }
+    },
+    "description": "Appearance day festival for Lord Parashurama. The calendar matches it by the configured tithi rule."
   },
   {
     "id": "ganga_saptami",
@@ -138,7 +194,14 @@
     "timing_rule": "sunrise_based",
     "allow_in_adhika": false,
     "priority": "medium",
-    "source_status": "confirmed"
+    "source_status": "confirmed",
+    "i18n": {
+      "ru": {
+        "name": "Ганга Саптами",
+        "description": "Праздничный день: Ганга Саптами. Календарь определяет его по настроенному правилу титхи."
+      }
+    },
+    "description": "Festival day connected with Sri Ganga / Jahnavi. The calendar matches it by the configured tithi rule."
   },
   {
     "id": "sita_navami",
@@ -153,7 +216,14 @@
     "timing_rule": "noon_based",
     "allow_in_adhika": false,
     "priority": "medium",
-    "source_status": "confirmed"
+    "source_status": "confirmed",
+    "i18n": {
+      "ru": {
+        "name": "Сита Навами",
+        "description": "День явления: Сита Навами. Календарь определяет его по настроенному правилу титхи."
+      }
+    },
+    "description": "Appearance day festival for Sri Sita Devi. The calendar matches it by the configured tithi rule."
   },
   {
     "id": "nityananda_prabhu_appearance",
@@ -168,7 +238,14 @@
     "timing_rule": "noon_based",
     "allow_in_adhika": false,
     "priority": "highest",
-    "source_status": "confirmed"
+    "source_status": "confirmed",
+    "i18n": {
+      "ru": {
+        "name": "Явление Шри Нитьянанды Прабху",
+        "description": "День явления: Явление Шри Нитьянанды Прабху. Календарь определяет его по настроенному правилу титхи."
+      }
+    },
+    "description": "Appearance day festival for Sri Nityananda Prabhu. The calendar matches it by the configured tithi rule."
   },
   {
     "id": "scsmath_541_gopal_bhatta_appearance",
@@ -181,7 +258,14 @@
     "paksha": "Krishna",
     "tithi": "Tritiya",
     "timing_rule": "sunrise_based",
-    "allow_in_adhika": false
+    "allow_in_adhika": false,
+    "i18n": {
+      "ru": {
+        "name": "Явление Шрилы Гопала Бхатты Госвами Прабху",
+        "description": "Памятный день явления: Явление Шрилы Гопала Бхатты Госвами Прабху. Событие привязано к вайшнавскому титхи, указанному в базе календаря."
+      }
+    },
+    "description": "Commemoration of the appearance day of Srila Gopal Bhatta Goswami Prabhu. This event is matched by the Vaishnava tithi rule stored in the calendar database."
   },
   {
     "id": "scsmath_541_ramachandra_kaviraj_disappearance",
@@ -194,7 +278,14 @@
     "paksha": "Krishna",
     "tithi": "Tritiya",
     "timing_rule": "sunrise_based",
-    "allow_in_adhika": false
+    "allow_in_adhika": false,
+    "i18n": {
+      "ru": {
+        "name": "Уход Шрилы Рамачандры Кавираджа",
+        "description": "Памятный день ухода: Уход Шрилы Рамачандры Кавираджа. Событие привязано к вайшнавскому титхи, указанному в базе календаря."
+      }
+    },
+    "description": "Commemoration of the disappearance day of Srila Ramachandra Kaviraj. This event is matched by the Vaishnava tithi rule stored in the calendar database."
   },
   {
     "id": "scsmath_541_advaita_acharya_appearance",
@@ -207,7 +298,14 @@
     "paksha": "Gaura",
     "tithi": "Saptami",
     "timing_rule": "sunrise_based",
-    "allow_in_adhika": false
+    "allow_in_adhika": false,
+    "i18n": {
+      "ru": {
+        "name": "Явление Шри Адвайты Ачарьи",
+        "description": "Памятный день явления: Явление Шри Адвайты Ачарьи. Событие привязано к вайшнавскому титхи, указанному в базе календаря."
+      }
+    },
+    "description": "Commemoration of the appearance day of Sri Advaita Acharya. This event is matched by the Vaishnava tithi rule stored in the calendar database."
   },
   {
     "id": "scsmath_541_guru_gaura_nityananda_installation",
@@ -220,7 +318,14 @@
     "paksha": "Gaura",
     "tithi": "Trayodashi",
     "timing_rule": "noon_based",
-    "allow_in_adhika": false
+    "allow_in_adhika": false,
+    "i18n": {
+      "ru": {
+        "name": "Годовщина установки Шри Шри Гуру Гаура Нитьянанды Джиу",
+        "description": "Храмовый праздник или день установки Божеств: Годовщина установки Шри Шри Гуру Гаура Нитьянанды Джиу. Событие привязано к титхи, указанному в базе календаря."
+      }
+    },
+    "description": "Temple or Deity festival connected with Sri Sri Guru Gaura Nityananda Jiu. This event is matched by the tithi rule stored in the calendar database."
   },
   {
     "id": "scsmath_541_bhakti_siddhanta_appearance",
@@ -233,7 +338,14 @@
     "paksha": "Krishna",
     "tithi": "Panchami",
     "timing_rule": "sunrise_based",
-    "allow_in_adhika": false
+    "allow_in_adhika": false,
+    "i18n": {
+      "ru": {
+        "name": "Явление Шрилы Бхакти Сиддханты Сарасвати Госвами Прабхупада",
+        "description": "Памятный день явления: Явление Шрилы Бхакти Сиддханты Сарасвати Госвами Прабхупада. Событие привязано к вайшнавскому титхи, указанному в базе календаря."
+      }
+    },
+    "description": "Commemoration of the appearance day of Srila Bhakti Siddhanta Saraswati Goswami Prabhupad. This event is matched by the Vaishnava tithi rule stored in the calendar database."
   },
   {
     "id": "scsmath_541_gupta_govardhan_installation",
@@ -246,7 +358,14 @@
     "paksha": "Krishna",
     "tithi": "Panchami",
     "timing_rule": "sunrise_based",
-    "allow_in_adhika": false
+    "allow_in_adhika": false,
+    "i18n": {
+      "ru": {
+        "name": "Годовщина установки Шри Гупта Говардхан Шри Мандира",
+        "description": "Храмовый праздник или день установки Божеств: Годовщина установки Шри Гупта Говардхан Шри Мандира. Событие привязано к титхи, указанному в базе календаря."
+      }
+    },
+    "description": "Temple or Deity festival connected with Sri Gupta Govardhan Sri Mandir. This event is matched by the tithi rule stored in the calendar database."
   },
   {
     "id": "scsmath_541_sadashiva_gangadhar_installation",
@@ -259,7 +378,14 @@
     "paksha": "Krishna",
     "tithi": "Amavasya",
     "timing_rule": "sunrise_based",
-    "allow_in_adhika": false
+    "allow_in_adhika": false,
+    "i18n": {
+      "ru": {
+        "name": "Годовщина установки Шри Садашивы Гангадхара",
+        "description": "Храмовый праздник или день установки Божеств: Годовщина установки Шри Садашивы Гангадхара. Событие привязано к титхи, указанному в базе календаря."
+      }
+    },
+    "description": "Temple or Deity festival connected with Sri Sadashiva Gangadhar. This event is matched by the tithi rule stored in the calendar database."
   },
   {
     "id": "scsmath_541_jagannath_das_babaji_disappearance",
@@ -272,7 +398,14 @@
     "paksha": "Gaura",
     "tithi": "Pratipat",
     "timing_rule": "sunrise_based",
-    "allow_in_adhika": false
+    "allow_in_adhika": false,
+    "i18n": {
+      "ru": {
+        "name": "Уход Шрилы Джаганнатха Даса Бабаджи Махараджа",
+        "description": "Памятный день ухода: Уход Шрилы Джаганнатха Даса Бабаджи Махараджа. Событие привязано к вайшнавскому титхи, указанному в базе календаря."
+      }
+    },
+    "description": "Commemoration of the disappearance day of Srila Jagannath Das Babaji Maharaj. This event is matched by the Vaishnava tithi rule stored in the calendar database."
   },
   {
     "id": "scsmath_541_radha_ramanasundar_installation",
@@ -285,7 +418,14 @@
     "paksha": "Gaura",
     "tithi": "Tritiya",
     "timing_rule": "sunrise_based",
-    "allow_in_adhika": false
+    "allow_in_adhika": false,
+    "i18n": {
+      "ru": {
+        "name": "Годовщина установки Шри Шри Гуру Гауранга Гандхарва Радха Раманасундара Джиу",
+        "description": "Храмовый праздник или день установки Божеств: Годовщина установки Шри Шри Гуру Гауранга Гандхарва Радха Раманасундара Джиу. Событие привязано к титхи, указанному в базе календаря."
+      }
+    },
+    "description": "Temple or Deity festival connected with Sri Sri Guru Gauranga Gandharva Radha Ramanasundar Jiu. This event is matched by the tithi rule stored in the calendar database."
   },
   {
     "id": "scsmath_541_hapaniya_deities_appearance",
@@ -298,7 +438,14 @@
     "paksha": "Krishna",
     "tithi": "Panchami",
     "timing_rule": "sunrise_based",
-    "allow_in_adhika": false
+    "allow_in_adhika": false,
+    "i18n": {
+      "ru": {
+        "name": "Великое явление святых Божеств Шрипат Хапании",
+        "description": "Храмовый праздник или день установки Божеств: Великое явление святых Божеств Шрипат Хапании. Событие привязано к титхи, указанному в базе календаря."
+      }
+    },
+    "description": "Temple or Deity festival connected with Sri Sri Guru Gauranga Radha Gopinath Jiu. This event is matched by the tithi rule stored in the calendar database."
   },
   {
     "id": "scsmath_541_govinda_ghosh_disappearance",
@@ -311,7 +458,14 @@
     "paksha": "Krishna",
     "tithi": "Dvadashi",
     "timing_rule": "sunrise_based",
-    "allow_in_adhika": false
+    "allow_in_adhika": false,
+    "i18n": {
+      "ru": {
+        "name": "Уход Шрилы Говинды Гхоша Тхакура",
+        "description": "Памятный день ухода: Уход Шрилы Говинды Гхоша Тхакура. Событие привязано к вайшнавскому титхи, указанному в базе календаря."
+      }
+    },
+    "description": "Commemoration of the disappearance day of Srila Govinda Ghosh Thakur. This event is matched by the Vaishnava tithi rule stored in the calendar database."
   },
   {
     "id": "scsmath_541_bhakti_sundar_govinda_disappearance",
@@ -324,7 +478,14 @@
     "paksha": "Gaura",
     "tithi": "Dvadashi",
     "timing_rule": "sunrise_based",
-    "allow_in_adhika": false
+    "allow_in_adhika": false,
+    "i18n": {
+      "ru": {
+        "name": "Фестиваль ухода Шрилы Бхакти Сундара Говинды Дев-Госвами Махараджа",
+        "description": "Памятный день ухода: Фестиваль ухода Шрилы Бхакти Сундара Говинды Дев-Госвами Махараджа. Событие привязано к вайшнавскому титхи, указанному в базе календаря."
+      }
+    },
+    "description": "Commemoration of the disappearance day of Srila Bhakti Sundar Govinda Dev-Goswami Maharaj. This event is matched by the Vaishnava tithi rule stored in the calendar database."
   },
   {
     "id": "scsmath_541_gadadhar_pandit_appearance",
@@ -337,7 +498,14 @@
     "paksha": "Krishna",
     "tithi": "Amavasya",
     "timing_rule": "sunrise_based",
-    "allow_in_adhika": false
+    "allow_in_adhika": false,
+    "i18n": {
+      "ru": {
+        "name": "Явление Шрилы Гададхара Пандита",
+        "description": "Памятный день явления: Явление Шрилы Гададхара Пандита. Событие привязано к вайшнавскому титхи, указанному в базе календаря."
+      }
+    },
+    "description": "Commemoration of the appearance day of Srila Gadadhar Pandit. This event is matched by the Vaishnava tithi rule stored in the calendar database."
   },
   {
     "id": "scsmath_541_srinivas_acharya_appearance",
@@ -350,7 +518,14 @@
     "paksha": "Gaura",
     "tithi": "Purnima",
     "timing_rule": "sunrise_based",
-    "allow_in_adhika": false
+    "allow_in_adhika": false,
+    "i18n": {
+      "ru": {
+        "name": "Явление Шрилы Шриниваса Ачарьи",
+        "description": "Памятный день явления: Явление Шрилы Шриниваса Ачарьи. Событие привязано к вайшнавскому титхи, указанному в базе календаря."
+      }
+    },
+    "description": "Commemoration of the appearance day of Srila Srinivas Acharya. This event is matched by the Vaishnava tithi rule stored in the calendar database."
   },
   {
     "id": "scsmath_541_vrindavan_das_appearance",
@@ -363,7 +538,14 @@
     "paksha": "Krishna",
     "tithi": "Dvadashi",
     "timing_rule": "sunrise_based",
-    "allow_in_adhika": false
+    "allow_in_adhika": false,
+    "i18n": {
+      "ru": {
+        "name": "Явление Шрилы Вриндавана Даса Тхакура",
+        "description": "Памятный день явления: Явление Шрилы Вриндавана Даса Тхакура. Событие привязано к вайшнавскому титхи, указанному в базе календаря."
+      }
+    },
+    "description": "Commemoration of the appearance day of Srila Vrindavan Das Thakur. This event is matched by the Vaishnava tithi rule stored in the calendar database."
   },
   {
     "id": "scsmath_541_madan_mohan_installation",
@@ -376,7 +558,14 @@
     "paksha": "Gaura",
     "tithi": "Pratipat",
     "timing_rule": "sunrise_based",
-    "allow_in_adhika": false
+    "allow_in_adhika": false,
+    "i18n": {
+      "ru": {
+        "name": "Праздник установки Шри Шри Гуру Гауранга Радха Мадан Мохана Джиу",
+        "description": "Храмовый праздник или день установки Божеств: Праздник установки Шри Шри Гуру Гауранга Радха Мадан Мохана Джиу. Событие привязано к титхи, указанному в базе календаря."
+      }
+    },
+    "description": "Temple or Deity festival connected with Sri Sri Guru Gauranga Radha Madan Mohan Jiu. This event is matched by the tithi rule stored in the calendar database."
   },
   {
     "id": "scsmath_541_ganga_mata_appearance",
@@ -389,7 +578,14 @@
     "paksha": "Gaura",
     "tithi": "Dashami",
     "timing_rule": "sunrise_based",
-    "allow_in_adhika": false
+    "allow_in_adhika": false,
+    "i18n": {
+      "ru": {
+        "name": "Явление Шри Ганги Маты Госвамини",
+        "description": "Памятный день явления: Явление Шри Ганги Маты Госвамини. Событие привязано к вайшнавскому титхи, указанному в базе календаря."
+      }
+    },
+    "description": "Commemoration of the appearance day of Sri Ganga Mata Goswamini. This event is matched by the Vaishnava tithi rule stored in the calendar database."
   },
   {
     "id": "scsmath_541_baladev_vidyabhushan_disappearance",
@@ -402,7 +598,14 @@
     "paksha": "Gaura",
     "tithi": "Dashami",
     "timing_rule": "sunrise_based",
-    "allow_in_adhika": false
+    "allow_in_adhika": false,
+    "i18n": {
+      "ru": {
+        "name": "Уход Шрилы Баладева Видьябхушана Прабху",
+        "description": "Памятный день ухода: Уход Шрилы Баладева Видьябхушана Прабху. Событие привязано к вайшнавскому титхи, указанному в базе календаря."
+      }
+    },
+    "description": "Commemoration of the disappearance day of Srila Baladev Vidyabhushan Prabhu. This event is matched by the Vaishnava tithi rule stored in the calendar database."
   },
   {
     "id": "scsmath_541_vakreshvar_pandit_appearance",
@@ -415,7 +618,14 @@
     "paksha": "Krishna",
     "tithi": "Panchami",
     "timing_rule": "sunrise_based",
-    "allow_in_adhika": false
+    "allow_in_adhika": false,
+    "i18n": {
+      "ru": {
+        "name": "Явление Шрилы Вакрешвара Пандита",
+        "description": "Памятный день явления: Явление Шрилы Вакрешвара Пандита. Событие привязано к вайшнавскому титхи, указанному в базе календаря."
+      }
+    },
+    "description": "Commemoration of the appearance day of Srila Vakreshvar Pandit. This event is matched by the Vaishnava tithi rule stored in the calendar database."
   },
   {
     "id": "scsmath_541_gadadhar_bhaktivinod_disappearance",
@@ -428,7 +638,14 @@
     "paksha": "Krishna",
     "tithi": "Amavasya",
     "timing_rule": "sunrise_based",
-    "allow_in_adhika": false
+    "allow_in_adhika": false,
+    "i18n": {
+      "ru": {
+        "name": "Уход Шрилы Гададхара Пандита и Шрилы Бхакти Винода Тхакура",
+        "description": "Памятный день ухода: Уход Шрилы Гададхара Пандита и Шрилы Бхакти Винода Тхакура. Событие привязано к вайшнавскому титхи, указанному в базе календаря."
+      }
+    },
+    "description": "Commemoration of the disappearance day of Srila Gadadhar Pandit; Srila Bhakti Vinod Thakur. This event is matched by the Vaishnava tithi rule stored in the calendar database."
   },
   {
     "id": "scsmath_541_vyasadev_appearance",
@@ -441,7 +658,14 @@
     "paksha": "Gaura",
     "tithi": "Purnima",
     "timing_rule": "sunrise_based",
-    "allow_in_adhika": false
+    "allow_in_adhika": false,
+    "i18n": {
+      "ru": {
+        "name": "Явление Шрилы Вьясадева",
+        "description": "Памятный день явления: Явление Шрилы Вьясадева. Событие привязано к вайшнавскому титхи, указанному в базе календаря."
+      }
+    },
+    "description": "Commemoration of the appearance day of Srila Vyasadev. This event is matched by the Vaishnava tithi rule stored in the calendar database."
   },
   {
     "id": "scsmath_541_sanatan_goswami_disappearance",
@@ -454,7 +678,14 @@
     "paksha": "Gaura",
     "tithi": "Purnima",
     "timing_rule": "sunrise_based",
-    "allow_in_adhika": false
+    "allow_in_adhika": false,
+    "i18n": {
+      "ru": {
+        "name": "Уход Шрилы Санатана Госвами Прабху",
+        "description": "Памятный день ухода: Уход Шрилы Санатана Госвами Прабху. Событие привязано к вайшнавскому титхи, указанному в базе календаря."
+      }
+    },
+    "description": "Commemoration of the disappearance day of Srila Sanatan Goswami Prabhu. This event is matched by the Vaishnava tithi rule stored in the calendar database."
   },
   {
     "id": "scsmath_541_bhakti_raksak_sridhar_disappearance",
@@ -467,7 +698,14 @@
     "paksha": "Krishna",
     "tithi": "Amavasya",
     "timing_rule": "sunrise_based",
-    "allow_in_adhika": false
+    "allow_in_adhika": false,
+    "i18n": {
+      "ru": {
+        "name": "Фестиваль ухода Шрилы Бхакти Ракшака Шридхара Дев-Госвами Махараджа",
+        "description": "Памятный день ухода: Фестиваль ухода Шрилы Бхакти Ракшака Шридхара Дев-Госвами Махараджа. Событие привязано к вайшнавскому титхи, указанному в базе календаря."
+      }
+    },
+    "description": "Commemoration of the disappearance day of Srila Bhakti Raksak Sridhar Dev-Goswami Maharaj. This event is matched by the Vaishnava tithi rule stored in the calendar database."
   },
   {
     "id": "scsmath_541_rupa_goswami_disappearance",
@@ -480,7 +718,14 @@
     "paksha": "Gaura",
     "tithi": "Dvadashi",
     "timing_rule": "sunrise_based",
-    "allow_in_adhika": false
+    "allow_in_adhika": false,
+    "i18n": {
+      "ru": {
+        "name": "Уход Шрилы Рупы Госвами и Шрилы Гаури Даса Пандита Госвами",
+        "description": "Памятный день ухода: Уход Шрилы Рупы Госвами и Шрилы Гаури Даса Пандита Госвами. Событие привязано к вайшнавскому титхи, указанному в базе календаря."
+      }
+    },
+    "description": "Commemoration of the disappearance day of Srila Rupa Goswami; Srila Gauri Das Pandit Goswami. This event is matched by the Vaishnava tithi rule stored in the calendar database."
   },
   {
     "id": "scsmath_541_bhaktivedanta_swami_appearance",
@@ -493,7 +738,14 @@
     "paksha": "Krishna",
     "tithi": "Navami",
     "timing_rule": "sunrise_based",
-    "allow_in_adhika": false
+    "allow_in_adhika": false,
+    "i18n": {
+      "ru": {
+        "name": "Явление Шрилы Бхактиведанты Свами Махараджа Прабхупада",
+        "description": "Памятный день явления: Явление Шрилы Бхактиведанты Свами Махараджа Прабхупада. Событие привязано к вайшнавскому титхи, указанному в базе календаря."
+      }
+    },
+    "description": "Commemoration of the appearance day of Srila Bhaktivedanta Swami Maharaj Prabhupad. This event is matched by the Vaishnava tithi rule stored in the calendar database."
   },
   {
     "id": "scsmath_541_jiva_goswami_appearance",
@@ -506,7 +758,14 @@
     "paksha": "Gaura",
     "tithi": "Dvadashi",
     "timing_rule": "sunrise_based",
-    "allow_in_adhika": false
+    "allow_in_adhika": false,
+    "i18n": {
+      "ru": {
+        "name": "Явление Шрилы Дживы Госвами Прабху",
+        "description": "Памятный день явления: Явление Шрилы Дживы Госвами Прабху. Событие привязано к вайшнавскому титхи, указанному в базе календаря."
+      }
+    },
+    "description": "Commemoration of the appearance day of Srila Jiva Goswami Prabhu. This event is matched by the Vaishnava tithi rule stored in the calendar database."
   },
   {
     "id": "scsmath_541_bhaktivinod_thakur_appearance",
@@ -519,7 +778,14 @@
     "paksha": "Gaura",
     "tithi": "Trayodashi",
     "timing_rule": "sunrise_based",
-    "allow_in_adhika": false
+    "allow_in_adhika": false,
+    "i18n": {
+      "ru": {
+        "name": "Явление Шрилы Бхакти Винода Тхакура",
+        "description": "Памятный день явления: Явление Шрилы Бхакти Винода Тхакура. Событие привязано к вайшнавскому титхи, указанному в базе календаря."
+      }
+    },
+    "description": "Commemoration of the appearance day of Srila Bhakti Vinod Thakur. This event is matched by the Vaishnava tithi rule stored in the calendar database."
   },
   {
     "id": "scsmath_541_haridas_thakur_disappearance",
@@ -532,7 +798,14 @@
     "paksha": "Gaura",
     "tithi": "Chaturdashi",
     "timing_rule": "sunrise_based",
-    "allow_in_adhika": false
+    "allow_in_adhika": false,
+    "i18n": {
+      "ru": {
+        "name": "Уход Шрилы Харидаса Тхакура",
+        "description": "Памятный день ухода: Уход Шрилы Харидаса Тхакура. Событие привязано к вайшнавскому титхи, указанному в базе календаря."
+      }
+    },
+    "description": "Commemoration of the disappearance day of Srila Haridas Thakur. This event is matched by the Vaishnava tithi rule stored in the calendar database."
   },
   {
     "id": "scsmath_541_raghunath_krishnadas_disappearance",
@@ -545,7 +818,14 @@
     "paksha": "Krishna",
     "tithi": "Dvadashi",
     "timing_rule": "sunrise_based",
-    "allow_in_adhika": false
+    "allow_in_adhika": false,
+    "i18n": {
+      "ru": {
+        "name": "Уход Шрилы Рагхунатха Даса Госвами, Шрилы Рагхунатха Бхатты Госвами и Шрилы Кришнадаса Кавираджа Госвами",
+        "description": "Памятный день ухода: Уход Шрилы Рагхунатха Даса Госвами, Шрилы Рагхунатха Бхатты Госвами и Шрилы Кришнадаса Кавираджа Госвами. Событие привязано к вайшнавскому титхи, указанному в базе календаря."
+      }
+    },
+    "description": "Commemoration of the disappearance day of Srila Raghunath Das Goswami; Srila Raghunath Bhatta Goswami; Srila Krishnadas Kaviraj Goswami. This event is matched by the Vaishnava tithi rule stored in the calendar database."
   },
   {
     "id": "scsmath_541_narottam_disappearance",
@@ -558,7 +838,14 @@
     "paksha": "Krishna",
     "tithi": "Panchami",
     "timing_rule": "sunrise_based",
-    "allow_in_adhika": false
+    "allow_in_adhika": false,
+    "i18n": {
+      "ru": {
+        "name": "Уход Шрилы Нароттама Даса Тхакура",
+        "description": "Памятный день ухода: Уход Шрилы Нароттама Даса Тхакура. Событие привязано к вайшнавскому титхи, указанному в базе календаря."
+      }
+    },
+    "description": "Commemoration of the disappearance day of Srila Narottam Das Thakur. This event is matched by the Vaishnava tithi rule stored in the calendar database."
   },
   {
     "id": "scsmath_541_sridhar_appearance",
@@ -571,7 +858,14 @@
     "paksha": "Krishna",
     "tithi": "Navami",
     "timing_rule": "sunrise_based",
-    "allow_in_adhika": false
+    "allow_in_adhika": false,
+    "i18n": {
+      "ru": {
+        "name": "Празднование явления Шрилы Бхакти Ракшака Шридхара Дев-Госвами Махараджа",
+        "description": "Памятный день явления: Празднование явления Шрилы Бхакти Ракшака Шридхара Дев-Госвами Махараджа. Событие привязано к вайшнавскому титхи, указанному в базе календаря."
+      }
+    },
+    "description": "Commemoration of the appearance day of Srila Bhakti Raksak Sridhar Dev-Goswami Maharaj. This event is matched by the Vaishnava tithi rule stored in the calendar database."
   },
   {
     "id": "scsmath_541_vrindavan_rasa_bihari_installation",
@@ -584,7 +878,14 @@
     "paksha": "Gaura",
     "tithi": "Purnima",
     "timing_rule": "sunrise_based",
-    "allow_in_adhika": false
+    "allow_in_adhika": false,
+    "i18n": {
+      "ru": {
+        "name": "Годовщина установки Шри Шри Гуру Гауранга Гандхарва Раса Бихари Джиу",
+        "description": "Храмовый праздник или день установки Божеств: Годовщина установки Шри Шри Гуру Гауранга Гандхарва Раса Бихари Джиу. Событие привязано к титхи, указанному в базе календаря."
+      }
+    },
+    "description": "Temple or Deity festival connected with Sri Sri Guru Gauranga Gandharva Rasa Bihari Jiu. This event is matched by the tithi rule stored in the calendar database."
   },
   {
     "id": "scsmath_541_narahari_sarkar_disappearance",
@@ -597,7 +898,14 @@
     "paksha": "Krishna",
     "tithi": "Dvadashi",
     "timing_rule": "sunrise_based",
-    "allow_in_adhika": false
+    "allow_in_adhika": false,
+    "i18n": {
+      "ru": {
+        "name": "Уход Шрилы Нарахари Саркара Тхакура",
+        "description": "Памятный день ухода: Уход Шрилы Нарахари Саркара Тхакура. Событие привязано к вайшнавскому титхи, указанному в базе календаря."
+      }
+    },
+    "description": "Commemoration of the disappearance day of Srila Narahari Sarkar Thakur. This event is matched by the Vaishnava tithi rule stored in the calendar database."
   },
   {
     "id": "scsmath_541_bhakti_sundar_govinda_appearance",
@@ -610,7 +918,14 @@
     "paksha": "Krishna",
     "tithi": "Dvitiya",
     "timing_rule": "sunrise_based",
-    "allow_in_adhika": false
+    "allow_in_adhika": false,
+    "i18n": {
+      "ru": {
+        "name": "Празднование явления Шрилы Бхакти Сундара Говинды Дев-Госвами Махараджа",
+        "description": "Памятный день явления: Празднование явления Шрилы Бхакти Сундара Говинды Дев-Госвами Махараджа. Событие привязано к вайшнавскому титхи, указанному в базе календаря."
+      }
+    },
+    "description": "Commemoration of the appearance day of Srila Bhakti Sundar Govinda Dev-Goswami Maharaj. This event is matched by the Vaishnava tithi rule stored in the calendar database."
   },
   {
     "id": "scsmath_541_bhakti_siddhanta_disappearance",
@@ -623,6 +938,13 @@
     "paksha": "Krishna",
     "tithi": "Chaturthi",
     "timing_rule": "sunrise_based",
-    "allow_in_adhika": false
+    "allow_in_adhika": false,
+    "i18n": {
+      "ru": {
+        "name": "Фестиваль ухода Шрилы Бхакти Сиддханты Сарасвати Госвами Прабхупада",
+        "description": "Памятный день ухода: Фестиваль ухода Шрилы Бхакти Сиддханты Сарасвати Госвами Прабхупада. Событие привязано к вайшнавскому титхи, указанному в базе календаря."
+      }
+    },
+    "description": "Commemoration of the disappearance day of Srila Bhakti Siddhanta Saraswati Goswami Prabhupad. This event is matched by the Vaishnava tithi rule stored in the calendar database."
   }
 ]

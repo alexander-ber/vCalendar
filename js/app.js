@@ -1,5 +1,5 @@
-import { generateCalendarRange, viewModelForDay } from "./calendar-engine.js?v=20260529-4";
-import { EVENTS } from "./events-data.js?v=20260529-4";
+import { generateCalendarRange, viewModelForDay } from "./calendar-engine.js?v=20260530-2";
+import { EVENTS } from "./events-data.js?v=20260530-3";
 import { LOCATIONS } from "./locations-data.js?v=20260528-17";
 import { RULES } from "./rules-data.js?v=20260528-17";
 
@@ -8,7 +8,10 @@ const periodFromInput = document.querySelector("#periodFromInput");
 const periodToInput = document.querySelector("#periodToInput");
 const eventsOnlyInput = document.querySelector("#eventsOnlyInput");
 const eventFilterSelect = document.querySelector("#eventFilterSelect");
+const eventFilterChips = document.querySelector("#eventFilterChips");
 const renderButton = document.querySelector("#renderButton");
+const thisMonthButton = document.querySelector("#thisMonthButton");
+const fullYearButton = document.querySelector("#fullYearButton");
 const prevMonthTop = document.querySelector("#prevMonthTop");
 const nextMonthTop = document.querySelector("#nextMonthTop");
 const prevMonthBottom = document.querySelector("#prevMonthBottom");
@@ -51,6 +54,9 @@ const I18N = {
     isoDate: "ISO date",
     sunrise: "Sunrise",
     sunset: "Sunset",
+    moonrise: "Moonrise",
+    moonset: "Moonset",
+    moonAngle: "Moon-Sun angle",
     arunodaya: "Arunodaya",
     masa: "Masa",
     paksha: "Paksha",
@@ -64,6 +70,10 @@ const I18N = {
     preferredEnd: "Preferred end",
     latestEnd: "Latest end",
     events: "Events",
+    eventDetails: "Event details",
+    biography: "Biography",
+    descriptionPending: "Description has not been added to the event database yet.",
+    biographyPending: "Biography has not been added to the event database yet.",
     noEvents: "No matched events.",
     diagnostic: "This POC calculates locally in browser JS and does not use external Panchang calendars as runtime data.",
     tithiAtArunodaya: "Tithi at arunodaya",
@@ -87,6 +97,8 @@ const I18N = {
     filterVaishnavaAppearance: "Vaishnava appearances",
     filterVaishnavaDisappearance: "Vaishnava disappearances",
     filterDeityTemple: "Deity / temple days",
+    thisMonth: "This month",
+    fullYear: "Full year",
     previousMonth: "Previous period",
     nextMonth: "Next period",
     noEventDays: "No event days match this filter."
@@ -113,6 +125,9 @@ const I18N = {
     isoDate: "ISO дата",
     sunrise: "Восход",
     sunset: "Закат",
+    moonrise: "Восход Луны",
+    moonset: "Заход Луны",
+    moonAngle: "Угол Луна-Солнце",
     arunodaya: "Арунодая",
     masa: "Маса",
     paksha: "Пакша",
@@ -126,6 +141,10 @@ const I18N = {
     preferredEnd: "Желательное окончание",
     latestEnd: "Последний срок",
     events: "События",
+    eventDetails: "Подробности событий",
+    biography: "Биография",
+    descriptionPending: "Описание ещё не добавлено в базу событий.",
+    biographyPending: "Биография ещё не добавлена в базу событий.",
     noEvents: "Нет найденных событий.",
     diagnostic: "Этот POC считает локально в браузере и не использует внешние панчанги как источник данных.",
     tithiAtArunodaya: "Титхи на арунодае",
@@ -149,6 +168,8 @@ const I18N = {
     filterVaishnavaAppearance: "Явления вайшнавов",
     filterVaishnavaDisappearance: "Уходы вайшнавов",
     filterDeityTemple: "Божества / храмы",
+    thisMonth: "Месяц",
+    fullYear: "Год",
     previousMonth: "Предыдущий период",
     nextMonth: "Следующий период",
     noEventDays: "Нет дней с событиями для этого фильтра."
@@ -214,26 +235,6 @@ const MASA_RU = {
   "(2nd": "(2-я"
 };
 
-const EVENT_RU = {
-  "Padmini Ekadashi": "Падмини экадаши",
-  "Parana for Padmini Ekadashi": "Паран для Падмини экадаши",
-  "Gaura Ekadashi - no fast": "Гаура Экадаши — без поста",
-  "Varuthini Ekadashi": "Варутхини экадаши",
-  "Mohini Ekadashi": "Мохини экадаши",
-  "Papamochani Ekadashi": "Папамочани экадаши",
-  "Kamada Ekadashi": "Камада экадаши",
-  "Sri Balarama Purnima": "Шри Баларама Пурнима",
-  "Appearance of Srila Bhakti Prapanna Tirtha Goswami Maharaj": "Явление Шрилы Бхакти Прапанны Тиртхи Госвами Махараджа",
-  "Sri Krishna Janmashtami": "Шри Кришна Джанмаштами",
-  "Sri Gaura Purnima": "Шри Гаура Пурнима",
-  "Sri Rama Navami": "Шри Рама Навами",
-  "Sri Nrsimha Chaturdashi": "Шри Нрисимха Чатурдаши",
-  "Ganga Saptami": "Ганга Саптами",
-  "Sita Navami": "Сита Навами",
-  "Start of Purushottama Masa": "Начало Пурушоттама",
-  "End of Purushottama Masa": "Окончание Пурушоттама"
-};
-
 function currentPeriod() {
   const now = new Date();
   const start = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, "0")}-01`;
@@ -271,23 +272,34 @@ function selectedEventFilters() {
   return new Set([...eventFilterSelect.selectedOptions].map((option) => option.value));
 }
 
+function setEventFilter(value, selected) {
+  const option = [...eventFilterSelect.options].find((item) => item.value === value);
+  if (!option) return;
+  option.selected = selected;
+  renderEventFilterChips();
+  renderCalendar();
+}
+
 function visibleEventsForDay(day) {
   const filters = selectedEventFilters();
   return day.events.filter((event) => filters.has(eventFilterType(event)));
 }
 
 function eventLabel(event) {
-  if (event.type === "ekadashi_notice") return localizeEventName(event.name);
-  if (event.type === "ekadashi") return `${localizeEventName(event.name)} (${localizeClassification(event.classification)})`;
+  if (event.type === "ekadashi_notice") return localizeEventName(event);
+  if (event.type === "ekadashi") {
+    const reason = ekadashiReasonLabel(event.classification);
+    return reason ? `${localizeEventName(event)} (${reason})` : localizeEventName(event);
+  }
   if (event.type === "parana") {
     const hasWindow = event.parana.start !== "not implemented" && event.parana.preferred_end !== "not implemented";
-    if (!hasWindow) return `${localizeEventName(event.name)}: ${tr("calculationPending")}`;
+    if (!hasWindow) return `${localizeEventName(event)}: ${tr("calculationPending")}`;
     if (event.parana.preferred_end === "not available") {
       return `${tr("parana")}: ${tr("start").toLowerCase()} ${event.parana.start}; ${tr("latestEnd").toLowerCase()} ${event.parana.absolute_end}`;
     }
     return `${tr("parana")}: ${event.parana.start}-${event.parana.preferred_end}`;
   }
-  return localizeEventName(event.name);
+  return localizeEventName(event);
 }
 
 function renderDetails(day) {
@@ -305,6 +317,9 @@ function renderDetails(day) {
       <div class="detail-item"><span>${tr("isoDate")}</span>${model.date}</div>
       <div class="detail-item"><span>${tr("sunrise")}</span>${model.sunrise}</div>
       <div class="detail-item"><span>${tr("sunset")}</span>${model.sunset}</div>
+      <div class="detail-item"><span>${tr("moonrise")}</span>${model.moonrise}</div>
+      <div class="detail-item"><span>${tr("moonset")}</span>${model.moonset}</div>
+      <div class="detail-item"><span>${tr("moonAngle")}</span>${model.moonAngle} deg</div>
       <div class="detail-item"><span>${tr("arunodaya")}</span>${model.arunodaya}</div>
       <div class="detail-item"><span>${tr("masa")}</span>${localizeMasa(model.masa)}</div>
       <div class="detail-item"><span>${tr("paksha")}</span>${localizePaksha(model.paksha)}</div>
@@ -316,9 +331,9 @@ function renderDetails(day) {
       ekadashiEvents.length
         ? `<div class="ekadashi-panel">
             <span>${tr("ekadashiName")}</span>
-            <strong>${ekadashiEvents.map((event) => localizeEventName(event.name)).join(", ")}</strong>
-            <p>${ekadashiEvents.map((event) => event.description).join(" ")}</p>
-            <small>${ekadashiEvents.map((event) => `${tr("fastDate")} ${event.fast_date}, ${localizeClassification(event.classification)}`).join(" | ")}</small>
+            <strong>${ekadashiEvents.map((event) => localizeEventName(event)).join(", ")}</strong>
+            <p>${ekadashiEvents.map((event) => localizeEventDescription(event)).join(" ")}</p>
+            <small>${ekadashiEvents.map((event) => ekadashiDetailLine(event)).join(" | ")}</small>
           </div>`
         : ""
     }
@@ -329,13 +344,13 @@ function renderDetails(day) {
             ${paranaEvents
               .map(
                 (event) => `
-                  <strong>${localizeEventName(event.name)}</strong>
+                  <strong>${localizeEventName(event)}</strong>
                   <dl>
                     <div><dt>${tr("start")}</dt><dd>${event.parana.start}</dd></div>
                     <div><dt>${tr("preferredEnd")}</dt><dd>${localizeAvailability(event.parana.preferred_end)}</dd></div>
                     <div><dt>${tr("latestEnd")}</dt><dd>${event.parana.absolute_end}</dd></div>
                   </dl>
-                  <small>${event.description}</small>
+                  <small>${localizeEventDescription(event)}</small>
                 `
               )
               .join("")}
@@ -352,6 +367,7 @@ function renderDetails(day) {
         }
       </div>
     </div>
+    ${model.events.length ? renderEventDetails(model.events) : ""}
     <div class="diagnostic">
       ${tr("tithiAtArunodaya")}: ${localizeTithi(model.arunodayaTithi)}. ${tr("diagnostic")}
     </div>
@@ -395,6 +411,13 @@ function renderCalendar() {
       <div class="month-section-grid"></div>
     `;
     const grid = section.querySelector(".month-section-grid");
+    if (!eventsOnlyInput.checked) {
+      for (let i = 0; i < weekdayOfIsoDate(days[0].date); i += 1) {
+        const spacer = document.createElement("div");
+        spacer.className = "day-spacer";
+        grid.append(spacer);
+      }
+    }
     for (const day of days) {
       grid.append(renderDayButton(day, today, location));
     }
@@ -422,6 +445,7 @@ function renderDayButton(day, today, location) {
     <div class="lunar-line">${localizeMasa(day.lunar.masa_display)} • ${localizeTithi(day.lunar.tithi_at_sunrise.name)}</div>
     <div class="tithi-end">${tr("until")} ${tithiEndLabel(day)}</div>
     <div class="times">${tr("sun")} ${calendarTime(day.astronomy.sunrise, location.timezone)}-${calendarTime(day.astronomy.sunset, location.timezone)}</div>
+    <div class="times">${tr("moonrise")} ${calendarTimeOrDash(day.astronomy.moonrise, location.timezone)} · ${tr("moonset")} ${calendarTimeOrDash(day.astronomy.moonset, location.timezone)} · ${Math.round(day.lunar.tithi_angle_at_sunrise)}°</div>
     <div class="events">
       ${visibleEventsForDay(day)
         .slice(0, 4)
@@ -441,6 +465,11 @@ function groupDaysByMonth(days) {
     groups.get(key).push(day);
   }
   return groups;
+}
+
+function weekdayOfIsoDate(isoDate) {
+  const [year, month, day] = isoDate.split("-").map(Number);
+  return new Date(Date.UTC(year, month - 1, day)).getUTCDay();
 }
 
 function normalizePeriodInputs() {
@@ -546,6 +575,10 @@ function calendarTime(date, timezone) {
   }).format(date);
 }
 
+function calendarTimeOrDash(date, timezone) {
+  return date ? calendarTime(date, timezone) : "-";
+}
+
 function init() {
   locationSelect.innerHTML = LOCATIONS.map((location) => `<option value="${location.id}">${location.name}</option>`).join("");
   locationSelect.value = "maalot";
@@ -568,10 +601,28 @@ function init() {
   periodToInput.addEventListener("change", renderCalendar);
   eventsOnlyInput.addEventListener("change", renderCalendar);
   eventFilterSelect.addEventListener("change", renderCalendar);
+  thisMonthButton.addEventListener("click", () => setCurrentMonthPeriod());
+  fullYearButton.addEventListener("click", () => setFullYearPeriod());
   prevMonthTop.addEventListener("click", () => shiftPeriod(-1));
   nextMonthTop.addEventListener("click", () => shiftPeriod(1));
   prevMonthBottom.addEventListener("click", () => shiftPeriod(-1));
   nextMonthBottom.addEventListener("click", () => shiftPeriod(1));
+  renderCalendar();
+}
+
+function setCurrentMonthPeriod() {
+  const [year, month] = periodFromInput.value.split("-").map(Number);
+  const monthStart = `${year}-${String(month).padStart(2, "0")}-01`;
+  const monthEndDate = new Date(Date.UTC(year, month, 0));
+  periodFromInput.value = monthStart;
+  periodToInput.value = `${monthEndDate.getUTCFullYear()}-${String(monthEndDate.getUTCMonth() + 1).padStart(2, "0")}-${String(monthEndDate.getUTCDate()).padStart(2, "0")}`;
+  renderCalendar();
+}
+
+function setFullYearPeriod() {
+  const [year] = periodFromInput.value.split("-").map(Number);
+  periodFromInput.value = `${year}-01-01`;
+  periodToInput.value = `${year}-12-31`;
   renderCalendar();
 }
 
@@ -607,18 +658,17 @@ function setLanguage(language) {
   languageToggle.textContent = language === "ru" ? "EN" : "RU";
   languageToggle.setAttribute("aria-pressed", String(language === "ru"));
   document.querySelector(".eyebrow").textContent = tr("appSubtitle");
-  document.querySelector(".engine-badge").textContent = tr("strictMode");
   renderButton.textContent = tr("generate");
   document.querySelectorAll("[data-i18n]").forEach((element) => {
     element.textContent = tr(element.dataset.i18n);
   });
-  localizeEventFilterOptions();
+  renderEventFilterChips();
   if (!selectedDate) dayDetails.textContent = tr("selectDay");
   setTheme(document.documentElement.dataset.theme || "day");
 }
 
-function localizeEventFilterOptions() {
-  const labels = {
+function eventFilterLabels() {
+  return {
     ekadashi: tr("filterEkadashi"),
     parana: tr("filterParana"),
     purushottama: tr("filterPurushottama"),
@@ -627,8 +677,22 @@ function localizeEventFilterOptions() {
     vaishnavaDisappearance: tr("filterVaishnavaDisappearance"),
     deityTemple: tr("filterDeityTemple")
   };
+}
+
+function renderEventFilterChips() {
+  const labels = {
+    ...eventFilterLabels()
+  };
+  eventFilterChips.innerHTML = "";
   [...eventFilterSelect.options].forEach((option) => {
     option.textContent = labels[option.value] || option.value;
+    const chip = document.createElement("button");
+    chip.type = "button";
+    chip.className = `filter-chip${option.selected ? " is-active" : ""}`;
+    chip.textContent = option.textContent;
+    chip.setAttribute("aria-pressed", String(option.selected));
+    chip.addEventListener("click", () => setEventFilter(option.value, !option.selected));
+    eventFilterChips.append(chip);
   });
 }
 
@@ -678,11 +742,16 @@ function localizeMasa(value) {
     .join(" / ");
 }
 
-function localizeEventName(value) {
-  if (currentLanguage !== "ru") return value;
-  if (EVENT_RU[value]) return EVENT_RU[value];
-  if (value.startsWith("Parana for ")) return value.replace("Parana for ", "Паран для ");
-  return value.replace("Ekadashi", "экадаши").replace("Parana", "Паран");
+function localizedEventField(event, field) {
+  return event.i18n?.[currentLanguage]?.[field] || event[field] || "";
+}
+
+function localizeEventName(event) {
+  return localizedEventField(event, "name");
+}
+
+function localizeEventDescription(event) {
+  return localizedEventField(event, "description");
 }
 
 function localizeClassification(value) {
@@ -695,6 +764,45 @@ function localizeClassification(value) {
     vyanjuli_mahadvadashi: "вьянджули махадвадаши"
   };
   return map[value] || value;
+}
+
+function ekadashiReasonLabel(classification) {
+  if (classification === "standard") return "";
+  return localizeClassification(classification);
+}
+
+function ekadashiDetailLine(event) {
+  const reason = ekadashiReasonLabel(event.classification);
+  return reason ? `${tr("fastDate")} ${event.fast_date}, ${reason}` : `${tr("fastDate")} ${event.fast_date}`;
+}
+
+function renderEventDetails(events) {
+  return `
+    <section class="event-details-panel">
+      <h3>${tr("eventDetails")}</h3>
+      ${events.map((event) => renderEventDetail(event)).join("")}
+    </section>
+  `;
+}
+
+function renderEventDetail(event) {
+  const isBioEvent = event.type === "vaishnava_appearance" || event.type === "vaishnava_disappearance";
+  const heading = isBioEvent ? tr("biography") : tr("events");
+  const description = localizeEventDescription(event) || eventNarrativeFallback(event, isBioEvent);
+  return `
+    <article class="event-detail-card ${eventClass(event)}">
+      <div>
+        <span>${heading}</span>
+        <strong>${localizeEventName(event)}</strong>
+      </div>
+      <p>${description}</p>
+    </article>
+  `;
+}
+
+function eventNarrativeFallback(event, isBioEvent) {
+  if (isBioEvent) return tr("biographyPending");
+  return tr("descriptionPending");
 }
 
 function localizeAvailability(value) {

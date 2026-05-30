@@ -1,7 +1,7 @@
-import { dayAstronomy, tithiInfo } from "./astronomy-adapter.js?v=20260528-8";
+import { dayAstronomy, tithiInfo } from "./astronomy-adapter.js?v=20260530-2";
 import { addDaysToLocalDate, daysInMonth, formatDateTime, formatTime, monthLabel, toIsoDate, weekdayOfIsoDate } from "./date-utils.js?v=20260528-8";
 import { masaForDate } from "./masa-engine.js?v=20260528-18";
-import { buildEkadashiEvents } from "./ekadashi-engine.js?v=20260529-2";
+import { buildEkadashiEvents } from "./ekadashi-engine.js?v=20260530-2";
 import { matchEventsForDay } from "./event-matcher.js?v=20260529-2";
 
 function buildDay(isoDate, location, rules) {
@@ -66,7 +66,13 @@ function addPurushottamaBoundaryEvents(days) {
         name: "Start of Purushottama Masa",
         type: "purushottama_boundary",
         category: "masa",
-        description: "Purushottama Masa begins according to the local sunrise-based calendar display."
+        description: "Purushottama Masa begins according to the local sunrise-based calendar display.",
+        i18n: {
+          ru: {
+            name: "Начало Пурушоттама",
+            description: "Пурушоттама маса начинается по локальному календарному дню на восходе."
+          }
+        }
       });
     }
     if (current.lunar.masa_type === "adhika" && next?.lunar.masa_type !== "adhika") {
@@ -75,7 +81,13 @@ function addPurushottamaBoundaryEvents(days) {
         name: "End of Purushottama Masa",
         type: "purushottama_boundary",
         category: "masa",
-        description: "Purushottama Masa ends after this local calendar day."
+        description: "Purushottama Masa ends after this local calendar day.",
+        i18n: {
+          ru: {
+            name: "Окончание Пурушоттама",
+            description: "Пурушоттама маса заканчивается после этого локального календарного дня."
+          }
+        }
       });
     }
   }
@@ -153,6 +165,9 @@ export function viewModelForDay(day) {
     }).format(new Date(`${day.date}T12:00:00Z`)),
     sunrise: formatTime(day.astronomy.sunrise, day.location.timezone),
     sunset: formatTime(day.astronomy.sunset, day.location.timezone),
+    moonrise: formatTime(day.astronomy.moonrise, day.location.timezone),
+    moonset: formatTime(day.astronomy.moonset, day.location.timezone),
+    moonAngle: day.lunar.tithi_angle_at_sunrise.toFixed(2),
     arunodaya: formatTime(day.astronomy.arunodaya, day.location.timezone),
     masa: day.masa.display_name,
     tithi: day.lunar.tithi_at_sunrise.name,

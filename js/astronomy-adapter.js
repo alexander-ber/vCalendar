@@ -154,15 +154,95 @@ function sunEventForDate(isoDate, location, zenithDegrees, isSunrise) {
   return zonedDateToUtc(year, month, day, hour, minute, second, location.timezone);
 }
 
+function obliquity(date) {
+  const yearsFrom2000 = (julianDay(date) - J2000) / 36525;
+  return 23.439291 - 0.0130042 * yearsFrom2000;
+}
+
+function moonLatitude(date) {
+  const d = daysSinceJ2000(date);
+  const f = normalizeDegrees(93.272 + 13.229350 * d);
+  return 5.128 * Math.sin(f * DEG);
+}
+
+function moonEquatorial(date) {
+  const lon = moonLongitude(date) * DEG;
+  const lat = moonLatitude(date) * DEG;
+  const eps = obliquity(date) * DEG;
+  const sinDec = Math.sin(lat) * Math.cos(eps) + Math.cos(lat) * Math.sin(eps) * Math.sin(lon);
+  const dec = Math.asin(sinDec);
+  const y = Math.sin(lon) * Math.cos(eps) - Math.tan(lat) * Math.sin(eps);
+  const x = Math.cos(lon);
+  const ra = Math.atan2(y, x);
+  return { ra: normalizeDegrees(ra * RAD), dec: dec * RAD };
+}
+
+function siderealTime(date, lon) {
+  const jd = julianDay(date);
+  const t = (jd - J2000) / 36525;
+  const gmst = 280.46061837 + 360.98564736629 * (jd - J2000) + 0.000387933 * t * t - (t * t * t) / 38710000;
+  return normalizeDegrees(gmst + lon);
+}
+
+function moonAltitude(date, location) {
+  const { ra, dec } = moonEquatorial(date);
+  const hourAngle = normalizeDegrees(siderealTime(date, location.lon) - ra);
+  const h = hourAngle > 180 ? hourAngle - 360 : hourAngle;
+  const lat = location.lat * DEG;
+  const decRad = dec * DEG;
+  const altitude =
+    Math.asin(Math.sin(lat) * Math.sin(decRad) + Math.cos(lat) * Math.cos(decRad) * Math.cos(h * DEG)) * RAD;
+  return altitude;
+}
+
+function refineMoonHorizonCrossing(left, right, location, targetAltitude) {
+  let a = new Date(left);
+  let b = new Date(right);
+  for (let i = 0; i < 32; i += 1) {
+    const mid = new Date((a.getTime() + b.getTime()) / 2);
+    const leftValue = moonAltitude(a, location) - targetAltitude;
+    const midValue = moonAltitude(mid, location) - targetAltitude;
+    if (Math.sign(leftValue) === Math.sign(midValue)) a = mid;
+    else b = mid;
+  }
+  return b;
+}
+
+function moonEventsForDate(isoDate, location) {
+  const { year, month, day } = localDateParts(isoDate);
+  const start = zonedDateToUtc(year, month, day, 0, 0, 0, location.timezone);
+  const end = zonedDateToUtc(year, month, day, 23, 59, 59, location.timezone);
+  const step = 20 * MS_PER_MINUTE;
+  const targetAltitude = -0.3;
+  let moonrise = null;
+  let moonset = null;
+  let previous = start;
+  let previousValue = moonAltitude(previous, location) - targetAltitude;
+
+  for (let cursor = new Date(start.getTime() + step); cursor <= end; cursor = new Date(cursor.getTime() + step)) {
+    const value = moonAltitude(cursor, location) - targetAltitude;
+    if (Math.sign(previousValue) !== Math.sign(value)) {
+      const eventTime = refineMoonHorizonCrossing(previous, cursor, location, targetAltitude);
+      if (previousValue < value && !moonrise) moonrise = eventTime;
+      if (previousValue > value && !moonset) moonset = eventTime;
+    }
+    previous = cursor;
+    previousValue = value;
+  }
+
+  return { moonrise, moonset };
+}
+
 export function dayAstronomy(isoDate, location, rules) {
   const sunrise = sunEventForDate(isoDate, location, 90.833, true);
   const sunset = sunEventForDate(isoDate, location, 90.833, false);
   const arunodaya = sunrise ? new Date(sunrise.getTime() - rules.ekadashi.arunodaya_offset_minutes * MS_PER_MINUTE) : null;
+  const moon = moonEventsForDate(isoDate, location);
   return {
     sunrise,
     sunset,
     arunodaya,
-    moonrise: null,
-    moonset: null
+    moonrise: moon.moonrise,
+    moonset: moon.moonset
   };
 }

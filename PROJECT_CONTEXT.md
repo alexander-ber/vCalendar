@@ -674,6 +674,33 @@ If `allow_in_adhika` is absent and event is an avatar/festival, skip it in Adhik
 
 Events do not store Gregorian dates as their primary identity. They store lunar conditions.
 
+### 9.0 Event Localization
+
+Event data carries optional translations next to the English defaults:
+
+```json
+{
+  "id": "balarama_purnima",
+  "name": "Sri Balarama Purnima",
+  "description": "English fallback text",
+  "i18n": {
+    "ru": {
+      "name": "Шри Баларама Пурнима",
+      "description": "Русский текст, если он подтверждён"
+    }
+  }
+}
+```
+
+Rules:
+
+- `name` and `description` are the English fallback.
+- UI reads `event.i18n[current_language]` when present.
+- If a translation is missing, UI falls back to English.
+- Do not keep separate hardcoded UI dictionaries for event names.
+- Every static event in `data/events.json` and `js/events-data.js` should carry `i18n.ru.name`; English remains the canonical fallback in `name`.
+- Generated events, such as Parana and Purushottama boundaries, should also include `i18n` when their labels are known.
+
 ### 9.1 Event Definition
 
 Example:
