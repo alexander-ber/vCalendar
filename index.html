@@ -15,12 +15,11 @@
         </div>
         <div class="header-actions">
           <button id="languageToggle" class="language-toggle" type="button" aria-pressed="false">RU</button>
-          <button id="themeToggle" class="theme-toggle" type="button" aria-pressed="false">
-            <span class="theme-toggle-track">
-              <span class="theme-toggle-thumb"></span>
-            </span>
-            <span id="themeLabel">Day</span>
-          </button>
+          <div id="themeToggle" class="theme-toggle" role="group" aria-label="Theme">
+            <button type="button" data-theme-choice="day" data-i18n="day">Day</button>
+            <button type="button" data-theme-choice="night" data-i18n="night">Night</button>
+            <button type="button" data-theme-choice="sepia" data-i18n="sepia">Sepia</button>
+          </div>
         </div>
       </header>
 
@@ -52,7 +51,7 @@
           <div class="filter-panel-head">
             <strong data-i18n="eventFilters">Event filters</strong>
             <label class="switch-label">
-              <input id="eventsOnlyInput" type="checkbox">
+              <input id="eventsOnlyInput" type="checkbox" checked>
               <span data-i18n="eventsOnly">Only days with events</span>
             </label>
           </div>
@@ -104,6 +103,6 @@
       </section>
     </main>
 
-    <script type="module" src="js/app.js?v=20260530-4"></script>
+    <script type="module" src="js/app.js?v=20260530-5"></script>
   </body>
 </html>

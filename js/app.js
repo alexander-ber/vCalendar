@@ -18,7 +18,6 @@ const prevMonthBottom = document.querySelector("#prevMonthBottom");
 const nextMonthBottom = document.querySelector("#nextMonthBottom");
 const languageToggle = document.querySelector("#languageToggle");
 const themeToggle = document.querySelector("#themeToggle");
-const themeLabel = document.querySelector("#themeLabel");
 const summaryLocation = document.querySelector("#summaryLocation");
 const summaryTimezone = document.querySelector("#summaryTimezone");
 const calendarTitle = document.querySelector("#calendarTitle");
@@ -29,22 +28,20 @@ const calendarGrid = document.querySelector("#calendarGrid");
 const dayDetails = document.querySelector("#dayDetails");
 
 let selectedDate = null;
-let currentLanguage = "en";
+let currentLanguage = "ru";
 
 const I18N = {
   en: {
     appSubtitle: "Gaudiya Vaishnava Panchang POC",
     day: "Day",
     night: "Night",
-    strictMode: "Strict internal mode",
+    sepia: "Sepia",
     location: "Location",
     periodFrom: "From",
     periodTo: "To",
     generate: "Generate",
     generating: "Generating...",
     timezone: "Timezone",
-    engine: "Engine",
-    engineValue: "Local browser JS",
     loading: "Loading calendar...",
     selectedDay: "Selected Day",
     selectDay: "Select a day in the calendar.",
@@ -111,15 +108,13 @@ const I18N = {
     appSubtitle: "Гаудия-вайшнавский панчанг POC",
     day: "День",
     night: "Ночь",
-    strictMode: "Строгий внутренний режим",
+    sepia: "Сепия",
     location: "Место",
     periodFrom: "С",
     periodTo: "По",
     generate: "Рассчитать",
     generating: "Расчёт...",
     timezone: "Часовой пояс",
-    engine: "Движок",
-    engineValue: "Локальный JS в браузере",
     loading: "Загрузка календаря...",
     selectedDay: "Выбранный день",
     selectDay: "Выберите день в календаре.",
@@ -593,6 +588,7 @@ function init() {
   const period = currentPeriod();
   periodFromInput.value = period.start;
   periodToInput.value = period.end;
+  initEventsOnly();
   initLanguage();
   initTheme();
   renderButton.addEventListener("click", () => {
@@ -651,7 +647,7 @@ function shiftIsoDateByMonths(isoDate, deltaMonths) {
 
 function initLanguage() {
   const savedLanguage = localStorage.getItem("vcalendar-language");
-  currentLanguage = savedLanguage === "ru" ? "ru" : "en";
+  currentLanguage = savedLanguage === "en" ? "en" : "ru";
   languageToggle.addEventListener("click", () => {
     setLanguage(currentLanguage === "ru" ? "en" : "ru");
     renderCalendar();
@@ -708,16 +704,28 @@ function initTheme() {
   const savedTheme = localStorage.getItem("vcalendar-theme");
   const preferredTheme = window.matchMedia("(prefers-color-scheme: dark)").matches ? "night" : "day";
   setTheme(savedTheme || preferredTheme);
-  themeToggle.addEventListener("click", () => {
-    setTheme(document.documentElement.dataset.theme === "night" ? "day" : "night");
+  themeToggle.querySelectorAll("[data-theme-choice]").forEach((button) => {
+    button.addEventListener("click", () => setTheme(button.dataset.themeChoice));
   });
 }
 
 function setTheme(theme) {
-  document.documentElement.dataset.theme = theme;
-  localStorage.setItem("vcalendar-theme", theme);
-  themeToggle.setAttribute("aria-pressed", String(theme === "night"));
-  themeLabel.textContent = theme === "night" ? tr("night") : tr("day");
+  const nextTheme = ["day", "night", "sepia"].includes(theme) ? theme : "day";
+  document.documentElement.dataset.theme = nextTheme;
+  localStorage.setItem("vcalendar-theme", nextTheme);
+  themeToggle.querySelectorAll("[data-theme-choice]").forEach((button) => {
+    const selected = button.dataset.themeChoice === nextTheme;
+    button.classList.toggle("is-active", selected);
+    button.setAttribute("aria-pressed", String(selected));
+  });
+}
+
+function initEventsOnly() {
+  const saved = localStorage.getItem("vcalendar-events-only");
+  eventsOnlyInput.checked = saved === null ? true : saved === "true";
+  eventsOnlyInput.addEventListener("change", () => {
+    localStorage.setItem("vcalendar-events-only", String(eventsOnlyInput.checked));
+  });
 }
 
 function tr(key) {
