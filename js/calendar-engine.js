@@ -95,11 +95,22 @@ function addPurushottamaBoundaryEvents(days) {
 
 function attachEvents(days, location, rules, events) {
   const ekadashiByDate = buildEkadashiEvents(days, location, rules);
+  const shiftedEventsByDate = new Map();
   for (let i = 0; i < days.length; i += 1) {
     const day = days[i];
     const generatedEvents = matchEventsForDay(day, events, location.timezone, days[i + 1] || null);
     const vrataEvents = ekadashiByDate.get(day.date) || [];
-    day.events = [...vrataEvents, ...generatedEvents];
+    const currentShiftedEvents = shiftedEventsByDate.get(day.date) || [];
+    const currentGeneratedEvents = generatedEvents.filter((event) => {
+      const offset = Number(event.observance_offset_days || 0);
+      if (!offset) return true;
+      const targetDay = days[i + offset];
+      if (!targetDay) return false;
+      if (!shiftedEventsByDate.has(targetDay.date)) shiftedEventsByDate.set(targetDay.date, []);
+      shiftedEventsByDate.get(targetDay.date).push(event);
+      return false;
+    });
+    day.events = [...vrataEvents, ...currentGeneratedEvents, ...currentShiftedEvents];
   }
   addPurushottamaBoundaryEvents(days);
 }

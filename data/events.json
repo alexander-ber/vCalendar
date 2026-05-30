@@ -270,7 +270,7 @@
     "timing_rule": "noon_based",
     "allow_in_adhika": false,
     "priority": "highest",
-    "source_status": "confirmed",
+    "source_status": "superseded_by_hkzp_541_nityananda_trayodashi",
     "i18n": {
       "ru": {
         "name": "Явление Шри Нитьянанды Прабху",
@@ -281,7 +281,8 @@
       }
     },
     "description": "Appearance day festival for Sri Nityananda Prabhu. The calendar matches it by the configured tithi rule.",
-    "source_url": "http://harekrishnazp.info/materialy/vajshnavskij-kalendar/510-gospod-nityananda.html"
+    "source_url": "http://harekrishnazp.info/materialy/vajshnavskij-kalendar/510-gospod-nityananda.html",
+    "disabled": true
   },
   {
     "id": "scsmath_541_gopal_bhatta_appearance",
@@ -361,7 +362,7 @@
     "type": "deity_installation",
     "category": "deity_temple",
     "subject": "Sri Sri Guru Gaura Nityananda Jiu",
-    "source_status": "tithi_rule_from_scsmath_541",
+    "source_status": "tithi_rule_from_scsmath_541_observed_next_day_in_sources",
     "gaudiya_masa": "Madhava",
     "paksha": "Gaura",
     "tithi": "Trayodashi",
@@ -373,7 +374,8 @@
         "description": "Храмовый праздник или день установки Божеств: Годовщина установки Шри Шри Гуру Гаура Нитьянанды Джиу. Событие привязано к титхи, указанному в базе календаря."
       }
     },
-    "description": "Temple or Deity festival connected with Sri Sri Guru Gaura Nityananda Jiu. This event is matched by the tithi rule stored in the calendar database."
+    "description": "Temple or Deity festival connected with Sri Sri Guru Gaura Nityananda Jiu. This event is matched by the tithi rule stored in the calendar database.",
+    "observance_offset_days": 1
   },
   {
     "id": "scsmath_541_bhakti_siddhanta_appearance",
@@ -2442,7 +2444,7 @@
     "timing_rule": "sunrise_based",
     "allow_in_adhika": false,
     "priority": "medium",
-    "source_status": "matched_by_name_type_tithi",
+    "source_status": "matched_by_name_type_tithi_observed_next_day_in_sources",
     "source_url": "http://harekrishnazp.info/materialy/vajshnavskij-kalendar/510-gospod-nityananda.html",
     "description": "Imported calendar reference for \"Нитьянанда Трайодаши - день явления Господа Нитьянанды (пост)\". English summary still needs editorial translation; the Russian source summary is linked in source_url.",
     "i18n": {
@@ -2454,7 +2456,8 @@
         "name": "Нитьянанда Трайодаши - день явления Господа Нитьянанды (пост)",
         "description": "Великий святой Вриндаван Дас Тхакур говорит, что этот праздник полон безграничной милости. Шри Нитьянанда пришел как главный спутник Господа Чайтаньи. Со всей самоотдачей служа Гауранге, Он учит нас тому, что может сделать нас полностью счастливыми. Именно это и выражает его имя - «вечное блаженство». Поклоняясь Господу Нитьянанде, каждый обретет любовь и преданность лотосным стопам Кришны."
       }
-    }
+    },
+    "observance_offset_days": 1
   },
   {
     "id": "hkzp_541_день_явления_нароттамы_даса_тхакура",
