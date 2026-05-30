@@ -17,10 +17,14 @@
     "i18n": {
       "ru": {
         "name": "Шри Гаура Пурнима",
-        "description": "День явления: Шри Гаура Пурнима. Календарь определяет его по настроенному правилу титхи."
+        "description": "В доме Шри Джаганнатх Мишры не было предела радости. Она царила в комнате Шри Шачидеви. Весь мир был затоплен потоком Харинама, при появлении полной и чистой луны в этот день. И луна в небе закрыла свое лицо из скромности. И как она могла не сделать этого? Луны на пальцах Его ног излучали такой яркий и благодатный свет, что затмевали миллионы лун, ведь сегодня явился Гаурачандра. Повсюду с неба дождем сыпались цветы. Раздались звуки миллионов раковин и барабанов, и начался танец небесных существ. Вся земля воспевала \"Джайа, Джайа\", и вся вселенная достигла освобождения. Так повсюду разнеслась весть о явлении Гаура Хари разнеслась. Все преданные немедленно почувствовали глубокое удовлетвор..."
+      },
+      "en": {
+        "description": "Appearance day festival for Sri Chaitanya Mahaprabhu. The calendar matches it by the configured tithi rule."
       }
     },
-    "description": "Appearance day festival for Sri Chaitanya Mahaprabhu. The calendar matches it by the configured tithi rule."
+    "description": "Appearance day festival for Sri Chaitanya Mahaprabhu. The calendar matches it by the configured tithi rule.",
+    "source_url": "http://harekrishnazp.info/materialy/vajshnavskij-kalendar/547-gaura-purnima.html"
   },
   {
     "id": "rama_navami",
@@ -40,10 +44,14 @@
     "i18n": {
       "ru": {
         "name": "Шри Рама Навами",
-        "description": "День явления: Шри Рама Навами. Календарь определяет его по настроенному правилу титхи."
+        "description": "Рама Навами - это ведический фестиваль, на котором празднуется победа светлых сил над темными, торжество добра над злом. Это день явления седьмого воплощения Господа Вишну - Рамачандры."
+      },
+      "en": {
+        "description": "Appearance day festival for Lord Ramachandra. The calendar matches it by the configured tithi rule."
       }
     },
-    "description": "Appearance day festival for Lord Ramachandra. The calendar matches it by the configured tithi rule."
+    "description": "Appearance day festival for Lord Ramachandra. The calendar matches it by the configured tithi rule.",
+    "source_url": "http://harekrishnazp.info/materialy/vajshnavskij-kalendar/590-gospod-rama.html"
   },
   {
     "id": "nrsimha_chaturdashi",
@@ -63,10 +71,14 @@
     "i18n": {
       "ru": {
         "name": "Шри Нрисимха Чатурдаши",
-        "description": "День явления: Шри Нрисимха Чатурдаши. Календарь определяет его по настроенному правилу титхи."
+        "description": "Я приношу свои поклоны Господу Нрисимхадеву, который всегда даёт наставления Своему преданному Прахладу в его сердце. Он побеждает все виды анартх, которые нападают на преданных. Его милость освежает и распространяется подобно свету луны. (Шрипад Шридхара Свами)"
+      },
+      "en": {
+        "description": "Appearance day festival for Lord Nrsimhadev. The calendar matches it by the configured tithi rule."
       }
     },
-    "description": "Appearance day festival for Lord Nrsimhadev. The calendar matches it by the configured tithi rule."
+    "description": "Appearance day festival for Lord Nrsimhadev. The calendar matches it by the configured tithi rule.",
+    "source_url": "http://harekrishnazp.info/materialy/vajshnavskij-kalendar/683-nrisimkhadev.html"
   },
   {
     "id": "janmashtami",
@@ -86,10 +98,14 @@
     "i18n": {
       "ru": {
         "name": "Шри Кришна Джанмаштами",
-        "description": "День явления: Шри Кришна Джанмаштами. Календарь определяет его по настроенному правилу титхи."
+        "description": "Когда религия на земле приходит в упадок и воцаряется безбожие, Я нисхожу Сам, о потомок Бхараты. Чтобы освободить праведников и покарать негодяев, Я Сам являюсь на Землю эпоха за эпохой. (Господь Кришна Арджуне, «Бхагавад-гита», гл. 4, текст 7-8.)"
+      },
+      "en": {
+        "description": "Appearance day festival for Lord Krishna. The calendar matches it by the configured tithi rule."
       }
     },
-    "description": "Appearance day festival for Lord Krishna. The calendar matches it by the configured tithi rule."
+    "description": "Appearance day festival for Lord Krishna. The calendar matches it by the configured tithi rule.",
+    "source_url": "http://harekrishnazp.info/materialy/vajshnavskij-kalendar/825-dzhanmashtami-yavlenie-gospoda-shri-krishny.html"
   },
   {
     "id": "balarama_purnima",
@@ -109,10 +125,14 @@
     "i18n": {
       "ru": {
         "name": "Шри Баларама Пурнима",
-        "description": "День явления: Шри Баларама Пурнима. Календарь определяет его по настроенному правилу титхи."
+        "description": "О Кешава! О Господь Вселенной! О Господь Хари, принявший форму Господа Баларамы и держащий в своих руках плуг! Вся слава Тебе! На Твоем бриллиантовом белом теле - одежды цвета нового голубого дождевого облака. Эти одежды имеют тот же цвет, что и прекрасный темный оттенок реки Ямуны, которая испытывает большой страх когда Ты ударяешь по ней Твоим плугом."
+      },
+      "en": {
+        "description": "Appearance day festival for Lord Balarama. The calendar matches it by the configured tithi rule."
       }
     },
-    "description": "Appearance day festival for Lord Balarama. The calendar matches it by the configured tithi rule."
+    "description": "Appearance day festival for Lord Balarama. The calendar matches it by the configured tithi rule.",
+    "source_url": "http://harekrishnazp.info/materialy/vajshnavskij-kalendar/821-gospod-balarama.html"
   },
   {
     "id": "bhakti_prapanna_tirtha_appearance",
@@ -154,10 +174,14 @@
     "i18n": {
       "ru": {
         "name": "Акшая Трития",
-        "description": "Праздничный день: Акшая Трития. Календарь определяет его по настроенному правилу титхи."
+        "description": "Акшая Тритья - один из чудесных дней в году. Не упустите возможности избавиться от всего лишнего и ненужного, освободите место в  вашей жизни для прекрасного и возвышенного."
+      },
+      "en": {
+        "description": "Festival day connected with Akshaya Tritiya. The calendar matches it by the configured tithi rule."
       }
     },
-    "description": "Festival day connected with Akshaya Tritiya. The calendar matches it by the configured tithi rule."
+    "description": "Festival day connected with Akshaya Tritiya. The calendar matches it by the configured tithi rule.",
+    "source_url": "http://harekrishnazp.info/materialy/vajshnavskij-kalendar/1299-akshaya-tritya-nachalo-chandana-yatry.html"
   },
   {
     "id": "parashurama_jayanti",
@@ -220,10 +244,14 @@
     "i18n": {
       "ru": {
         "name": "Сита Навами",
-        "description": "День явления: Сита Навами. Календарь определяет его по настроенному правилу титхи."
+        "description": "Шримати Сита Деви — дочь царя Джанаки и супруга Господа Рамачандры. Она — сама Лакшмиджи, вечная супруга Господа Нарайаны, богиня процветания. Её приемный отец нашел маленькую Ситу в лесу, сразу увидев, как она похожа на Лакшми Деви. Но со временем он забыл об этом и полюбил её как свою дочь."
+      },
+      "en": {
+        "description": "Appearance day festival for Sri Sita Devi. The calendar matches it by the configured tithi rule."
       }
     },
-    "description": "Appearance day festival for Sri Sita Devi. The calendar matches it by the configured tithi rule."
+    "description": "Appearance day festival for Sri Sita Devi. The calendar matches it by the configured tithi rule.",
+    "source_url": "http://harekrishnazp.info/materialy/vajshnavskij-kalendar/676-shrimati-sita-devi.html"
   },
   {
     "id": "nityananda_prabhu_appearance",
@@ -242,10 +270,14 @@
     "i18n": {
       "ru": {
         "name": "Явление Шри Нитьянанды Прабху",
-        "description": "День явления: Явление Шри Нитьянанды Прабху. Календарь определяет его по настроенному правилу титхи."
+        "description": "Великий святой Вриндаван Дас Тхакур говорит, что этот праздник полон безграничной милости. Шри Нитьянанда пришел как главный спутник Господа Чайтаньи. Со всей самоотдачей служа Гауранге, Он учит нас тому, что может сделать нас полностью счастливыми. Именно это и выражает его имя - «вечное блаженство». Поклоняясь Господу Нитьянанде, каждый обретет любовь и преданность лотосным стопам Кришны."
+      },
+      "en": {
+        "description": "Appearance day festival for Sri Nityananda Prabhu. The calendar matches it by the configured tithi rule."
       }
     },
-    "description": "Appearance day festival for Sri Nityananda Prabhu. The calendar matches it by the configured tithi rule."
+    "description": "Appearance day festival for Sri Nityananda Prabhu. The calendar matches it by the configured tithi rule.",
+    "source_url": "http://harekrishnazp.info/materialy/vajshnavskij-kalendar/510-gospod-nityananda.html"
   },
   {
     "id": "scsmath_541_gopal_bhatta_appearance",
@@ -262,10 +294,14 @@
     "i18n": {
       "ru": {
         "name": "Явление Шрилы Гопала Бхатты Госвами Прабху",
-        "description": "Памятный день явления: Явление Шрилы Гопала Бхатты Госвами Прабху. Событие привязано к вайшнавскому титхи, указанному в базе календаря."
+        "description": "Шри Гопала Бхатта родился в 1503 году по христианскому летоисчислению, на 13-й день убывающей луны пауши месяца. Шри Гопала Бхатта Госвами был сыном Вьенкатты Бхатты, брахмана, жившего в Шри-Рангаме и получившего посвящение в Шри-сампрадае. Город Шри-Рангам расположен на берегу реки Кавери в округе Танджор, в 16 км к западу от Кумбхаконама."
+      },
+      "en": {
+        "description": "Commemoration of the appearance day of Srila Gopal Bhatta Goswami Prabhu. This event is matched by the Vaishnava tithi rule stored in the calendar database."
       }
     },
-    "description": "Commemoration of the appearance day of Srila Gopal Bhatta Goswami Prabhu. This event is matched by the Vaishnava tithi rule stored in the calendar database."
+    "description": "Commemoration of the appearance day of Srila Gopal Bhatta Goswami Prabhu. This event is matched by the Vaishnava tithi rule stored in the calendar database.",
+    "source_url": "http://harekrishnazp.info/materialy/vajshnavskij-kalendar/792-gopala-bkhatta-gosvami.html"
   },
   {
     "id": "scsmath_541_ramachandra_kaviraj_disappearance",
@@ -282,10 +318,14 @@
     "i18n": {
       "ru": {
         "name": "Уход Шрилы Рамачандры Кавираджа",
-        "description": "Памятный день ухода: Уход Шрилы Рамачандры Кавираджа. Событие привязано к вайшнавскому титхи, указанному в базе календаря."
+        "description": "Рамачандра Кавирадж был учеником Шрилы Шриниваса Ачарьи и близким другом Шрилы Нароттамы даса Тхакура. Ранее его звали Таджнив Сена. Родился он в Кумаранагаре, а после женитьбы переехал в Шри-Ханду."
+      },
+      "en": {
+        "description": "Commemoration of the disappearance day of Srila Ramachandra Kaviraj. This event is matched by the Vaishnava tithi rule stored in the calendar database."
       }
     },
-    "description": "Commemoration of the disappearance day of Srila Ramachandra Kaviraj. This event is matched by the Vaishnava tithi rule stored in the calendar database."
+    "description": "Commemoration of the disappearance day of Srila Ramachandra Kaviraj. This event is matched by the Vaishnava tithi rule stored in the calendar database.",
+    "source_url": "http://harekrishnazp.info/materialy/vajshnavskij-kalendar/1022-ramachandra-kaviradzh.html"
   },
   {
     "id": "scsmath_541_advaita_acharya_appearance",
@@ -302,10 +342,14 @@
     "i18n": {
       "ru": {
         "name": "Явление Шри Адвайты Ачарьи",
-        "description": "Памятный день явления: Явление Шри Адвайты Ачарьи. Событие привязано к вайшнавскому титхи, указанному в базе календаря."
+        "description": "Шри Адвайта Ачарья — великий святой гаудия-вайшнавской традиции, которому поклоняются как одной из пяти ипостасей Бога, называемых Панча-таттва. Он считается совместным воплощением Маха Вишну и Шивы (Харихара). Адваита Ачарья был одним из близких спутников Чайтаньи Махапрабху, а также духовным учителем Харидаса Тхакура.  Жизнь и деятельность Адвайта Ачарьи описаны в таких трудах как «Чайтанья-чаритамрита» и «Чайтанья-бхагавата»."
+      },
+      "en": {
+        "description": "Commemoration of the appearance day of Sri Advaita Acharya. This event is matched by the Vaishnava tithi rule stored in the calendar database."
       }
     },
-    "description": "Commemoration of the appearance day of Sri Advaita Acharya. This event is matched by the Vaishnava tithi rule stored in the calendar database."
+    "description": "Commemoration of the appearance day of Sri Advaita Acharya. This event is matched by the Vaishnava tithi rule stored in the calendar database.",
+    "source_url": "http://harekrishnazp.info/materialy/vajshnavskij-kalendar/1045-advajta-acharya.html"
   },
   {
     "id": "scsmath_541_guru_gaura_nityananda_installation",
@@ -342,10 +386,14 @@
     "i18n": {
       "ru": {
         "name": "Явление Шрилы Бхакти Сиддханты Сарасвати Госвами Прабхупада",
-        "description": "Памятный день явления: Явление Шрилы Бхакти Сиддханты Сарасвати Госвами Прабхупада. Событие привязано к вайшнавскому титхи, указанному в базе календаря."
+        "description": "Шрила Бхактисиддханта Сарасвати Тхакур, гуру Шрилы Бхактиведанты Свами Прабхупады, явился в Шри Кшетра-дхаме (Джаганнатха Пури) 6 февраля 1874 года в семье Шрилы Сатчитананды Бхактивиноды Тхакура. В детстве он быстро изучил Веды, наизусть запомнил «Бхагавад-гиту» и наслаждался изучением философских работ своего отца. За неистощимый запас знаний он получил прозвище «ходячая энциклопедия»."
+      },
+      "en": {
+        "description": "Commemoration of the appearance day of Srila Bhakti Siddhanta Saraswati Goswami Prabhupad. This event is matched by the Vaishnava tithi rule stored in the calendar database."
       }
     },
-    "description": "Commemoration of the appearance day of Srila Bhakti Siddhanta Saraswati Goswami Prabhupad. This event is matched by the Vaishnava tithi rule stored in the calendar database."
+    "description": "Commemoration of the appearance day of Srila Bhakti Siddhanta Saraswati Goswami Prabhupad. This event is matched by the Vaishnava tithi rule stored in the calendar database.",
+    "source_url": "http://harekrishnazp.info/materialy/vajshnavskij-kalendar/519-shrila-bkhaktisiddkhanta-sarasvati.html"
   },
   {
     "id": "scsmath_541_gupta_govardhan_installation",
@@ -402,10 +450,14 @@
     "i18n": {
       "ru": {
         "name": "Уход Шрилы Джаганнатха Даса Бабаджи Махараджа",
-        "description": "Памятный день ухода: Уход Шрилы Джаганнатха Даса Бабаджи Махараджа. Событие привязано к вайшнавскому титхи, указанному в базе календаря."
+        "description": "Шрила Джаганнатха дас Бабаджи явился в этот мир примерно в 1750 году в одной глухой деревне, в местности под названием Тангаил округа Майман-сингх, который относится сейчас к Бангладеш. Семья, в которой он появился, принадлежала к родовитой знати."
+      },
+      "en": {
+        "description": "Commemoration of the disappearance day of Srila Jagannath Das Babaji Maharaj. This event is matched by the Vaishnava tithi rule stored in the calendar database."
       }
     },
-    "description": "Commemoration of the disappearance day of Srila Jagannath Das Babaji Maharaj. This event is matched by the Vaishnava tithi rule stored in the calendar database."
+    "description": "Commemoration of the disappearance day of Srila Jagannath Das Babaji Maharaj. This event is matched by the Vaishnava tithi rule stored in the calendar database.",
+    "source_url": "http://harekrishnazp.info/materialy/vajshnavskij-kalendar/1075-dzhagannatkha-das-babadzhi.html"
   },
   {
     "id": "scsmath_541_radha_ramanasundar_installation",
@@ -462,10 +514,14 @@
     "i18n": {
       "ru": {
         "name": "Уход Шрилы Говинды Гхоша Тхакура",
-        "description": "Памятный день ухода: Уход Шрилы Говинды Гхоша Тхакура. Событие привязано к вайшнавскому титхи, указанному в базе календаря."
+        "description": "Говинда Гхош и его братья – Васудева Гхош и Мадхава Гхош были близкими спутниками Господа Чайтаньи и Господа Нитьянанды. Говинда Гхош был также известен как Гхоша Тхакур. Он славился своими красивыми киртанами на ежегодном фестивале Ратха-ятры в Джаганнатха Пури. Господь Чайтанья немедленно начинал танцевать, как только он запевал."
+      },
+      "en": {
+        "description": "Commemoration of the disappearance day of Srila Govinda Ghosh Thakur. This event is matched by the Vaishnava tithi rule stored in the calendar database."
       }
     },
-    "description": "Commemoration of the disappearance day of Srila Govinda Ghosh Thakur. This event is matched by the Vaishnava tithi rule stored in the calendar database."
+    "description": "Commemoration of the disappearance day of Srila Govinda Ghosh Thakur. This event is matched by the Vaishnava tithi rule stored in the calendar database.",
+    "source_url": "http://harekrishnazp.info/materialy/vajshnavskij-kalendar/1104-govinda-gkhosh.html"
   },
   {
     "id": "scsmath_541_bhakti_sundar_govinda_disappearance",
@@ -502,10 +558,14 @@
     "i18n": {
       "ru": {
         "name": "Явление Шрилы Гададхара Пандита",
-        "description": "Памятный день явления: Явление Шрилы Гададхара Пандита. Событие привязано к вайшнавскому титхи, указанному в базе календаря."
+        "description": "Шри Гададхара даса Тхакур жил в Навадвипа-дхаме, но после ухода Шри Чайтаньи Махапрабху переселился в Катву. В конце жизни он перебрался в деревню под названием Эндиядаха-грама, где соорудил свое последнее жилище. В Катве у Гададхары дасы был ученик по имени Ядунандана Чакраварти."
+      },
+      "en": {
+        "description": "Commemoration of the appearance day of Srila Gadadhar Pandit. This event is matched by the Vaishnava tithi rule stored in the calendar database."
       }
     },
-    "description": "Commemoration of the appearance day of Srila Gadadhar Pandit. This event is matched by the Vaishnava tithi rule stored in the calendar database."
+    "description": "Commemoration of the appearance day of Srila Gadadhar Pandit. This event is matched by the Vaishnava tithi rule stored in the calendar database.",
+    "source_url": "http://harekrishnazp.info/materialy/vajshnavskij-kalendar/765-gadadkhara-pandit.html"
   },
   {
     "id": "scsmath_541_srinivas_acharya_appearance",
@@ -522,10 +582,14 @@
     "i18n": {
       "ru": {
         "name": "Явление Шрилы Шриниваса Ачарьи",
-        "description": "Памятный день явления: Явление Шрилы Шриниваса Ачарьи. Событие привязано к вайшнавскому титхи, указанному в базе календаря."
+        "description": "Став свидетелями церемонии санньясы Господа Гауранги, Чайтанья Даса и его беременная жена посетили Господа Чайтанью в Джаганнатха Пури. «Скоро у твоей жены родится сын по имени Шриниваса,- сказал Господь,- и он распространит все бхакти-шастры Рупы и Санатаны»."
+      },
+      "en": {
+        "description": "Commemoration of the appearance day of Srila Srinivas Acharya. This event is matched by the Vaishnava tithi rule stored in the calendar database."
       }
     },
-    "description": "Commemoration of the appearance day of Srila Srinivas Acharya. This event is matched by the Vaishnava tithi rule stored in the calendar database."
+    "description": "Commemoration of the appearance day of Srila Srinivas Acharya. This event is matched by the Vaishnava tithi rule stored in the calendar database.",
+    "source_url": "http://harekrishnazp.info/materialy/vajshnavskij-kalendar/688-shrinivas-acharya.html"
   },
   {
     "id": "scsmath_541_vrindavan_das_appearance",
@@ -542,10 +606,14 @@
     "i18n": {
       "ru": {
         "name": "Явление Шрилы Вриндавана Даса Тхакура",
-        "description": "Памятный день явления: Явление Шрилы Вриндавана Даса Тхакура. Событие привязано к вайшнавскому титхи, указанному в базе календаря."
+        "description": "Шрила Вриндаван Дас Тхакур родился спустя четыре года, после того как Махапрабху принял санньясу. Его мать звали Шри Нараяни Деви. Она была племянницей Шриниваса Пандита."
+      },
+      "en": {
+        "description": "Commemoration of the appearance day of Srila Vrindavan Das Thakur. This event is matched by the Vaishnava tithi rule stored in the calendar database."
       }
     },
-    "description": "Commemoration of the appearance day of Srila Vrindavan Das Thakur. This event is matched by the Vaishnava tithi rule stored in the calendar database."
+    "description": "Commemoration of the appearance day of Srila Vrindavan Das Thakur. This event is matched by the Vaishnava tithi rule stored in the calendar database.",
+    "source_url": "http://harekrishnazp.info/materialy/vajshnavskij-kalendar/646-vrindavana-das-tkhakur.html"
   },
   {
     "id": "scsmath_541_madan_mohan_installation",
@@ -582,10 +650,14 @@
     "i18n": {
       "ru": {
         "name": "Явление Шри Ганги Маты Госвамини",
-        "description": "Памятный день явления: Явление Шри Ганги Маты Госвамини. Событие привязано к вайшнавскому титхи, указанному в базе календаря."
+        "description": "На территории нынешней Бенгалии находилось когда-то царство Шри Нареш Нараяны. У царя Нареш Нараяны была дочь по имени Шачи. С самого детства Шачи была величайшей преданной Господа. За короткое время Шачи получила образование. Сначала она погрузилась в грамматику и стихосложение, но достигнув в этих предметах совершенства, она постепенно полностью занялась бесконечным изучением писаний. Несмотря на свой юный возраст, девушка всегда была очарована сознанием Кришны. Когда Шачи выросла, ее красота пленяла всех юношей, но Шачи совершенно не интересовали молодые люди, какими бы красивыми и богатыми они ни были. Она всегда была полна мыслями о Мадана Гопале."
+      },
+      "en": {
+        "description": "Commemoration of the appearance day of Sri Ganga Mata Goswamini. This event is matched by the Vaishnava tithi rule stored in the calendar database."
       }
     },
-    "description": "Commemoration of the appearance day of Sri Ganga Mata Goswamini. This event is matched by the Vaishnava tithi rule stored in the calendar database."
+    "description": "Commemoration of the appearance day of Sri Ganga Mata Goswamini. This event is matched by the Vaishnava tithi rule stored in the calendar database.",
+    "source_url": "http://harekrishnazp.info/materialy/vajshnavskij-kalendar/734-gangamati-gosvamini.html"
   },
   {
     "id": "scsmath_541_baladev_vidyabhushan_disappearance",
@@ -602,10 +674,14 @@
     "i18n": {
       "ru": {
         "name": "Уход Шрилы Баладева Видьябхушана Прабху",
-        "description": "Памятный день ухода: Уход Шрилы Баладева Видьябхушана Прабху. Событие привязано к вайшнавскому титхи, указанному в базе календаря."
+        "description": "Шрила Баладева Видьябхушана Прабху был чистым преданным, которого не интересовало ничего, кроме служения Господу. У него не было ни малейшего стремления к имени и славе. Он написал много священных книг, бесценных, как бриллианты, ради величайшего блага всех, кто родился в человеческом теле."
+      },
+      "en": {
+        "description": "Commemoration of the disappearance day of Srila Baladev Vidyabhushan Prabhu. This event is matched by the Vaishnava tithi rule stored in the calendar database."
       }
     },
-    "description": "Commemoration of the disappearance day of Srila Baladev Vidyabhushan Prabhu. This event is matched by the Vaishnava tithi rule stored in the calendar database."
+    "description": "Commemoration of the disappearance day of Srila Baladev Vidyabhushan Prabhu. This event is matched by the Vaishnava tithi rule stored in the calendar database.",
+    "source_url": "http://harekrishnazp.info/materialy/vajshnavskij-kalendar/733-baladev-vidyabkhushana.html"
   },
   {
     "id": "scsmath_541_vakreshvar_pandit_appearance",
@@ -622,10 +698,14 @@
     "i18n": {
       "ru": {
         "name": "Явление Шрилы Вакрешвара Пандита",
-        "description": "Памятный день явления: Явление Шрилы Вакрешвара Пандита. Событие привязано к вайшнавскому титхи, указанному в базе календаря."
+        "description": "Прекрасный певец и танцор, Вакрешвара Пандит своим служением всегда приносил наслаждение Господу Чайтанье – в группах санкиртаны в Навадвипе (в которых он принял участие с момента их появления), театральных постановках в Шриваса Ангаме и на ежегодном фестивале Ратха-ятры в Джаганнатха Пури."
+      },
+      "en": {
+        "description": "Commemoration of the appearance day of Srila Vakreshvar Pandit. This event is matched by the Vaishnava tithi rule stored in the calendar database."
       }
     },
-    "description": "Commemoration of the appearance day of Srila Vakreshvar Pandit. This event is matched by the Vaishnava tithi rule stored in the calendar database."
+    "description": "Commemoration of the appearance day of Srila Vakreshvar Pandit. This event is matched by the Vaishnava tithi rule stored in the calendar database.",
+    "source_url": "http://harekrishnazp.info/materialy/vajshnavskij-kalendar/778-vakreshvara-pandit.html"
   },
   {
     "id": "scsmath_541_gadadhar_bhaktivinod_disappearance",
@@ -682,10 +762,14 @@
     "i18n": {
       "ru": {
         "name": "Уход Шрилы Санатана Госвами Прабху",
-        "description": "Памятный день ухода: Уход Шрилы Санатана Госвами Прабху. Событие привязано к вайшнавскому титхи, указанному в базе календаря."
+        "description": "Шри Санатана Госвами явился в 1488 году, за пять лет до рождения Шри Рупы Госвами, в семье бенгальского сарасвата-брахмана. Санатана вместе с двумя своими братьями, Рупой и Анупамой, с самого раннего детства были погружены в бхава-бхакти. Храня в памяти Вриндаван, они назвали леса, в которых им доводилось играть, именами священных лесов Враджи (Талавана, Мадхувана, Камьявана, Мадхавана). Они назвали свои любимые пруды Радха-кундой и Шьяма-кундой."
+      },
+      "en": {
+        "description": "Commemoration of the disappearance day of Srila Sanatan Goswami Prabhu. This event is matched by the Vaishnava tithi rule stored in the calendar database."
       }
     },
-    "description": "Commemoration of the disappearance day of Srila Sanatan Goswami Prabhu. This event is matched by the Vaishnava tithi rule stored in the calendar database."
+    "description": "Commemoration of the disappearance day of Srila Sanatan Goswami Prabhu. This event is matched by the Vaishnava tithi rule stored in the calendar database.",
+    "source_url": "http://harekrishnazp.info/materialy/vajshnavskij-kalendar/784-sanatana-gosvami.html"
   },
   {
     "id": "scsmath_541_bhakti_raksak_sridhar_disappearance",
@@ -722,10 +806,14 @@
     "i18n": {
       "ru": {
         "name": "Уход Шрилы Рупы Госвами и Шрилы Гаури Даса Пандита Госвами",
-        "description": "Памятный день ухода: Уход Шрилы Рупы Госвами и Шрилы Гаури Даса Пандита Госвами. Событие привязано к вайшнавскому титхи, указанному в базе календаря."
+        "description": "В 1517 году Шри Рупа Госвами и его старший брат Шри Санатана Госвами пришли во Вриндаван, чтобы выполнить четыре задачи, поставленные пред ними Господом Чайтаньей: разыскать утерянные места игр Шри Кришны; установить Божества и начать проводить пуджи; написать бхакти-шастры; проповедовать принципы бхакти-йоги. Он – близкий спутник Шри Чайтаньи Махапрабху и сама жизнь Гаудия-сампрадаи."
+      },
+      "en": {
+        "description": "Commemoration of the disappearance day of Srila Rupa Goswami; Srila Gauri Das Pandit Goswami. This event is matched by the Vaishnava tithi rule stored in the calendar database."
       }
     },
-    "description": "Commemoration of the disappearance day of Srila Rupa Goswami; Srila Gauri Das Pandit Goswami. This event is matched by the Vaishnava tithi rule stored in the calendar database."
+    "description": "Commemoration of the disappearance day of Srila Rupa Goswami; Srila Gauri Das Pandit Goswami. This event is matched by the Vaishnava tithi rule stored in the calendar database.",
+    "source_url": "http://harekrishnazp.info/materialy/vajshnavskij-kalendar/815-rupa-gosvami.html"
   },
   {
     "id": "scsmath_541_bhaktivedanta_swami_appearance",
@@ -742,10 +830,14 @@
     "i18n": {
       "ru": {
         "name": "Явление Шрилы Бхактиведанты Свами Махараджа Прабхупада",
-        "description": "Памятный день явления: Явление Шрилы Бхактиведанты Свами Махараджа Прабхупада. Событие привязано к вайшнавскому титхи, указанному в базе календаря."
+        "description": "Абхай Чаран Де явился в этом мире в 1896 г. В Калькутте (Индия). Впервые он встретился со своим духовным учителем, Шрилой Бхактисиддхантой Сарасвати Госвами, в Калькутте в 1922 г. Бхактисиддханте Сарасвати, выдающемуся ученому в области религии и основателю 64-х Гаудия Матх (Ведических институтов), понравился образованный молодой человек, и он убедил его в том, что ему следует посвятить свою жизнь распространению Ведического знания. Шрила Прабхупада стал его учеником, и спустя 11 лет (в 1933 г.) принял у него формальное ученическое посвящение."
+      },
+      "en": {
+        "description": "Commemoration of the appearance day of Srila Bhaktivedanta Swami Maharaj Prabhupad. This event is matched by the Vaishnava tithi rule stored in the calendar database."
       }
     },
-    "description": "Commemoration of the appearance day of Srila Bhaktivedanta Swami Maharaj Prabhupad. This event is matched by the Vaishnava tithi rule stored in the calendar database."
+    "description": "Commemoration of the appearance day of Srila Bhaktivedanta Swami Maharaj Prabhupad. This event is matched by the Vaishnava tithi rule stored in the calendar database.",
+    "source_url": "http://harekrishnazp.info/materialy/vajshnavskij-kalendar/830-den-yavleniya-shrily-prabkhupady.html"
   },
   {
     "id": "scsmath_541_jiva_goswami_appearance",
@@ -762,10 +854,14 @@
     "i18n": {
       "ru": {
         "name": "Явление Шрилы Дживы Госвами Прабху",
-        "description": "Памятный день явления: Явление Шрилы Дживы Госвами Прабху. Событие привязано к вайшнавскому титхи, указанному в базе календаря."
+        "description": "Будучи племянником Шри Рупы Госвами и Санатаны Госвами, Шри Джива Госвами явил все чарующие качества махапуруши (божественной личности). У него были напоминавшие лепестки лотоса глаза, прямой нос, высокий лоб, широкая грудь, длинные руки и излучающее сияние тело золотистого цвета."
+      },
+      "en": {
+        "description": "Commemoration of the appearance day of Srila Jiva Goswami Prabhu. This event is matched by the Vaishnava tithi rule stored in the calendar database."
       }
     },
-    "description": "Commemoration of the appearance day of Srila Jiva Goswami Prabhu. This event is matched by the Vaishnava tithi rule stored in the calendar database."
+    "description": "Commemoration of the appearance day of Srila Jiva Goswami Prabhu. This event is matched by the Vaishnava tithi rule stored in the calendar database.",
+    "source_url": "http://harekrishnazp.info/materialy/vajshnavskij-kalendar/854-dzhiva-gosvami.html"
   },
   {
     "id": "scsmath_541_bhaktivinod_thakur_appearance",
@@ -782,10 +878,14 @@
     "i18n": {
       "ru": {
         "name": "Явление Шрилы Бхакти Винода Тхакура",
-        "description": "Памятный день явления: Явление Шрилы Бхакти Винода Тхакура. Событие привязано к вайшнавскому титхи, указанному в базе календаря."
+        "description": "Вся жизнь Бхактивинода Тхакура была посвящена служению Шри Кришне, Верховной Личности Бога. По тому, какое благо принесла его деятельность миру, ее можно сравнить только с грандиозной деятельность Самого Шри Чайтаньи Махапрабху и шестерых Госвами. Его духовная деятельность и божественные писания оказали на разумных и образованных людей громадное влияние и зародили веру в возвышенные наставления и заповеди Господа Чайтаньи."
+      },
+      "en": {
+        "description": "Commemoration of the appearance day of Srila Bhakti Vinod Thakur. This event is matched by the Vaishnava tithi rule stored in the calendar database."
       }
     },
-    "description": "Commemoration of the appearance day of Srila Bhakti Vinod Thakur. This event is matched by the Vaishnava tithi rule stored in the calendar database."
+    "description": "Commemoration of the appearance day of Srila Bhakti Vinod Thakur. This event is matched by the Vaishnava tithi rule stored in the calendar database.",
+    "source_url": "http://harekrishnazp.info/materialy/vajshnavskij-kalendar/1179-bhaktivinoda-thakur.html"
   },
   {
     "id": "scsmath_541_haridas_thakur_disappearance",
@@ -802,10 +902,14 @@
     "i18n": {
       "ru": {
         "name": "Уход Шрилы Харидаса Тхакура",
-        "description": "Памятный день ухода: Уход Шрилы Харидаса Тхакура. Событие привязано к вайшнавскому титхи, указанному в базе календаря."
+        "description": "Харидас Тхакур - один из самых близких спутников Шри Чайтаньи Махапрабху. Ежедневно он воспевал 300 000 Святых имен Господа. Махапрабху называл его намачарьей - духовным наставником воспевания Святого Имени. Вместе с Нитьянандой Прабху по указанию Шри Чайтаньи проповедовал славу Святого Имени в Бенгалии. Последние годы своей святой жизни провел в Пури, где и оставил тело на руках Махапрабху, воспевая Харе Кришна махамантру. О его жизни и проповеднической деятельности можно прочесть в «Чайтанья-чаритамрите» Шрилы Кришнадаса Кавираджа Госвами и «Чайтанья Бхагавате» Шрилы Вриндавана Даса Тхакура. Наставления Харидаса Тхакура о природе Святого Имени Кришны, о величии и цели Его воспевания, а..."
+      },
+      "en": {
+        "description": "Commemoration of the disappearance day of Srila Haridas Thakur. This event is matched by the Vaishnava tithi rule stored in the calendar database."
       }
     },
-    "description": "Commemoration of the disappearance day of Srila Haridas Thakur. This event is matched by the Vaishnava tithi rule stored in the calendar database."
+    "description": "Commemoration of the disappearance day of Srila Haridas Thakur. This event is matched by the Vaishnava tithi rule stored in the calendar database.",
+    "source_url": "http://harekrishnazp.info/materialy/vajshnavskij-kalendar/856-haridas-tkhakur.html"
   },
   {
     "id": "scsmath_541_raghunath_krishnadas_disappearance",
@@ -842,10 +946,14 @@
     "i18n": {
       "ru": {
         "name": "Уход Шрилы Нароттама Даса Тхакура",
-        "description": "Памятный день ухода: Уход Шрилы Нароттама Даса Тхакура. Событие привязано к вайшнавскому титхи, указанному в базе календаря."
+        "description": "Нароттам Дас Тхакур был воплощением учения Гаудия. Он передавал любовь к Богу через известную нам поэзию и так же поэтично претворял свою любовь в жизнь. Он был совершенным преданным, идеалом божественного посланника, качества которого описывали Шесть Госвами всякий раз, когда их перо касалось пальмовых листьев. Суть философских представлений Гаудия-вайшнавизма отражена во всех его песнях идеалы.» Появлению Нароттама Даса Тхакура предшествуют два важных события. Первое - это явление в этом мире Локанатха Госвами, а второе - предсказание его рождения Шри Чайтаньей Махапрабху."
+      },
+      "en": {
+        "description": "Commemoration of the disappearance day of Srila Narottam Das Thakur. This event is matched by the Vaishnava tithi rule stored in the calendar database."
       }
     },
-    "description": "Commemoration of the disappearance day of Srila Narottam Das Thakur. This event is matched by the Vaishnava tithi rule stored in the calendar database."
+    "description": "Commemoration of the disappearance day of Srila Narottam Das Thakur. This event is matched by the Vaishnava tithi rule stored in the calendar database.",
+    "source_url": "http://harekrishnazp.info/materialy/vajshnavskij-kalendar/894-narottama-das-tkhakur.html"
   },
   {
     "id": "scsmath_541_sridhar_appearance",
@@ -902,10 +1010,14 @@
     "i18n": {
       "ru": {
         "name": "Уход Шрилы Нарахари Саркара Тхакура",
-        "description": "Памятный день ухода: Уход Шрилы Нарахари Саркара Тхакура. Событие привязано к вайшнавскому титхи, указанному в базе календаря."
+        "description": "«До того, как встретиться с Махапрабху, Нарахари написал множество песен на санскрите и бенгали, посвященных враджа-расе Радха-Гиридхари. Вместе с Гададхарой Пандитом они никогда не покидали Господа Чайтанью. Обычно Нарахари доставлял удовольствие Господу, обмахивая Его чамарой или веером из павлиньих перьев. В своей песне «Гаура-арати» Шрила Тхакур Бхактивинода написал следующие слова: нарахари ади кори чамара дхулайа."
+      },
+      "en": {
+        "description": "Commemoration of the disappearance day of Srila Narahari Sarkar Thakur. This event is matched by the Vaishnava tithi rule stored in the calendar database."
       }
     },
-    "description": "Commemoration of the disappearance day of Srila Narahari Sarkar Thakur. This event is matched by the Vaishnava tithi rule stored in the calendar database."
+    "description": "Commemoration of the disappearance day of Srila Narahari Sarkar Thakur. This event is matched by the Vaishnava tithi rule stored in the calendar database.",
+    "source_url": "http://harekrishnazp.info/materialy/vajshnavskij-kalendar/932-narakhari-sarakara-tkhakur.html"
   },
   {
     "id": "scsmath_541_bhakti_sundar_govinda_appearance",
@@ -942,9 +1054,13 @@
     "i18n": {
       "ru": {
         "name": "Фестиваль ухода Шрилы Бхакти Сиддханты Сарасвати Госвами Прабхупада",
-        "description": "Памятный день ухода: Фестиваль ухода Шрилы Бхакти Сиддханты Сарасвати Госвами Прабхупада. Событие привязано к вайшнавскому титхи, указанному в базе календаря."
+        "description": "Шрила Бхактисиддханта Сарасвати Тхакур, гуру Шрилы Бхактиведанты Свами Прабхупады, явился в Шри Кшетра-дхаме (Джаганнатха Пури) 6 февраля 1874 года в семье Шрилы Сатчитананды Бхактивиноды Тхакура. В детстве он быстро изучил Веды, наизусть запомнил «Бхагавад-гиту» и наслаждался изучением философских работ своего отца. За неистощимый запас знаний он получил прозвище «ходячая энциклопедия»."
+      },
+      "en": {
+        "description": "Commemoration of the disappearance day of Srila Bhakti Siddhanta Saraswati Goswami Prabhupad. This event is matched by the Vaishnava tithi rule stored in the calendar database."
       }
     },
-    "description": "Commemoration of the disappearance day of Srila Bhakti Siddhanta Saraswati Goswami Prabhupad. This event is matched by the Vaishnava tithi rule stored in the calendar database."
+    "description": "Commemoration of the disappearance day of Srila Bhakti Siddhanta Saraswati Goswami Prabhupad. This event is matched by the Vaishnava tithi rule stored in the calendar database.",
+    "source_url": "http://harekrishnazp.info/materialy/vajshnavskij-kalendar/519-shrila-bkhaktisiddkhanta-sarasvati.html"
   }
 ]

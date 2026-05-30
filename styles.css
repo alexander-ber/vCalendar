@@ -857,6 +857,24 @@ button:not(.day):not(.theme-toggle):not(.language-toggle):not(.icon-button):not(
   line-height: 1.4;
 }
 
+.event-source {
+  display: inline-flex;
+  width: fit-content;
+  margin-top: 10px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  padding: 6px 9px;
+  color: var(--accent-strong);
+  background: var(--accent-soft);
+  font-size: 13px;
+  font-weight: 850;
+  text-decoration: none;
+}
+
+.event-source:hover {
+  border-color: var(--accent);
+}
+
 .event-detail-card.ekadashi {
   border-left-color: var(--ekadashi);
 }

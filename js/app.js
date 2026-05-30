@@ -1,5 +1,5 @@
 import { generateCalendarRange, viewModelForDay } from "./calendar-engine.js?v=20260530-2";
-import { EVENTS } from "./events-data.js?v=20260530-3";
+import { EVENTS } from "./events-data.js?v=20260530-4";
 import { LOCATIONS } from "./locations-data.js?v=20260528-17";
 import { RULES } from "./rules-data.js?v=20260528-17";
 
@@ -74,6 +74,8 @@ const I18N = {
     biography: "Biography",
     benefits: "Benefits",
     story: "Story",
+    source: "Source",
+    openSource: "Open full article",
     descriptionPending: "Description has not been added to the event database yet.",
     biographyPending: "Biography has not been added to the event database yet.",
     noEvents: "No matched events.",
@@ -147,6 +149,8 @@ const I18N = {
     biography: "Биография",
     benefits: "Блага",
     story: "История",
+    source: "Источник",
+    openSource: "Открыть полную статью",
     descriptionPending: "Описание ещё не добавлено в базу событий.",
     biographyPending: "Биография ещё не добавлена в базу событий.",
     noEvents: "Нет найденных событий.",
@@ -802,6 +806,7 @@ function renderEventDetail(event) {
       </div>
       ${structuredNotes}
       ${structuredNotes ? "" : `<p>${description}</p>`}
+      ${event.source_url ? `<a class="event-source" href="${event.source_url}" target="_blank" rel="noopener">${tr("openSource")}</a>` : ""}
     </article>
   `;
 }
