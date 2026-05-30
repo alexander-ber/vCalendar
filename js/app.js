@@ -1,5 +1,5 @@
 import { generateCalendarRange, viewModelForDay } from "./calendar-engine.js?v=20260530-2";
-import { EVENTS } from "./events-data.js?v=20260530-4";
+import { EVENTS } from "./events-data.js?v=20260530-5";
 import { LOCATIONS } from "./locations-data.js?v=20260528-17";
 import { RULES } from "./rules-data.js?v=20260528-17";
 
@@ -451,7 +451,6 @@ function renderDayButton(day, today, location) {
     <div class="times">${tr("moonrise")} ${calendarTimeOrDash(day.astronomy.moonrise, location.timezone)} · ${tr("moonset")} ${calendarTimeOrDash(day.astronomy.moonset, location.timezone)} · ${Math.round(day.lunar.tithi_angle_at_sunrise)}°</div>
     <div class="events">
       ${visibleEventsForDay(day)
-        .slice(0, 4)
         .map((event) => `<div class="event ${eventClass(event)}">${eventLabel(event)}</div>`)
         .join("")}
     </div>
