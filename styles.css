@@ -1,30 +1,30 @@
 :root {
   color-scheme: light;
-  --ink: #172033;
-  --muted: #667085;
-  --subtle: #8b95a7;
-  --line: #d9e0e8;
-  --soft-line: #edf1f5;
-  --panel: #ffffff;
+  --ink: #1d2635;
+  --muted: #66758a;
+  --subtle: #8b98aa;
+  --line: #dce6ee;
+  --soft-line: #edf3f6;
+  --panel: #fbfefd;
   --panel-raised: #ffffff;
-  --field: #ffffff;
-  --bg: #f6f8fb;
-  --accent: #087f78;
-  --accent-strong: #0b5f5b;
-  --accent-soft: #e4f7f4;
-  --accent-tint: #f0fbf9;
-  --festival: #b45309;
-  --festival-soft: #fff7ed;
-  --ekadashi: #4f46e5;
-  --ekadashi-soft: #eef2ff;
-  --parana: #0f766e;
-  --parana-soft: #ecfdf5;
-  --vaishnava: #7c3aed;
-  --vaishnava-soft: #f5f3ff;
-  --deity: #0f766e;
-  --deity-soft: #f0fdfa;
-  --shadow: 0 18px 50px rgba(29, 36, 48, 0.08);
-  --day-shadow: 0 8px 18px rgba(29, 36, 48, 0.05);
+  --field: #f8fcfb;
+  --bg: #f4f8f7;
+  --accent: #3b8f86;
+  --accent-strong: #236b65;
+  --accent-soft: #e8f5f2;
+  --accent-tint: #f2faf7;
+  --festival: #a66a2b;
+  --festival-soft: #fff6e9;
+  --ekadashi: #5f67c8;
+  --ekadashi-soft: #f0f2ff;
+  --parana: #3b8a78;
+  --parana-soft: #eefaf5;
+  --vaishnava: #8667b8;
+  --vaishnava-soft: #f6f1fb;
+  --deity: #6f8a38;
+  --deity-soft: #f5f8e8;
+  --shadow: 0 18px 46px rgba(47, 63, 79, 0.07);
+  --day-shadow: 0 8px 18px rgba(47, 63, 79, 0.045);
 }
 
 :root[data-theme="night"] {
@@ -648,6 +648,16 @@ button:not(.day):not(.theme-toggle):not(.language-toggle):not(.icon-button):not(
   color: var(--muted);
   font-size: 12px;
   line-height: 1.45;
+}
+
+.time-icon {
+  display: inline-grid;
+  place-items: center;
+  width: 18px;
+  margin-right: 5px;
+  color: var(--accent-strong);
+  font-size: 13px;
+  line-height: 1;
 }
 
 .events {

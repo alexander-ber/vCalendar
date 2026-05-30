@@ -15,7 +15,8 @@ export const EKADASHI_DB = [
       }
     },
     "benefits": "Destroys sins accumulated over millions of lives and grants liberation.",
-    "story": "The appearance day of Ekadashi Devi from Lord Vishnu’s body to destroy the demon Mura."
+    "story": "The appearance day of Ekadashi Devi from Lord Vishnu’s body to destroy the demon Mura.",
+    "source_url": "http://harekrishnazp.info/materialy/vajshnavskij-kalendar/923-utpanna-ekadashi-istoriya-utpanna-ekadashi.html"
   },
   {
     "id": "mokshada",
@@ -33,7 +34,8 @@ export const EKADASHI_DB = [
       }
     },
     "benefits": "Grants liberation from the material world and washes away bad karma.",
-    "story": "On this day Lord Krishna spoke the Bhagavad-gita to Arjuna on the field of Kurukshetra."
+    "story": "On this day Lord Krishna spoke the Bhagavad-gita to Arjuna on the field of Kurukshetra.",
+    "source_url": "http://harekrishnazp.info/materialy/vajshnavskij-kalendar/945-mokshada-ekadashi-istoriya-mokshada-ekadashi.html"
   },
   {
     "id": "saphala",
@@ -87,7 +89,8 @@ export const EKADASHI_DB = [
       }
     },
     "benefits": "Purifies sins, grants health, and relieves bodily suffering.",
-    "story": "Connected with charity and the six traditional uses of sesame seeds."
+    "story": "Connected with charity and the six traditional uses of sesame seeds.",
+    "source_url": "http://harekrishnazp.info/materialy/vajshnavskij-kalendar/957-shat-tila-ekadashi-istoriya-shat-tila-ekadashi.html"
   },
   {
     "id": "jaya",
@@ -105,7 +108,8 @@ export const EKADASHI_DB = [
       }
     },
     "benefits": "Frees one from lower conditions and from fear of ghosts or spirits.",
-    "story": "Fasting on this day elevates consciousness and grants the mercy of Lord Vishnu."
+    "story": "Fasting on this day elevates consciousness and grants the mercy of Lord Vishnu.",
+    "source_url": "http://harekrishnazp.info/materialy/vajshnavskij-kalendar/958-bkhaimi-dzhaya-ekadashi-istoriya-bkhaimi-ekadashi.html"
   },
   {
     "id": "vijaya",
@@ -123,7 +127,8 @@ export const EKADASHI_DB = [
       }
     },
     "benefits": "Grants victory over enemies, helps overcome obstacles, and brings success.",
-    "story": "Lord Ramachandra observed this fast before marching to Lanka to defeat Ravana."
+    "story": "Lord Ramachandra observed this fast before marching to Lanka to defeat Ravana.",
+    "source_url": "http://harekrishnazp.info/materialy/vajshnavskij-kalendar/959-vidzhaya-ekadashi-istoriya-vidzhaya-ekadashi.html"
   },
   {
     "id": "amalaki",
@@ -141,7 +146,8 @@ export const EKADASHI_DB = [
       }
     },
     "benefits": "Purifies sins, is praised like a sacrifice, and grants spiritual knowledge.",
-    "story": "Connected with worship of the amla tree as a manifestation of Krishna’s energy."
+    "story": "Connected with worship of the amla tree as a manifestation of Krishna’s energy.",
+    "source_url": "http://harekrishnazp.info/materialy/vajshnavskij-kalendar/960-amalaki-ekadashi-istoriya-amalaki-ekadashi.html"
   },
   {
     "id": "papamochani",
@@ -159,7 +165,8 @@ export const EKADASHI_DB = [
       }
     },
     "benefits": "Destroys the reactions of even very grave sins committed in ignorance.",
-    "story": "Grants forgiveness and helps restore spiritual purity after falldowns."
+    "story": "Grants forgiveness and helps restore spiritual purity after falldowns.",
+    "source_url": "http://harekrishnazp.info/materialy/vajshnavskij-kalendar/961-papamochani-ekadashi-istoriya-papamochani-ekadashi.html"
   },
   {
     "id": "kamada",
@@ -177,7 +184,8 @@ export const EKADASHI_DB = [
       }
     },
     "benefits": "Fulfills desires, frees one from curses, and grants liberation.",
-    "story": "Purifies the mind and helps break the chains of material attachment."
+    "story": "Purifies the mind and helps break the chains of material attachment.",
+    "source_url": "http://harekrishnazp.info/materialy/vajshnavskij-kalendar/962-kamada-ekadashi-istoriya-kamada-ekadashi.html"
   },
   {
     "id": "varuthini",
@@ -195,7 +203,8 @@ export const EKADASHI_DB = [
       }
     },
     "benefits": "Protects from misfortune, brings auspiciousness, and purifies bad karma.",
-    "story": "Fasting on this day is praised as giving merit comparable to donating gold."
+    "story": "Fasting on this day is praised as giving merit comparable to donating gold.",
+    "source_url": "http://harekrishnazp.info/materialy/vajshnavskij-kalendar/963-varutkhini-ekadashi-istoriya-varutkhini-ekadashi.html"
   },
   {
     "id": "mohini",
@@ -213,7 +222,8 @@ export const EKADASHI_DB = [
       }
     },
     "benefits": "Destroys illusion, relieves sorrow, and frees one from material attachments.",
-    "story": "Connected with the Supreme Lord’s beautiful Mohini form."
+    "story": "Connected with the Supreme Lord’s beautiful Mohini form.",
+    "source_url": "http://harekrishnazp.info/materialy/vajshnavskij-kalendar/964-mokhini-ekadashi-istoriya-mokhini-ekadashi.html"
   },
   {
     "id": "apara",
@@ -231,7 +241,8 @@ export const EKADASHI_DB = [
       }
     },
     "benefits": "Grants immense blessings and washes away grave sins such as violence and slander.",
-    "story": "Purifies consciousness and brings auspiciousness and upliftment."
+    "story": "Purifies consciousness and brings auspiciousness and upliftment.",
+    "source_url": "http://harekrishnazp.info/materialy/vajshnavskij-kalendar/965-apara-ekadashi-istoriya-apara-ekadashi.html"
   },
   {
     "id": "nirjala",
@@ -249,7 +260,8 @@ export const EKADASHI_DB = [
       }
     },
     "benefits": "Grants the combined fruits of observing all other Ekadashis of the year.",
-    "story": "This strict fast is observed without water and is known as the most austere Ekadashi."
+    "story": "This strict fast is observed without water and is known as the most austere Ekadashi.",
+    "source_url": "http://harekrishnazp.info/materialy/vajshnavskij-kalendar/966-pandava-nirdzhala-ekadashi-istoriya-pandava-ekadashi.html"
   },
   {
     "id": "yogini",
@@ -267,7 +279,8 @@ export const EKADASHI_DB = [
       }
     },
     "benefits": "Grants relief from disease and serious ailments and purifies sins.",
-    "story": "Frees one from sinful reactions and restores health."
+    "story": "Frees one from sinful reactions and restores health.",
+    "source_url": "http://harekrishnazp.info/materialy/vajshnavskij-kalendar/749-jogini-ekadashi-istoriya-jogini-ekadashi.html"
   },
   {
     "id": "devashayani",
@@ -285,7 +298,8 @@ export const EKADASHI_DB = [
       }
     },
     "benefits": "Marks the beginning of Chaturmasya and opens the way to spiritual refinement.",
-    "story": "The day when Lord Vishnu begins His four-month rest on the cosmic serpent Shesha."
+    "story": "The day when Lord Vishnu begins His four-month rest on the cosmic serpent Shesha.",
+    "source_url": "http://harekrishnazp.info/materialy/vajshnavskij-kalendar/764-shayana-padma-ekadashi-istoriya-padma-shayana-ekadashi.html"
   },
   {
     "id": "kamika",
@@ -303,7 +317,8 @@ export const EKADASHI_DB = [
       }
     },
     "benefits": "Purifies even grave sins, grants happiness, and gives protection.",
-    "story": "Bestows blessings on all who sincerely seek shelter at the Lord’s feet."
+    "story": "Bestows blessings on all who sincerely seek shelter at the Lord’s feet.",
+    "source_url": "http://harekrishnazp.info/materialy/vajshnavskij-kalendar/789-kamika-ekadashi-istoriya-kamika-ekadashi.html"
   },
   {
     "id": "pavitropana",
@@ -321,7 +336,8 @@ export const EKADASHI_DB = [
       }
     },
     "benefits": "Blesses one with righteous children, purifies the family line, and brings welfare.",
-    "story": "Helps remove past-life curses and obtain pious offspring."
+    "story": "Helps remove past-life curses and obtain pious offspring.",
+    "source_url": "http://harekrishnazp.info/materialy/vajshnavskij-kalendar/802-pavitropana-ekadashi-istoriya-pavitra-ekadashi.html"
   },
   {
     "id": "annada",
@@ -339,7 +355,8 @@ export const EKADASHI_DB = [
       }
     },
     "benefits": "Destroys sins and the reactions of past sinful acts.",
-    "story": "Connected with the story of King Harishchandra, who regained his kingdom through this fast."
+    "story": "Connected with the story of King Harishchandra, who regained his kingdom through this fast.",
+    "source_url": "http://harekrishnazp.info/materialy/vajshnavskij-kalendar/822-annada-ekadashi-adzha-ekadashi-istoriya-annada-ekadashi.html"
   },
   {
     "id": "parivartini",
@@ -357,7 +374,8 @@ export const EKADASHI_DB = [
       }
     },
     "benefits": "Purifies all sins and is praised as giving the fruit of offering a thousand cows.",
-    "story": "The day when Lord Vishnu turns to His other side during His divine sleep."
+    "story": "The day when Lord Vishnu turns to His other side during His divine sleep.",
+    "source_url": "http://harekrishnazp.info/materialy/vajshnavskij-kalendar/838-parshvaika-ekadashi-parivartini-ekadashi-istoriya-parshvaika-ekadashi.html"
   },
   {
     "id": "indira",
@@ -375,7 +393,8 @@ export const EKADASHI_DB = [
       }
     },
     "benefits": "Grants liberation to ancestors and purifies negative karma.",
-    "story": "Observing this fast brings blessings and upliftment to one’s forefathers."
+    "story": "Observing this fast brings blessings and upliftment to one’s forefathers.",
+    "source_url": "http://harekrishnazp.info/materialy/vajshnavskij-kalendar/858-indira-ekadashi-istoriya-indira-ekadashi.html"
   },
   {
     "id": "pasankusha",
@@ -393,7 +412,8 @@ export const EKADASHI_DB = [
       }
     },
     "benefits": "Grants wealth, health, fulfilled desires, and destroys sins.",
-    "story": "A special day on which sincere fasting protects one from lower destinations."
+    "story": "A special day on which sincere fasting protects one from lower destinations.",
+    "source_url": "http://harekrishnazp.info/materialy/vajshnavskij-kalendar/875-pashankusha-ekadashi-papankusha-ekadashi-istoriya-pashankusha-ekadashi.html"
   },
   {
     "id": "rama",
@@ -411,7 +431,8 @@ export const EKADASHI_DB = [
       }
     },
     "benefits": "Purifies grave sins and leads one toward Lord Vishnu.",
-    "story": "Grants devotion and strong spiritual aspiration."
+    "story": "Grants devotion and strong spiritual aspiration.",
+    "source_url": "http://harekrishnazp.info/materialy/vajshnavskij-kalendar/893-rama-ekadashi-istoriya-rama-ekadashi.html"
   },
   {
     "id": "prabodhini",
@@ -429,7 +450,8 @@ export const EKADASHI_DB = [
       }
     },
     "benefits": "Frees one from repeated birth and death and grants devotional service.",
-    "story": "The day of Lord Vishnu’s awakening from His four-month rest and the conclusion of Chaturmasya."
+    "story": "The day of Lord Vishnu’s awakening from His four-month rest and the conclusion of Chaturmasya.",
+    "source_url": "http://harekrishnazp.info/materialy/vajshnavskij-kalendar/906-uttkhana-ekadashi-istoriya-uttkhana-ekadashi.html"
   },
   {
     "id": "padmini",
@@ -447,7 +469,8 @@ export const EKADASHI_DB = [
       }
     },
     "benefits": "Grants extraordinary spiritual merit and purification and occurs in the additional month.",
-    "story": "Connected with the sacred Purushottama month, a special time for repentance and prayer."
+    "story": "Connected with the sacred Purushottama month, a special time for repentance and prayer.",
+    "source_url": "http://harekrishnazp.info/materialy/vajshnavskij-kalendar/1270-padmini-ekadashi.html"
   },
   {
     "id": "parama",
@@ -465,6 +488,7 @@ export const EKADASHI_DB = [
       }
     },
     "benefits": "Destroys poverty and sins, grants all auspiciousness, and elevates consciousness.",
-    "story": "A great fast of Purushottama month that removes the consequences of unrighteous acts."
+    "story": "A great fast of Purushottama month that removes the consequences of unrighteous acts.",
+    "source_url": "http://harekrishnazp.info/materialy/vajshnavskij-kalendar/1272-parama-ekadashi.html"
   }
 ];

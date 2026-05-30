@@ -605,7 +605,7 @@
     "type": "vaishnava_appearance",
     "category": "vaishnava_appearance",
     "subject": "Srila Vrindavan Das Thakur",
-    "source_status": "tithi_rule_from_scsmath_541",
+    "source_status": "active_legacy_rule_with_harekrishnazp_description",
     "gaudiya_masa": "Trivikrama",
     "paksha": "Krishna",
     "tithi": "Dvadashi",
@@ -1271,8 +1271,8 @@
   {
     "id": "hkzp_541_вараха_двадаши_день_явления_господа_варахадева",
     "name": "Varakha Dvadashi - Den Yavleniya Lord Varakhadeva",
-    "type": "vaishnava_appearance",
-    "category": "vaishnava_appearance",
+    "type": "divine_appearance",
+    "category": "divine_appearance",
     "scope": "matched_harekrishnazp_vaishnavacalendar",
     "subject": "Вараха Двадаши - день явления Господа Варахадева",
     "gaudiya_masa": "Madhava",
@@ -1514,8 +1514,8 @@
   {
     "id": "hkzp_541_день_явления_господа_будды_будда_пурнима",
     "name": "Appearance of Lord Buddy (Budda Purnima)",
-    "type": "vaishnava_appearance",
-    "category": "vaishnava_appearance",
+    "type": "divine_appearance",
+    "category": "divine_appearance",
     "scope": "matched_harekrishnazp_vaishnavacalendar",
     "subject": "День явления Господа Будды (Будда Пурнима)",
     "gaudiya_masa": "Madhusudan",
@@ -1919,8 +1919,8 @@
   {
     "id": "hkzp_541_вамана_двадаши_день_явления_господа_ваманадева",
     "name": "Vamana Dvadashi - Den Yavleniya Lord Vamanadeva",
-    "type": "vaishnava_appearance",
-    "category": "vaishnava_appearance",
+    "type": "divine_appearance",
+    "category": "divine_appearance",
     "scope": "matched_harekrishnazp_vaishnavacalendar",
     "subject": "Вамана Двадаши - день явления Господа Ваманадева",
     "gaudiya_masa": "Hrishikesha",
@@ -2432,8 +2432,8 @@
   {
     "id": "hkzp_541_нитьянанда_трайодаши_день_явления_господа_нитьянанды_пост",
     "name": "Nityananda Trayodashi - Den Yavleniya Lord Nityanandy",
-    "type": "vaishnava_appearance",
-    "category": "vaishnava_appearance",
+    "type": "divine_appearance",
+    "category": "divine_appearance",
     "scope": "matched_harekrishnazp_vaishnavacalendar",
     "subject": "Нитьянанда Трайодаши - день явления Господа Нитьянанды (пост)",
     "gaudiya_masa": "Madhava",
@@ -2513,8 +2513,8 @@
   {
     "id": "hkzp_541_гаура_пурнима_день_явления_господа_шри_чайтаньи_махапрабху_пост",
     "name": "Gaura-Purnima - Den Yavleniya Lord Sri Chaytani Makhaprabkhu",
-    "type": "vaishnava_appearance",
-    "category": "vaishnava_appearance",
+    "type": "divine_appearance",
+    "category": "divine_appearance",
     "scope": "matched_harekrishnazp_vaishnavacalendar",
     "subject": "Гаура-Пурнима - день явления Господа Шри Чайтаньи Махапрабху (пост)",
     "gaudiya_masa": "Govinda",
@@ -2648,8 +2648,8 @@
   {
     "id": "hkzp_541_нрисимха_чатурдаши_день_явления_господа_нрисимхадева_пост",
     "name": "Nrisimkha Chaturdashi - Den Yavleniya Lord Nrisimkhadeva",
-    "type": "vaishnava_appearance",
-    "category": "vaishnava_appearance",
+    "type": "divine_appearance",
+    "category": "divine_appearance",
     "scope": "matched_harekrishnazp_vaishnavacalendar",
     "subject": "Нрисимха Чатурдаши - день явления Господа Нрисимхадева (пост)",
     "gaudiya_masa": "Madhusudan",
@@ -2685,7 +2685,7 @@
     "timing_rule": "sunrise_based",
     "allow_in_adhika": false,
     "priority": "medium",
-    "source_status": "matched_by_name_type_tithi",
+    "source_status": "superseded_by_scsmath_541_vrindavan_das_appearance",
     "source_url": "http://harekrishnazp.info/materialy/vajshnavskij-kalendar/646-vrindavana-das-tkhakur.html",
     "description": "Imported calendar reference for \"День явления Вриндавана даса Тхакура\". English summary still needs editorial translation; the Russian source summary is linked in source_url.",
     "i18n": {
@@ -2697,7 +2697,8 @@
         "name": "День явления Вриндавана даса Тхакура",
         "description": "Шрила Вриндаван Дас Тхакур родился спустя четыре года, после того как Махапрабху принял санньясу. Его мать звали Шри Нараяни Деви. Она была племянницей Шриниваса Пандита."
       }
-    }
+    },
+    "disabled": true
   },
   {
     "id": "hkzp_541_ганга_пуджа",
@@ -2837,8 +2838,8 @@
   {
     "id": "hkzp_541_шри_кришна_джанмаштами_день_явления_господа_шри_кришны_пост",
     "name": "Sri Krishna Dzhanmashtami - Den Yavleniya Lord Sri Krishny",
-    "type": "vaishnava_appearance",
-    "category": "vaishnava_appearance",
+    "type": "divine_appearance",
+    "category": "divine_appearance",
     "scope": "matched_harekrishnazp_vaishnavacalendar",
     "subject": "Шри Кришна Джанмаштами - день явления Господа Шри Кришны (пост)",
     "gaudiya_masa": "Hrishikesha",

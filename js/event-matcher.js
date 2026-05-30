@@ -14,8 +14,26 @@ function tithiAtRuleTime(day, event, timezone) {
   return day.lunar.tithi_at_sunrise;
 }
 
-export function matchEventsForDay(day, events, timezone) {
+function tithiMatches(info, event) {
+  return info.paksha === event.paksha && tithiShortName(info.name) === event.tithi;
+}
+
+function tithiAppearsBeforeNextSunrise(day, nextDay, event) {
+  if (!nextDay || event.timing_rule !== "sunrise_based") return false;
+  if (tithiMatches(nextDay.lunar.tithi_at_sunrise, event)) return false;
+
+  const step = 30 * 60 * 1000;
+  let cursor = new Date(day.astronomy.sunrise.getTime() + step);
+  while (cursor < nextDay.astronomy.sunrise) {
+    if (tithiMatches(tithiInfo(cursor), event)) return true;
+    cursor = new Date(cursor.getTime() + step);
+  }
+  return false;
+}
+
+export function matchEventsForDay(day, events, timezone, nextDay = null) {
   return events.filter((event) => {
+    if (event.disabled) return false;
     if (event.source_status === "needs_exact_lunar_rule") return false;
     if (!event.masa && !event.gaudiya_masa) return false;
     if (!event.paksha || !event.tithi) return false;
@@ -26,6 +44,6 @@ export function matchEventsForDay(day, events, timezone) {
     }
     if (day.lunar.masa_type === "adhika" && !event.allow_in_adhika) return false;
     const ruleTithi = tithiAtRuleTime(day, event, timezone);
-    return ruleTithi.paksha === event.paksha && tithiShortName(ruleTithi.name) === event.tithi;
+    return tithiMatches(ruleTithi, event) || tithiAppearsBeforeNextSunrise(day, nextDay, event);
   });
 }

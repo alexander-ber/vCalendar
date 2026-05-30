@@ -1,6 +1,6 @@
-import { generateCalendarRange, viewModelForDay } from "./calendar-engine.js?v=20260530-2";
-import { EVENTS } from "./events-data.js?v=20260530-5";
-import { LOCATIONS } from "./locations-data.js?v=20260528-17";
+import { generateCalendarRange, viewModelForDay } from "./calendar-engine.js?v=20260530-3";
+import { EVENTS } from "./events-data.js?v=20260530-6";
+import { LOCATIONS } from "./locations-data.js?v=20260530-1";
 import { RULES } from "./rules-data.js?v=20260528-17";
 
 const locationSelect = document.querySelector("#locationSelect");
@@ -95,6 +95,7 @@ const I18N = {
     filterParana: "Parana",
     filterPurushottama: "Purushottama",
     filterFestivals: "Festivals",
+    filterDivineAppearance: "Divine appearances",
     filterVaishnavaAppearance: "Vaishnava appearances",
     filterVaishnavaDisappearance: "Vaishnava disappearances",
     filterDeityTemple: "Deity / temple days",
@@ -168,6 +169,7 @@ const I18N = {
     filterParana: "Паран",
     filterPurushottama: "Пурушоттама",
     filterFestivals: "Праздники",
+    filterDivineAppearance: "Явления Господа",
     filterVaishnavaAppearance: "Явления вайшнавов",
     filterVaishnavaDisappearance: "Уходы вайшнавов",
     filterDeityTemple: "Божества / храмы",
@@ -256,6 +258,7 @@ function eventClass(event) {
   if (event.type === "ekadashi_notice") return "ekadashi notice";
   if (event.type === "parana") return "parana";
   if (event.type === "purushottama_boundary") return "purushottama";
+  if (event.type === "divine_appearance") return "festival";
   if (event.type === "vaishnava_appearance" || event.type === "vaishnava_disappearance") return "vaishnava";
   if (event.type === "deity_installation" || event.type === "temple_opening" || event.category === "deity_temple") return "deity";
   return "";
@@ -265,6 +268,7 @@ function eventFilterType(event) {
   if (event.type === "ekadashi" || event.type === "ekadashi_notice") return "ekadashi";
   if (event.type === "parana") return "parana";
   if (event.type === "purushottama_boundary") return "purushottama";
+  if (event.type === "divine_appearance") return "divineAppearance";
   if (event.type === "vaishnava_appearance") return "vaishnavaAppearance";
   if (event.type === "vaishnava_disappearance") return "vaishnavaDisappearance";
   if (event.type === "deity_installation" || event.type === "temple_opening" || event.category === "deity_temple") return "deityTemple";
@@ -447,8 +451,8 @@ function renderDayButton(day, today, location) {
     ${isToday ? `<div class="today-pill">${tr("today")}</div>` : ""}
     <div class="lunar-line">${localizeMasa(day.lunar.masa_display)} • ${localizeTithi(day.lunar.tithi_at_sunrise.name)}</div>
     <div class="tithi-end">${tr("until")} ${tithiEndLabel(day)}</div>
-    <div class="times">${tr("sun")} ${calendarTime(day.astronomy.sunrise, location.timezone)}-${calendarTime(day.astronomy.sunset, location.timezone)}</div>
-    <div class="times">${tr("moonrise")} ${calendarTimeOrDash(day.astronomy.moonrise, location.timezone)} · ${tr("moonset")} ${calendarTimeOrDash(day.astronomy.moonset, location.timezone)} · ${Math.round(day.lunar.tithi_angle_at_sunrise)}°</div>
+    <div class="times"><span class="time-icon" aria-label="${tr("sun")}">☀</span>${calendarTime(day.astronomy.sunrise, location.timezone)}-${calendarTime(day.astronomy.sunset, location.timezone)}</div>
+    <div class="times"><span class="time-icon" aria-label="${tr("moonrise")}">☾</span>${calendarTimeOrDash(day.astronomy.moonrise, location.timezone)}-${calendarTimeOrDash(day.astronomy.moonset, location.timezone)} · ${Math.round(day.lunar.tithi_angle_at_sunrise)}°</div>
     <div class="events">
       ${visibleEventsForDay(day)
         .map((event) => `<div class="event ${eventClass(event)}">${eventLabel(event)}</div>`)
@@ -582,7 +586,7 @@ function calendarTimeOrDash(date, timezone) {
 }
 
 function init() {
-  locationSelect.innerHTML = LOCATIONS.map((location) => `<option value="${location.id}">${location.name}</option>`).join("");
+  locationSelect.innerHTML = renderLocationOptions();
   locationSelect.value = "maalot";
   const period = currentPeriod();
   periodFromInput.value = period.start;
@@ -676,10 +680,26 @@ function eventFilterLabels() {
     parana: tr("filterParana"),
     purushottama: tr("filterPurushottama"),
     festival: tr("filterFestivals"),
+    divineAppearance: tr("filterDivineAppearance"),
     vaishnavaAppearance: tr("filterVaishnavaAppearance"),
     vaishnavaDisappearance: tr("filterVaishnavaDisappearance"),
     deityTemple: tr("filterDeityTemple")
   };
+}
+
+function renderLocationOptions() {
+  const groups = new Map();
+  for (const location of LOCATIONS) {
+    const group = location.group || "Other";
+    if (!groups.has(group)) groups.set(group, []);
+    groups.get(group).push(location);
+  }
+  return [...groups]
+    .map(([label, locations]) => {
+      const options = locations.map((location) => `<option value="${location.id}">${location.name}</option>`).join("");
+      return `<optgroup label="${label}">${options}</optgroup>`;
+    })
+    .join("");
 }
 
 function renderEventFilterChips() {

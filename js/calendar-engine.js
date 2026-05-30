@@ -1,8 +1,8 @@
 import { dayAstronomy, tithiInfo } from "./astronomy-adapter.js?v=20260530-2";
 import { addDaysToLocalDate, daysInMonth, formatDateTime, formatTime, monthLabel, toIsoDate, weekdayOfIsoDate } from "./date-utils.js?v=20260528-8";
 import { masaForDate } from "./masa-engine.js?v=20260528-18";
-import { buildEkadashiEvents } from "./ekadashi-engine.js?v=20260530-2";
-import { matchEventsForDay } from "./event-matcher.js?v=20260529-2";
+import { buildEkadashiEvents } from "./ekadashi-engine.js?v=20260530-3";
+import { matchEventsForDay } from "./event-matcher.js?v=20260530-1";
 
 function buildDay(isoDate, location, rules) {
   const astronomy = dayAstronomy(isoDate, location, rules);
@@ -95,8 +95,9 @@ function addPurushottamaBoundaryEvents(days) {
 
 function attachEvents(days, location, rules, events) {
   const ekadashiByDate = buildEkadashiEvents(days, location, rules);
-  for (const day of days) {
-    const generatedEvents = matchEventsForDay(day, events, location.timezone);
+  for (let i = 0; i < days.length; i += 1) {
+    const day = days[i];
+    const generatedEvents = matchEventsForDay(day, events, location.timezone, days[i + 1] || null);
     const vrataEvents = ekadashiByDate.get(day.date) || [];
     day.events = [...vrataEvents, ...generatedEvents];
   }
