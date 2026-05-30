@@ -449,7 +449,7 @@ function renderDayButton(day, today, location) {
       <span class="moon-symbol" title="${localizePaksha(day.lunar.paksha)}">${moonSymbol(day.lunar.tithi_at_sunrise.name, day.lunar.paksha)}</span>
     </div>
     ${isToday ? `<div class="today-pill">${tr("today")}</div>` : ""}
-    <div class="lunar-line">${localizeMasa(day.lunar.masa_display)} • ${localizeTithi(day.lunar.tithi_at_sunrise.name)}</div>
+    <div class="lunar-line">${localizeMasa(day.lunar.masa_display)} • ${tithiDisplayLine(day)}</div>
     <div class="tithi-end">${tr("until")} ${tithiEndLabel(day)}</div>
     <div class="times"><span class="time-icon" aria-label="${tr("sun")}">☀</span>${calendarTime(day.astronomy.sunrise, location.timezone)}-${calendarTime(day.astronomy.sunset, location.timezone)}</div>
     <div class="times"><span class="time-icon" aria-label="${tr("moonrise")}">☾</span>${calendarTimeOrDash(day.astronomy.moonrise, location.timezone)}-${calendarTimeOrDash(day.astronomy.moonset, location.timezone)} · ${Math.round(day.lunar.tithi_angle_at_sunrise)}°</div>
@@ -461,6 +461,21 @@ function renderDayButton(day, today, location) {
   `;
   button.addEventListener("click", () => renderDetails(day));
   return button;
+}
+
+function tithiDisplayLine(day) {
+  const base = day.lunar.tithi_at_sunrise.name;
+  const extraTithis = visibleEventsForDay(day)
+    .map((event) => eventTithiName(event))
+    .filter((tithiName) => tithiName && tithiName !== base);
+  const uniqueExtraTithis = [...new Set(extraTithis)];
+  return [base, ...uniqueExtraTithis].map((tithiName) => localizeTithi(tithiName)).join(" → ");
+}
+
+function eventTithiName(event) {
+  if (!event.paksha || !event.tithi) return "";
+  if (event.tithi === "Purnima" || event.tithi === "Amavasya") return event.tithi;
+  return `${event.paksha} ${event.tithi}`;
 }
 
 function groupDaysByMonth(days) {
