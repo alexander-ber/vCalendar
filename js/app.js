@@ -736,7 +736,10 @@ function renderEventFilterChips() {
 
 function initTheme() {
   const savedTheme = localStorage.getItem("vcalendar-theme");
-  setTheme(savedTheme || "sepia");
+  const defaultVersion = localStorage.getItem("vcalendar-theme-default-version");
+  const theme = defaultVersion === "sepia-20260606" ? savedTheme || "sepia" : "sepia";
+  setTheme(theme);
+  localStorage.setItem("vcalendar-theme-default-version", "sepia-20260606");
   themeToggle.querySelectorAll("[data-theme-choice]").forEach((button) => {
     button.addEventListener("click", () => setTheme(button.dataset.themeChoice));
   });
