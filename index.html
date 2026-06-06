@@ -4,7 +4,7 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>vCalendar Panchang POC</title>
-    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="styles.css?v=20260606-1">
   </head>
   <body>
     <main class="app-shell">
@@ -15,6 +15,11 @@
         </div>
         <div class="header-actions">
           <button id="languageToggle" class="language-toggle" type="button" aria-pressed="false">RU</button>
+          <div id="fontSizeToggle" class="font-size-toggle" role="group" aria-label="Font size">
+            <button class="font-size-button" type="button" data-font-size-choice="normal" aria-label="Normal font size" title="Normal font size">A</button>
+            <button class="font-size-button" type="button" data-font-size-choice="large" aria-label="Large font size" title="Large font size">A+</button>
+            <button class="font-size-button" type="button" data-font-size-choice="xlarge" aria-label="Extra large font size" title="Extra large font size">A++</button>
+          </div>
           <div id="themeToggle" class="theme-toggle" role="group" aria-label="Theme">
             <button type="button" data-theme-choice="day" data-i18n="day">Day</button>
             <button type="button" data-theme-choice="night" data-i18n="night">Night</button>
@@ -104,6 +109,6 @@
       </section>
     </main>
 
-    <script type="module" src="js/app.js?v=20260606-3"></script>
+    <script type="module" src="js/app.js?v=20260606-4"></script>
   </body>
 </html>

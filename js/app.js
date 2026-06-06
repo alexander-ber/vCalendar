@@ -18,6 +18,7 @@ const prevMonthBottom = document.querySelector("#prevMonthBottom");
 const nextMonthBottom = document.querySelector("#nextMonthBottom");
 const languageToggle = document.querySelector("#languageToggle");
 const themeToggle = document.querySelector("#themeToggle");
+const fontSizeToggle = document.querySelector("#fontSizeToggle");
 const summaryLocation = document.querySelector("#summaryLocation");
 const summaryTimezone = document.querySelector("#summaryTimezone");
 const calendarTitle = document.querySelector("#calendarTitle");
@@ -36,6 +37,9 @@ const I18N = {
     day: "Day",
     night: "Night",
     sepia: "Sepia",
+    fontNormal: "Normal font size",
+    fontLarge: "Large font size",
+    fontExtraLarge: "Extra large font size",
     location: "Location",
     periodFrom: "From",
     periodTo: "To",
@@ -72,8 +76,6 @@ const I18N = {
     showFullDescription: "Read full description",
     benefits: "Benefits",
     story: "Story",
-    source: "Source",
-    openSource: "Open full article",
     descriptionPending: "Description has not been added to the event database yet.",
     biographyPending: "Biography has not been added to the event database yet.",
     noEvents: "No matched events.",
@@ -111,6 +113,9 @@ const I18N = {
     day: "День",
     night: "Ночь",
     sepia: "Сепия",
+    fontNormal: "Обычный размер шрифта",
+    fontLarge: "Крупный шрифт",
+    fontExtraLarge: "Очень крупный шрифт",
     location: "Место",
     periodFrom: "С",
     periodTo: "По",
@@ -147,8 +152,6 @@ const I18N = {
     showFullDescription: "Показать полное описание",
     benefits: "Блага",
     story: "История",
-    source: "Источник",
-    openSource: "Открыть полную статью",
     descriptionPending: "Описание ещё не добавлено в базу событий.",
     biographyPending: "Биография ещё не добавлена в базу событий.",
     noEvents: "Нет найденных событий.",
@@ -611,6 +614,7 @@ function init() {
   initEventsOnly();
   initLanguage();
   initTheme();
+  initFontSize();
   renderButton.addEventListener("click", () => {
     renderButton.disabled = true;
     renderButton.textContent = tr("generating");
@@ -687,6 +691,7 @@ function setLanguage(language) {
     element.textContent = tr(element.dataset.i18n);
   });
   renderEventFilterChips();
+  updateFontSizeButtons();
   if (!selectedDate) dayDetails.textContent = tr("selectDay");
   setTheme(document.documentElement.dataset.theme || "day");
 }
@@ -755,6 +760,38 @@ function setTheme(theme) {
     const selected = button.dataset.themeChoice === nextTheme;
     button.classList.toggle("is-active", selected);
     button.setAttribute("aria-pressed", String(selected));
+  });
+}
+
+function initFontSize() {
+  const savedFontSize = localStorage.getItem("vcalendar-font-size");
+  setFontSize(savedFontSize || "large");
+  fontSizeToggle.querySelectorAll("[data-font-size-choice]").forEach((button) => {
+    button.addEventListener("click", () => setFontSize(button.dataset.fontSizeChoice));
+  });
+}
+
+function setFontSize(size) {
+  const nextSize = ["normal", "large", "xlarge"].includes(size) ? size : "large";
+  document.documentElement.dataset.fontSize = nextSize;
+  localStorage.setItem("vcalendar-font-size", nextSize);
+  updateFontSizeButtons();
+}
+
+function updateFontSizeButtons() {
+  const labels = {
+    normal: tr("fontNormal"),
+    large: tr("fontLarge"),
+    xlarge: tr("fontExtraLarge")
+  };
+  const currentSize = document.documentElement.dataset.fontSize || "large";
+  fontSizeToggle.querySelectorAll("[data-font-size-choice]").forEach((button) => {
+    const selected = button.dataset.fontSizeChoice === currentSize;
+    const label = labels[button.dataset.fontSizeChoice] || button.dataset.fontSizeChoice;
+    button.classList.toggle("is-active", selected);
+    button.setAttribute("aria-pressed", String(selected));
+    button.setAttribute("aria-label", label);
+    button.setAttribute("title", label);
   });
 }
 
@@ -862,7 +899,6 @@ function renderEventDetail(event) {
       ${structuredNotes}
       ${structuredNotes ? "" : `<p>${shortDescription}</p>`}
       ${fullDescription ? renderFullDescription(fullDescription) : ""}
-      ${event.source_url ? `<a class="event-source" href="${event.source_url}" target="_blank" rel="noopener">${tr("openSource")}</a>` : ""}
     </article>
   `;
 }
@@ -870,7 +906,9 @@ function renderEventDetail(event) {
 function renderFullDescription(description) {
   return `
     <details class="full-description">
-      <summary>${tr("showFullDescription")}</summary>
+      <summary aria-label="${tr("showFullDescription")}" title="${tr("showFullDescription")}">
+        <span class="full-description-icon" aria-hidden="true"></span>
+      </summary>
       <div class="full-description-body">${description}</div>
     </details>
   `;
