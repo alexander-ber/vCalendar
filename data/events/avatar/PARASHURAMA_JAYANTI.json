@@ -1,0 +1,32 @@
+{
+  "id": "PARASHURAMA_JAYANTI",
+  "runtime_id": "parashurama_jayanti",
+  "type": "appearance",
+  "category": "avatar",
+  "scope": "extended_hindu",
+  "subject": "Lord Parashurama",
+  "rules": {
+    "masa": "Vaishakha",
+    "paksha": "Gaura",
+    "tithi": "Tritiya",
+    "timing_rule": "sunrise_based",
+    "allow_in_adhika": false
+  },
+  "priority": "medium",
+  "source_status": "confirmed",
+  "sources": [],
+  "translations": [
+    {
+      "lang": "en",
+      "name": "Parashurama Jayanti",
+      "short_description": "Appearance day festival for Lord Parashurama. The calendar matches it by the configured tithi rule.",
+      "full_description": ""
+    },
+    {
+      "lang": "ru",
+      "name": "Парашурама Джаянти",
+      "short_description": "День явления: Парашурама Джаянти. Календарь определяет его по настроенному правилу титхи.",
+      "full_description": ""
+    }
+  ]
+}

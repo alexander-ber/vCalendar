@@ -803,7 +803,7 @@ function localizeEventName(event) {
 }
 
 function localizeEventDescription(event) {
-  return localizedEventField(event, "description");
+  return localizedEventField(event, "full_description") || localizedEventField(event, "description");
 }
 
 function localizeClassification(value) {
