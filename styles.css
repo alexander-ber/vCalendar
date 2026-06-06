@@ -372,7 +372,7 @@ input {
   max-width: 520px;
 }
 
-.event-jump-control {
+.event-jump-select {
   max-width: 520px;
 }
 
@@ -481,6 +481,12 @@ button:not(.day):not(.theme-toggle):not(.language-toggle):not(.font-size-button)
 .details {
   margin-top: 16px;
   padding: 20px;
+}
+
+.calendar-wrap:focus,
+.details:focus,
+.event-details-panel:focus {
+  outline: none;
 }
 
 .section-head {
@@ -617,6 +623,7 @@ button:not(.day):not(.theme-toggle):not(.language-toggle):not(.font-size-button)
 }
 
 .day {
+  position: relative;
   display: flex;
   flex-direction: column;
   min-height: 172px;
@@ -653,6 +660,22 @@ button:not(.day):not(.theme-toggle):not(.language-toggle):not(.font-size-button)
 .day.is-selected {
   border-color: var(--accent);
   box-shadow: 0 0 0 2px color-mix(in srgb, var(--accent) 22%, transparent), var(--day-shadow);
+}
+
+.day.is-jump-target {
+  border-color: color-mix(in srgb, var(--accent) 72%, var(--line));
+  background:
+    linear-gradient(0deg, color-mix(in srgb, var(--accent-soft) 72%, transparent), color-mix(in srgb, var(--accent-soft) 72%, transparent)),
+    var(--panel-raised);
+}
+
+.day.is-jump-target::after {
+  content: "";
+  position: absolute;
+  inset: 8px;
+  border: 2px solid color-mix(in srgb, var(--accent) 54%, transparent);
+  border-radius: 10px;
+  pointer-events: none;
 }
 
 .day.is-today .moon-symbol {

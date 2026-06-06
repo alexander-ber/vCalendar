@@ -32,6 +32,9 @@ const dayDetails = document.querySelector("#dayDetails");
 
 let selectedDate = null;
 let currentLanguage = "ru";
+let jumpHighlightDates = new Set();
+let preferredSelectedDate = null;
+let pendingScrollTarget = null;
 
 const I18N = {
   en: {
@@ -362,7 +365,7 @@ function eventLabel(event) {
   return localizeEventName(event);
 }
 
-function renderDetails(day) {
+function renderDetails(day, options = {}) {
   selectedDate = day.date;
   document.querySelectorAll(".day").forEach((element) => {
     element.classList.toggle("is-selected", element.dataset.date === selectedDate);
@@ -432,6 +435,13 @@ function renderDetails(day) {
       ${tr("tithiAtArunodaya")}: ${localizeTithi(model.arunodayaTithi)}. ${tr("diagnostic")}
     </div>
   `;
+  if (options.scrollToEventDetails) {
+    requestAnimationFrame(() => {
+      const target = document.querySelector(".event-details-panel") || document.querySelector(".details");
+      target?.scrollIntoView({ behavior: "smooth", block: "start" });
+      target?.focus?.({ preventScroll: true });
+    });
+  }
 }
 
 function renderCalendar() {
@@ -484,17 +494,30 @@ function renderCalendar() {
     calendarGrid.append(section);
   }
 
+  const preferredDay = preferredSelectedDate ? visibleDays.find((day) => day.date === preferredSelectedDate) : null;
+  preferredSelectedDate = null;
   const todayInView = visibleDays.find((day) => day.date === today);
   const firstCurrentDay = visibleDays[0];
-  if (todayInView) renderDetails(todayInView);
+  if (preferredDay) renderDetails(preferredDay);
+  else if (todayInView) renderDetails(todayInView);
   else if (firstCurrentDay) renderDetails(firstCurrentDay);
+  if (pendingScrollTarget) {
+    const targetSelector = pendingScrollTarget;
+    pendingScrollTarget = null;
+    requestAnimationFrame(() => {
+      const target = document.querySelector(targetSelector);
+      target?.scrollIntoView({ behavior: "smooth", block: "start" });
+      target?.focus?.({ preventScroll: true });
+    });
+  }
 }
 
 function renderDayButton(day, today, location) {
   const isToday = day.date === today;
+  const isJumpTarget = jumpHighlightDates.has(day.date);
   const button = document.createElement("button");
   button.type = "button";
-  button.className = `day${isToday ? " is-today" : ""}`;
+  button.className = `day${isToday ? " is-today" : ""}${isJumpTarget ? " is-jump-target" : ""}`;
   button.dataset.date = day.date;
   button.innerHTML = `
     <div class="day-topline">
@@ -512,7 +535,7 @@ function renderDayButton(day, today, location) {
         .join("")}
     </div>
   `;
-  button.addEventListener("click", () => renderDetails(day));
+  button.addEventListener("click", () => renderDetails(day, { scrollToEventDetails: true }));
   return button;
 }
 
@@ -763,6 +786,7 @@ function setLanguage(language) {
   document.documentElement.lang = language;
   languageToggle.textContent = language === "ru" ? "EN" : "RU";
   languageToggle.setAttribute("aria-pressed", String(language === "ru"));
+  eventJumpSelect.setAttribute("aria-label", tr("eventFinder"));
   document.querySelector(".eyebrow").textContent = tr("appSubtitle");
   renderButton.textContent = tr("generate");
   document.querySelectorAll("[data-i18n]").forEach((element) => {
@@ -820,11 +844,15 @@ function jumpToEventMonth(targetId) {
   const year = Number(periodFromInput.value.slice(0, 4));
   const location = LOCATIONS.find((item) => item.id === locationSelect.value) || LOCATIONS[0];
   const calendar = generateCalendarRange(`${year}-01-01`, `${year}-12-31`, location, RULES, EVENTS);
-  const foundDay = calendar.days.find((day) => eventJumpMatchesDay(day, target));
-  if (!foundDay) {
+  const foundDays = calendar.days.filter((day) => eventJumpMatchesDay(day, target));
+  if (!foundDays.length) {
     calendarStatus.textContent = `${tr("eventNotFound")} ${year}`;
     return;
   }
+  const foundDay = foundDays[0];
+  jumpHighlightDates = new Set(foundDays.map((day) => day.date));
+  preferredSelectedDate = foundDay.date;
+  pendingScrollTarget = ".calendar-wrap";
   setMonthPeriodForIsoDate(foundDay.date);
   eventJumpSelect.value = targetId;
 }
@@ -838,9 +866,7 @@ function eventJumpMatchesDay(day, target) {
       event.subject,
       event.name,
       event.i18n?.en?.name,
-      event.i18n?.ru?.name,
-      event.i18n?.en?.description,
-      event.i18n?.ru?.description
+      event.i18n?.ru?.name
     ]
       .filter(Boolean)
       .join(" ");
@@ -1001,7 +1027,7 @@ function ekadashiDetailLine(event) {
 
 function renderEventDetails(events) {
   return `
-    <section class="event-details-panel">
+    <section class="event-details-panel" tabindex="-1">
       <h3>${tr("eventDetails")}</h3>
       ${events.map((event) => renderEventDetail(event)).join("")}
     </section>
@@ -1021,7 +1047,7 @@ function renderEventDetail(event) {
         <strong>${localizeEventName(event)}</strong>
       </div>
       ${structuredNotes}
-      ${structuredNotes ? "" : `<p>${shortDescription}</p>`}
+      ${structuredNotes || fullDescription ? "" : `<p>${shortDescription}</p>`}
       ${fullDescription ? renderFullDescription(fullDescription) : ""}
     </article>
   `;
