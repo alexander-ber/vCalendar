@@ -9,7 +9,9 @@ const periodToInput = document.querySelector("#periodToInput");
 const eventsOnlyInput = document.querySelector("#eventsOnlyInput");
 const eventFilterSelect = document.querySelector("#eventFilterSelect");
 const eventFilterChips = document.querySelector("#eventFilterChips");
+const eventJumpSelect = document.querySelector("#eventJumpSelect");
 const renderButton = document.querySelector("#renderButton");
+const thisWeekButton = document.querySelector("#thisWeekButton");
 const thisMonthButton = document.querySelector("#thisMonthButton");
 const fullYearButton = document.querySelector("#fullYearButton");
 const prevMonthTop = document.querySelector("#prevMonthTop");
@@ -92,6 +94,8 @@ const I18N = {
     parana: "Parana",
     calculationPending: "calculation pending",
     notAvailable: "not available",
+    mainControls: "Main controls",
+    eventFinder: "Event finder",
     eventsOnly: "Only days with events",
     eventFilters: "Event filters",
     filterEkadashi: "Ekadashi",
@@ -102,6 +106,10 @@ const I18N = {
     filterVaishnavaAppearance: "Vaishnava appearances",
     filterVaishnavaDisappearance: "Vaishnava disappearances",
     filterDeityTemple: "Deity / temple days",
+    jumpToEvent: "Find event",
+    chooseEvent: "Select event",
+    eventNotFound: "Event was not found in this year.",
+    thisWeek: "This week",
     thisMonth: "This month",
     fullYear: "Full year",
     previousMonth: "Previous period",
@@ -168,6 +176,8 @@ const I18N = {
     parana: "Паран",
     calculationPending: "расчёт не завершён",
     notAvailable: "нет",
+    mainControls: "Параметры",
+    eventFinder: "Поиск события",
     eventsOnly: "Только дни с событиями",
     eventFilters: "Фильтры событий",
     filterEkadashi: "Экадаши",
@@ -178,6 +188,10 @@ const I18N = {
     filterVaishnavaAppearance: "Явления вайшнавов",
     filterVaishnavaDisappearance: "Уходы вайшнавов",
     filterDeityTemple: "Божества / храмы",
+    jumpToEvent: "Найти событие",
+    chooseEvent: "Выберите событие",
+    eventNotFound: "Событие не найдено в этом году.",
+    thisWeek: "Неделя",
     thisMonth: "Месяц",
     fullYear: "Год",
     previousMonth: "Предыдущий период",
@@ -244,6 +258,40 @@ const MASA_RU = {
   "half)": "половина)",
   "(2nd": "(2-я"
 };
+
+const EVENT_JUMP_TARGETS = [
+  {
+    id: "janmashtami",
+    labels: { en: "Janmashtami", ru: "Джанмаштами" },
+    patterns: [/джанмаштами/i, /janmashtami/i]
+  },
+  {
+    id: "radhastami",
+    labels: { en: "Radhastami", ru: "Радхаштами" },
+    patterns: [/радхаштами/i, /radhastami/i, /radhashtami/i]
+  },
+  {
+    id: "balaramaPurnima",
+    labels: { en: "Balarama Purnima", ru: "Баларам Пурнима" },
+    patterns: [/balarama_purnima/i, /баларама\s+пурнима/i, /balarama\s+purnima/i]
+  },
+  {
+    id: "rathaYatra",
+    labels: { en: "Ratha Yatra", ru: "Ратха Ятра" },
+    patterns: [/ратха/i, /ratha/i, /гундича/i, /gundicha/i]
+  },
+  {
+    id: "karttik",
+    labels: { en: "Karttik", ru: "Карттик" },
+    patterns: [/карт+ик/i, /kart+ik/i, /дамодара/i, /damodara/i],
+    matchDay: (day) => day.lunar.masa === "Damodara" || day.lunar.masa_display.includes("Damodara")
+  },
+  {
+    id: "navadvipParikrama",
+    labels: { en: "Navadvip Dhama Parikrama", ru: "Навадвип Дхама Парикрама" },
+    patterns: [/навадвип/i, /navadvip/i, /парикрам/i, /parikram/i]
+  }
+];
 
 function currentPeriod() {
   const now = new Date();
@@ -629,6 +677,8 @@ function init() {
   periodToInput.addEventListener("change", renderCalendar);
   eventsOnlyInput.addEventListener("change", renderCalendar);
   eventFilterSelect.addEventListener("change", renderCalendar);
+  eventJumpSelect.addEventListener("change", () => jumpToEventMonth(eventJumpSelect.value));
+  thisWeekButton.addEventListener("click", () => setCurrentWeekPeriod());
   thisMonthButton.addEventListener("click", () => setCurrentMonthPeriod());
   fullYearButton.addEventListener("click", () => setFullYearPeriod());
   prevMonthTop.addEventListener("click", () => shiftPeriod(-1));
@@ -638,12 +688,31 @@ function init() {
   renderCalendar();
 }
 
+function setCurrentWeekPeriod() {
+  normalizePeriodInputs();
+  const dayOfWeek = weekdayOfIsoDate(periodFromInput.value);
+  const mondayOffset = dayOfWeek === 0 ? -6 : 1 - dayOfWeek;
+  const weekStart = shiftIsoDateByDays(periodFromInput.value, mondayOffset);
+  periodFromInput.value = weekStart;
+  periodToInput.value = shiftIsoDateByDays(weekStart, 6);
+  renderCalendar();
+}
+
 function setCurrentMonthPeriod() {
   const [year, month] = periodFromInput.value.split("-").map(Number);
   const monthStart = `${year}-${String(month).padStart(2, "0")}-01`;
   const monthEndDate = new Date(Date.UTC(year, month, 0));
   periodFromInput.value = monthStart;
-  periodToInput.value = `${monthEndDate.getUTCFullYear()}-${String(monthEndDate.getUTCMonth() + 1).padStart(2, "0")}-${String(monthEndDate.getUTCDate()).padStart(2, "0")}`;
+  periodToInput.value = isoDateFromDate(monthEndDate);
+  renderCalendar();
+}
+
+function setMonthPeriodForIsoDate(isoDate) {
+  const [year, month] = isoDate.split("-").map(Number);
+  const monthStart = `${year}-${String(month).padStart(2, "0")}-01`;
+  const monthEndDate = new Date(Date.UTC(year, month, 0));
+  periodFromInput.value = monthStart;
+  periodToInput.value = isoDateFromDate(monthEndDate);
   renderCalendar();
 }
 
@@ -666,7 +735,16 @@ function shiftIsoDateByMonths(isoDate, deltaMonths) {
   const targetMonthFirst = new Date(Date.UTC(year, month - 1 + deltaMonths, 1));
   const lastDay = new Date(Date.UTC(targetMonthFirst.getUTCFullYear(), targetMonthFirst.getUTCMonth() + 1, 0)).getUTCDate();
   const next = new Date(Date.UTC(targetMonthFirst.getUTCFullYear(), targetMonthFirst.getUTCMonth(), Math.min(day, lastDay)));
-  return `${next.getUTCFullYear()}-${String(next.getUTCMonth() + 1).padStart(2, "0")}-${String(next.getUTCDate()).padStart(2, "0")}`;
+  return isoDateFromDate(next);
+}
+
+function shiftIsoDateByDays(isoDate, deltaDays) {
+  const [year, month, day] = isoDate.split("-").map(Number);
+  return isoDateFromDate(new Date(Date.UTC(year, month - 1, day + deltaDays)));
+}
+
+function isoDateFromDate(date) {
+  return `${date.getUTCFullYear()}-${String(date.getUTCMonth() + 1).padStart(2, "0")}-${String(date.getUTCDate()).padStart(2, "0")}`;
 }
 
 function initLanguage() {
@@ -691,6 +769,7 @@ function setLanguage(language) {
     element.textContent = tr(element.dataset.i18n);
   });
   renderEventFilterChips();
+  renderEventJumpOptions();
   updateFontSizeButtons();
   if (!selectedDate) dayDetails.textContent = tr("selectDay");
   setTheme(document.documentElement.dataset.theme || "day");
@@ -722,6 +801,51 @@ function renderLocationOptions() {
       return `<optgroup label="${label}">${options}</optgroup>`;
     })
     .join("");
+}
+
+function renderEventJumpOptions() {
+  const selected = eventJumpSelect.value;
+  eventJumpSelect.innerHTML = `
+    <option value="">${tr("chooseEvent")}</option>
+    ${EVENT_JUMP_TARGETS.map((target) => `<option value="${target.id}">${target.labels[currentLanguage] || target.labels.en}</option>`).join("")}
+  `;
+  eventJumpSelect.value = EVENT_JUMP_TARGETS.some((target) => target.id === selected) ? selected : "";
+}
+
+function jumpToEventMonth(targetId) {
+  if (!targetId) return;
+  normalizePeriodInputs();
+  const target = EVENT_JUMP_TARGETS.find((item) => item.id === targetId);
+  if (!target) return;
+  const year = Number(periodFromInput.value.slice(0, 4));
+  const location = LOCATIONS.find((item) => item.id === locationSelect.value) || LOCATIONS[0];
+  const calendar = generateCalendarRange(`${year}-01-01`, `${year}-12-31`, location, RULES, EVENTS);
+  const foundDay = calendar.days.find((day) => eventJumpMatchesDay(day, target));
+  if (!foundDay) {
+    calendarStatus.textContent = `${tr("eventNotFound")} ${year}`;
+    return;
+  }
+  setMonthPeriodForIsoDate(foundDay.date);
+  eventJumpSelect.value = targetId;
+}
+
+function eventJumpMatchesDay(day, target) {
+  if (target.matchDay?.(day)) return true;
+  return day.events.some((event) => {
+    const haystack = [
+      event.id,
+      event.runtime_id,
+      event.subject,
+      event.name,
+      event.i18n?.en?.name,
+      event.i18n?.ru?.name,
+      event.i18n?.en?.description,
+      event.i18n?.ru?.description
+    ]
+      .filter(Boolean)
+      .join(" ");
+    return target.patterns.some((pattern) => pattern.test(haystack));
+  });
 }
 
 function renderEventFilterChips() {

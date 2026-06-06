@@ -4,7 +4,7 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>vCalendar Panchang POC</title>
-    <link rel="stylesheet" href="styles.css?v=20260606-1">
+    <link rel="stylesheet" href="styles.css?v=20260606-2">
   </head>
   <body>
     <main class="app-shell">
@@ -29,49 +29,73 @@
       </header>
 
       <section class="controls" aria-label="Calendar controls">
-        <div class="control-row primary-controls">
-          <label class="location-control">
-            <span data-i18n="location">Location</span>
-            <select id="locationSelect">
-              <option value="maalot">Maalot, Israel</option>
-            </select>
-          </label>
-          <div class="period-controls">
-            <label>
-              <span data-i18n="periodFrom">From</span>
-              <input id="periodFromInput" type="date" value="2026-05-01">
+        <details class="collapsible-panel" open>
+          <summary>
+            <span data-i18n="mainControls">Main controls</span>
+            <span class="collapse-icon" aria-hidden="true"></span>
+          </summary>
+          <div class="control-row primary-controls">
+            <label class="location-control">
+              <span data-i18n="location">Location</span>
+              <select id="locationSelect">
+                <option value="maalot">Maalot, Israel</option>
+              </select>
             </label>
-            <label>
-              <span data-i18n="periodTo">To</span>
-              <input id="periodToInput" type="date" value="2026-05-31">
-            </label>
-            <div class="quick-range" aria-label="Quick ranges">
-              <button id="thisMonthButton" class="secondary-button" type="button" data-i18n="thisMonth">This month</button>
-              <button id="fullYearButton" class="secondary-button" type="button" data-i18n="fullYear">Full year</button>
+            <div class="period-controls">
+              <label>
+                <span data-i18n="periodFrom">From</span>
+                <input id="periodFromInput" type="date" value="2026-05-01">
+              </label>
+              <label>
+                <span data-i18n="periodTo">To</span>
+                <input id="periodToInput" type="date" value="2026-05-31">
+              </label>
+              <div class="quick-range" aria-label="Quick ranges">
+                <button id="thisWeekButton" class="secondary-button" type="button" data-i18n="thisWeek">This week</button>
+                <button id="thisMonthButton" class="secondary-button" type="button" data-i18n="thisMonth">This month</button>
+                <button id="fullYearButton" class="secondary-button" type="button" data-i18n="fullYear">Full year</button>
+              </div>
             </div>
+            <button id="renderButton" class="primary-button" type="button">Generate</button>
           </div>
-          <button id="renderButton" class="primary-button" type="button">Generate</button>
-        </div>
-        <div class="filter-panel">
-          <div class="filter-panel-head">
-            <strong data-i18n="eventFilters">Event filters</strong>
-            <label class="switch-label">
-              <input id="eventsOnlyInput" type="checkbox" checked>
-              <span data-i18n="eventsOnly">Only days with events</span>
+        </details>
+        <details class="collapsible-panel" open>
+          <summary>
+            <span data-i18n="eventFinder">Event finder</span>
+            <span class="collapse-icon" aria-hidden="true"></span>
+          </summary>
+          <div class="event-jump-panel">
+            <label class="event-jump-control">
+              <span data-i18n="jumpToEvent">Find event</span>
+              <select id="eventJumpSelect"></select>
             </label>
           </div>
-          <div id="eventFilterChips" class="filter-chips" aria-label="Event filters"></div>
-          <select id="eventFilterSelect" class="event-filter-select" multiple aria-hidden="true" tabindex="-1">
-            <option value="ekadashi" selected>Ekadashi</option>
-            <option value="parana" selected>Parana</option>
-            <option value="purushottama" selected>Purushottama</option>
-            <option value="festival" selected>Festivals</option>
-            <option value="divineAppearance" selected>Divine appearances</option>
-            <option value="vaishnavaAppearance" selected>Vaishnava appearances</option>
-            <option value="vaishnavaDisappearance" selected>Vaishnava disappearances</option>
-            <option value="deityTemple" selected>Deity / temple days</option>
-          </select>
-        </div>
+        </details>
+        <details class="collapsible-panel filter-collapsible">
+          <summary>
+            <span data-i18n="eventFilters">Event filters</span>
+            <span class="collapse-icon" aria-hidden="true"></span>
+          </summary>
+          <div class="filter-panel">
+            <div class="filter-panel-head">
+              <label class="switch-label">
+                <input id="eventsOnlyInput" type="checkbox" checked>
+                <span data-i18n="eventsOnly">Only days with events</span>
+              </label>
+            </div>
+            <div id="eventFilterChips" class="filter-chips" aria-label="Event filters"></div>
+            <select id="eventFilterSelect" class="event-filter-select" multiple aria-hidden="true" tabindex="-1">
+              <option value="ekadashi" selected>Ekadashi</option>
+              <option value="parana" selected>Parana</option>
+              <option value="purushottama" selected>Purushottama</option>
+              <option value="festival" selected>Festivals</option>
+              <option value="divineAppearance" selected>Divine appearances</option>
+              <option value="vaishnavaAppearance" selected>Vaishnava appearances</option>
+              <option value="vaishnavaDisappearance" selected>Vaishnava disappearances</option>
+              <option value="deityTemple" selected>Deity / temple days</option>
+            </select>
+          </div>
+        </details>
       </section>
 
       <section class="summary" aria-live="polite">
@@ -109,6 +133,6 @@
       </section>
     </main>
 
-    <script type="module" src="js/app.js?v=20260606-4"></script>
+    <script type="module" src="js/app.js?v=20260606-5"></script>
   </body>
 </html>
