@@ -651,7 +651,7 @@
     "type": "vaishnava_appearance",
     "category": "vaishnava_appearance",
     "subject": "Sri Ganga Mata Goswamini",
-    "source_status": "tithi_rule_from_scsmath_541",
+    "source_status": "superseded_by_hkzp_541_gangamata_appearance",
     "gaudiya_masa": "Trivikrama",
     "paksha": "Gaura",
     "tithi": "Dashami",
@@ -667,7 +667,8 @@
       }
     },
     "description": "Commemoration of the appearance day of Sri Ganga Mata Goswamini. This event is matched by the Vaishnava tithi rule stored in the calendar database.",
-    "source_url": "http://harekrishnazp.info/materialy/vajshnavskij-kalendar/734-gangamati-gosvamini.html"
+    "source_url": "http://harekrishnazp.info/materialy/vajshnavskij-kalendar/734-gangamati-gosvamini.html",
+    "disabled": true
   },
   {
     "id": "scsmath_541_baladev_vidyabhushan_disappearance",
