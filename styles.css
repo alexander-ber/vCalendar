@@ -888,6 +888,41 @@ button:not(.day):not(.theme-toggle):not(.language-toggle):not(.icon-button):not(
   line-height: 1.4;
 }
 
+.full-description {
+  margin-top: 10px;
+}
+
+.full-description summary {
+  display: inline-flex;
+  width: fit-content;
+  min-height: 34px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  padding: 7px 10px;
+  color: var(--accent-strong);
+  background: var(--accent-soft);
+  font-size: 13px;
+  font-weight: 850;
+  cursor: pointer;
+  user-select: none;
+}
+
+.full-description summary:hover {
+  border-color: var(--accent);
+}
+
+.full-description-body {
+  margin-top: 10px;
+  border: 1px solid var(--soft-line);
+  border-radius: 8px;
+  padding: 12px;
+  color: var(--ink);
+  background: var(--panel);
+  font-size: 14px;
+  line-height: 1.55;
+  white-space: pre-wrap;
+}
+
 .event-source {
   display: inline-flex;
   width: fit-content;

@@ -69,6 +69,7 @@ const I18N = {
     events: "Events",
     eventDetails: "Event details",
     biography: "Biography",
+    showFullDescription: "Read full description",
     benefits: "Benefits",
     story: "Story",
     source: "Source",
@@ -143,6 +144,7 @@ const I18N = {
     events: "События",
     eventDetails: "Подробности событий",
     biography: "Биография",
+    showFullDescription: "Показать полное описание",
     benefits: "Блага",
     story: "История",
     source: "Источник",
@@ -803,7 +805,15 @@ function localizeEventName(event) {
 }
 
 function localizeEventDescription(event) {
-  return localizedEventField(event, "full_description") || localizedEventField(event, "description");
+  return localizeEventFullDescription(event) || localizeEventShortDescription(event);
+}
+
+function localizeEventShortDescription(event) {
+  return localizedEventField(event, "description");
+}
+
+function localizeEventFullDescription(event) {
+  return localizedEventField(event, "full_description");
 }
 
 function localizeClassification(value) {
@@ -840,7 +850,8 @@ function renderEventDetails(events) {
 function renderEventDetail(event) {
   const isBioEvent = event.type === "vaishnava_appearance" || event.type === "vaishnava_disappearance";
   const heading = isBioEvent ? tr("biography") : tr("events");
-  const description = localizeEventDescription(event) || eventNarrativeFallback(event, isBioEvent);
+  const shortDescription = localizeEventShortDescription(event) || eventNarrativeFallback(event, isBioEvent);
+  const fullDescription = localizeEventFullDescription(event);
   const structuredNotes = renderEventStructuredNotes(event);
   return `
     <article class="event-detail-card ${eventClass(event)}">
@@ -849,9 +860,19 @@ function renderEventDetail(event) {
         <strong>${localizeEventName(event)}</strong>
       </div>
       ${structuredNotes}
-      ${structuredNotes ? "" : `<p>${description}</p>`}
+      ${structuredNotes ? "" : `<p>${shortDescription}</p>`}
+      ${fullDescription ? renderFullDescription(fullDescription) : ""}
       ${event.source_url ? `<a class="event-source" href="${event.source_url}" target="_blank" rel="noopener">${tr("openSource")}</a>` : ""}
     </article>
+  `;
+}
+
+function renderFullDescription(description) {
+  return `
+    <details class="full-description">
+      <summary>${tr("showFullDescription")}</summary>
+      <div class="full-description-body">${description}</div>
+    </details>
   `;
 }
 
