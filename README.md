@@ -99,3 +99,9 @@ Machine-readable output:
 ```bash
 node scripts/validate-astronomy.mjs --json --location maalot --date 2026-09-04
 ```
+
+Compare tithi engines for boundary-sensitive dates:
+
+```bash
+node scripts/compare-tithi-engines.mjs --location maalot --start 2026-05-26 --end 2026-05-28
+```
