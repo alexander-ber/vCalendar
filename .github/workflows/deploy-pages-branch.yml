@@ -1,0 +1,89 @@
+name: Deploy branch to GitHub Pages folder
+
+on:
+  push:
+    branches-ignore:
+      - gh-pages
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: pages-${{ github.ref_name }}
+  cancel-in-progress: true
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout source
+        uses: actions/checkout@v4
+        with:
+          path: source
+
+      - name: Publish branch folder
+        shell: bash
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          set -euo pipefail
+
+          branch_name="${GITHUB_REF_NAME}"
+          branch_dir="${branch_name//\//-}"
+          pages_dir="${GITHUB_WORKSPACE}/gh-pages-work"
+          source_dir="${GITHUB_WORKSPACE}/source"
+
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "41898282+github-actions[bot]@users.noreply.github.com"
+
+          mkdir -p "${pages_dir}"
+          cd "${pages_dir}"
+          git init
+          git remote add origin "https://x-access-token:${GITHUB_TOKEN}@github.com/${GITHUB_REPOSITORY}.git"
+
+          if git ls-remote --exit-code --heads origin gh-pages >/dev/null 2>&1; then
+            git fetch origin gh-pages
+            git checkout gh-pages
+          else
+            git checkout --orphan gh-pages
+            git rm -rf . >/dev/null 2>&1 || true
+          fi
+
+          rm -rf "${branch_dir}"
+          mkdir -p "${branch_dir}"
+          rsync -a --delete \
+            --exclude ".git" \
+            --exclude ".github" \
+            --exclude ".DS_Store" \
+            "${source_dir}/" "${branch_dir}/"
+
+          touch .nojekyll
+          cat > index.html <<HTML
+          <!doctype html>
+          <html lang="en">
+            <head>
+              <meta charset="utf-8">
+              <meta name="viewport" content="width=device-width, initial-scale=1">
+              <title>vCalendar branches</title>
+            </head>
+            <body>
+              <h1>vCalendar branches</h1>
+              <p>Open a published branch folder:</p>
+              <ul>
+                <li><a href="./main/">main</a></li>
+                <li><a href="./develop/">develop</a></li>
+                <li><a href="./${branch_dir}/">${branch_dir}</a></li>
+              </ul>
+            </body>
+          </html>
+          HTML
+
+          git add .
+          if git diff --cached --quiet; then
+            echo "No GitHub Pages changes for ${branch_dir}."
+            exit 0
+          fi
+
+          git commit -m "Deploy ${branch_name} to ${branch_dir}"
+          git push origin gh-pages

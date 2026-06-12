@@ -16,6 +16,40 @@ Open:
 http://localhost:8090
 ```
 
+## Branch and GitHub Pages Structure
+
+Repository branches:
+
+- `main` - stable public build
+- `develop` - integration build
+- `feature-*` or other feature branches - work in progress
+- `gh-pages` - generated GitHub Pages branch
+
+GitHub Pages should be configured as:
+
+- Branch: `gh-pages`
+- Folder: `/`
+
+Every pushed branch is deployed by GitHub Actions into a folder inside `gh-pages`.
+Branch slashes are normalized to hyphens, for example `feature/calendar-ui` becomes `feature-calendar-ui`.
+
+Published URLs:
+
+```text
+https://alexander-ber.github.io/vCalendar/main/
+https://alexander-ber.github.io/vCalendar/develop/
+https://alexander-ber.github.io/vCalendar/codex-events-content-db/
+```
+
+Example structure in `gh-pages`:
+
+```text
+gh-pages/
+├── main/
+├── develop/
+└── codex-events-content-db/
+```
+
 ## Current Scope
 
 - Local fixed locations: Maalot, Tel Aviv, Mayapur, Moscow
