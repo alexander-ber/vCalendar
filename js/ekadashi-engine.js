@@ -1,6 +1,6 @@
 import { addDaysToLocalDate, formatDateTime, formatTime, toIsoDate } from "./date-utils.js?v=20260528-8";
 import { dayAstronomy, tithiInfo } from "./astronomy-adapter.js?v=20260612-1";
-import { computeParana } from "./parana-engine.js?v=20260612-1";
+import { computeParana } from "./parana-engine.js?v=20260612-2";
 import { EKADASHI_DB } from "./ekadashi-data.js?v=20260530-2";
 import { MASA_NAMES } from "./masa-engine.js?v=20260528-8";
 

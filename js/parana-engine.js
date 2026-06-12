@@ -69,7 +69,7 @@ export function computeParana(fastDate, ekadashiNumber, location, rules, getTith
   const astronomy = dayAstronomy(paranaDate, location, rules);
   const dvadashiNumber = ekadashiNumber === 11 ? 12 : 27;
   const trayodashiNumber = ekadashiNumber === 11 ? 13 : 28;
-  const paranaTithiNumber = ["viddha", "no_sunrise"].includes(fastDayType) ? trayodashiNumber : dvadashiNumber;
+  const paranaTithiNumber = fastDayType === "no_sunrise" ? trayodashiNumber : dvadashiNumber;
   const dvadashiStart = findTithiBoundaryBefore(astronomy.sunrise, dvadashiNumber, 48, getTithiInfo) || astronomy.sunrise;
   const paranaTithiEnd =
     getTithiInfo(astronomy.sunrise).number === paranaTithiNumber

@@ -92,7 +92,7 @@ GCAL has seven parana cases:
 - Jayanti/Vijaya
 - Jaya/Papanasini
 
-Our parana model now separates normal, Viddha/no-sunrise, Vyanjuli, Unmilani and Trisprsa branches. It does not yet implement the nakshatra-specific begin/end rules for Jayanti/Vijaya/Jaya/Papanasini.
+Our parana model now separates normal, Viddha, no-sunrise, Vyanjuli, Unmilani and Trisprsa branches. It does not yet implement the nakshatra-specific begin/end rules for Jayanti/Vijaya/Jaya/Papanasini.
 
 ### Built-in appearance days
 
