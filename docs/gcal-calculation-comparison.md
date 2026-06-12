@@ -20,8 +20,9 @@ GCAL calculates a date range in phases:
 ## What we already implement
 
 - Range-based calculation in phases: `generateCalendarRange()` builds days, then attaches events.
-- Sunrise, sunset, moonrise, moonset, arunodaya.
+- Sunrise, sunset, moonrise, moonset, arunodaya. Rise/set is now calculated through the vendored Astronomy Engine library.
 - Tithi and paksha from Moon-Sun angular separation.
+- Nakshatra and yoga at sunrise.
 - Tithi end by boundary search.
 - Amanta masa interval from new moon to new moon.
 - Adhika/Purushottama detection by sankranti count inside the lunar month.
@@ -42,9 +43,11 @@ GCAL calculates a date range in phases:
 
 ### Astronomy layer
 
-GCAL assumes a fuller astronomical layer with tithi, paksha, nakshatra and yoga. Our current astronomy adapter calculates tithi/paksha and visible sun/moon times, but not nakshatra or yoga.
+GCAL assumes a fuller astronomical layer with tithi, paksha, nakshatra and yoga. Our current astronomy adapter now exposes all four at sunrise.
 
-This means we cannot yet implement GCAL's nakshatra-based Mahadvadashi rules with full fidelity.
+Important validation note: the vendored Astronomy Engine `MoonPhase` result was tested against the known Maalot Padmini Ekadashi 2026 case and moved the Dvadashi boundary before sunrise on May 28. That breaks the already validated Vyanjuli Mahadvadashi case. Because of that, tithi still uses the previous local formula until we validate a full ephemeris against GCAL/vaishnavacalendar. Astronomy Engine is currently used for rise/set calculations.
+
+Validation convention: when local results diverge, compare the rule result against the Navadvip/Mayapur reference first, then inspect the local city shift caused by sunrise, arunodaya and tithi-boundary timing.
 
 ### Masa calculation
 
@@ -58,10 +61,11 @@ GCAL has a richer Dvadashi decision table:
 
 - nakshatra Mahadvadashi: Vijaya, Jaya, Jayanti, Papanasini
 - Vyanjuli Mahadvadashi
+- Unmilani / Trisprsa Ekadashi classifications
 - Paksavardhini Mahadvadashi
 - Dvadashi suitable for Ekadashi fasting
 
-We currently implement Vyanjuli and part of the Dvadashi-shift behavior, but not nakshatra Mahadvadashi or Paksavardhini.
+We currently implement Vyanjuli and part of the Dvadashi-shift behavior, plus Unmilani/Trisprsa Ekadashi classification. We do not yet implement nakshatra Mahadvadashi or Paksavardhini.
 
 ### Ekadashi classification
 
@@ -74,7 +78,7 @@ GCAL distinguishes:
 - Ekadashi not suitable because tomorrow is Unmilani
 - Ekadashi not suitable because some Mahadvadashi applies
 
-We currently implement standard, viddha, double-sunrise, no-sunrise and Vyanjuli. We do not yet fully model Unmilani, Trisprsa, Unmilani Trisprsa, or suppression by all Mahadvadashi cases.
+We currently implement standard, viddha, no-sunrise, Vyanjuli, Unmilani, Trisprsa and Unmilani Trisprsa. We do not yet fully model suppression by all Mahadvadashi cases.
 
 ### Parana
 
@@ -88,7 +92,7 @@ GCAL has seven parana cases:
 - Jayanti/Vijaya
 - Jaya/Papanasini
 
-Our parana model covers the general Hari-vasara/pratah-kala/Dvadashi window and a Dvadashi-fast branch. It does not yet implement the nakshatra-specific begin/end rules or Trisprsa/Unmilani cases exactly as GCAL describes.
+Our parana model now separates normal, Viddha/no-sunrise, Vyanjuli, Unmilani and Trisprsa branches. It does not yet implement the nakshatra-specific begin/end rules for Jayanti/Vijaya/Jaya/Papanasini.
 
 ### Built-in appearance days
 
@@ -135,11 +139,11 @@ GCAL has a final correction phase for parana, sunrise/sunset/noon/arunodaya and 
 
 ## Suggested next implementation order
 
-1. Replace or validate the astronomy layer with a precise ephemeris that includes nakshatra and yoga.
+1. Extend the validation harness with known Navadvip/Mayapur and local-city reference calendars.
 2. Add a day-level tithi status layer: normal, ksaya, vriddhi, exact missing-tithi times.
-3. Implement GCAL Dvadashi/Mahadvadashi decision tables.
-4. Extend Ekadashi classification to Unmilani, Trisprsa and suppression by Mahadvadashi.
-5. Split parana into GCAL's seven explicit cases.
+3. Implement GCAL Dvadashi/Mahadvadashi decision tables for nakshatra Mahadvadashi and Paksavardhini.
+4. Add suppression by all Mahadvadashi cases.
+5. Complete nakshatra-specific parana for Jayanti/Vijaya/Jaya/Papanasini.
 6. Move special festivals into dedicated rule modules: Janmashtami, Ratha Yatra, Gaura Purnima, Rama Navami, Govardhana Puja.
 7. Centralize dependent events from anchor events.
 8. Add sankranti events and configurable sankranti day-boundary mode.

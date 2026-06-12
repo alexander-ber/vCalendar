@@ -1,4 +1,4 @@
-import { generateCalendarRange, viewModelForDay } from "./calendar-engine.js?v=20260530-4";
+import { generateCalendarRange, viewModelForDay } from "./calendar-engine.js?v=20260612-1";
 import { EVENTS } from "./events-data.js?v=20260530-7";
 import { LOCATIONS } from "./locations-data.js?v=20260530-1";
 import { RULES } from "./rules-data.js?v=20260528-17";
@@ -1010,7 +1010,10 @@ function localizeClassification(value) {
     viddha: "виддха",
     double_sunrise: "два восхода",
     no_sunrise: "без восхода",
-    vyanjuli_mahadvadashi: "вьянджули махадвадаши"
+    vyanjuli_mahadvadashi: "вьянджули махадвадаши",
+    unmilani: "унмилани махадвадаши",
+    trisprsa: "триспрша махадвадаши",
+    unmilani_trisprsa: "унмилани триспрша махадвадаши"
   };
   return map[value] || value;
 }
