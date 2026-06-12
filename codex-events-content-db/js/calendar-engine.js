@@ -1,13 +1,15 @@
-import { dayAstronomy, tithiInfo } from "./astronomy-adapter.js?v=20260530-2";
+import { dayAstronomy, nakshatraInfo, tithiInfo, yogaInfo } from "./astronomy-adapter.js?v=20260530-3";
 import { addDaysToLocalDate, daysInMonth, formatDateTime, formatTime, monthLabel, toIsoDate, weekdayOfIsoDate } from "./date-utils.js?v=20260528-8";
 import { masaForDate } from "./masa-engine.js?v=20260528-18";
-import { buildEkadashiEvents } from "./ekadashi-engine.js?v=20260530-3";
+import { buildEkadashiEvents } from "./ekadashi-engine.js?v=20260612-1";
 import { matchEventsForDay } from "./event-matcher.js?v=20260530-1";
 
 function buildDay(isoDate, location, rules) {
   const astronomy = dayAstronomy(isoDate, location, rules);
   const sunriseTithi = tithiInfo(astronomy.sunrise);
   const arunodayaTithi = tithiInfo(astronomy.arunodaya);
+  const sunriseNakshatra = nakshatraInfo(astronomy.sunrise);
+  const sunriseYoga = yogaInfo(astronomy.sunrise);
   const nextTithiBoundary = findTithiEndAfter(astronomy.sunrise, sunriseTithi.number);
   const masa = masaForDate(astronomy.sunrise);
   return {
@@ -24,6 +26,8 @@ function buildDay(isoDate, location, rules) {
       tithi_at_sunrise: sunriseTithi,
       tithi_at_arunodaya: arunodayaTithi,
       tithi_angle_at_sunrise: sunriseTithi.angle,
+      nakshatra_at_sunrise: sunriseNakshatra,
+      yoga_at_sunrise: sunriseYoga,
       next_tithi_boundary: nextTithiBoundary
     },
     events: [],
