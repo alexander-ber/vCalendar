@@ -1,0 +1,3085 @@
+[
+  {
+    "id": "gaura_purnima",
+    "name": "Sri Gaura Purnima",
+    "type": "appearance",
+    "category": "avatar",
+    "scope": "core_gaudiya",
+    "subject": "Sri Chaitanya Mahaprabhu",
+    "masa": "Phalguna",
+    "paksha": "Gaura",
+    "tithi": "Purnima",
+    "timing_rule": "sunrise_based",
+    "fasting_rule": "fast_until_moonrise",
+    "allow_in_adhika": false,
+    "priority": "highest",
+    "source_status": "confirmed",
+    "i18n": {
+      "ru": {
+        "name": "Шри Гаура Пурнима",
+        "description": "В доме Шри Джаганнатх Мишры не было предела радости. Она царила в комнате Шри Шачидеви. Весь мир был затоплен потоком Харинама, при появлении полной и чистой луны в этот день. И луна в небе закрыла свое лицо из скромности. И как она могла не сделать этого? Луны на пальцах Его ног излучали такой яркий и благодатный свет, что затмевали миллионы лун, ведь сегодня явился Гаурачандра. Повсюду с неба дождем сыпались цветы. Раздались звуки миллионов раковин и барабанов, и начался танец небесных существ. Вся земля воспевала \"Джайа, Джайа\", и вся вселенная достигла освобождения. Так повсюду разнеслась весть о явлении Гаура Хари разнеслась. Все преданные немедленно почувствовали глубокое удовлетвор..."
+      },
+      "en": {
+        "description": "Appearance day festival for Sri Chaitanya Mahaprabhu. The calendar matches it by the configured tithi rule."
+      }
+    },
+    "description": "Appearance day festival for Sri Chaitanya Mahaprabhu. The calendar matches it by the configured tithi rule.",
+    "source_url": "http://harekrishnazp.info/materialy/vajshnavskij-kalendar/547-gaura-purnima.html"
+  },
+  {
+    "id": "rama_navami",
+    "name": "Sri Rama Navami",
+    "type": "appearance",
+    "category": "avatar",
+    "scope": "core_gaudiya",
+    "subject": "Lord Ramachandra",
+    "masa": "Chaitra",
+    "paksha": "Gaura",
+    "tithi": "Navami",
+    "timing_rule": "noon_based",
+    "fasting_rule": "fast_until_noon",
+    "allow_in_adhika": false,
+    "priority": "highest",
+    "source_status": "confirmed",
+    "i18n": {
+      "ru": {
+        "name": "Шри Рама Навами",
+        "description": "Рама Навами - это ведический фестиваль, на котором празднуется победа светлых сил над темными, торжество добра над злом. Это день явления седьмого воплощения Господа Вишну - Рамачандры."
+      },
+      "en": {
+        "description": "Appearance day festival for Lord Ramachandra. The calendar matches it by the configured tithi rule."
+      }
+    },
+    "description": "Appearance day festival for Lord Ramachandra. The calendar matches it by the configured tithi rule.",
+    "source_url": "http://harekrishnazp.info/materialy/vajshnavskij-kalendar/590-gospod-rama.html"
+  },
+  {
+    "id": "nrsimha_chaturdashi",
+    "name": "Sri Nrsimha Chaturdashi",
+    "type": "appearance",
+    "category": "avatar",
+    "scope": "core_gaudiya",
+    "subject": "Lord Nrsimhadev",
+    "masa": "Vaishakha",
+    "paksha": "Gaura",
+    "tithi": "Chaturdashi",
+    "timing_rule": "sunrise_based",
+    "fasting_rule": "fast_until_sunset",
+    "allow_in_adhika": false,
+    "priority": "highest",
+    "source_status": "confirmed",
+    "i18n": {
+      "ru": {
+        "name": "Шри Нрисимха Чатурдаши",
+        "description": "Я приношу свои поклоны Господу Нрисимхадеву, который всегда даёт наставления Своему преданному Прахладу в его сердце. Он побеждает все виды анартх, которые нападают на преданных. Его милость освежает и распространяется подобно свету луны. (Шрипад Шридхара Свами)"
+      },
+      "en": {
+        "description": "Appearance day festival for Lord Nrsimhadev. The calendar matches it by the configured tithi rule."
+      }
+    },
+    "description": "Appearance day festival for Lord Nrsimhadev. The calendar matches it by the configured tithi rule.",
+    "source_url": "http://harekrishnazp.info/materialy/vajshnavskij-kalendar/683-nrisimkhadev.html"
+  },
+  {
+    "id": "janmashtami",
+    "name": "Sri Krishna Janmashtami",
+    "type": "appearance",
+    "category": "avatar",
+    "scope": "core_gaudiya",
+    "subject": "Lord Krishna",
+    "masa": "Bhadrapada",
+    "paksha": "Krishna",
+    "tithi": "Ashtami",
+    "timing_rule": "midnight_based",
+    "fasting_rule": "fast_until_midnight",
+    "allow_in_adhika": false,
+    "priority": "highest",
+    "source_status": "confirmed",
+    "i18n": {
+      "ru": {
+        "name": "Шри Кришна Джанмаштами",
+        "description": "Когда религия на земле приходит в упадок и воцаряется безбожие, Я нисхожу Сам, о потомок Бхараты. Чтобы освободить праведников и покарать негодяев, Я Сам являюсь на Землю эпоха за эпохой. (Господь Кришна Арджуне, «Бхагавад-гита», гл. 4, текст 7-8.)"
+      },
+      "en": {
+        "description": "Appearance day festival for Lord Krishna. The calendar matches it by the configured tithi rule."
+      }
+    },
+    "description": "Appearance day festival for Lord Krishna. The calendar matches it by the configured tithi rule.",
+    "source_url": "http://harekrishnazp.info/materialy/vajshnavskij-kalendar/825-dzhanmashtami-yavlenie-gospoda-shri-krishny.html"
+  },
+  {
+    "id": "balarama_purnima",
+    "name": "Sri Balarama Purnima",
+    "type": "appearance",
+    "category": "avatar",
+    "scope": "core_gaudiya",
+    "subject": "Lord Balarama",
+    "masa": "Shravana",
+    "paksha": "Gaura",
+    "tithi": "Purnima",
+    "timing_rule": "sunrise_based",
+    "fasting_rule": "fast_until_noon",
+    "allow_in_adhika": false,
+    "priority": "highest",
+    "source_status": "confirmed",
+    "i18n": {
+      "ru": {
+        "name": "Шри Баларама Пурнима",
+        "description": "О Кешава! О Господь Вселенной! О Господь Хари, принявший форму Господа Баларамы и держащий в своих руках плуг! Вся слава Тебе! На Твоем бриллиантовом белом теле - одежды цвета нового голубого дождевого облака. Эти одежды имеют тот же цвет, что и прекрасный темный оттенок реки Ямуны, которая испытывает большой страх когда Ты ударяешь по ней Твоим плугом."
+      },
+      "en": {
+        "description": "Appearance day festival for Lord Balarama. The calendar matches it by the configured tithi rule."
+      }
+    },
+    "description": "Appearance day festival for Lord Balarama. The calendar matches it by the configured tithi rule.",
+    "source_url": "http://harekrishnazp.info/materialy/vajshnavskij-kalendar/821-gospod-balarama.html"
+  },
+  {
+    "id": "bhakti_prapanna_tirtha_appearance",
+    "name": "Appearance of Srila Bhakti Prapanna Tirtha Goswami Maharaj",
+    "type": "vaishnava_appearance",
+    "category": "vaishnava_appearance",
+    "scope": "core_gaudiya",
+    "subject": "Srila Bhakti Prapanna Tirtha Goswami Maharaj",
+    "masa": "Shravana",
+    "gaudiya_masa": "Sridhara",
+    "paksha": "Gaura",
+    "tithi": "Purnima",
+    "timing_rule": "sunrise_based",
+    "allow_in_adhika": false,
+    "priority": "medium",
+    "source_status": "user_confirmed_tithi_rule",
+    "i18n": {
+      "ru": {
+        "name": "Явление Шрилы Бхакти Прапанны Тиртхи Госвами Махараджа",
+        "description": "Памятный день явления: Явление Шрилы Бхакти Прапанны Тиртхи Госвами Махараджа. Событие привязано к вайшнавскому титхи, указанному в базе календаря."
+      }
+    },
+    "description": "Commemoration of the appearance day of Srila Bhakti Prapanna Tirtha Goswami Maharaj. This event is matched by the Vaishnava tithi rule stored in the calendar database."
+  },
+  {
+    "id": "akshaya_tritiya",
+    "name": "Akshaya Tritiya",
+    "type": "festival",
+    "category": "festival",
+    "scope": "extended_hindu",
+    "subject": "Akshaya Tritiya",
+    "masa": "Vaishakha",
+    "paksha": "Gaura",
+    "tithi": "Tritiya",
+    "timing_rule": "sunrise_based",
+    "allow_in_adhika": false,
+    "priority": "high",
+    "source_status": "confirmed",
+    "i18n": {
+      "ru": {
+        "name": "Акшая Трития",
+        "description": "Акшая Тритья - один из чудесных дней в году. Не упустите возможности избавиться от всего лишнего и ненужного, освободите место в  вашей жизни для прекрасного и возвышенного."
+      },
+      "en": {
+        "description": "Festival day connected with Akshaya Tritiya. The calendar matches it by the configured tithi rule."
+      }
+    },
+    "description": "Festival day connected with Akshaya Tritiya. The calendar matches it by the configured tithi rule.",
+    "source_url": "http://harekrishnazp.info/materialy/vajshnavskij-kalendar/1299-akshaya-tritya-nachalo-chandana-yatry.html"
+  },
+  {
+    "id": "parashurama_jayanti",
+    "name": "Parashurama Jayanti",
+    "type": "appearance",
+    "category": "avatar",
+    "scope": "extended_hindu",
+    "subject": "Lord Parashurama",
+    "masa": "Vaishakha",
+    "paksha": "Gaura",
+    "tithi": "Tritiya",
+    "timing_rule": "sunrise_based",
+    "allow_in_adhika": false,
+    "priority": "medium",
+    "source_status": "confirmed",
+    "i18n": {
+      "ru": {
+        "name": "Парашурама Джаянти",
+        "description": "День явления: Парашурама Джаянти. Календарь определяет его по настроенному правилу титхи."
+      }
+    },
+    "description": "Appearance day festival for Lord Parashurama. The calendar matches it by the configured tithi rule."
+  },
+  {
+    "id": "ganga_saptami",
+    "name": "Ganga Saptami",
+    "type": "festival",
+    "category": "festival",
+    "scope": "extended_hindu",
+    "subject": "Sri Ganga / Jahnavi",
+    "masa": "Vaishakha",
+    "paksha": "Gaura",
+    "tithi": "Saptami",
+    "timing_rule": "sunrise_based",
+    "allow_in_adhika": false,
+    "priority": "medium",
+    "source_status": "confirmed",
+    "i18n": {
+      "ru": {
+        "name": "Ганга Саптами",
+        "description": "Праздничный день: Ганга Саптами. Календарь определяет его по настроенному правилу титхи."
+      },
+      "en": {
+        "description": "Imported calendar reference for \"Ганга Пуджа\". English summary still needs editorial translation; the Russian source summary is linked in source_url."
+      }
+    },
+    "description": "Festival day connected with Sri Ganga / Jahnavi. The calendar matches it by the configured tithi rule.",
+    "source_url": "http://harekrishnazp.info/materialy/vajshnavskij-kalendar/1263-ganga-pudzha.html"
+  },
+  {
+    "id": "sita_navami",
+    "name": "Sita Navami",
+    "type": "appearance",
+    "category": "avatar_associate",
+    "scope": "extended_hindu",
+    "subject": "Sri Sita Devi",
+    "masa": "Vaishakha",
+    "paksha": "Gaura",
+    "tithi": "Navami",
+    "timing_rule": "noon_based",
+    "allow_in_adhika": false,
+    "priority": "medium",
+    "source_status": "confirmed",
+    "i18n": {
+      "ru": {
+        "name": "Сита Навами",
+        "description": "Шримати Сита Деви — дочь царя Джанаки и супруга Господа Рамачандры. Она — сама Лакшмиджи, вечная супруга Господа Нарайаны, богиня процветания. Её приемный отец нашел маленькую Ситу в лесу, сразу увидев, как она похожа на Лакшми Деви. Но со временем он забыл об этом и полюбил её как свою дочь."
+      },
+      "en": {
+        "description": "Appearance day festival for Sri Sita Devi. The calendar matches it by the configured tithi rule."
+      }
+    },
+    "description": "Appearance day festival for Sri Sita Devi. The calendar matches it by the configured tithi rule.",
+    "source_url": "http://harekrishnazp.info/materialy/vajshnavskij-kalendar/676-shrimati-sita-devi.html"
+  },
+  {
+    "id": "nityananda_prabhu_appearance",
+    "name": "Sri Nityananda Prabhu Appearance",
+    "type": "appearance",
+    "category": "mahaprabhu_parsada",
+    "scope": "core_gaudiya",
+    "subject": "Sri Nityananda Prabhu",
+    "masa": "Magha",
+    "paksha": "Gaura",
+    "tithi": "Trayodashi",
+    "timing_rule": "noon_based",
+    "allow_in_adhika": false,
+    "priority": "highest",
+    "source_status": "superseded_by_hkzp_541_nityananda_trayodashi",
+    "i18n": {
+      "ru": {
+        "name": "Явление Шри Нитьянанды Прабху",
+        "description": "Великий святой Вриндаван Дас Тхакур говорит, что этот праздник полон безграничной милости. Шри Нитьянанда пришел как главный спутник Господа Чайтаньи. Со всей самоотдачей служа Гауранге, Он учит нас тому, что может сделать нас полностью счастливыми. Именно это и выражает его имя - «вечное блаженство». Поклоняясь Господу Нитьянанде, каждый обретет любовь и преданность лотосным стопам Кришны."
+      },
+      "en": {
+        "description": "Appearance day festival for Sri Nityananda Prabhu. The calendar matches it by the configured tithi rule."
+      }
+    },
+    "description": "Appearance day festival for Sri Nityananda Prabhu. The calendar matches it by the configured tithi rule.",
+    "source_url": "http://harekrishnazp.info/materialy/vajshnavskij-kalendar/510-gospod-nityananda.html",
+    "disabled": true
+  },
+  {
+    "id": "scsmath_541_gopal_bhatta_appearance",
+    "name": "Appearance of Srila Gopal Bhatta Goswami Prabhu",
+    "type": "vaishnava_appearance",
+    "category": "vaishnava_appearance",
+    "subject": "Srila Gopal Bhatta Goswami Prabhu",
+    "source_status": "tithi_rule_from_scsmath_541",
+    "gaudiya_masa": "Madhava",
+    "paksha": "Krishna",
+    "tithi": "Tritiya",
+    "timing_rule": "sunrise_based",
+    "allow_in_adhika": false,
+    "i18n": {
+      "ru": {
+        "name": "Явление Шрилы Гопала Бхатты Госвами Прабху",
+        "description": "Шри Гопала Бхатта родился в 1503 году по христианскому летоисчислению, на 13-й день убывающей луны пауши месяца. Шри Гопала Бхатта Госвами был сыном Вьенкатты Бхатты, брахмана, жившего в Шри-Рангаме и получившего посвящение в Шри-сампрадае. Город Шри-Рангам расположен на берегу реки Кавери в округе Танджор, в 16 км к западу от Кумбхаконама."
+      },
+      "en": {
+        "description": "Commemoration of the appearance day of Srila Gopal Bhatta Goswami Prabhu. This event is matched by the Vaishnava tithi rule stored in the calendar database."
+      }
+    },
+    "description": "Commemoration of the appearance day of Srila Gopal Bhatta Goswami Prabhu. This event is matched by the Vaishnava tithi rule stored in the calendar database.",
+    "source_url": "http://harekrishnazp.info/materialy/vajshnavskij-kalendar/792-gopala-bkhatta-gosvami.html"
+  },
+  {
+    "id": "scsmath_541_ramachandra_kaviraj_disappearance",
+    "name": "Disappearance of Srila Ramachandra Kaviraj",
+    "type": "vaishnava_disappearance",
+    "category": "vaishnava_disappearance",
+    "subject": "Srila Ramachandra Kaviraj",
+    "source_status": "tithi_rule_from_scsmath_541",
+    "gaudiya_masa": "Madhava",
+    "paksha": "Krishna",
+    "tithi": "Tritiya",
+    "timing_rule": "sunrise_based",
+    "allow_in_adhika": false,
+    "i18n": {
+      "ru": {
+        "name": "Уход Шрилы Рамачандры Кавираджа",
+        "description": "Рамачандра Кавирадж был учеником Шрилы Шриниваса Ачарьи и близким другом Шрилы Нароттамы даса Тхакура. Ранее его звали Таджнив Сена. Родился он в Кумаранагаре, а после женитьбы переехал в Шри-Ханду."
+      },
+      "en": {
+        "description": "Commemoration of the disappearance day of Srila Ramachandra Kaviraj. This event is matched by the Vaishnava tithi rule stored in the calendar database."
+      }
+    },
+    "description": "Commemoration of the disappearance day of Srila Ramachandra Kaviraj. This event is matched by the Vaishnava tithi rule stored in the calendar database.",
+    "source_url": "http://harekrishnazp.info/materialy/vajshnavskij-kalendar/1022-ramachandra-kaviradzh.html"
+  },
+  {
+    "id": "scsmath_541_advaita_acharya_appearance",
+    "name": "Appearance of Sri Advaita Acharya",
+    "type": "vaishnava_appearance",
+    "category": "vaishnava_appearance",
+    "subject": "Sri Advaita Acharya",
+    "source_status": "tithi_rule_from_scsmath_541",
+    "gaudiya_masa": "Madhava",
+    "paksha": "Gaura",
+    "tithi": "Saptami",
+    "timing_rule": "sunrise_based",
+    "allow_in_adhika": false,
+    "i18n": {
+      "ru": {
+        "name": "Явление Шри Адвайты Ачарьи",
+        "description": "Шри Адвайта Ачарья — великий святой гаудия-вайшнавской традиции, которому поклоняются как одной из пяти ипостасей Бога, называемых Панча-таттва. Он считается совместным воплощением Маха Вишну и Шивы (Харихара). Адваита Ачарья был одним из близких спутников Чайтаньи Махапрабху, а также духовным учителем Харидаса Тхакура.  Жизнь и деятельность Адвайта Ачарьи описаны в таких трудах как «Чайтанья-чаритамрита» и «Чайтанья-бхагавата»."
+      },
+      "en": {
+        "description": "Commemoration of the appearance day of Sri Advaita Acharya. This event is matched by the Vaishnava tithi rule stored in the calendar database."
+      }
+    },
+    "description": "Commemoration of the appearance day of Sri Advaita Acharya. This event is matched by the Vaishnava tithi rule stored in the calendar database.",
+    "source_url": "http://harekrishnazp.info/materialy/vajshnavskij-kalendar/1045-advajta-acharya.html"
+  },
+  {
+    "id": "scsmath_541_guru_gaura_nityananda_installation",
+    "name": "Installation anniversary of Sri Sri Guru Gaura Nityananda Jiu",
+    "type": "deity_installation",
+    "category": "deity_temple",
+    "subject": "Sri Sri Guru Gaura Nityananda Jiu",
+    "source_status": "tithi_rule_from_scsmath_541_observed_next_day_in_sources",
+    "gaudiya_masa": "Madhava",
+    "paksha": "Gaura",
+    "tithi": "Trayodashi",
+    "timing_rule": "noon_based",
+    "allow_in_adhika": false,
+    "i18n": {
+      "ru": {
+        "name": "Годовщина установки Шри Шри Гуру Гаура Нитьянанды Джиу",
+        "description": "Храмовый праздник или день установки Божеств: Годовщина установки Шри Шри Гуру Гаура Нитьянанды Джиу. Событие привязано к титхи, указанному в базе календаря."
+      }
+    },
+    "description": "Temple or Deity festival connected with Sri Sri Guru Gaura Nityananda Jiu. This event is matched by the tithi rule stored in the calendar database.",
+    "observance_offset_days": 1
+  },
+  {
+    "id": "scsmath_541_bhakti_siddhanta_appearance",
+    "name": "Appearance of Srila Bhakti Siddhanta Saraswati Goswami Prabhupad",
+    "type": "vaishnava_appearance",
+    "category": "vaishnava_appearance",
+    "subject": "Srila Bhakti Siddhanta Saraswati Goswami Prabhupad",
+    "source_status": "tithi_rule_from_scsmath_541",
+    "gaudiya_masa": "Govinda",
+    "paksha": "Krishna",
+    "tithi": "Panchami",
+    "timing_rule": "sunrise_based",
+    "allow_in_adhika": false,
+    "i18n": {
+      "ru": {
+        "name": "Явление Шрилы Бхакти Сиддханты Сарасвати Госвами Прабхупада",
+        "description": "Шрила Бхактисиддханта Сарасвати Тхакур, гуру Шрилы Бхактиведанты Свами Прабхупады, явился в Шри Кшетра-дхаме (Джаганнатха Пури) 6 февраля 1874 года в семье Шрилы Сатчитананды Бхактивиноды Тхакура. В детстве он быстро изучил Веды, наизусть запомнил «Бхагавад-гиту» и наслаждался изучением философских работ своего отца. За неистощимый запас знаний он получил прозвище «ходячая энциклопедия»."
+      },
+      "en": {
+        "description": "Commemoration of the appearance day of Srila Bhakti Siddhanta Saraswati Goswami Prabhupad. This event is matched by the Vaishnava tithi rule stored in the calendar database."
+      }
+    },
+    "description": "Commemoration of the appearance day of Srila Bhakti Siddhanta Saraswati Goswami Prabhupad. This event is matched by the Vaishnava tithi rule stored in the calendar database.",
+    "source_url": "http://harekrishnazp.info/materialy/vajshnavskij-kalendar/519-shrila-bkhaktisiddkhanta-sarasvati.html"
+  },
+  {
+    "id": "scsmath_541_gupta_govardhan_installation",
+    "name": "Installation anniversary of Sri Gupta Govardhan Sri Mandir",
+    "type": "deity_installation",
+    "category": "deity_temple",
+    "subject": "Sri Gupta Govardhan Sri Mandir",
+    "source_status": "tithi_rule_from_scsmath_541",
+    "gaudiya_masa": "Govinda",
+    "paksha": "Krishna",
+    "tithi": "Panchami",
+    "timing_rule": "sunrise_based",
+    "allow_in_adhika": false,
+    "i18n": {
+      "ru": {
+        "name": "Годовщина установки Шри Гупта Говардхан Шри Мандира",
+        "description": "Храмовый праздник или день установки Божеств: Годовщина установки Шри Гупта Говардхан Шри Мандира. Событие привязано к титхи, указанному в базе календаря."
+      },
+      "en": {
+        "description": "Imported calendar reference for \"Говардхана Пуджа\". English summary still needs editorial translation; the Russian source summary is linked in source_url."
+      }
+    },
+    "description": "Temple or Deity festival connected with Sri Gupta Govardhan Sri Mandir. This event is matched by the tithi rule stored in the calendar database.",
+    "source_url": "http://harekrishnazp.info/materialy/vajshnavskij-kalendar/322-govardkhana-pudzha.html"
+  },
+  {
+    "id": "scsmath_541_sadashiva_gangadhar_installation",
+    "name": "Installation anniversary of Sri Sadashiva Gangadhar",
+    "type": "deity_installation",
+    "category": "deity_temple",
+    "subject": "Sri Sadashiva Gangadhar",
+    "source_status": "tithi_rule_from_scsmath_541",
+    "gaudiya_masa": "Govinda",
+    "paksha": "Krishna",
+    "tithi": "Amavasya",
+    "timing_rule": "sunrise_based",
+    "allow_in_adhika": false,
+    "i18n": {
+      "ru": {
+        "name": "Годовщина установки Шри Садашивы Гангадхара",
+        "description": "Храмовый праздник или день установки Божеств: Годовщина установки Шри Садашивы Гангадхара. Событие привязано к титхи, указанному в базе календаря."
+      }
+    },
+    "description": "Temple or Deity festival connected with Sri Sadashiva Gangadhar. This event is matched by the tithi rule stored in the calendar database."
+  },
+  {
+    "id": "scsmath_541_jagannath_das_babaji_disappearance",
+    "name": "Disappearance of Srila Jagannath Das Babaji Maharaj",
+    "type": "vaishnava_disappearance",
+    "category": "vaishnava_disappearance",
+    "subject": "Srila Jagannath Das Babaji Maharaj",
+    "source_status": "tithi_rule_from_scsmath_541",
+    "gaudiya_masa": "Govinda",
+    "paksha": "Gaura",
+    "tithi": "Pratipat",
+    "timing_rule": "sunrise_based",
+    "allow_in_adhika": false,
+    "i18n": {
+      "ru": {
+        "name": "Уход Шрилы Джаганнатха Даса Бабаджи Махараджа",
+        "description": "Шрила Джаганнатха дас Бабаджи явился в этот мир примерно в 1750 году в одной глухой деревне, в местности под названием Тангаил округа Майман-сингх, который относится сейчас к Бангладеш. Семья, в которой он появился, принадлежала к родовитой знати."
+      },
+      "en": {
+        "description": "Commemoration of the disappearance day of Srila Jagannath Das Babaji Maharaj. This event is matched by the Vaishnava tithi rule stored in the calendar database."
+      }
+    },
+    "description": "Commemoration of the disappearance day of Srila Jagannath Das Babaji Maharaj. This event is matched by the Vaishnava tithi rule stored in the calendar database.",
+    "source_url": "http://harekrishnazp.info/materialy/vajshnavskij-kalendar/1075-dzhagannatkha-das-babadzhi.html"
+  },
+  {
+    "id": "scsmath_541_radha_ramanasundar_installation",
+    "name": "Installation anniversary of Sri Sri Guru Gauranga Gandharva Radha Ramanasundar Jiu",
+    "type": "deity_installation",
+    "category": "deity_temple",
+    "subject": "Sri Sri Guru Gauranga Gandharva Radha Ramanasundar Jiu",
+    "source_status": "tithi_rule_from_scsmath_541",
+    "gaudiya_masa": "Govinda",
+    "paksha": "Gaura",
+    "tithi": "Tritiya",
+    "timing_rule": "sunrise_based",
+    "allow_in_adhika": false,
+    "i18n": {
+      "ru": {
+        "name": "Годовщина установки Шри Шри Гуру Гауранга Гандхарва Радха Раманасундара Джиу",
+        "description": "Храмовый праздник или день установки Божеств: Годовщина установки Шри Шри Гуру Гауранга Гандхарва Радха Раманасундара Джиу. Событие привязано к титхи, указанному в базе календаря."
+      }
+    },
+    "description": "Temple or Deity festival connected with Sri Sri Guru Gauranga Gandharva Radha Ramanasundar Jiu. This event is matched by the tithi rule stored in the calendar database."
+  },
+  {
+    "id": "scsmath_541_hapaniya_deities_appearance",
+    "name": "Grand appearance of the Holy Deities of Sripat Hapaniya",
+    "type": "deity_installation",
+    "category": "deity_temple",
+    "subject": "Sri Sri Guru Gauranga Radha Gopinath Jiu",
+    "source_status": "tithi_rule_from_scsmath_541",
+    "gaudiya_masa": "Vishnu",
+    "paksha": "Krishna",
+    "tithi": "Panchami",
+    "timing_rule": "sunrise_based",
+    "allow_in_adhika": false,
+    "i18n": {
+      "ru": {
+        "name": "Великое явление святых Божеств Шрипат Хапании",
+        "description": "Храмовый праздник или день установки Божеств: Великое явление святых Божеств Шрипат Хапании. Событие привязано к титхи, указанному в базе календаря."
+      }
+    },
+    "description": "Temple or Deity festival connected with Sri Sri Guru Gauranga Radha Gopinath Jiu. This event is matched by the tithi rule stored in the calendar database."
+  },
+  {
+    "id": "scsmath_541_govinda_ghosh_disappearance",
+    "name": "Disappearance of Srila Govinda Ghosh Thakur",
+    "type": "vaishnava_disappearance",
+    "category": "vaishnava_disappearance",
+    "subject": "Srila Govinda Ghosh Thakur",
+    "source_status": "tithi_rule_from_scsmath_541",
+    "gaudiya_masa": "Vishnu",
+    "paksha": "Krishna",
+    "tithi": "Dvadashi",
+    "timing_rule": "sunrise_based",
+    "allow_in_adhika": false,
+    "i18n": {
+      "ru": {
+        "name": "Уход Шрилы Говинды Гхоша Тхакура",
+        "description": "Говинда Гхош и его братья – Васудева Гхош и Мадхава Гхош были близкими спутниками Господа Чайтаньи и Господа Нитьянанды. Говинда Гхош был также известен как Гхоша Тхакур. Он славился своими красивыми киртанами на ежегодном фестивале Ратха-ятры в Джаганнатха Пури. Господь Чайтанья немедленно начинал танцевать, как только он запевал."
+      },
+      "en": {
+        "description": "Commemoration of the disappearance day of Srila Govinda Ghosh Thakur. This event is matched by the Vaishnava tithi rule stored in the calendar database."
+      }
+    },
+    "description": "Commemoration of the disappearance day of Srila Govinda Ghosh Thakur. This event is matched by the Vaishnava tithi rule stored in the calendar database.",
+    "source_url": "http://harekrishnazp.info/materialy/vajshnavskij-kalendar/1104-govinda-gkhosh.html"
+  },
+  {
+    "id": "scsmath_541_bhakti_sundar_govinda_disappearance",
+    "name": "Disappearance festival of Srila Bhakti Sundar Govinda Dev-Goswami Maharaj",
+    "type": "vaishnava_disappearance",
+    "category": "vaishnava_disappearance",
+    "subject": "Srila Bhakti Sundar Govinda Dev-Goswami Maharaj",
+    "source_status": "tithi_rule_from_scsmath_541",
+    "gaudiya_masa": "Vishnu",
+    "paksha": "Gaura",
+    "tithi": "Dvadashi",
+    "timing_rule": "sunrise_based",
+    "allow_in_adhika": false,
+    "i18n": {
+      "ru": {
+        "name": "Фестиваль ухода Шрилы Бхакти Сундара Говинды Дев-Госвами Махараджа",
+        "description": "Памятный день ухода: Фестиваль ухода Шрилы Бхакти Сундара Говинды Дев-Госвами Махараджа. Событие привязано к вайшнавскому титхи, указанному в базе календаря."
+      }
+    },
+    "description": "Commemoration of the disappearance day of Srila Bhakti Sundar Govinda Dev-Goswami Maharaj. This event is matched by the Vaishnava tithi rule stored in the calendar database."
+  },
+  {
+    "id": "scsmath_541_gadadhar_pandit_appearance",
+    "name": "Appearance of Srila Gadadhar Pandit",
+    "type": "vaishnava_appearance",
+    "category": "vaishnava_appearance",
+    "subject": "Srila Gadadhar Pandit",
+    "source_status": "tithi_rule_from_scsmath_541",
+    "gaudiya_masa": "Madhusudan",
+    "paksha": "Krishna",
+    "tithi": "Amavasya",
+    "timing_rule": "sunrise_based",
+    "allow_in_adhika": false,
+    "i18n": {
+      "ru": {
+        "name": "Явление Шрилы Гададхара Пандита",
+        "description": "Шри Гададхара даса Тхакур жил в Навадвипа-дхаме, но после ухода Шри Чайтаньи Махапрабху переселился в Катву. В конце жизни он перебрался в деревню под названием Эндиядаха-грама, где соорудил свое последнее жилище. В Катве у Гададхары дасы был ученик по имени Ядунандана Чакраварти."
+      },
+      "en": {
+        "description": "Commemoration of the appearance day of Srila Gadadhar Pandit. This event is matched by the Vaishnava tithi rule stored in the calendar database."
+      }
+    },
+    "description": "Commemoration of the appearance day of Srila Gadadhar Pandit. This event is matched by the Vaishnava tithi rule stored in the calendar database.",
+    "source_url": "http://harekrishnazp.info/materialy/vajshnavskij-kalendar/765-gadadkhara-pandit.html"
+  },
+  {
+    "id": "scsmath_541_srinivas_acharya_appearance",
+    "name": "Appearance of Srila Srinivas Acharya",
+    "type": "vaishnava_appearance",
+    "category": "vaishnava_appearance",
+    "subject": "Srila Srinivas Acharya",
+    "source_status": "tithi_rule_from_scsmath_541",
+    "gaudiya_masa": "Madhusudan",
+    "paksha": "Gaura",
+    "tithi": "Purnima",
+    "timing_rule": "sunrise_based",
+    "allow_in_adhika": false,
+    "i18n": {
+      "ru": {
+        "name": "Явление Шрилы Шриниваса Ачарьи",
+        "description": "Став свидетелями церемонии санньясы Господа Гауранги, Чайтанья Даса и его беременная жена посетили Господа Чайтанью в Джаганнатха Пури. «Скоро у твоей жены родится сын по имени Шриниваса,- сказал Господь,- и он распространит все бхакти-шастры Рупы и Санатаны»."
+      },
+      "en": {
+        "description": "Commemoration of the appearance day of Srila Srinivas Acharya. This event is matched by the Vaishnava tithi rule stored in the calendar database."
+      }
+    },
+    "description": "Commemoration of the appearance day of Srila Srinivas Acharya. This event is matched by the Vaishnava tithi rule stored in the calendar database.",
+    "source_url": "http://harekrishnazp.info/materialy/vajshnavskij-kalendar/688-shrinivas-acharya.html"
+  },
+  {
+    "id": "scsmath_541_vrindavan_das_appearance",
+    "name": "Appearance of Srila Vrindavan Das Thakur",
+    "type": "vaishnava_appearance",
+    "category": "vaishnava_appearance",
+    "subject": "Srila Vrindavan Das Thakur",
+    "source_status": "active_legacy_rule_with_harekrishnazp_description",
+    "gaudiya_masa": "Trivikrama",
+    "paksha": "Krishna",
+    "tithi": "Dvadashi",
+    "timing_rule": "sunrise_based",
+    "allow_in_adhika": false,
+    "i18n": {
+      "ru": {
+        "name": "Явление Шрилы Вриндавана Даса Тхакура",
+        "description": "Шрила Вриндаван Дас Тхакур родился спустя четыре года, после того как Махапрабху принял санньясу. Его мать звали Шри Нараяни Деви. Она была племянницей Шриниваса Пандита."
+      },
+      "en": {
+        "description": "Commemoration of the appearance day of Srila Vrindavan Das Thakur. This event is matched by the Vaishnava tithi rule stored in the calendar database."
+      }
+    },
+    "description": "Commemoration of the appearance day of Srila Vrindavan Das Thakur. This event is matched by the Vaishnava tithi rule stored in the calendar database.",
+    "source_url": "http://harekrishnazp.info/materialy/vajshnavskij-kalendar/646-vrindavana-das-tkhakur.html"
+  },
+  {
+    "id": "scsmath_541_madan_mohan_installation",
+    "name": "Installation day festival of Sri Sri Guru Gauranga Radha Madan Mohan Jiu",
+    "type": "deity_installation",
+    "category": "deity_temple",
+    "subject": "Sri Sri Guru Gauranga Radha Madan Mohan Jiu",
+    "source_status": "tithi_rule_from_scsmath_541",
+    "gaudiya_masa": "Trivikrama",
+    "paksha": "Gaura",
+    "tithi": "Pratipat",
+    "timing_rule": "sunrise_based",
+    "allow_in_adhika": false,
+    "i18n": {
+      "ru": {
+        "name": "Праздник установки Шри Шри Гуру Гауранга Радха Мадан Мохана Джиу",
+        "description": "Храмовый праздник или день установки Божеств: Праздник установки Шри Шри Гуру Гауранга Радха Мадан Мохана Джиу. Событие привязано к титхи, указанному в базе календаря."
+      }
+    },
+    "description": "Temple or Deity festival connected with Sri Sri Guru Gauranga Radha Madan Mohan Jiu. This event is matched by the tithi rule stored in the calendar database."
+  },
+  {
+    "id": "scsmath_541_ganga_mata_appearance",
+    "name": "Appearance of Sri Ganga Mata Goswamini",
+    "type": "vaishnava_appearance",
+    "category": "vaishnava_appearance",
+    "subject": "Sri Ganga Mata Goswamini",
+    "source_status": "superseded_by_hkzp_541_gangamata_appearance",
+    "gaudiya_masa": "Trivikrama",
+    "paksha": "Gaura",
+    "tithi": "Dashami",
+    "timing_rule": "sunrise_based",
+    "allow_in_adhika": false,
+    "i18n": {
+      "ru": {
+        "name": "Явление Шри Ганги Маты Госвамини",
+        "description": "На территории нынешней Бенгалии находилось когда-то царство Шри Нареш Нараяны. У царя Нареш Нараяны была дочь по имени Шачи. С самого детства Шачи была величайшей преданной Господа. За короткое время Шачи получила образование. Сначала она погрузилась в грамматику и стихосложение, но достигнув в этих предметах совершенства, она постепенно полностью занялась бесконечным изучением писаний. Несмотря на свой юный возраст, девушка всегда была очарована сознанием Кришны. Когда Шачи выросла, ее красота пленяла всех юношей, но Шачи совершенно не интересовали молодые люди, какими бы красивыми и богатыми они ни были. Она всегда была полна мыслями о Мадана Гопале."
+      },
+      "en": {
+        "description": "Commemoration of the appearance day of Sri Ganga Mata Goswamini. This event is matched by the Vaishnava tithi rule stored in the calendar database."
+      }
+    },
+    "description": "Commemoration of the appearance day of Sri Ganga Mata Goswamini. This event is matched by the Vaishnava tithi rule stored in the calendar database.",
+    "source_url": "http://harekrishnazp.info/materialy/vajshnavskij-kalendar/734-gangamati-gosvamini.html",
+    "disabled": true
+  },
+  {
+    "id": "scsmath_541_baladev_vidyabhushan_disappearance",
+    "name": "Disappearance of Srila Baladev Vidyabhushan Prabhu",
+    "type": "vaishnava_disappearance",
+    "category": "vaishnava_disappearance",
+    "subject": "Srila Baladev Vidyabhushan Prabhu",
+    "source_status": "tithi_rule_from_scsmath_541",
+    "gaudiya_masa": "Trivikrama",
+    "paksha": "Gaura",
+    "tithi": "Dashami",
+    "timing_rule": "sunrise_based",
+    "allow_in_adhika": false,
+    "i18n": {
+      "ru": {
+        "name": "Уход Шрилы Баладева Видьябхушана Прабху",
+        "description": "Шрила Баладева Видьябхушана Прабху был чистым преданным, которого не интересовало ничего, кроме служения Господу. У него не было ни малейшего стремления к имени и славе. Он написал много священных книг, бесценных, как бриллианты, ради величайшего блага всех, кто родился в человеческом теле."
+      },
+      "en": {
+        "description": "Commemoration of the disappearance day of Srila Baladev Vidyabhushan Prabhu. This event is matched by the Vaishnava tithi rule stored in the calendar database."
+      }
+    },
+    "description": "Commemoration of the disappearance day of Srila Baladev Vidyabhushan Prabhu. This event is matched by the Vaishnava tithi rule stored in the calendar database.",
+    "source_url": "http://harekrishnazp.info/materialy/vajshnavskij-kalendar/733-baladev-vidyabkhushana.html"
+  },
+  {
+    "id": "scsmath_541_vakreshvar_pandit_appearance",
+    "name": "Appearance of Srila Vakreshvar Pandit",
+    "type": "vaishnava_appearance",
+    "category": "vaishnava_appearance",
+    "subject": "Srila Vakreshvar Pandit",
+    "source_status": "tithi_rule_from_scsmath_541",
+    "gaudiya_masa": "Vamana",
+    "paksha": "Krishna",
+    "tithi": "Panchami",
+    "timing_rule": "sunrise_based",
+    "allow_in_adhika": false,
+    "i18n": {
+      "ru": {
+        "name": "Явление Шрилы Вакрешвара Пандита",
+        "description": "Прекрасный певец и танцор, Вакрешвара Пандит своим служением всегда приносил наслаждение Господу Чайтанье – в группах санкиртаны в Навадвипе (в которых он принял участие с момента их появления), театральных постановках в Шриваса Ангаме и на ежегодном фестивале Ратха-ятры в Джаганнатха Пури."
+      },
+      "en": {
+        "description": "Commemoration of the appearance day of Srila Vakreshvar Pandit. This event is matched by the Vaishnava tithi rule stored in the calendar database."
+      }
+    },
+    "description": "Commemoration of the appearance day of Srila Vakreshvar Pandit. This event is matched by the Vaishnava tithi rule stored in the calendar database.",
+    "source_url": "http://harekrishnazp.info/materialy/vajshnavskij-kalendar/778-vakreshvara-pandit.html"
+  },
+  {
+    "id": "scsmath_541_gadadhar_bhaktivinod_disappearance",
+    "name": "Disappearance of Srila Gadadhar Pandit and Srila Bhakti Vinod Thakur",
+    "type": "vaishnava_disappearance",
+    "category": "vaishnava_disappearance",
+    "subject": "Srila Gadadhar Pandit; Srila Bhakti Vinod Thakur",
+    "source_status": "tithi_rule_from_scsmath_541",
+    "gaudiya_masa": "Vamana",
+    "paksha": "Krishna",
+    "tithi": "Amavasya",
+    "timing_rule": "sunrise_based",
+    "allow_in_adhika": false,
+    "i18n": {
+      "ru": {
+        "name": "Уход Шрилы Гададхара Пандита и Шрилы Бхакти Винода Тхакура",
+        "description": "Памятный день ухода: Уход Шрилы Гададхара Пандита и Шрилы Бхакти Винода Тхакура. Событие привязано к вайшнавскому титхи, указанному в базе календаря."
+      },
+      "en": {
+        "description": "Imported calendar reference for \"День ухода Бхактивиноды Тхакура\". English summary still needs editorial translation; the Russian source summary is linked in source_url."
+      }
+    },
+    "description": "Commemoration of the disappearance day of Srila Gadadhar Pandit; Srila Bhakti Vinod Thakur. This event is matched by the Vaishnava tithi rule stored in the calendar database.",
+    "source_url": "http://harekrishnazp.info/materialy/vajshnavskij-kalendar/1179-bhaktivinoda-thakur.html"
+  },
+  {
+    "id": "scsmath_541_vyasadev_appearance",
+    "name": "Appearance of Srila Vyasadev",
+    "type": "vaishnava_appearance",
+    "category": "vaishnava_appearance",
+    "subject": "Srila Vyasadev",
+    "source_status": "tithi_rule_from_scsmath_541",
+    "gaudiya_masa": "Vamana",
+    "paksha": "Gaura",
+    "tithi": "Purnima",
+    "timing_rule": "sunrise_based",
+    "allow_in_adhika": false,
+    "i18n": {
+      "ru": {
+        "name": "Явление Шрилы Вьясадева",
+        "description": "Памятный день явления: Явление Шрилы Вьясадева. Событие привязано к вайшнавскому титхи, указанному в базе календаря."
+      }
+    },
+    "description": "Commemoration of the appearance day of Srila Vyasadev. This event is matched by the Vaishnava tithi rule stored in the calendar database."
+  },
+  {
+    "id": "scsmath_541_sanatan_goswami_disappearance",
+    "name": "Disappearance of Srila Sanatan Goswami Prabhu",
+    "type": "vaishnava_disappearance",
+    "category": "vaishnava_disappearance",
+    "subject": "Srila Sanatan Goswami Prabhu",
+    "source_status": "tithi_rule_from_scsmath_541",
+    "gaudiya_masa": "Vamana",
+    "paksha": "Gaura",
+    "tithi": "Purnima",
+    "timing_rule": "sunrise_based",
+    "allow_in_adhika": false,
+    "i18n": {
+      "ru": {
+        "name": "Уход Шрилы Санатана Госвами Прабху",
+        "description": "Шри Санатана Госвами явился в 1488 году, за пять лет до рождения Шри Рупы Госвами, в семье бенгальского сарасвата-брахмана. Санатана вместе с двумя своими братьями, Рупой и Анупамой, с самого раннего детства были погружены в бхава-бхакти. Храня в памяти Вриндаван, они назвали леса, в которых им доводилось играть, именами священных лесов Враджи (Талавана, Мадхувана, Камьявана, Мадхавана). Они назвали свои любимые пруды Радха-кундой и Шьяма-кундой."
+      },
+      "en": {
+        "description": "Commemoration of the disappearance day of Srila Sanatan Goswami Prabhu. This event is matched by the Vaishnava tithi rule stored in the calendar database."
+      }
+    },
+    "description": "Commemoration of the disappearance day of Srila Sanatan Goswami Prabhu. This event is matched by the Vaishnava tithi rule stored in the calendar database.",
+    "source_url": "http://harekrishnazp.info/materialy/vajshnavskij-kalendar/784-sanatana-gosvami.html"
+  },
+  {
+    "id": "scsmath_541_bhakti_raksak_sridhar_disappearance",
+    "name": "Disappearance festival of Srila Bhakti Raksak Sridhar Dev-Goswami Maharaj",
+    "type": "vaishnava_disappearance",
+    "category": "vaishnava_disappearance",
+    "subject": "Srila Bhakti Raksak Sridhar Dev-Goswami Maharaj",
+    "source_status": "tithi_rule_from_scsmath_541",
+    "gaudiya_masa": "Sridhara",
+    "paksha": "Krishna",
+    "tithi": "Amavasya",
+    "timing_rule": "sunrise_based",
+    "allow_in_adhika": false,
+    "i18n": {
+      "ru": {
+        "name": "Фестиваль ухода Шрилы Бхакти Ракшака Шридхара Дев-Госвами Махараджа",
+        "description": "Памятный день ухода: Фестиваль ухода Шрилы Бхакти Ракшака Шридхара Дев-Госвами Махараджа. Событие привязано к вайшнавскому титхи, указанному в базе календаря."
+      }
+    },
+    "description": "Commemoration of the disappearance day of Srila Bhakti Raksak Sridhar Dev-Goswami Maharaj. This event is matched by the Vaishnava tithi rule stored in the calendar database."
+  },
+  {
+    "id": "scsmath_541_rupa_goswami_disappearance",
+    "name": "Disappearance of Srila Rupa Goswami and Srila Gauri Das Pandit Goswami",
+    "type": "vaishnava_disappearance",
+    "category": "vaishnava_disappearance",
+    "subject": "Srila Rupa Goswami; Srila Gauri Das Pandit Goswami",
+    "source_status": "tithi_rule_from_scsmath_541",
+    "gaudiya_masa": "Sridhara",
+    "paksha": "Gaura",
+    "tithi": "Dvadashi",
+    "timing_rule": "sunrise_based",
+    "allow_in_adhika": false,
+    "i18n": {
+      "ru": {
+        "name": "Уход Шрилы Рупы Госвами и Шрилы Гаури Даса Пандита Госвами",
+        "description": "В 1517 году Шри Рупа Госвами и его старший брат Шри Санатана Госвами пришли во Вриндаван, чтобы выполнить четыре задачи, поставленные пред ними Господом Чайтаньей: разыскать утерянные места игр Шри Кришны; установить Божества и начать проводить пуджи; написать бхакти-шастры; проповедовать принципы бхакти-йоги. Он – близкий спутник Шри Чайтаньи Махапрабху и сама жизнь Гаудия-сампрадаи."
+      },
+      "en": {
+        "description": "Commemoration of the disappearance day of Srila Rupa Goswami; Srila Gauri Das Pandit Goswami. This event is matched by the Vaishnava tithi rule stored in the calendar database."
+      }
+    },
+    "description": "Commemoration of the disappearance day of Srila Rupa Goswami; Srila Gauri Das Pandit Goswami. This event is matched by the Vaishnava tithi rule stored in the calendar database.",
+    "source_url": "http://harekrishnazp.info/materialy/vajshnavskij-kalendar/815-rupa-gosvami.html"
+  },
+  {
+    "id": "scsmath_541_bhaktivedanta_swami_appearance",
+    "name": "Appearance of Srila Bhaktivedanta Swami Maharaj Prabhupad",
+    "type": "vaishnava_appearance",
+    "category": "vaishnava_appearance",
+    "subject": "Srila Bhaktivedanta Swami Maharaj Prabhupad",
+    "source_status": "tithi_rule_from_scsmath_541",
+    "gaudiya_masa": "Hrishikesha",
+    "paksha": "Krishna",
+    "tithi": "Navami",
+    "timing_rule": "sunrise_based",
+    "allow_in_adhika": false,
+    "i18n": {
+      "ru": {
+        "name": "Явление Шрилы Бхактиведанты Свами Махараджа Прабхупада",
+        "description": "Абхай Чаран Де явился в этом мире в 1896 г. В Калькутте (Индия). Впервые он встретился со своим духовным учителем, Шрилой Бхактисиддхантой Сарасвати Госвами, в Калькутте в 1922 г. Бхактисиддханте Сарасвати, выдающемуся ученому в области религии и основателю 64-х Гаудия Матх (Ведических институтов), понравился образованный молодой человек, и он убедил его в том, что ему следует посвятить свою жизнь распространению Ведического знания. Шрила Прабхупада стал его учеником, и спустя 11 лет (в 1933 г.) принял у него формальное ученическое посвящение."
+      },
+      "en": {
+        "description": "Commemoration of the appearance day of Srila Bhaktivedanta Swami Maharaj Prabhupad. This event is matched by the Vaishnava tithi rule stored in the calendar database."
+      }
+    },
+    "description": "Commemoration of the appearance day of Srila Bhaktivedanta Swami Maharaj Prabhupad. This event is matched by the Vaishnava tithi rule stored in the calendar database.",
+    "source_url": "http://harekrishnazp.info/materialy/vajshnavskij-kalendar/830-den-yavleniya-shrily-prabkhupady.html"
+  },
+  {
+    "id": "scsmath_541_jiva_goswami_appearance",
+    "name": "Appearance of Srila Jiva Goswami Prabhu",
+    "type": "vaishnava_appearance",
+    "category": "vaishnava_appearance",
+    "subject": "Srila Jiva Goswami Prabhu",
+    "source_status": "tithi_rule_from_scsmath_541",
+    "gaudiya_masa": "Hrishikesha",
+    "paksha": "Gaura",
+    "tithi": "Dvadashi",
+    "timing_rule": "sunrise_based",
+    "allow_in_adhika": false,
+    "i18n": {
+      "ru": {
+        "name": "Явление Шрилы Дживы Госвами Прабху",
+        "description": "Будучи племянником Шри Рупы Госвами и Санатаны Госвами, Шри Джива Госвами явил все чарующие качества махапуруши (божественной личности). У него были напоминавшие лепестки лотоса глаза, прямой нос, высокий лоб, широкая грудь, длинные руки и излучающее сияние тело золотистого цвета."
+      },
+      "en": {
+        "description": "Commemoration of the appearance day of Srila Jiva Goswami Prabhu. This event is matched by the Vaishnava tithi rule stored in the calendar database."
+      }
+    },
+    "description": "Commemoration of the appearance day of Srila Jiva Goswami Prabhu. This event is matched by the Vaishnava tithi rule stored in the calendar database.",
+    "source_url": "http://harekrishnazp.info/materialy/vajshnavskij-kalendar/854-dzhiva-gosvami.html"
+  },
+  {
+    "id": "scsmath_541_bhaktivinod_thakur_appearance",
+    "name": "Appearance of Srila Bhakti Vinod Thakur",
+    "type": "vaishnava_appearance",
+    "category": "vaishnava_appearance",
+    "subject": "Srila Bhakti Vinod Thakur",
+    "source_status": "tithi_rule_from_scsmath_541",
+    "gaudiya_masa": "Hrishikesha",
+    "paksha": "Gaura",
+    "tithi": "Trayodashi",
+    "timing_rule": "sunrise_based",
+    "allow_in_adhika": false,
+    "i18n": {
+      "ru": {
+        "name": "Явление Шрилы Бхакти Винода Тхакура",
+        "description": "Вся жизнь Бхактивинода Тхакура была посвящена служению Шри Кришне, Верховной Личности Бога. По тому, какое благо принесла его деятельность миру, ее можно сравнить только с грандиозной деятельность Самого Шри Чайтаньи Махапрабху и шестерых Госвами. Его духовная деятельность и божественные писания оказали на разумных и образованных людей громадное влияние и зародили веру в возвышенные наставления и заповеди Господа Чайтаньи."
+      },
+      "en": {
+        "description": "Commemoration of the appearance day of Srila Bhakti Vinod Thakur. This event is matched by the Vaishnava tithi rule stored in the calendar database."
+      }
+    },
+    "description": "Commemoration of the appearance day of Srila Bhakti Vinod Thakur. This event is matched by the Vaishnava tithi rule stored in the calendar database.",
+    "source_url": "http://harekrishnazp.info/materialy/vajshnavskij-kalendar/1179-bhaktivinoda-thakur.html"
+  },
+  {
+    "id": "scsmath_541_haridas_thakur_disappearance",
+    "name": "Disappearance of Srila Haridas Thakur",
+    "type": "vaishnava_disappearance",
+    "category": "vaishnava_disappearance",
+    "subject": "Srila Haridas Thakur",
+    "source_status": "tithi_rule_from_scsmath_541",
+    "gaudiya_masa": "Hrishikesha",
+    "paksha": "Gaura",
+    "tithi": "Chaturdashi",
+    "timing_rule": "sunrise_based",
+    "allow_in_adhika": false,
+    "i18n": {
+      "ru": {
+        "name": "Уход Шрилы Харидаса Тхакура",
+        "description": "Харидас Тхакур - один из самых близких спутников Шри Чайтаньи Махапрабху. Ежедневно он воспевал 300 000 Святых имен Господа. Махапрабху называл его намачарьей - духовным наставником воспевания Святого Имени. Вместе с Нитьянандой Прабху по указанию Шри Чайтаньи проповедовал славу Святого Имени в Бенгалии. Последние годы своей святой жизни провел в Пури, где и оставил тело на руках Махапрабху, воспевая Харе Кришна махамантру. О его жизни и проповеднической деятельности можно прочесть в «Чайтанья-чаритамрите» Шрилы Кришнадаса Кавираджа Госвами и «Чайтанья Бхагавате» Шрилы Вриндавана Даса Тхакура. Наставления Харидаса Тхакура о природе Святого Имени Кришны, о величии и цели Его воспевания, а..."
+      },
+      "en": {
+        "description": "Commemoration of the disappearance day of Srila Haridas Thakur. This event is matched by the Vaishnava tithi rule stored in the calendar database."
+      }
+    },
+    "description": "Commemoration of the disappearance day of Srila Haridas Thakur. This event is matched by the Vaishnava tithi rule stored in the calendar database.",
+    "source_url": "http://harekrishnazp.info/materialy/vajshnavskij-kalendar/856-haridas-tkhakur.html"
+  },
+  {
+    "id": "scsmath_541_raghunath_krishnadas_disappearance",
+    "name": "Disappearance of Srila Raghunath Das Goswami, Srila Raghunath Bhatta Goswami, and Srila Krishnadas Kaviraj Goswami",
+    "type": "vaishnava_disappearance",
+    "category": "vaishnava_disappearance",
+    "subject": "Srila Raghunath Das Goswami; Srila Raghunath Bhatta Goswami; Srila Krishnadas Kaviraj Goswami",
+    "source_status": "tithi_rule_from_scsmath_541",
+    "gaudiya_masa": "Padmanabha",
+    "paksha": "Krishna",
+    "tithi": "Dvadashi",
+    "timing_rule": "sunrise_based",
+    "allow_in_adhika": false,
+    "i18n": {
+      "ru": {
+        "name": "Уход Шрилы Рагхунатха Даса Госвами, Шрилы Рагхунатха Бхатты Госвами и Шрилы Кришнадаса Кавираджа Госвами",
+        "description": "Памятный день ухода: Уход Шрилы Рагхунатха Даса Госвами, Шрилы Рагхунатха Бхатты Госвами и Шрилы Кришнадаса Кавираджа Госвами. Событие привязано к вайшнавскому титхи, указанному в базе календаря."
+      },
+      "en": {
+        "description": "Imported calendar reference for \"День явления Рагхунатхи Даса Госвами\". English summary still needs editorial translation; the Russian source summary is linked in source_url."
+      }
+    },
+    "description": "Commemoration of the disappearance day of Srila Raghunath Das Goswami; Srila Raghunath Bhatta Goswami; Srila Krishnadas Kaviraj Goswami. This event is matched by the Vaishnava tithi rule stored in the calendar database.",
+    "source_url": "http://harekrishnazp.info/materialy/vajshnavskij-kalendar/1034-ragkhunatkha-das-gosvami.html"
+  },
+  {
+    "id": "scsmath_541_narottam_disappearance",
+    "name": "Disappearance of Srila Narottam Das Thakur",
+    "type": "vaishnava_disappearance",
+    "category": "vaishnava_disappearance",
+    "subject": "Srila Narottam Das Thakur",
+    "source_status": "tithi_rule_from_scsmath_541",
+    "gaudiya_masa": "Damodara",
+    "paksha": "Krishna",
+    "tithi": "Panchami",
+    "timing_rule": "sunrise_based",
+    "allow_in_adhika": false,
+    "i18n": {
+      "ru": {
+        "name": "Уход Шрилы Нароттама Даса Тхакура",
+        "description": "Нароттам Дас Тхакур был воплощением учения Гаудия. Он передавал любовь к Богу через известную нам поэзию и так же поэтично претворял свою любовь в жизнь. Он был совершенным преданным, идеалом божественного посланника, качества которого описывали Шесть Госвами всякий раз, когда их перо касалось пальмовых листьев. Суть философских представлений Гаудия-вайшнавизма отражена во всех его песнях идеалы.» Появлению Нароттама Даса Тхакура предшествуют два важных события. Первое - это явление в этом мире Локанатха Госвами, а второе - предсказание его рождения Шри Чайтаньей Махапрабху."
+      },
+      "en": {
+        "description": "Commemoration of the disappearance day of Srila Narottam Das Thakur. This event is matched by the Vaishnava tithi rule stored in the calendar database."
+      }
+    },
+    "description": "Commemoration of the disappearance day of Srila Narottam Das Thakur. This event is matched by the Vaishnava tithi rule stored in the calendar database.",
+    "source_url": "http://harekrishnazp.info/materialy/vajshnavskij-kalendar/894-narottama-das-tkhakur.html"
+  },
+  {
+    "id": "scsmath_541_sridhar_appearance",
+    "name": "Appearance day celebration of Srila Bhakti Raksak Sridhar Dev-Goswami Maharaj",
+    "type": "vaishnava_appearance",
+    "category": "vaishnava_appearance",
+    "subject": "Srila Bhakti Raksak Sridhar Dev-Goswami Maharaj",
+    "source_status": "tithi_rule_from_scsmath_541",
+    "gaudiya_masa": "Damodara",
+    "paksha": "Krishna",
+    "tithi": "Navami",
+    "timing_rule": "sunrise_based",
+    "allow_in_adhika": false,
+    "i18n": {
+      "ru": {
+        "name": "Празднование явления Шрилы Бхакти Ракшака Шридхара Дев-Госвами Махараджа",
+        "description": "Памятный день явления: Празднование явления Шрилы Бхакти Ракшака Шридхара Дев-Госвами Махараджа. Событие привязано к вайшнавскому титхи, указанному в базе календаря."
+      }
+    },
+    "description": "Commemoration of the appearance day of Srila Bhakti Raksak Sridhar Dev-Goswami Maharaj. This event is matched by the Vaishnava tithi rule stored in the calendar database."
+  },
+  {
+    "id": "scsmath_541_vrindavan_rasa_bihari_installation",
+    "name": "Installation anniversary of Sri Sri Guru Gauranga Gandharva Rasa Bihari Jiu",
+    "type": "deity_installation",
+    "category": "deity_temple",
+    "subject": "Sri Sri Guru Gauranga Gandharva Rasa Bihari Jiu",
+    "source_status": "tithi_rule_from_scsmath_541",
+    "gaudiya_masa": "Damodara",
+    "paksha": "Gaura",
+    "tithi": "Purnima",
+    "timing_rule": "sunrise_based",
+    "allow_in_adhika": false,
+    "i18n": {
+      "ru": {
+        "name": "Годовщина установки Шри Шри Гуру Гауранга Гандхарва Раса Бихари Джиу",
+        "description": "Храмовый праздник или день установки Божеств: Годовщина установки Шри Шри Гуру Гауранга Гандхарва Раса Бихари Джиу. Событие привязано к титхи, указанному в базе календаря."
+      }
+    },
+    "description": "Temple or Deity festival connected with Sri Sri Guru Gauranga Gandharva Rasa Bihari Jiu. This event is matched by the tithi rule stored in the calendar database."
+  },
+  {
+    "id": "scsmath_541_narahari_sarkar_disappearance",
+    "name": "Disappearance of Srila Narahari Sarkar Thakur",
+    "type": "vaishnava_disappearance",
+    "category": "vaishnava_disappearance",
+    "subject": "Srila Narahari Sarkar Thakur",
+    "source_status": "tithi_rule_from_scsmath_541",
+    "gaudiya_masa": "Keshava",
+    "paksha": "Krishna",
+    "tithi": "Dvadashi",
+    "timing_rule": "sunrise_based",
+    "allow_in_adhika": false,
+    "i18n": {
+      "ru": {
+        "name": "Уход Шрилы Нарахари Саркара Тхакура",
+        "description": "«До того, как встретиться с Махапрабху, Нарахари написал множество песен на санскрите и бенгали, посвященных враджа-расе Радха-Гиридхари. Вместе с Гададхарой Пандитом они никогда не покидали Господа Чайтанью. Обычно Нарахари доставлял удовольствие Господу, обмахивая Его чамарой или веером из павлиньих перьев. В своей песне «Гаура-арати» Шрила Тхакур Бхактивинода написал следующие слова: нарахари ади кори чамара дхулайа."
+      },
+      "en": {
+        "description": "Commemoration of the disappearance day of Srila Narahari Sarkar Thakur. This event is matched by the Vaishnava tithi rule stored in the calendar database."
+      }
+    },
+    "description": "Commemoration of the disappearance day of Srila Narahari Sarkar Thakur. This event is matched by the Vaishnava tithi rule stored in the calendar database.",
+    "source_url": "http://harekrishnazp.info/materialy/vajshnavskij-kalendar/932-narakhari-sarakara-tkhakur.html"
+  },
+  {
+    "id": "scsmath_541_bhakti_sundar_govinda_appearance",
+    "name": "Appearance day celebration of Srila Bhakti Sundar Govinda Dev-Goswami Maharaj",
+    "type": "vaishnava_appearance",
+    "category": "vaishnava_appearance",
+    "subject": "Srila Bhakti Sundar Govinda Dev-Goswami Maharaj",
+    "source_status": "tithi_rule_from_scsmath_541",
+    "gaudiya_masa": "Narayana",
+    "paksha": "Krishna",
+    "tithi": "Dvitiya",
+    "timing_rule": "sunrise_based",
+    "allow_in_adhika": false,
+    "i18n": {
+      "ru": {
+        "name": "Празднование явления Шрилы Бхакти Сундара Говинды Дев-Госвами Махараджа",
+        "description": "Памятный день явления: Празднование явления Шрилы Бхакти Сундара Говинды Дев-Госвами Махараджа. Событие привязано к вайшнавскому титхи, указанному в базе календаря."
+      }
+    },
+    "description": "Commemoration of the appearance day of Srila Bhakti Sundar Govinda Dev-Goswami Maharaj. This event is matched by the Vaishnava tithi rule stored in the calendar database."
+  },
+  {
+    "id": "scsmath_541_bhakti_siddhanta_disappearance",
+    "name": "Disappearance festival of Srila Bhakti Siddhanta Saraswati Goswami Prabhupad",
+    "type": "vaishnava_disappearance",
+    "category": "vaishnava_disappearance",
+    "subject": "Srila Bhakti Siddhanta Saraswati Goswami Prabhupad",
+    "source_status": "tithi_rule_from_scsmath_541",
+    "gaudiya_masa": "Narayana",
+    "paksha": "Krishna",
+    "tithi": "Chaturthi",
+    "timing_rule": "sunrise_based",
+    "allow_in_adhika": false,
+    "i18n": {
+      "ru": {
+        "name": "Фестиваль ухода Шрилы Бхакти Сиддханты Сарасвати Госвами Прабхупада",
+        "description": "Шрила Бхактисиддханта Сарасвати Тхакур, гуру Шрилы Бхактиведанты Свами Прабхупады, явился в Шри Кшетра-дхаме (Джаганнатха Пури) 6 февраля 1874 года в семье Шрилы Сатчитананды Бхактивиноды Тхакура. В детстве он быстро изучил Веды, наизусть запомнил «Бхагавад-гиту» и наслаждался изучением философских работ своего отца. За неистощимый запас знаний он получил прозвище «ходячая энциклопедия»."
+      },
+      "en": {
+        "description": "Commemoration of the disappearance day of Srila Bhakti Siddhanta Saraswati Goswami Prabhupad. This event is matched by the Vaishnava tithi rule stored in the calendar database."
+      }
+    },
+    "description": "Commemoration of the disappearance day of Srila Bhakti Siddhanta Saraswati Goswami Prabhupad. This event is matched by the Vaishnava tithi rule stored in the calendar database.",
+    "source_url": "http://harekrishnazp.info/materialy/vajshnavskij-kalendar/519-shrila-bkhaktisiddkhanta-sarasvati.html"
+  },
+  {
+    "id": "hkzp_541_васанта_панчами",
+    "name": "Vasanta Panchami",
+    "type": "festival",
+    "category": "festival",
+    "scope": "matched_harekrishnazp_vaishnavacalendar",
+    "subject": "Васанта Панчами",
+    "gaudiya_masa": "Madhava",
+    "paksha": "Gaura",
+    "tithi": "Panchami",
+    "timing_rule": "sunrise_based",
+    "allow_in_adhika": false,
+    "priority": "medium",
+    "source_status": "matched_by_name_type_tithi",
+    "source_url": "http://harekrishnazp.info/materialy/vajshnavskij-kalendar/1040-sarasvati-pudzha.html",
+    "description": "Imported calendar reference for \"Васанта Панчами\". English summary still needs editorial translation; the Russian source summary is linked in source_url.",
+    "i18n": {
+      "en": {
+        "name": "Vasanta Panchami",
+        "description": "Imported calendar reference for \"Васанта Панчами\". English summary still needs editorial translation; the Russian source summary is linked in source_url."
+      },
+      "ru": {
+        "name": "Васанта Панчами",
+        "description": "Васанта Панчами - день явления Сарасвати Деви - богини мудрости, речи и изящных искусств - в Индии совпадает с первым днем весны. И это довольно символично. Весна всегда символизирует чистоту, начало, надежду, изящество и красоту. Веды рассказывают, что Сарасвати родилась из уст Господа Брахмы, \"вторичного\" творца вселенной. Ее неземная красота и чистота привлекли Господа Брахму, и он захотел жениться на ней. Этот \"асоциальный\" поступок привел к тому, что Господь Брахма был проклят, и поэтому ему не проводят ритуалов поклонения. До сих пор во всей Индии существует лишь несколько храмов Господа Брахмы."
+      }
+    }
+  },
+  {
+    "id": "hkzp_541_день_явления_вишнуприи_деви",
+    "name": "Appearance of Vishnuprii Devi",
+    "type": "vaishnava_appearance",
+    "category": "vaishnava_appearance",
+    "scope": "matched_harekrishnazp_vaishnavacalendar",
+    "subject": "День явления Вишнуприи Деви",
+    "gaudiya_masa": "Madhava",
+    "paksha": "Gaura",
+    "tithi": "Panchami",
+    "timing_rule": "sunrise_based",
+    "allow_in_adhika": false,
+    "priority": "medium",
+    "source_status": "matched_by_name_type_tithi",
+    "source_url": "http://harekrishnazp.info/materialy/vajshnavskij-kalendar/1039-vishnupriya-devi.html",
+    "description": "Imported calendar reference for \"День явления Вишнуприи Деви\". English summary still needs editorial translation; the Russian source summary is linked in source_url.",
+    "i18n": {
+      "en": {
+        "name": "Appearance of Vishnuprii Devi",
+        "description": "Imported calendar reference for \"День явления Вишнуприи Деви\". English summary still needs editorial translation; the Russian source summary is linked in source_url."
+      },
+      "ru": {
+        "name": "День явления Вишнуприи Деви",
+        "description": "Всевышний Господь обладает тремя внутренними шакти (энергиями) – Шри, Бху и Нила. Бху-шакти в гаура-лиле явилась как Шримати Вишнуприя Деви для того, чтобы помочь распространению движения санкиртаны Шри Чайтаньи. Царь Сатраджит, отец Сатьябхамы из Кришна-лилы, явился в Гауранга-лиле как брахман Санатана Мишра, отец Вишнуприи Деви. Шримати Вишнуприя Деви была украшена всевозможными великолепными добродетелями. Она была предана своим родителям и ревностно следовала всем предписаниям священных текстов. Она поклонялась Туласи Деви, соблюдала обет аскета, каждый день трижды принимая омовение в Ганге. Каждый раз, когда она встречала у Ганги Шачи Мату, Вишнуприя смиренно кланялась ей. Шачи Деви..."
+      }
+    }
+  },
+  {
+    "id": "hkzp_541_день_ухода_вишванатхи_чакраварти_тхакура",
+    "name": "Disappearance of Vishvanatkhi Chakravarti Tkhakura",
+    "type": "vaishnava_disappearance",
+    "category": "vaishnava_disappearance",
+    "scope": "matched_harekrishnazp_vaishnavacalendar",
+    "subject": "День ухода Вишванатхи Чакраварти Тхакура",
+    "gaudiya_masa": "Madhava",
+    "paksha": "Gaura",
+    "tithi": "Panchami",
+    "timing_rule": "sunrise_based",
+    "allow_in_adhika": false,
+    "priority": "medium",
+    "source_status": "matched_by_name_type_tithi",
+    "source_url": "http://harekrishnazp.info/materialy/vajshnavskij-kalendar/1038-vishvanatkha-chakravarti-tkhakur.html",
+    "description": "Imported calendar reference for \"День ухода Вишванатхи Чакраварти Тхакура\". English summary still needs editorial translation; the Russian source summary is linked in source_url.",
+    "i18n": {
+      "en": {
+        "name": "Disappearance of Vishvanatkhi Chakravarti Tkhakura",
+        "description": "Imported calendar reference for \"День ухода Вишванатхи Чакраварти Тхакура\". English summary still needs editorial translation; the Russian source summary is linked in source_url."
+      },
+      "ru": {
+        "name": "День ухода Вишванатхи Чакраварти Тхакура",
+        "description": "Разные источники сообщают разные даты рождения Шрилы Вишванатхи Чакраварти. Согласно энциклопедии «Гаудия-вайшнава Абхидана», Чакраварти Тхакур явился в этот мир в 1654 году эры Шака (т.е.1642 г. н.э.). Согласно Шьмалале Госвами, он родился в 1626 году. Мурарилал Адхикари в своём труде «Вайшнава-дигдаршани» указывает 1646 год, а Мадхусудана Таттвавачаспати высказывает предположение, что Вишванатха родился в 1633-1638 годах."
+      }
+    }
+  },
+  {
+    "id": "hkzp_541_день_явления_пундарики_видьянидхи",
+    "name": "Appearance of Pundariki Vidyanidkhi",
+    "type": "vaishnava_appearance",
+    "category": "vaishnava_appearance",
+    "scope": "matched_harekrishnazp_vaishnavacalendar",
+    "subject": "День явления Пундарики Видьянидхи",
+    "gaudiya_masa": "Madhava",
+    "paksha": "Gaura",
+    "tithi": "Panchami",
+    "timing_rule": "sunrise_based",
+    "allow_in_adhika": false,
+    "priority": "medium",
+    "source_status": "matched_by_name_type_tithi",
+    "source_url": "http://harekrishnazp.info/materialy/vajshnavskij-kalendar/1036-pundarika-vidyanidkhi.html",
+    "description": "Imported calendar reference for \"День явления Пундарики Видьянидхи\". English summary still needs editorial translation; the Russian source summary is linked in source_url.",
+    "i18n": {
+      "en": {
+        "name": "Appearance of Pundariki Vidyanidkhi",
+        "description": "Imported calendar reference for \"День явления Пундарики Видьянидхи\". English summary still needs editorial translation; the Russian source summary is linked in source_url."
+      },
+      "ru": {
+        "name": "День явления Пундарики Видьянидхи",
+        "description": "Пундарика Видьянидхи появился на свет в брахманской семье в Чхаттаграме. Титула Видьянидхи он удостоился впоследствии, благодаря своей учености. Ученик Шри Мадхавендры Пури, Пундарика Видьянидхи был гуру Шри Гададхары Пандита и близким другом Сварупы Дамодары."
+      }
+    }
+  },
+  {
+    "id": "hkzp_541_день_явления_рагхунанданы_тхакура",
+    "name": "Appearance of Ragkhunandany Tkhakura",
+    "type": "vaishnava_appearance",
+    "category": "vaishnava_appearance",
+    "scope": "matched_harekrishnazp_vaishnavacalendar",
+    "subject": "День явления Рагхунанданы Тхакура",
+    "gaudiya_masa": "Madhava",
+    "paksha": "Gaura",
+    "tithi": "Panchami",
+    "timing_rule": "sunrise_based",
+    "allow_in_adhika": false,
+    "priority": "medium",
+    "source_status": "matched_by_name_type_tithi",
+    "source_url": "http://harekrishnazp.info/materialy/vajshnavskij-kalendar/805-ragkhunandana-tkhakur.html",
+    "description": "Imported calendar reference for \"День явления Рагхунанданы Тхакура\". English summary still needs editorial translation; the Russian source summary is linked in source_url.",
+    "i18n": {
+      "en": {
+        "name": "Appearance of Ragkhunandany Tkhakura",
+        "description": "Imported calendar reference for \"День явления Рагхунанданы Тхакура\". English summary still needs editorial translation; the Russian source summary is linked in source_url."
+      },
+      "ru": {
+        "name": "День явления Рагхунанданы Тхакура",
+        "description": "На изображении - мурти маленького Рагхунанданы на руках матери в месте рождения - Шри Кханде."
+      }
+    }
+  },
+  {
+    "id": "hkzp_541_день_ухода_мадхавы_ачарьи",
+    "name": "Disappearance of Madkhavy Achari",
+    "type": "vaishnava_disappearance",
+    "category": "vaishnava_disappearance",
+    "scope": "matched_harekrishnazp_vaishnavacalendar",
+    "subject": "День ухода Мадхавы Ачарьи",
+    "gaudiya_masa": "Madhava",
+    "paksha": "Gaura",
+    "tithi": "Navami",
+    "timing_rule": "sunrise_based",
+    "allow_in_adhika": false,
+    "priority": "medium",
+    "source_status": "matched_by_name_type_tithi",
+    "source_url": "http://harekrishnazp.info/materialy/vajshnavskij-kalendar/1046-madkhvacharya.html",
+    "description": "Imported calendar reference for \"День ухода Мадхавы Ачарьи\". English summary still needs editorial translation; the Russian source summary is linked in source_url.",
+    "i18n": {
+      "en": {
+        "name": "Disappearance of Madkhavy Achari",
+        "description": "Imported calendar reference for \"День ухода Мадхавы Ачарьи\". English summary still needs editorial translation; the Russian source summary is linked in source_url."
+      },
+      "ru": {
+        "name": "День ухода Мадхавы Ачарьи",
+        "description": "Шрипад Мадхавачарья явился в этот мир примерно в 1238 года до н.э., в деревне Тулунада, которая находилась на расстоянии около 8 миль к юго-востоку от современного Удупи, Штата Карнатака в Южной Индии. Он родился в семье брахманов и был сыном Мадхьягехи Бхаты."
+      }
+    }
+  },
+  {
+    "id": "hkzp_541_день_ухода_рамануджи_ачарьи",
+    "name": "Disappearance of Ramanudzhi Achari",
+    "type": "vaishnava_disappearance",
+    "category": "vaishnava_disappearance",
+    "scope": "matched_harekrishnazp_vaishnavacalendar",
+    "subject": "День ухода Рамануджи Ачарьи",
+    "gaudiya_masa": "Madhava",
+    "paksha": "Gaura",
+    "tithi": "Dashami",
+    "timing_rule": "sunrise_based",
+    "allow_in_adhika": false,
+    "priority": "medium",
+    "source_status": "matched_by_name_type_tithi",
+    "source_url": "http://harekrishnazp.info/materialy/vajshnavskij-kalendar/1048-ramanudzha-acharya.html",
+    "description": "Imported calendar reference for \"День ухода Рамануджи Ачарьи\". English summary still needs editorial translation; the Russian source summary is linked in source_url.",
+    "i18n": {
+      "en": {
+        "name": "Disappearance of Ramanudzhi Achari",
+        "description": "Imported calendar reference for \"День ухода Рамануджи Ачарьи\". English summary still needs editorial translation; the Russian source summary is linked in source_url."
+      },
+      "ru": {
+        "name": "День ухода Рамануджи Ачарьи",
+        "description": "Шри Рамануджа Ачарья явился в 1017 году неподалеку от Мадраса, в Южной Индии, в семье ведических ученых. Шри-вайшнавы утверждают, что он был инкарнацией Лакшмана. Слово Рамануджа означает «последователь Рамы». Он получил это имя, поскольку Лакшман повсюду следует за своим братом Господом Рамачандрой и служит Ему."
+      }
+    }
+  },
+  {
+    "id": "hkzp_541_вараха_двадаши_день_явления_господа_варахадева",
+    "name": "Varakha Dvadashi - Den Yavleniya Lord Varakhadeva",
+    "type": "divine_appearance",
+    "category": "divine_appearance",
+    "scope": "matched_harekrishnazp_vaishnavacalendar",
+    "subject": "Вараха Двадаши - день явления Господа Варахадева",
+    "gaudiya_masa": "Madhava",
+    "paksha": "Gaura",
+    "tithi": "Trayodashi",
+    "timing_rule": "sunrise_based",
+    "allow_in_adhika": false,
+    "priority": "medium",
+    "source_status": "matched_by_name_type_tithi",
+    "source_url": "http://harekrishnazp.info/materialy/vajshnavskij-kalendar/1050-gospod-varakhadev-varakha.html",
+    "description": "Imported calendar reference for \"Вараха Двадаши - день явления Господа Варахадева\". English summary still needs editorial translation; the Russian source summary is linked in source_url.",
+    "i18n": {
+      "en": {
+        "name": "Varakha Dvadashi - Den Yavleniya Lord Varakhadeva",
+        "description": "Imported calendar reference for \"Вараха Двадаши - день явления Господа Варахадева\". English summary still needs editorial translation; the Russian source summary is linked in source_url."
+      },
+      "ru": {
+        "name": "Вараха Двадаши - день явления Господа Варахадева",
+        "description": "У каждого воплощения Господа есть определенная миссия, и эта миссия всегда неординарна, выполнить ее не под силу ни одному другому живому существу. У Верховной Личности Бога, как и у каждого из нас, есть разнообразные желания. Иногда Он приходит в материальный мир, чтобы исполнить какие-то из этих желаний, и это становится событием вселенского масштаба. Деяния Бога в любом Его воплощении всегда необыкновенны и величественны."
+      }
+    }
+  },
+  {
+    "id": "hkzp_541_день_ухода_пурушоттамы_даса_тхакура",
+    "name": "Disappearance of Purushottamy Dasa Tkhakura",
+    "type": "vaishnava_disappearance",
+    "category": "vaishnava_disappearance",
+    "scope": "matched_harekrishnazp_vaishnavacalendar",
+    "subject": "День ухода Пурушоттамы Даса Тхакура",
+    "gaudiya_masa": "Govinda",
+    "paksha": "Krishna",
+    "tithi": "Panchami",
+    "timing_rule": "sunrise_based",
+    "allow_in_adhika": false,
+    "priority": "medium",
+    "source_status": "matched_by_name_type_tithi",
+    "source_url": "http://harekrishnazp.info/materialy/vajshnavskij-kalendar/1063-purushottama-das-tkhakur.html",
+    "description": "Imported calendar reference for \"День ухода Пурушоттамы Даса Тхакура\". English summary still needs editorial translation; the Russian source summary is linked in source_url.",
+    "i18n": {
+      "en": {
+        "name": "Disappearance of Purushottamy Dasa Tkhakura",
+        "description": "Imported calendar reference for \"День ухода Пурушоттамы Даса Тхакура\". English summary still needs editorial translation; the Russian source summary is linked in source_url."
+      },
+      "ru": {
+        "name": "День ухода Пурушоттамы Даса Тхакура",
+        "description": "«Садашива Кавирадж был необычайно удачливым. Его сыном был Шри Пурушоттама дас. Он никогда не отождествлял себя с материальным телом. В его сердце всегда пребывал Шри Нитьянанда.» (Чайтанья Бхагавата, Антья, 5/741-742)."
+      }
+    }
+  },
+  {
+    "id": "hkzp_541_день_ухода_расикананды",
+    "name": "Disappearance of Rasikanandy",
+    "type": "vaishnava_disappearance",
+    "category": "vaishnava_disappearance",
+    "scope": "matched_harekrishnazp_vaishnavacalendar",
+    "subject": "День ухода Расикананды",
+    "gaudiya_masa": "Govinda",
+    "paksha": "Gaura",
+    "tithi": "Pratipat",
+    "timing_rule": "sunrise_based",
+    "allow_in_adhika": false,
+    "priority": "medium",
+    "source_status": "matched_by_name_type_tithi",
+    "source_url": "http://harekrishnazp.info/materialy/vajshnavskij-kalendar/1076-rasikananda.html",
+    "description": "Imported calendar reference for \"День ухода Расикананды\". English summary still needs editorial translation; the Russian source summary is linked in source_url.",
+    "i18n": {
+      "en": {
+        "name": "Disappearance of Rasikanandy",
+        "description": "Imported calendar reference for \"День ухода Расикананды\". English summary still needs editorial translation; the Russian source summary is linked in source_url."
+      },
+      "ru": {
+        "name": "День ухода Расикананды",
+        "description": "В семнадцатом веке в Ремуну пришел великий святой. Его имя – Расикананда – до сих пор помнят во многих городах и деревнях Ориссы и Бенгалии. Он стал совершенным мудрецом, ученым гаудия-вайшнавом, расика-бхактой и самым любимым учеником Шьямананды Прабху. При рождении Расикананда получил имя Расика Мурари. Он родился на новолуние месяца Картика (октябрь-ноябрь) 1597 года, в благородной семье –  принцем – сыном Ачьютананды дева, царя Раянинагара, что находится на берегу Суварнарекхи в Ориссе. С самого детства он был поглощен слушанием о славе Шри Кришны и Его святого имени. Еще будучи ребенком, он начал изучать «Шримад Бхагаватам»."
+      }
+    }
+  },
+  {
+    "id": "hkzp_541_день_ухода_мадхавендры_пури",
+    "name": "Disappearance of Madkhavendry Puri",
+    "type": "vaishnava_disappearance",
+    "category": "vaishnava_disappearance",
+    "scope": "matched_harekrishnazp_vaishnavacalendar",
+    "subject": "День ухода Мадхавендры Пури",
+    "gaudiya_masa": "Govinda",
+    "paksha": "Gaura",
+    "tithi": "Dvadashi",
+    "timing_rule": "sunrise_based",
+    "allow_in_adhika": false,
+    "priority": "medium",
+    "source_status": "matched_by_name_type_tithi",
+    "source_url": "http://harekrishnazp.info/materialy/vajshnavskij-kalendar/687-madkhavendra-puri.html",
+    "description": "Imported calendar reference for \"День ухода Мадхавендры Пури\". English summary still needs editorial translation; the Russian source summary is linked in source_url.",
+    "i18n": {
+      "en": {
+        "name": "Disappearance of Madkhavendry Puri",
+        "description": "Imported calendar reference for \"День ухода Мадхавендры Пури\". English summary still needs editorial translation; the Russian source summary is linked in source_url."
+      },
+      "ru": {
+        "name": "День ухода Мадхавендры Пури",
+        "description": "Прежде чем появиться на Земле Самому, Господь Чайтанья послал сюда Своих вечных спутников, таких как Шри Адваита Ачарья, Шри Джаганнатха Мишра, Шачи Мата, Мадхавендра Пури и Ишвара Пури. Великий святой Шри Мадхавендра Пури, живший в середине XV века, был пятнадцатым в цепи ученической преемственности, берущей начало от Мадхвачарьи (Мадхва-сампрадае). Шри Мадхавендра Пури принял инициацию от Шри Лакшмипати Тиртхи в Мадхвачарйа-сампрадайе. У него было много учеников, а главными являлись Шри Адваита Ачарья и Шри Ишвара Пури. Все ваишнавы в Бенгалии и Кшетра-мандале (Джаганнатха Пури) были так или иначе связаны со Шри Мадхавендрой Пури. Когда пришел Господь Чаитанья, многие из учеников Мадхав..."
+      }
+    }
+  },
+  {
+    "id": "hkzp_541_праздник_джаганнатхи_мишры",
+    "name": "Prazdnik Dzhagannatkhi Mishry",
+    "type": "festival",
+    "category": "festival",
+    "scope": "matched_harekrishnazp_vaishnavacalendar",
+    "subject": "Праздник Джаганнатхи Мишры",
+    "gaudiya_masa": "Vishnu",
+    "paksha": "Krishna",
+    "tithi": "Pratipat",
+    "timing_rule": "sunrise_based",
+    "allow_in_adhika": false,
+    "priority": "medium",
+    "source_status": "matched_by_name_type_tithi",
+    "source_url": "http://harekrishnazp.info/materialy/vajshnavskij-kalendar/1256-dzhagannatkha-mishra.html",
+    "description": "Imported calendar reference for \"Праздник Джаганнатхи Мишры\". English summary still needs editorial translation; the Russian source summary is linked in source_url.",
+    "i18n": {
+      "en": {
+        "name": "Prazdnik Dzhagannatkhi Mishry",
+        "description": "Imported calendar reference for \"Праздник Джаганнатхи Мишры\". English summary still needs editorial translation; the Russian source summary is linked in source_url."
+      },
+      "ru": {
+        "name": "Праздник Джаганнатхи Мишры",
+        "description": "Джаганнатха Мишра родился в брахманской семье в бенгальской деревне Южная Дхака (ныне в округе Силхет, Бангладеш). В юности Джаганнатха Мишра пришёл с целью учёбы в Навадвипу, где женился на Шачидеви, дочери известного брахмана-учёного Навадвипы Ниламбары Чакраварти, после чего навсегда поселился на берегу Ганги в Маяпуре. Джаганнатха Мишра был бедным брахманом и поддерживал свою семью, собирая подаяния. У Джаганнатхи Мишры и его жены Шачидеви родилось восемь дочерей, и все они умерли в раннем возрасте, после чего чета посвятила себя воспитанию двух оставшихся в живых сыновей, Вишварупы и Вишвамбхары. Вишвамбхара был десятым, самым младшим ребёнком. Позднее он стал известен как Нимай Панд..."
+      }
+    }
+  },
+  {
+    "id": "hkzp_541_день_явления_шривасы_пандита",
+    "name": "Appearance of Shrivasy Pandita",
+    "type": "vaishnava_appearance",
+    "category": "vaishnava_appearance",
+    "scope": "matched_harekrishnazp_vaishnavacalendar",
+    "subject": "День явления Шривасы Пандита",
+    "gaudiya_masa": "Vishnu",
+    "paksha": "Krishna",
+    "tithi": "Ashtami",
+    "timing_rule": "sunrise_based",
+    "allow_in_adhika": false,
+    "priority": "medium",
+    "source_status": "matched_by_name_type_tithi",
+    "source_url": "http://harekrishnazp.info/materialy/vajshnavskij-kalendar/1177-shrivas-pandit.html",
+    "description": "Imported calendar reference for \"День явления Шривасы Пандита\". English summary still needs editorial translation; the Russian source summary is linked in source_url.",
+    "i18n": {
+      "en": {
+        "name": "Appearance of Shrivasy Pandita",
+        "description": "Imported calendar reference for \"День явления Шривасы Пандита\". English summary still needs editorial translation; the Russian source summary is linked in source_url."
+      },
+      "ru": {
+        "name": "День явления Шривасы Пандита",
+        "description": "«Я преклоняюсь перед Шрилой Шривасом Пандитом, дорогим Спутником Господа Шри Гауранги. Благодаря лишь крупице Милости Шриваса Тхакура обретается чистейшая Любовь (Рати) к Шри Гауранге. О Шривас! О Киртанананда - Олицетворение Блаженства Хари-Киртана! О Возлюбленный всей Санги Бхакт Господа! О Маха-Йоги, величайший из Бхакти-Йогов! О Бхакта-Рупа - Олицетворение идеального Преданного, неотличный от Шри Нарады Госвами! Тебе я приношу поклоны снова и снова.»"
+      }
+    }
+  },
+  {
+    "id": "hkzp_541_день_ухода_абхирамы_тхакура",
+    "name": "Disappearance of Abkhiramy Tkhakura",
+    "type": "vaishnava_disappearance",
+    "category": "vaishnava_disappearance",
+    "scope": "matched_harekrishnazp_vaishnavacalendar",
+    "subject": "День ухода Абхирамы Тхакура",
+    "gaudiya_masa": "Madhusudan",
+    "paksha": "Krishna",
+    "tithi": "Saptami",
+    "timing_rule": "sunrise_based",
+    "allow_in_adhika": false,
+    "priority": "medium",
+    "source_status": "matched_by_name_type_tithi",
+    "source_url": "http://harekrishnazp.info/materialy/vajshnavskij-kalendar/641-abkhirama-tkhakur.html",
+    "description": "Imported calendar reference for \"День ухода Абхирамы Тхакура\". English summary still needs editorial translation; the Russian source summary is linked in source_url.",
+    "i18n": {
+      "en": {
+        "name": "Disappearance of Abkhiramy Tkhakura",
+        "description": "Imported calendar reference for \"День ухода Абхирамы Тхакура\". English summary still needs editorial translation; the Russian source summary is linked in source_url."
+      },
+      "ru": {
+        "name": "День ухода Абхирамы Тхакура",
+        "description": "Абхирама Тхакур был одним из двенадцати гопалов, друзей Господа Нитьянанды. Ранее его звали Шри Рамадас. Когда Господь Чайтанья послал Господа Нитьянанду проповедовать в Гаудадеше, вместе с ним Он отправил Гададхару даса и Шри Рамадаса (ЧЧ Ади, 11.14-15). Абхирама Тхакур жил в деревне под названием Кханакула-кришна-нагара. Там же находится храм в котором Абхирама Тхакур поклонялся Божеству Гопинатхи. Бхакти-ратнакара (волна 4, стихи 113-120) рассказывает, как однажды Гопинатх явился Абхираму во сне и сказал: «Я нахожусь здесь», и указал на место Своего пребывания. Покопав в указанном месте, Абхирам обнаружил непревзойденное Божество Гопинатхи. Тут же с восторженными возгласами сбежались л..."
+      }
+    }
+  },
+  {
+    "id": "hkzp_541_джахну_саптами",
+    "name": "Dzhakhnu Saptami",
+    "type": "festival",
+    "category": "festival",
+    "scope": "matched_harekrishnazp_vaishnavacalendar",
+    "subject": "Джахну Саптами",
+    "gaudiya_masa": "Madhusudan",
+    "paksha": "Gaura",
+    "tithi": "Saptami",
+    "timing_rule": "sunrise_based",
+    "allow_in_adhika": false,
+    "priority": "medium",
+    "source_status": "matched_by_name_type_tithi",
+    "source_url": "http://harekrishnazp.info/materialy/vajshnavskij-kalendar/1300-dzhakhnu-saptami.html",
+    "description": "Imported calendar reference for \"Джахну Саптами\". English summary still needs editorial translation; the Russian source summary is linked in source_url.",
+    "i18n": {
+      "en": {
+        "name": "Dzhakhnu Saptami",
+        "description": "Imported calendar reference for \"Джахну Саптами\". English summary still needs editorial translation; the Russian source summary is linked in source_url."
+      },
+      "ru": {
+        "name": "Джахну Саптами",
+        "description": "С праздником Джахну Саптами связана удивительная история. Однажды Джахну Муни сидел, воспевая Гаятри-мантру, когда мимо него пронеслась Ганга, следуя за колесницей царя Бхагиратхи, чтобы освободить его предков. Река смыла параферналии Джахну Муни, предназначенные для ачамана. Тогда разгневанный мудрец, используя мистические способности, выпил Гангу, как-будто та была несколькими капелями воды."
+      }
+    }
+  },
+  {
+    "id": "hkzp_541_день_явления_шримати_джахнавы_деви",
+    "name": "Appearance of Shrimati Dzhakhnavy Devi",
+    "type": "vaishnava_appearance",
+    "category": "vaishnava_appearance",
+    "scope": "matched_harekrishnazp_vaishnavacalendar",
+    "subject": "День явления Шримати Джахнавы Деви",
+    "gaudiya_masa": "Madhusudan",
+    "paksha": "Gaura",
+    "tithi": "Navami",
+    "timing_rule": "sunrise_based",
+    "allow_in_adhika": false,
+    "priority": "medium",
+    "source_status": "matched_by_name_type_tithi",
+    "source_url": "http://harekrishnazp.info/materialy/vajshnavskij-kalendar/673-dzhakhnavi-devi.html",
+    "description": "Imported calendar reference for \"День явления Шримати Джахнавы Деви\". English summary still needs editorial translation; the Russian source summary is linked in source_url.",
+    "i18n": {
+      "en": {
+        "name": "Appearance of Shrimati Dzhakhnavy Devi",
+        "description": "Imported calendar reference for \"День явления Шримати Джахнавы Деви\". English summary still needs editorial translation; the Russian source summary is linked in source_url."
+      },
+      "ru": {
+        "name": "День явления Шримати Джахнавы Деви",
+        "description": "У великого преданного Господа Нитьянанды Гауридаса Пандита был брат по имени Сурьядас. Став царским казначеем, он получил титул Саракхела. Двух дочерей Сурьядаса Саракхелы звали Шри Васудха и Шри Джахнава. Видя, что дочери его повзрослели и красота их расцвела, словно распустившийся бутон лотоса, Сурьядас подумывал о том, что их пора выдавать замуж. Мысль эта захватила его, и вот однажды ночью ему приснилось, что он выдает своих дочерей замуж за Нитьянанду Прабху. Наутро Сурьядас рассказал своим друзьям-брахманам об этом удивительном сне: «Я видел, что Нитьянанда Прабху – это сам Господь Баларама. От Него исходило необыкновенное сияние, озарявшее все десять сторон света. Рядом с Ним шли д..."
+      }
+    }
+  },
+  {
+    "id": "hkzp_541_день_явления_господа_будды_будда_пурнима",
+    "name": "Appearance of Lord Buddy (Budda Purnima)",
+    "type": "divine_appearance",
+    "category": "divine_appearance",
+    "scope": "matched_harekrishnazp_vaishnavacalendar",
+    "subject": "День явления Господа Будды (Будда Пурнима)",
+    "gaudiya_masa": "Madhusudan",
+    "paksha": "Gaura",
+    "tithi": "Purnima",
+    "timing_rule": "sunrise_based",
+    "allow_in_adhika": false,
+    "priority": "medium",
+    "source_status": "matched_by_name_type_tithi",
+    "source_url": "http://harekrishnazp.info/vajshnavskij-kalendar/1934-budda.html",
+    "description": "Imported calendar reference for \"День явления Господа Будды (Будда Пурнима)\". English summary still needs editorial translation; the Russian source summary is linked in source_url.",
+    "i18n": {
+      "en": {
+        "name": "Appearance of Lord Buddy (Budda Purnima)",
+        "description": "Imported calendar reference for \"День явления Господа Будды (Будда Пурнима)\". English summary still needs editorial translation; the Russian source summary is linked in source_url."
+      },
+      "ru": {
+        "name": "День явления Господа Будды (Будда Пурнима)",
+        "description": "О явлении Будды упоминается в \"Шримад-Бхагаватам\" 1.3.24. Формально философию Господа Будды относят к атеистическим философиям, так как она не признает Верховного Господа и отвергает авторитет Вед. На самом же деле Господь замаскировал Свои намерения. Господь Будда воплощение Бога и, следовательно, изначальный учитель ведического знания. Поэтому он не может отвергать философию Вед. Но он сделал вид, что отвергает ее, потому что сура-двиша, демоны, враждебно относящиеся к преданным Бога, ссылаясь на Веды, пытались оправдывать убийство коров и других животных, а сейчас этим занимаются нынешние так называемые санньяси. Господь Будда был вынужден полностью отвергнуть авторитет Вед. Не будь эт..."
+      }
+    }
+  },
+  {
+    "id": "hkzp_541_день_ухода_парамешвары_даса_тхакура",
+    "name": "Disappearance of Parameshvary Dasa Tkhakura",
+    "type": "vaishnava_disappearance",
+    "category": "vaishnava_disappearance",
+    "scope": "matched_harekrishnazp_vaishnavacalendar",
+    "subject": "День ухода Парамешвары Даса Тхакура",
+    "gaudiya_masa": "Madhusudan",
+    "paksha": "Gaura",
+    "tithi": "Purnima",
+    "timing_rule": "sunrise_based",
+    "allow_in_adhika": false,
+    "priority": "medium",
+    "source_status": "matched_by_name_type_tithi",
+    "source_url": "http://harekrishnazp.info/materialy/vajshnavskij-kalendar/1150-parameshvara-das.html",
+    "description": "Imported calendar reference for \"День ухода Парамешвары Даса Тхакура\". English summary still needs editorial translation; the Russian source summary is linked in source_url.",
+    "i18n": {
+      "en": {
+        "name": "Disappearance of Parameshvary Dasa Tkhakura",
+        "description": "Imported calendar reference for \"День ухода Парамешвары Даса Тхакура\". English summary still needs editorial translation; the Russian source summary is linked in source_url."
+      },
+      "ru": {
+        "name": "День ухода Парамешвары Даса Тхакура",
+        "description": "Парамешвара Дас Тхакур был постоянным спутником Господа Нитьянанды. Шрила Кришна Даса Кавираджа говорит, что любой, кто помнит имя Парамешвары Даса, легко достигнет любви к Кришне. Парамешвара Дас Тхакур сопровождал Божество Радхарани, которое Джахнава Мата послала во Вриндавану для Говиндаджи. В Кришна-лиле Парамешвара Дас Тхакур - один из двадаша-гопал по имени Арджуна. Его самадхи расположено в области 64 самадхи во Вриндаване."
+      }
+    }
+  },
+  {
+    "id": "hkzp_541_снана_ятра",
+    "name": "Snana Yatra",
+    "type": "festival",
+    "category": "festival",
+    "scope": "matched_harekrishnazp_vaishnavacalendar",
+    "subject": "Снана Ятра",
+    "gaudiya_masa": "Trivikrama",
+    "paksha": "Gaura",
+    "tithi": "Purnima",
+    "timing_rule": "sunrise_based",
+    "allow_in_adhika": false,
+    "priority": "medium",
+    "source_status": "matched_by_name_type_tithi",
+    "source_url": "http://harekrishnazp.info/materialy/vajshnavskij-kalendar/1265-snana-yatra.html",
+    "description": "Imported calendar reference for \"Снана Ятра\". English summary still needs editorial translation; the Russian source summary is linked in source_url.",
+    "i18n": {
+      "en": {
+        "name": "Snana Yatra",
+        "description": "Imported calendar reference for \"Снана Ятра\". English summary still needs editorial translation; the Russian source summary is linked in source_url."
+      },
+      "ru": {
+        "name": "Снана Ятра",
+        "description": "Снана-ятра приходится на полнолуние месяца Джйештха. Именно в этот день согласно «Сканда Пуране» явился Джаганнатха."
+      }
+    }
+  },
+  {
+    "id": "hkzp_541_день_ухода_мукунды_датты",
+    "name": "Disappearance of Mukundy Datty",
+    "type": "vaishnava_disappearance",
+    "category": "vaishnava_disappearance",
+    "scope": "matched_harekrishnazp_vaishnavacalendar",
+    "subject": "День ухода Мукунды Датты",
+    "gaudiya_masa": "Trivikrama",
+    "paksha": "Gaura",
+    "tithi": "Purnima",
+    "timing_rule": "sunrise_based",
+    "allow_in_adhika": false,
+    "priority": "medium",
+    "source_status": "matched_by_name_type_tithi",
+    "source_url": "http://harekrishnazp.info/materialy/vajshnavskij-kalendar/741-mukunda-datta.html",
+    "description": "Imported calendar reference for \"День ухода Мукунды Датты\". English summary still needs editorial translation; the Russian source summary is linked in source_url.",
+    "i18n": {
+      "en": {
+        "name": "Disappearance of Mukundy Datty",
+        "description": "Imported calendar reference for \"День ухода Мукунды Датты\". English summary still needs editorial translation; the Russian source summary is linked in source_url."
+      },
+      "ru": {
+        "name": "День ухода Мукунды Датты",
+        "description": "Шри Мукунда Датта был одноклассником Шри Нимая Пандита. Они учились вместе в школе Ганга даса. У Мукунды был мелодичный голос и он прекрасно разбирался в музыке. Его мелодичными киртанами наслаждались все вайшнавы Навадвипы. Взывая к самому сердцу Господа Гауры, он пел о чувствах, переполнявших Господа Гаурангу. Господь Чайтанья принял санньясу в сопровождении пения Мукунды. Он служил Шри Чайтанье в Пури, став одним из самых смиренных Его последователей."
+      }
+    }
+  },
+  {
+    "id": "hkzp_541_день_ухода_шридхары_пандита",
+    "name": "Disappearance of Shridkhary Pandita",
+    "type": "vaishnava_disappearance",
+    "category": "vaishnava_disappearance",
+    "scope": "matched_harekrishnazp_vaishnavacalendar",
+    "subject": "День ухода Шридхары Пандита",
+    "gaudiya_masa": "Trivikrama",
+    "paksha": "Gaura",
+    "tithi": "Purnima",
+    "timing_rule": "sunrise_based",
+    "allow_in_adhika": false,
+    "priority": "medium",
+    "source_status": "matched_by_name_type_tithi",
+    "source_url": "http://harekrishnazp.info/materialy/vajshnavskij-kalendar/742-shridkhara-pandit.html",
+    "description": "Imported calendar reference for \"День ухода Шридхары Пандита\". English summary still needs editorial translation; the Russian source summary is linked in source_url.",
+    "i18n": {
+      "en": {
+        "name": "Disappearance of Shridkhary Pandita",
+        "description": "Imported calendar reference for \"День ухода Шридхары Пандита\". English summary still needs editorial translation; the Russian source summary is linked in source_url."
+      },
+      "ru": {
+        "name": "День ухода Шридхары Пандита",
+        "description": "Кхолавеча (прозвище, означающее «продавец бананов») Шридхара был очень бедным брахманом. Описывается, что он был настолько беден, что жил в хижине с ветхой, дырявой крышей. На посуду у него денег не было, поэтому он пил воду из старого, треснувшего железного кувшина. Когда по ночам Кхолавеча Шридхара воспевал мантру Харе Кришна, соседи думали, что он делал это потому, что не мог спать из-за мучившего его голода. У Кхолавечи Шридхары был участок земли с банановой рощей. На жизнь он зарабатывал, собирая листья, кору и сердцевину банановых пальм и ежедневно продавая всё это на рынке. Несмотря на свою бедность, половину дохода он тратил на поклонение Ганге, а половину оставлял на собственные..."
+      }
+    }
+  },
+  {
+    "id": "hkzp_541_день_ухода_шьямананды_прабху",
+    "name": "Disappearance of Shyamanandy Prabkhu",
+    "type": "vaishnava_disappearance",
+    "category": "vaishnava_disappearance",
+    "scope": "matched_harekrishnazp_vaishnavacalendar",
+    "subject": "День ухода Шьямананды Прабху",
+    "gaudiya_masa": "Vamana",
+    "paksha": "Krishna",
+    "tithi": "Pratipat",
+    "timing_rule": "sunrise_based",
+    "allow_in_adhika": false,
+    "priority": "medium",
+    "source_status": "matched_by_name_type_tithi",
+    "source_url": "http://harekrishnazp.info/materialy/vajshnavskij-kalendar/746-shyamananda-prabkhu.html",
+    "description": "Imported calendar reference for \"День ухода Шьямананды Прабху\". English summary still needs editorial translation; the Russian source summary is linked in source_url.",
+    "i18n": {
+      "en": {
+        "name": "Disappearance of Shyamanandy Prabkhu",
+        "description": "Imported calendar reference for \"День ухода Шьямананды Прабху\". English summary still needs editorial translation; the Russian source summary is linked in source_url."
+      },
+      "ru": {
+        "name": "День ухода Шьямананды Прабху",
+        "description": "Родители Шьямананды Прабху, Кришна Мандал и Дурика Даси жили в районе Миднапур (Орисса, Индия). Оба они происходили из рода шудр. Все их попытки иметь детей неизменно заканчивались неудачей — младенцы умирали еще в раннем детстве. И когда один ребенок все-таки выжил, родители назвали его Дукхи, что значит “печальный”. “Ямарадж услышит его имя, и вспомнит, что все остальные наши дети оставили тело еще во младенчестве. И тогда, быть может, он оставит жизнь нашему сыну”. — надеялись родители Шьямананды. Это было примерно за год до ухода Шри Чайтаньи Махапрабху."
+      }
+    }
+  },
+  {
+    "id": "hkzp_541_гундича_марджана",
+    "name": "Gundicha Mardzhana",
+    "type": "festival",
+    "category": "festival",
+    "scope": "matched_harekrishnazp_vaishnavacalendar",
+    "subject": "Гундича Марджана",
+    "gaudiya_masa": "Vamana",
+    "paksha": "Gaura",
+    "tithi": "Pratipat",
+    "timing_rule": "sunrise_based",
+    "allow_in_adhika": false,
+    "priority": "medium",
+    "source_status": "matched_by_name_type_tithi",
+    "source_url": "http://harekrishnazp.info/materialy/vajshnavskij-kalendar/1273-gundicha-mardzhana.html",
+    "description": "Imported calendar reference for \"Гундича Марджана\". English summary still needs editorial translation; the Russian source summary is linked in source_url.",
+    "i18n": {
+      "en": {
+        "name": "Gundicha Mardzhana",
+        "description": "Imported calendar reference for \"Гундича Марджана\". English summary still needs editorial translation; the Russian source summary is linked in source_url."
+      },
+      "ru": {
+        "name": "Гундича Марджана",
+        "description": "Праздник Гундича Марджана, или очищение храма Гундичи. Этот трансцендентный «великий почин» предшествует популярнейшему празднику Ратха-ятра (Шествие Колесниц). С точки зрения ведической философии, Гундича Марджана – это очищение не только храма перед приходом туда Господа Вселенной, но, прежде всего, очищение сердца и ума, чтобы принять милость Всевышнего."
+      }
+    }
+  },
+  {
+    "id": "hkzp_541_день_ухода_сварупы_дамодары_госвами",
+    "name": "Disappearance of Svarupy Damodary Gosvami",
+    "type": "vaishnava_disappearance",
+    "category": "vaishnava_disappearance",
+    "scope": "matched_harekrishnazp_vaishnavacalendar",
+    "subject": "День ухода Сварупы Дамодары Госвами",
+    "gaudiya_masa": "Vamana",
+    "paksha": "Gaura",
+    "tithi": "Dvitiya",
+    "timing_rule": "sunrise_based",
+    "allow_in_adhika": false,
+    "priority": "medium",
+    "source_status": "matched_by_name_type_tithi",
+    "source_url": "http://harekrishnazp.info/materialy/vajshnavskij-kalendar/773-den-ukhoda-svarupy-damodary-gosvami.html",
+    "description": "Imported calendar reference for \"День ухода Сварупы Дамодары Госвами\". English summary still needs editorial translation; the Russian source summary is linked in source_url.",
+    "i18n": {
+      "en": {
+        "name": "Disappearance of Svarupy Damodary Gosvami",
+        "description": "Imported calendar reference for \"День ухода Сварупы Дамодары Госвами\". English summary still needs editorial translation; the Russian source summary is linked in source_url."
+      },
+      "ru": {
+        "name": "День ухода Сварупы Дамодары Госвами",
+        "description": "Кришнадас Кавирадж Госвами пишет, что Шри Сварупа Дамодар был одним из самых близких спутников Махапрабху: \"Лишь двое знали Господа лучше всех: Парамананда Пури и Сварупа Дамодар\" (\"Чайтанья-чаритамрита\" 1.10.124-5)."
+      }
+    }
+  },
+  {
+    "id": "hkzp_541_гуру_вьяса_пурнима",
+    "name": "Guru (Vyasa) Purnima",
+    "type": "festival",
+    "category": "festival",
+    "scope": "matched_harekrishnazp_vaishnavacalendar",
+    "subject": "Гуру (Вьяса) Пурнима",
+    "gaudiya_masa": "Vamana",
+    "paksha": "Gaura",
+    "tithi": "Purnima",
+    "timing_rule": "sunrise_based",
+    "allow_in_adhika": false,
+    "priority": "medium",
+    "source_status": "matched_by_name_type_tithi",
+    "source_url": "http://harekrishnazp.info/materialy/vajshnavskij-kalendar/783-guru-purnima.html",
+    "description": "Imported calendar reference for \"Гуру (Вьяса) Пурнима\". English summary still needs editorial translation; the Russian source summary is linked in source_url.",
+    "i18n": {
+      "en": {
+        "name": "Guru (Vyasa) Purnima",
+        "description": "Imported calendar reference for \"Гуру (Вьяса) Пурнима\". English summary still needs editorial translation; the Russian source summary is linked in source_url."
+      },
+      "ru": {
+        "name": "Гуру (Вьяса) Пурнима",
+        "description": "В полнолуние в месяце Ашадх, традиционно празднуется Гуру Пурнима. Этот день также известен, как Вьяса Пурнима, день почитания мудреца Веда Вьясы, первого Гуру, который классифицировал Веды, записал восемнадцать Пуран и Махабхарату. В этот день, Гуру предлагают пуджу и арати ученики и последователи."
+      }
+    }
+  },
+  {
+    "id": "hkzp_541_день_ухода_локанатхи_госвами",
+    "name": "Disappearance of Lokanatkhi Gosvami",
+    "type": "vaishnava_disappearance",
+    "category": "vaishnava_disappearance",
+    "scope": "matched_harekrishnazp_vaishnavacalendar",
+    "subject": "День ухода Локанатхи Госвами",
+    "gaudiya_masa": "Sridhara",
+    "paksha": "Krishna",
+    "tithi": "Ashtami",
+    "timing_rule": "sunrise_based",
+    "allow_in_adhika": false,
+    "priority": "medium",
+    "source_status": "matched_by_name_type_tithi",
+    "source_url": "http://harekrishnazp.info/materialy/vajshnavskij-kalendar/794-lokanatkh-das-gosvami.html",
+    "description": "Imported calendar reference for \"День ухода Локанатхи Госвами\". English summary still needs editorial translation; the Russian source summary is linked in source_url.",
+    "i18n": {
+      "en": {
+        "name": "Disappearance of Lokanatkhi Gosvami",
+        "description": "Imported calendar reference for \"День ухода Локанатхи Госвами\". English summary still needs editorial translation; the Russian source summary is linked in source_url."
+      },
+      "ru": {
+        "name": "День ухода Локанатхи Госвами",
+        "description": "«Я поклоняюсь лотосным стопам Шри Локанатхи Госвами Прабху, сына Шри Падманабхи. Он является образцом целеустремленного служения лотосным стопам Радха-Виноды» (Нароттама дас Тхакур)."
+      }
+    }
+  },
+  {
+    "id": "hkzp_541_день_ухода_вамшидаса_бабаджи",
+    "name": "Disappearance of Vamshidasa Babadzhi",
+    "type": "vaishnava_disappearance",
+    "category": "vaishnava_disappearance",
+    "scope": "matched_harekrishnazp_vaishnavacalendar",
+    "subject": "День ухода Вамшидаса Бабаджи",
+    "gaudiya_masa": "Sridhara",
+    "paksha": "Gaura",
+    "tithi": "Chaturthi",
+    "timing_rule": "sunrise_based",
+    "allow_in_adhika": false,
+    "priority": "medium",
+    "source_status": "matched_by_name_type_tithi",
+    "source_url": "http://harekrishnazp.info/materialy/vajshnavskij-kalendar/806-vamshidas-babadzhi.html",
+    "description": "Imported calendar reference for \"День ухода Вамшидаса Бабаджи\". English summary still needs editorial translation; the Russian source summary is linked in source_url.",
+    "i18n": {
+      "en": {
+        "name": "Disappearance of Vamshidasa Babadzhi",
+        "description": "Imported calendar reference for \"День ухода Вамшидаса Бабаджи\". English summary still needs editorial translation; the Russian source summary is linked in source_url."
+      },
+      "ru": {
+        "name": "День ухода Вамшидаса Бабаджи",
+        "description": "Говорится, что западная цивилизация подобна ящику, снаружи инкрустированному драгоценными камнями, но внутри наполненному тряпками, в то время как индийская цивилизация – это ящик, снаружи завернутый в тряпье, но внутри наполненный драгоценными камнями. Людей Запада больше интересует эксплуатация ресурсов внешнего мира, и они неустанно повсюду и трубят о своих достижениях в этой области. Индийцы же заинтересованы в поисках и осознании внутреннего, духовного мира, и вместо того, чтобы трубить на публике о своих достижениях, скрывают их в своих сердцах."
+      }
+    }
+  },
+  {
+    "id": "hkzp_541_начало_радха_говинда_джхулан_ятры",
+    "name": "Nachalo Radkha Govinda Dzhkhulan Yatry",
+    "type": "festival",
+    "category": "festival",
+    "scope": "matched_harekrishnazp_vaishnavacalendar",
+    "subject": "Начало Радха Говинда Джхулан Ятры",
+    "gaudiya_masa": "Sridhara",
+    "paksha": "Gaura",
+    "tithi": "Ekadashi",
+    "timing_rule": "sunrise_based",
+    "allow_in_adhika": false,
+    "priority": "medium",
+    "source_status": "matched_by_name_type_tithi",
+    "source_url": "http://harekrishnazp.info/materialy/vajshnavskij-kalendar/1276-radkha-govinda-dzhkhulan-yatra.html",
+    "description": "Imported calendar reference for \"Начало Радха Говинда Джхулан Ятры\". English summary still needs editorial translation; the Russian source summary is linked in source_url.",
+    "i18n": {
+      "en": {
+        "name": "Nachalo Radkha Govinda Dzhkhulan Yatry",
+        "description": "Imported calendar reference for \"Начало Радха Говинда Джхулан Ятры\". English summary still needs editorial translation; the Russian source summary is linked in source_url."
+      },
+      "ru": {
+        "name": "Начало Радха Говинда Джхулан Ятры",
+        "description": "Во время празднования «фестиваля качелей» - одного из самых известных праздников, что проводятся во Вриндаване - в большинстве из пяти тысяч храмов Вриндавана маленькие Божества Радхи и Кришны перемещаются с алтаря на искусно украшенные качели в храмовой комнате. И каждый вечер после традиционной службы Божества качают на качелях."
+      }
+    }
+  },
+  {
+    "id": "hkzp_541_день_ухода_гауридаса_пандита",
+    "name": "Disappearance of Gauridasa Pandita",
+    "type": "vaishnava_disappearance",
+    "category": "vaishnava_disappearance",
+    "scope": "matched_harekrishnazp_vaishnavacalendar",
+    "subject": "День ухода Гауридаса Пандита",
+    "gaudiya_masa": "Sridhara",
+    "paksha": "Gaura",
+    "tithi": "Dvadashi",
+    "timing_rule": "sunrise_based",
+    "allow_in_adhika": false,
+    "priority": "medium",
+    "source_status": "matched_by_name_type_tithi",
+    "source_url": "http://harekrishnazp.info/materialy/vajshnavskij-kalendar/816-gauridas-pandit.html",
+    "description": "Imported calendar reference for \"День ухода Гауридаса Пандита\". English summary still needs editorial translation; the Russian source summary is linked in source_url.",
+    "i18n": {
+      "en": {
+        "name": "Disappearance of Gauridasa Pandita",
+        "description": "Imported calendar reference for \"День ухода Гауридаса Пандита\". English summary still needs editorial translation; the Russian source summary is linked in source_url."
+      },
+      "ru": {
+        "name": "День ухода Гауридаса Пандита",
+        "description": "«Гауридас Пандит, образец самой возвышенной преданности в служении и в любви к Богу, обладал необычайной способностью получать и отдавать эту любовь. Гауридас Пандит считал Господа Чайтанью и Господа Нитьянанду повелителями своей жизни. Он пожертвовал всем ради служения Господу Нитьянанде» (Чайтанья-чаритамрита)."
+      }
+    }
+  },
+  {
+    "id": "hkzp_541_нандотсава",
+    "name": "Nandotsava",
+    "type": "festival",
+    "category": "festival",
+    "scope": "matched_harekrishnazp_vaishnavacalendar",
+    "subject": "Нандотсава",
+    "gaudiya_masa": "Hrishikesha",
+    "paksha": "Krishna",
+    "tithi": "Navami",
+    "timing_rule": "sunrise_based",
+    "allow_in_adhika": false,
+    "priority": "medium",
+    "source_status": "matched_by_name_type_tithi",
+    "source_url": "http://harekrishnazp.info/materialy/vajshnavskij-kalendar/1929-nandotsava.html",
+    "description": "Imported calendar reference for \"Нандотсава\". English summary still needs editorial translation; the Russian source summary is linked in source_url.",
+    "i18n": {
+      "en": {
+        "name": "Nandotsava",
+        "description": "Imported calendar reference for \"Нандотсава\". English summary still needs editorial translation; the Russian source summary is linked in source_url."
+      },
+      "ru": {
+        "name": "Нандотсава",
+        "description": "Нандотсава - это фестиваль, который проводил Нанда Махарадж, отец Господа Кришны, чтобы отпраздновать день явления Господа Кришны. В «Шримад Бхагаватам» (песнь 10, глава 5) описано как Нанда Maхараджa великолепно провёл церемонию рождения для его новорожденного дитя. Затем он отправился к Kaмсе, чтобы заплатить полагающиеся налоги, и встретил своего близкого друга Васудеву."
+      }
+    }
+  },
+  {
+    "id": "hkzp_541_радхаштами_день_явления_шримати_радхарани",
+    "name": "Radkhashtami - Den Yavleniya Shrimati Radkharani",
+    "type": "vaishnava_appearance",
+    "category": "vaishnava_appearance",
+    "scope": "matched_harekrishnazp_vaishnavacalendar",
+    "subject": "Радхаштами - день явления Шримати Радхарани",
+    "gaudiya_masa": "Hrishikesha",
+    "paksha": "Gaura",
+    "tithi": "Ashtami",
+    "timing_rule": "sunrise_based",
+    "allow_in_adhika": false,
+    "priority": "medium",
+    "source_status": "matched_by_name_type_tithi",
+    "source_url": "http://harekrishnazp.info/materialy/vajshnavskij-kalendar/849-shrimati-radkharani-radkhashtami.html",
+    "description": "Imported calendar reference for \"Радхаштами - день явления Шримати Радхарани\". English summary still needs editorial translation; the Russian source summary is linked in source_url.",
+    "i18n": {
+      "en": {
+        "name": "Radkhashtami - Den Yavleniya Shrimati Radkharani",
+        "description": "Imported calendar reference for \"Радхаштами - день явления Шримати Радхарани\". English summary still needs editorial translation; the Russian source summary is linked in source_url."
+      },
+      "ru": {
+        "name": "Радхаштами - день явления Шримати Радхарани",
+        "description": "Радхаштами — сокровенный Ведический праздник, посвященный дню явления Шримати Радхарани — вечной очаровательной возлюбленной Господа Кришны. Радхаштами, как и Джанмаштами, празднуется на 8-й лунный день (Аштами), но уже восходящей луны месяца Бхадрапада (август-сентябрь). Это ровно через 15 дней после Джанмаштами — дня явления Шри Кришны. Именно через такое количество дней низошла Шримати Радхарани примерно 5000 лет назад как дочь Вришабхану Махараджа в маленькой деревне Варшана в восьми километрах от Вриндавана в Индии."
+      }
+    }
+  },
+  {
+    "id": "hkzp_541_вамана_двадаши_день_явления_господа_ваманадева",
+    "name": "Vamana Dvadashi - Den Yavleniya Lord Vamanadeva",
+    "type": "divine_appearance",
+    "category": "divine_appearance",
+    "scope": "matched_harekrishnazp_vaishnavacalendar",
+    "subject": "Вамана Двадаши - день явления Господа Ваманадева",
+    "gaudiya_masa": "Hrishikesha",
+    "paksha": "Gaura",
+    "tithi": "Dvadashi",
+    "timing_rule": "sunrise_based",
+    "allow_in_adhika": false,
+    "priority": "medium",
+    "source_status": "matched_by_name_type_tithi",
+    "source_url": "http://harekrishnazp.info/materialy/vajshnavskij-kalendar/855-vamanadev.html",
+    "description": "Imported calendar reference for \"Вамана Двадаши - день явления Господа Ваманадева\". English summary still needs editorial translation; the Russian source summary is linked in source_url.",
+    "i18n": {
+      "en": {
+        "name": "Vamana Dvadashi - Den Yavleniya Lord Vamanadeva",
+        "description": "Imported calendar reference for \"Вамана Двадаши - день явления Господа Ваманадева\". English summary still needs editorial translation; the Russian source summary is linked in source_url."
+      },
+      "ru": {
+        "name": "Вамана Двадаши - день явления Господа Ваманадева",
+        "description": "В восьмой песне Шримад Бхагаватам повествуется о том, как Господь Ваманадева явился на свет и как Он отправился к месту жертвоприношения, проводимого Махараджей Бали. Махараджа Бали радушно принял Ваманадеву и сказал, что готов даровать Ему все, что Он пожелает."
+      }
+    }
+  },
+  {
+    "id": "hkzp_541_вишварупа_махотсава",
+    "name": "Vishvarupa Makhotsava",
+    "type": "festival",
+    "category": "festival",
+    "scope": "matched_harekrishnazp_vaishnavacalendar",
+    "subject": "Вишварупа Махотсава",
+    "gaudiya_masa": "Hrishikesha",
+    "paksha": "Gaura",
+    "tithi": "Purnima",
+    "timing_rule": "sunrise_based",
+    "allow_in_adhika": false,
+    "priority": "medium",
+    "source_status": "matched_by_name_type_tithi",
+    "source_url": "http://harekrishnazp.info/materialy/vajshnavskij-kalendar/1278-vishvarupa-makhotsava.html",
+    "description": "Imported calendar reference for \"Вишварупа Махотсава\". English summary still needs editorial translation; the Russian source summary is linked in source_url.",
+    "i18n": {
+      "en": {
+        "name": "Vishvarupa Makhotsava",
+        "description": "Imported calendar reference for \"Вишварупа Махотсава\". English summary still needs editorial translation; the Russian source summary is linked in source_url."
+      },
+      "ru": {
+        "name": "Вишварупа Махотсава",
+        "description": "Приняв санньясу и отправившись в путешествие по Южной Индии, Господь Шри Чайтанья Махапрабху начал искать своего брата Вишварупу. В процессе поиска Он узнал что тот был в Пандарапуре. Когда Махапрабху дошёл до Пандарапура, Он услышал, что Его брат Вишварупа, который принял санньясу намного раньше, также побывал здесь и это было последнее место его пребывания на земле. Тогда Господь Чайтанья, вопреки правилам Чатурмасьи, в знак почтения к своему брату и скорбя в разлуке с ним обрил свою голову. При необходимости гаудия-вайшнавы в этот день также бреют свои головы, несмотря на правила соблюдения Чатурмасьи."
+      }
+    }
+  },
+  {
+    "id": "hkzp_541_рамачандра_виджайотсава",
+    "name": "Ramachandra Vidzhayotsava",
+    "type": "festival",
+    "category": "festival",
+    "scope": "matched_harekrishnazp_vaishnavacalendar",
+    "subject": "Рамачандра Виджайотсава",
+    "gaudiya_masa": "Padmanabha",
+    "paksha": "Gaura",
+    "tithi": "Dashami",
+    "timing_rule": "sunrise_based",
+    "allow_in_adhika": false,
+    "priority": "medium",
+    "source_status": "matched_by_name_type_tithi",
+    "source_url": "http://harekrishnazp.info/materialy/vajshnavskij-kalendar/1269-ramachandra-vidzhajotsava.html",
+    "description": "Imported calendar reference for \"Рамачандра Виджайотсава\". English summary still needs editorial translation; the Russian source summary is linked in source_url.",
+    "i18n": {
+      "en": {
+        "name": "Ramachandra Vidzhayotsava",
+        "description": "Imported calendar reference for \"Рамачандра Виджайотсава\". English summary still needs editorial translation; the Russian source summary is linked in source_url."
+      },
+      "ru": {
+        "name": "Рамачандра Виджайотсава",
+        "description": "В этот день Господь Рамачандра услышал от Ханумана, что тот слышал и видел Ситу на острове Ланка. В честь этой новости Господь Рамачандра провёл праздник, и затем отправился в Шри Ланку."
+      }
+    }
+  },
+  {
+    "id": "hkzp_541_день_ухода_мурари_гупты",
+    "name": "Disappearance of Murari Gupty",
+    "type": "vaishnava_disappearance",
+    "category": "vaishnava_disappearance",
+    "scope": "matched_harekrishnazp_vaishnavacalendar",
+    "subject": "День ухода Мурари Гупты",
+    "gaudiya_masa": "Padmanabha",
+    "paksha": "Gaura",
+    "tithi": "Purnima",
+    "timing_rule": "sunrise_based",
+    "allow_in_adhika": false,
+    "priority": "medium",
+    "source_status": "matched_by_name_type_tithi",
+    "source_url": "http://harekrishnazp.info/materialy/vajshnavskij-kalendar/928-murari-gupta.html",
+    "description": "Imported calendar reference for \"День ухода Мурари Гупты\". English summary still needs editorial translation; the Russian source summary is linked in source_url.",
+    "i18n": {
+      "en": {
+        "name": "Disappearance of Murari Gupty",
+        "description": "Imported calendar reference for \"День ухода Мурари Гупты\". English summary still needs editorial translation; the Russian source summary is linked in source_url."
+      },
+      "ru": {
+        "name": "День ухода Мурари Гупты",
+        "description": "У Мурари Гупты, ученика Шри Чандрашекхары Ачарьи, сложились прочные дружеские отношения с Господом Чайтаньей. Будучи старше Нимая по возрасту, он тем не менее обычно проигрывал в дискуссиях с Ним. Во время одной из таких дискуссий они дошли до предела и начали драться. Драка продолжилась в Ганге. Они подняли со дна так много ила, что женщины не могли набрать в кувшины нормальной воды, а брахманы принять омовения."
+      }
+    }
+  },
+  {
+    "id": "hkzp_541_день_явления_радха_кунды_снана_дана",
+    "name": "Appearance of Radkha Kundy, Snana Dana",
+    "type": "vaishnava_appearance",
+    "category": "vaishnava_appearance",
+    "scope": "matched_harekrishnazp_vaishnavacalendar",
+    "subject": "День явления Радха Кунды, Снана Дана",
+    "gaudiya_masa": "Damodara",
+    "paksha": "Krishna",
+    "tithi": "Ashtami",
+    "timing_rule": "sunrise_based",
+    "allow_in_adhika": false,
+    "priority": "medium",
+    "source_status": "matched_by_name_type_tithi",
+    "source_url": "http://harekrishnazp.info/materialy/vajshnavskij-kalendar/316-radkha-kunda.html",
+    "description": "Imported calendar reference for \"День явления Радха Кунды, Снана Дана\". English summary still needs editorial translation; the Russian source summary is linked in source_url.",
+    "i18n": {
+      "en": {
+        "name": "Appearance of Radkha Kundy, Snana Dana",
+        "description": "Imported calendar reference for \"День явления Радха Кунды, Снана Дана\". English summary still needs editorial translation; the Russian source summary is linked in source_url."
+      },
+      "ru": {
+        "name": "День явления Радха Кунды, Снана Дана",
+        "description": "Убив демона, который принял облик быка, Кришна в состоянии эйфории от этой победы пришёл на встречу с Радхикой. Увидев перепачканного в крови быка Кришну, Радха запретила Ему приближаться к ней. Кришна попытался объяснить, что это был демон-оборотень, и Кришна был очень рад и горд, что Ему удалось победить быка. Но Радха была непреклонна, напомнив Кришне, что бык – это олицетворение религии, и убивать быка, как и корову, это очень тяжкий грех. Радха сказала, что до тех пор, пока Кришна не очистится от греха убийства быка, она не станет с Ним (Кришной) встречаться."
+      }
+    }
+  },
+  {
+    "id": "hkzp_541_день_ухода_васудевы_гхоша",
+    "name": "Disappearance of Vasudevy Gkhosha",
+    "type": "vaishnava_disappearance",
+    "category": "vaishnava_disappearance",
+    "scope": "matched_harekrishnazp_vaishnavacalendar",
+    "subject": "День ухода Васудевы Гхоша",
+    "gaudiya_masa": "Damodara",
+    "paksha": "Gaura",
+    "tithi": "Dvitiya",
+    "timing_rule": "sunrise_based",
+    "allow_in_adhika": false,
+    "priority": "medium",
+    "source_status": "matched_by_name_type_tithi",
+    "source_url": "http://harekrishnazp.info/materialy/vajshnavskij-kalendar/903-vasudeva-gkhosh.html",
+    "description": "Imported calendar reference for \"День ухода Васудевы Гхоша\". English summary still needs editorial translation; the Russian source summary is linked in source_url.",
+    "i18n": {
+      "en": {
+        "name": "Disappearance of Vasudevy Gkhosha",
+        "description": "Imported calendar reference for \"День ухода Васудевы Гхоша\". English summary still needs editorial translation; the Russian source summary is linked in source_url."
+      },
+      "ru": {
+        "name": "День ухода Васудевы Гхоша",
+        "description": "Шри Васудева ГхошВасудева Гхош, близкий спутник Господа Чайтаньи, был известен своими киртанами. В Шри Чайтанья Чаритамрите говорится, что когда Васудева Гхош вел киртан, даже деревья и камни плавились, слушая его. Он сочинил много песен о Шри Чайтанье Махапрабху. Васудева Гхош и его братья Говинда и Мадхава являются вечными спутниками Господа Чайтаньи и Господа Нитьянанды. (Смотрите Шри Чайтанья Чаритамриту, Ади-лила, 10.115, 11.14-15, 11.19 и 11.88.)"
+      }
+    }
+  },
+  {
+    "id": "hkzp_541_гопаштами_гоштхаштами",
+    "name": "Gopashtami (Goshtkhashtami)",
+    "type": "festival",
+    "category": "festival",
+    "scope": "matched_harekrishnazp_vaishnavacalendar",
+    "subject": "Гопаштами (Гоштхаштами)",
+    "gaudiya_masa": "Damodara",
+    "paksha": "Gaura",
+    "tithi": "Ashtami",
+    "timing_rule": "sunrise_based",
+    "allow_in_adhika": false,
+    "priority": "medium",
+    "source_status": "matched_by_name_type_tithi",
+    "source_url": "http://harekrishnazp.info/materialy/vajshnavskij-kalendar/1288-gopashtami-goshtkhashtami.html",
+    "description": "Imported calendar reference for \"Гопаштами (Гоштхаштами)\". English summary still needs editorial translation; the Russian source summary is linked in source_url.",
+    "i18n": {
+      "en": {
+        "name": "Gopashtami (Goshtkhashtami)",
+        "description": "Imported calendar reference for \"Гопаштами (Гоштхаштами)\". English summary still needs editorial translation; the Russian source summary is linked in source_url."
+      },
+      "ru": {
+        "name": "Гопаштами (Гоштхаштами)",
+        "description": "Праздник Гопаштами или Гоштхаштами отмечаестся как день, когда Господь Шри Кришна стал настоящим пастухом. До этого он мог пасти только телят, но теперь Он становится гопой, пастушком. Этот праздник также является праздником коров."
+      }
+    }
+  },
+  {
+    "id": "hkzp_541_день_ухода_гададхары_даса_госвами",
+    "name": "Disappearance of Gadadkhary Dasa Gosvami",
+    "type": "vaishnava_disappearance",
+    "category": "vaishnava_disappearance",
+    "scope": "matched_harekrishnazp_vaishnavacalendar",
+    "subject": "День ухода Гададхары Даса Госвами",
+    "gaudiya_masa": "Damodara",
+    "paksha": "Gaura",
+    "tithi": "Ashtami",
+    "timing_rule": "sunrise_based",
+    "allow_in_adhika": false,
+    "priority": "medium",
+    "source_status": "matched_by_name_type_tithi",
+    "source_url": "http://harekrishnazp.info/materialy/vajshnavskij-kalendar/909-gadadkhar-das-gosvami.html",
+    "description": "Imported calendar reference for \"День ухода Гададхары Даса Госвами\". English summary still needs editorial translation; the Russian source summary is linked in source_url.",
+    "i18n": {
+      "en": {
+        "name": "Disappearance of Gadadkhary Dasa Gosvami",
+        "description": "Imported calendar reference for \"День ухода Гададхары Даса Госвами\". English summary still needs editorial translation; the Russian source summary is linked in source_url."
+      },
+      "ru": {
+        "name": "День ухода Гададхары Даса Госвами",
+        "description": "Из \"Шри Чайтанья-чаритамрита. Ади-лила\" 10.53: Шри Гададхара дас, двадцать третья ветвь, — лучший из всех, ибо он заставил всех мусульманских кази повторять святое имя Господа Хари."
+      }
+    }
+  },
+  {
+    "id": "hkzp_541_день_ухода_дхананджая_пандита",
+    "name": "Disappearance of Dkhanandzhaya Pandita",
+    "type": "vaishnava_disappearance",
+    "category": "vaishnava_disappearance",
+    "scope": "matched_harekrishnazp_vaishnavacalendar",
+    "subject": "День ухода Дхананджая Пандита",
+    "gaudiya_masa": "Damodara",
+    "paksha": "Gaura",
+    "tithi": "Ashtami",
+    "timing_rule": "sunrise_based",
+    "allow_in_adhika": false,
+    "priority": "medium",
+    "source_status": "matched_by_name_type_tithi",
+    "source_url": "http://harekrishnazp.info/materialy/vajshnavskij-kalendar/910-dkhanandzhaya-pandit.html",
+    "description": "Imported calendar reference for \"День ухода Дхананджая Пандита\". English summary still needs editorial translation; the Russian source summary is linked in source_url.",
+    "i18n": {
+      "en": {
+        "name": "Disappearance of Dkhanandzhaya Pandita",
+        "description": "Imported calendar reference for \"День ухода Дхананджая Пандита\". English summary still needs editorial translation; the Russian source summary is linked in source_url."
+      },
+      "ru": {
+        "name": "День ухода Дхананджая Пандита",
+        "description": "Пастушок Васудама, друг Господа Кришны, явился в играх Господа Чайтаньи как Шри Дхананджая Пандит. Из «Шри Чайтанья-чаритамриты. Ади-лила» 11.31: Шестнадцатым по счету слугой Нитьянанды Прабху был Дхананджая Пандит. Он был очень дорог Нитьянанде. В высшей степени отрешенный, он всегда был поглощен любовью к Богу."
+      }
+    }
+  },
+  {
+    "id": "hkzp_541_день_ухода_гауры_кишоры_даса_бабаджи",
+    "name": "Disappearance of Gaury Kishory Dasa Babadzhi",
+    "type": "vaishnava_disappearance",
+    "category": "vaishnava_disappearance",
+    "scope": "matched_harekrishnazp_vaishnavacalendar",
+    "subject": "День ухода Гауры Кишоры Даса Бабаджи",
+    "gaudiya_masa": "Damodara",
+    "paksha": "Gaura",
+    "tithi": "Ekadashi",
+    "timing_rule": "sunrise_based",
+    "allow_in_adhika": false,
+    "priority": "medium",
+    "source_status": "matched_by_name_type_tithi",
+    "source_url": "http://harekrishnazp.info/materialy/vajshnavskij-kalendar/916-gaura-kishora-das-babadzhi.html",
+    "description": "Imported calendar reference for \"День ухода Гауры Кишоры Даса Бабаджи\". English summary still needs editorial translation; the Russian source summary is linked in source_url.",
+    "i18n": {
+      "en": {
+        "name": "Disappearance of Gaury Kishory Dasa Babadzhi",
+        "description": "Imported calendar reference for \"День ухода Гауры Кишоры Даса Бабаджи\". English summary still needs editorial translation; the Russian source summary is linked in source_url."
+      },
+      "ru": {
+        "name": "День ухода Гауры Кишоры Даса Бабаджи",
+        "description": "Шрила Гаура-Кишора даса Бабаджи Махараджа родился в 30-х годах XIX-го века в округе Фаридапура, неподалеку от местечка под названием Тепакхола, в деревне Вагйана в Восточной Бенгалии, ныне Бангладеш. Практически всю свою жизнь он занимался продажей зерновых, а после кончины жены оставил свои дела и отправился в священный Вриндаван, город неподалеку от Дели, славящийся множеством священных озер и лесов, а также уникальными храмами Кришны. Там он встретил Шрилу Бхагавата-даса Бабаджи, одного из выдающихся учеников Шрилы Джаганнатхи даса Бабаджи Махараджа, и принял от него посвящение в жизнь отшельника, называемых в вайшнавской традиции Бабаджи."
+      }
+    }
+  },
+  {
+    "id": "hkzp_541_бхишма_панчака",
+    "name": "Bkhishma Panchaka",
+    "type": "festival",
+    "category": "festival",
+    "scope": "matched_harekrishnazp_vaishnavacalendar",
+    "subject": "Бхишма Панчака",
+    "gaudiya_masa": "Damodara",
+    "paksha": "Gaura",
+    "tithi": "Ekadashi",
+    "timing_rule": "sunrise_based",
+    "allow_in_adhika": false,
+    "priority": "medium",
+    "source_status": "matched_by_name_type_tithi",
+    "source_url": "http://harekrishnazp.info/materialy/vajshnavskij-kalendar/1290-bkhishma-panchaka.html",
+    "description": "Imported calendar reference for \"Бхишма Панчака\". English summary still needs editorial translation; the Russian source summary is linked in source_url.",
+    "i18n": {
+      "en": {
+        "name": "Bkhishma Panchaka",
+        "description": "Imported calendar reference for \"Бхишма Панчака\". English summary still needs editorial translation; the Russian source summary is linked in source_url."
+      },
+      "ru": {
+        "name": "Бхишма Панчака",
+        "description": "Последние пять дней месяца Картики традиционно называются Бхишма Панчака. В эти дни ушёл Бхишмадев. В «Хари-бхакти-виласе» говорится, что в Бхишма Панчаку ради удовлетворения Господа человеку следует соблюдать пост на определенные виды пищи. Хотя это ограничение не обязательно, Кришна остается доволен таким человеком. Таким образом, если Вы не соблюдали поста в Чатурмасью, то пост в Бхишма-панчаку выполнит роль Чатурмасьи."
+      }
+    }
+  },
+  {
+    "id": "hkzp_541_день_ухода_бхугарбхи_госвами",
+    "name": "Disappearance of Bkhugarbkhi Gosvami",
+    "type": "vaishnava_disappearance",
+    "category": "vaishnava_disappearance",
+    "scope": "matched_harekrishnazp_vaishnavacalendar",
+    "subject": "День ухода Бхугарбхи Госвами",
+    "gaudiya_masa": "Damodara",
+    "paksha": "Gaura",
+    "tithi": "Chaturdashi",
+    "timing_rule": "sunrise_based",
+    "allow_in_adhika": false,
+    "priority": "medium",
+    "source_status": "matched_by_name_type_tithi",
+    "source_url": "http://harekrishnazp.info/materialy/vajshnavskij-kalendar/918-bkhugarbkha-gosvami.html",
+    "description": "Imported calendar reference for \"День ухода Бхугарбхи Госвами\". English summary still needs editorial translation; the Russian source summary is linked in source_url.",
+    "i18n": {
+      "en": {
+        "name": "Disappearance of Bkhugarbkhi Gosvami",
+        "description": "Imported calendar reference for \"День ухода Бхугарбхи Госвами\". English summary still needs editorial translation; the Russian source summary is linked in source_url."
+      },
+      "ru": {
+        "name": "День ухода Бхугарбхи Госвами",
+        "description": "Ученик Шри Гададхары Пандита, Шри Бхугарбха Госвами, был очень дружен со Шри Локанатхой Госвами. Воодушевленные Господом Чайтаньей, они стали первыми и старшими преданными во Вриндаване. Поэтому именно они до прибытия Шри Рупы Госвами и Шри Санатаны Госвами попытались разыскать утерянные святые места, связанные с Радхой-Говиндаджи."
+      }
+    }
+  },
+  {
+    "id": "hkzp_541_день_ухода_кашишвары_пандита",
+    "name": "Disappearance of Kashishvary Pandita",
+    "type": "vaishnava_disappearance",
+    "category": "vaishnava_disappearance",
+    "scope": "matched_harekrishnazp_vaishnavacalendar",
+    "subject": "День ухода Кашишвары Пандита",
+    "gaudiya_masa": "Damodara",
+    "paksha": "Gaura",
+    "tithi": "Chaturdashi",
+    "timing_rule": "sunrise_based",
+    "allow_in_adhika": false,
+    "priority": "medium",
+    "source_status": "matched_by_name_type_tithi",
+    "source_url": "http://harekrishnazp.info/materialy/vajshnavskij-kalendar/917-kashishvara-pandit.html",
+    "description": "Imported calendar reference for \"День ухода Кашишвары Пандита\". English summary still needs editorial translation; the Russian source summary is linked in source_url.",
+    "i18n": {
+      "en": {
+        "name": "Disappearance of Kashishvary Pandita",
+        "description": "Imported calendar reference for \"День ухода Кашишвары Пандита\". English summary still needs editorial translation; the Russian source summary is linked in source_url."
+      },
+      "ru": {
+        "name": "День ухода Кашишвары Пандита",
+        "description": "Шри Ишвара Пури направил своих учеников, Говинду и Кашишвару Пандита, в Джаганнатха Пури, чтобы они смиренно служили Господу Чайтанье."
+      }
+    }
+  },
+  {
+    "id": "hkzp_541_день_явления_нимбарки_ачарьи",
+    "name": "Appearance of Nimbarki Achari",
+    "type": "vaishnava_appearance",
+    "category": "vaishnava_appearance",
+    "scope": "matched_harekrishnazp_vaishnavacalendar",
+    "subject": "День явления Нимбарки Ачарьи",
+    "gaudiya_masa": "Damodara",
+    "paksha": "Gaura",
+    "tithi": "Purnima",
+    "timing_rule": "sunrise_based",
+    "allow_in_adhika": false,
+    "priority": "medium",
+    "source_status": "matched_by_name_type_tithi",
+    "source_url": "http://harekrishnazp.info/materialy/vajshnavskij-kalendar/1293-nimbarka-acharya.html",
+    "description": "Imported calendar reference for \"День явления Нимбарки Ачарьи\". English summary still needs editorial translation; the Russian source summary is linked in source_url.",
+    "i18n": {
+      "en": {
+        "name": "Appearance of Nimbarki Achari",
+        "description": "Imported calendar reference for \"День явления Нимбарки Ачарьи\". English summary still needs editorial translation; the Russian source summary is linked in source_url."
+      },
+      "ru": {
+        "name": "День явления Нимбарки Ачарьи",
+        "description": "Нимбарка Ачарья был великим подвижником. Он написал много книг по Двайтадвайте-ваде, прожил большую часть своей жизни в предании Верховной Личности Бога Шри Кришне в месте под названием Нимбаграма возле Говардхана во Вриндаване."
+      }
+    }
+  },
+  {
+    "id": "hkzp_541_последний_день_чатурмасьи",
+    "name": "Posledniy Den Chaturmasi",
+    "type": "festival",
+    "category": "festival",
+    "scope": "matched_harekrishnazp_vaishnavacalendar",
+    "subject": "Последний день Чатурмасьи",
+    "gaudiya_masa": "Damodara",
+    "paksha": "Gaura",
+    "tithi": "Purnima",
+    "timing_rule": "sunrise_based",
+    "allow_in_adhika": false,
+    "priority": "medium",
+    "source_status": "matched_by_name_type_tithi",
+    "source_url": "http://harekrishnazp.info/vajshnavskij-kalendar/1928-chaturmasya.html",
+    "description": "Imported calendar reference for \"Последний день Чатурмасьи\". English summary still needs editorial translation; the Russian source summary is linked in source_url.",
+    "i18n": {
+      "en": {
+        "name": "Posledniy Den Chaturmasi",
+        "description": "Imported calendar reference for \"Последний день Чатурмасьи\". English summary still needs editorial translation; the Russian source summary is linked in source_url."
+      },
+      "ru": {
+        "name": "Последний день Чатурмасьи",
+        "description": "Чатурмасья - четыре священных месяца, во время которых даются и выполняются разного рода духовные обеты. Это период в 108 дней, который начинается на Гуру Пурниму и заканчивается в последний день месяца Картика."
+      }
+    }
+  },
+  {
+    "id": "hkzp_541_день_ухода_калии_кришнадаса",
+    "name": "Disappearance of Kalii Krishnadasa",
+    "type": "vaishnava_disappearance",
+    "category": "vaishnava_disappearance",
+    "scope": "matched_harekrishnazp_vaishnavacalendar",
+    "subject": "День ухода Калии Кришнадаса",
+    "gaudiya_masa": "Keshava",
+    "paksha": "Krishna",
+    "tithi": "Dvadashi",
+    "timing_rule": "sunrise_based",
+    "allow_in_adhika": false,
+    "priority": "medium",
+    "source_status": "matched_by_name_type_tithi",
+    "source_url": "http://harekrishnazp.info/materialy/vajshnavskij-kalendar/935-kaliya-krishnadas.html",
+    "description": "Imported calendar reference for \"День ухода Калии Кришнадаса\". English summary still needs editorial translation; the Russian source summary is linked in source_url.",
+    "i18n": {
+      "en": {
+        "name": "Disappearance of Kalii Krishnadasa",
+        "description": "Imported calendar reference for \"День ухода Калии Кришнадаса\". English summary still needs editorial translation; the Russian source summary is linked in source_url."
+      },
+      "ru": {
+        "name": "День ухода Калии Кришнадаса",
+        "description": "Кавираджа Госвами пишет в «Чайтанья-чаритамрите», что Калия Кришнадас Тхакур был в числе главных преданных Нитьянанды Прабху. Он не знал ничего другого, кроме лотосных стоп Шри Нитьянанды Прабху. «Просто памятуя о Калия Кришна дасе, преданный несомненно обретет общество Шри Чайтаньи и Шри Нитьянанды» («Чайтанья-Бхагавата»)."
+      }
+    }
+  },
+  {
+    "id": "hkzp_541_день_ухода_шаранги_тхакура",
+    "name": "Disappearance of Sharangi Tkhakura",
+    "type": "vaishnava_disappearance",
+    "category": "vaishnava_disappearance",
+    "scope": "matched_harekrishnazp_vaishnavacalendar",
+    "subject": "День ухода Шаранги Тхакура",
+    "gaudiya_masa": "Keshava",
+    "paksha": "Krishna",
+    "tithi": "Trayodashi",
+    "timing_rule": "sunrise_based",
+    "allow_in_adhika": false,
+    "priority": "medium",
+    "source_status": "matched_by_name_type_tithi",
+    "source_url": "http://harekrishnazp.info/materialy/vajshnavskij-kalendar/936-sharanga-tkhakur.html",
+    "description": "Imported calendar reference for \"День ухода Шаранги Тхакура\". English summary still needs editorial translation; the Russian source summary is linked in source_url.",
+    "i18n": {
+      "en": {
+        "name": "Disappearance of Sharangi Tkhakura",
+        "description": "Imported calendar reference for \"День ухода Шаранги Тхакура\". English summary still needs editorial translation; the Russian source summary is linked in source_url."
+      },
+      "ru": {
+        "name": "День ухода Шаранги Тхакура",
+        "description": "Шрила Прабхупада, ссылаясь на «Анубхашью» Бхактисиддханты Сарасвати, пишет: «Другое имя Тхакура Саранги даса – Шарнга Тхакур. Иногда его называют также Шарнгапани или Шарнгадхара. Он жил в Навадвипе, на Модадрумадвипе, и поклонялся Верховному Господу в уединенном месте на берегу Ганги. Он не принимал учеников, однако Верховный Господь из сердца снова и снова подталкивал его на это. Однажды утром он решил: «Тот, кого я сегодня увижу первым, станет моим учеником»."
+      }
+    }
+  },
+  {
+    "id": "hkzp_541_сарасвати_пуджа",
+    "name": "Sarasvati Pudzha",
+    "type": "festival",
+    "category": "festival",
+    "scope": "matched_harekrishnazp_vaishnavacalendar",
+    "subject": "Сарасвати Пуджа",
+    "gaudiya_masa": "Madhava",
+    "paksha": "Gaura",
+    "tithi": "Panchami",
+    "timing_rule": "sunrise_based",
+    "allow_in_adhika": false,
+    "priority": "medium",
+    "source_status": "matched_by_name_type_tithi",
+    "source_url": "http://harekrishnazp.info/materialy/vajshnavskij-kalendar/1040-sarasvati-pudzha.html",
+    "description": "Imported calendar reference for \"Сарасвати Пуджа\". English summary still needs editorial translation; the Russian source summary is linked in source_url.",
+    "i18n": {
+      "en": {
+        "name": "Sarasvati Pudzha",
+        "description": "Imported calendar reference for \"Сарасвати Пуджа\". English summary still needs editorial translation; the Russian source summary is linked in source_url."
+      },
+      "ru": {
+        "name": "Сарасвати Пуджа",
+        "description": "Васанта Панчами - день явления Сарасвати Деви - богини мудрости, речи и изящных искусств - в Индии совпадает с первым днем весны. И это довольно символично. Весна всегда символизирует чистоту, начало, надежду, изящество и красоту. Веды рассказывают, что Сарасвати родилась из уст Господа Брахмы, \"вторичного\" творца вселенной. Ее неземная красота и чистота привлекли Господа Брахму, и он захотел жениться на ней. Этот \"асоциальный\" поступок привел к тому, что Господь Брахма был проклят, и поэтому ему не проводят ритуалов поклонения. До сих пор во всей Индии существует лишь несколько храмов Господа Брахмы."
+      }
+    }
+  },
+  {
+    "id": "hkzp_541_день_явления_рагхунатхи_даса_госвами",
+    "name": "Appearance of Ragkhunatkhi Dasa Gosvami",
+    "type": "vaishnava_appearance",
+    "category": "vaishnava_appearance",
+    "scope": "matched_harekrishnazp_vaishnavacalendar",
+    "subject": "День явления Рагхунатхи Даса Госвами",
+    "gaudiya_masa": "Madhava",
+    "paksha": "Gaura",
+    "tithi": "Panchami",
+    "timing_rule": "sunrise_based",
+    "allow_in_adhika": false,
+    "priority": "medium",
+    "source_status": "matched_by_name_type_tithi",
+    "source_url": "http://harekrishnazp.info/materialy/vajshnavskij-kalendar/1034-ragkhunatkha-das-gosvami.html",
+    "description": "Imported calendar reference for \"День явления Рагхунатхи Даса Госвами\". English summary still needs editorial translation; the Russian source summary is linked in source_url.",
+    "i18n": {
+      "en": {
+        "name": "Appearance of Ragkhunatkhi Dasa Gosvami",
+        "description": "Imported calendar reference for \"День явления Рагхунатхи Даса Госвами\". English summary still needs editorial translation; the Russian source summary is linked in source_url."
+      },
+      "ru": {
+        "name": "День явления Рагхунатхи Даса Госвами",
+        "description": "Рагхунатха дас родился в 1495 году в селении Шри Кришнапура в Бенгалии в семье богатого землевладельца. Ещё будучи ребенком, он получал наставления об основах учения вайшнавов от Баларама Ачарйи и Харидаса Тхакура. В 1510 году известие о саннйасе Шри Чайтанйи достигло Сантаграма. Узнав, что Нитйананда Прабху отговорил Шри Чайтанйю от паломничества во Вриндаван и привел Его в местность, расположенную близ Шантипура, Рагхунатх Дас просил разрешения отца пойти туда, чтобы увидеть великого Шри Чайтанйю, о котором так много рассказывал ему святой Харидас Тхакур. Но юноша был слишком молод, всего пятнадцати лет от роду, и отец сомневался, стоит ли позволять своему сыну-аристократу общаться с бо..."
+      }
+    }
+  },
+  {
+    "id": "hkzp_541_нитьянанда_трайодаши_день_явления_господа_нитьянанды_пост",
+    "name": "Nityananda Trayodashi - Den Yavleniya Lord Nityanandy",
+    "type": "divine_appearance",
+    "category": "divine_appearance",
+    "scope": "matched_harekrishnazp_vaishnavacalendar",
+    "subject": "Нитьянанда Трайодаши - день явления Господа Нитьянанды (пост)",
+    "gaudiya_masa": "Madhava",
+    "paksha": "Gaura",
+    "tithi": "Trayodashi",
+    "timing_rule": "sunrise_based",
+    "allow_in_adhika": false,
+    "priority": "medium",
+    "source_status": "matched_by_name_type_tithi_observed_next_day_in_sources",
+    "source_url": "http://harekrishnazp.info/materialy/vajshnavskij-kalendar/510-gospod-nityananda.html",
+    "description": "Imported calendar reference for \"Нитьянанда Трайодаши - день явления Господа Нитьянанды (пост)\". English summary still needs editorial translation; the Russian source summary is linked in source_url.",
+    "i18n": {
+      "en": {
+        "name": "Nityananda Trayodashi - Den Yavleniya Lord Nityanandy",
+        "description": "Imported calendar reference for \"Нитьянанда Трайодаши - день явления Господа Нитьянанды (пост)\". English summary still needs editorial translation; the Russian source summary is linked in source_url."
+      },
+      "ru": {
+        "name": "Нитьянанда Трайодаши - день явления Господа Нитьянанды (пост)",
+        "description": "Великий святой Вриндаван Дас Тхакур говорит, что этот праздник полон безграничной милости. Шри Нитьянанда пришел как главный спутник Господа Чайтаньи. Со всей самоотдачей служа Гауранге, Он учит нас тому, что может сделать нас полностью счастливыми. Именно это и выражает его имя - «вечное блаженство». Поклоняясь Господу Нитьянанде, каждый обретет любовь и преданность лотосным стопам Кришны."
+      }
+    },
+    "observance_offset_days": 1
+  },
+  {
+    "id": "hkzp_541_день_явления_нароттамы_даса_тхакура",
+    "name": "Appearance of Narottamy Dasa Tkhakura",
+    "type": "vaishnava_appearance",
+    "category": "vaishnava_appearance",
+    "scope": "matched_harekrishnazp_vaishnavacalendar",
+    "subject": "День явления Нароттамы Даса Тхакура",
+    "gaudiya_masa": "Madhava",
+    "paksha": "Gaura",
+    "tithi": "Purnima",
+    "timing_rule": "sunrise_based",
+    "allow_in_adhika": false,
+    "priority": "medium",
+    "source_status": "matched_by_name_type_tithi",
+    "source_url": "http://harekrishnazp.info/materialy/vajshnavskij-kalendar/894-narottama-das-tkhakur.html",
+    "description": "Imported calendar reference for \"День явления Нароттамы Даса Тхакура\". English summary still needs editorial translation; the Russian source summary is linked in source_url.",
+    "i18n": {
+      "en": {
+        "name": "Appearance of Narottamy Dasa Tkhakura",
+        "description": "Imported calendar reference for \"День явления Нароттамы Даса Тхакура\". English summary still needs editorial translation; the Russian source summary is linked in source_url."
+      },
+      "ru": {
+        "name": "День явления Нароттамы Даса Тхакура",
+        "description": "Нароттам Дас Тхакур был воплощением учения Гаудия. Он передавал любовь к Богу через известную нам поэзию и так же поэтично претворял свою любовь в жизнь. Он был совершенным преданным, идеалом божественного посланника, качества которого описывали Шесть Госвами всякий раз, когда их перо касалось пальмовых листьев. Суть философских представлений Гаудия-вайшнавизма отражена во всех его песнях идеалы.» Появлению Нароттама Даса Тхакура предшествуют два важных события. Первое - это явление в этом мире Локанатха Госвами, а второе - предсказание его рождения Шри Чайтаньей Махапрабху."
+      }
+    }
+  },
+  {
+    "id": "hkzp_541_день_явления_пурушоттамы_даса_тхакура",
+    "name": "Appearance of Purushottamy Dasa Tkhakura",
+    "type": "vaishnava_appearance",
+    "category": "vaishnava_appearance",
+    "scope": "matched_harekrishnazp_vaishnavacalendar",
+    "subject": "День явления Пурушоттамы Даса Тхакура",
+    "gaudiya_masa": "Govinda",
+    "paksha": "Gaura",
+    "tithi": "Chaturthi",
+    "timing_rule": "sunrise_based",
+    "allow_in_adhika": false,
+    "priority": "medium",
+    "source_status": "matched_by_name_type_tithi",
+    "source_url": "http://harekrishnazp.info/materialy/vajshnavskij-kalendar/1063-purushottama-das-tkhakur.html",
+    "description": "Imported calendar reference for \"День явления Пурушоттамы Даса Тхакура\". English summary still needs editorial translation; the Russian source summary is linked in source_url.",
+    "i18n": {
+      "en": {
+        "name": "Appearance of Purushottamy Dasa Tkhakura",
+        "description": "Imported calendar reference for \"День явления Пурушоттамы Даса Тхакура\". English summary still needs editorial translation; the Russian source summary is linked in source_url."
+      },
+      "ru": {
+        "name": "День явления Пурушоттамы Даса Тхакура",
+        "description": "«Садашива Кавирадж был необычайно удачливым. Его сыном был Шри Пурушоттама дас. Он никогда не отождествлял себя с материальным телом. В его сердце всегда пребывал Шри Нитьянанда.» (Чайтанья Бхагавата, Антья, 5/741-742)."
+      }
+    }
+  },
+  {
+    "id": "hkzp_541_гаура_пурнима_день_явления_господа_шри_чайтаньи_махапрабху_пост",
+    "name": "Gaura-Purnima - Den Yavleniya Lord Sri Chaytani Makhaprabkhu",
+    "type": "divine_appearance",
+    "category": "divine_appearance",
+    "scope": "matched_harekrishnazp_vaishnavacalendar",
+    "subject": "Гаура-Пурнима - день явления Господа Шри Чайтаньи Махапрабху (пост)",
+    "gaudiya_masa": "Govinda",
+    "paksha": "Gaura",
+    "tithi": "Purnima",
+    "timing_rule": "sunrise_based",
+    "allow_in_adhika": false,
+    "priority": "medium",
+    "source_status": "matched_by_name_type_tithi",
+    "source_url": "http://harekrishnazp.info/materialy/vajshnavskij-kalendar/547-gaura-purnima.html",
+    "description": "Imported calendar reference for \"Гаура-Пурнима - день явления Господа Шри Чайтаньи Махапрабху (пост)\". English summary still needs editorial translation; the Russian source summary is linked in source_url.",
+    "i18n": {
+      "en": {
+        "name": "Gaura-Purnima - Den Yavleniya Lord Sri Chaytani Makhaprabkhu",
+        "description": "Imported calendar reference for \"Гаура-Пурнима - день явления Господа Шри Чайтаньи Махапрабху (пост)\". English summary still needs editorial translation; the Russian source summary is linked in source_url."
+      },
+      "ru": {
+        "name": "Гаура-Пурнима - день явления Господа Шри Чайтаньи Махапрабху (пост)",
+        "description": "В доме Шри Джаганнатх Мишры не было предела радости. Она царила в комнате Шри Шачидеви. Весь мир был затоплен потоком Харинама, при появлении полной и чистой луны в этот день. И луна в небе закрыла свое лицо из скромности. И как она могла не сделать этого? Луны на пальцах Его ног излучали такой яркий и благодатный свет, что затмевали миллионы лун, ведь сегодня явился Гаурачандра. Повсюду с неба дождем сыпались цветы. Раздались звуки миллионов раковин и барабанов, и начался танец небесных существ. Вся земля воспевала \"Джайа, Джайа\", и вся вселенная достигла освобождения. Так повсюду разнеслась весть о явлении Гаура Хари разнеслась. Все преданные немедленно почувствовали глубокое удовлетвор..."
+      }
+    }
+  },
+  {
+    "id": "hkzp_541_день_явления_рамануджи_ачарьи",
+    "name": "Appearance of Ramanudzhi Achari",
+    "type": "vaishnava_appearance",
+    "category": "vaishnava_appearance",
+    "scope": "matched_harekrishnazp_vaishnavacalendar",
+    "subject": "День явления Рамануджи Ачарьи",
+    "gaudiya_masa": "Vishnu",
+    "paksha": "Gaura",
+    "tithi": "Panchami",
+    "timing_rule": "sunrise_based",
+    "allow_in_adhika": false,
+    "priority": "medium",
+    "source_status": "matched_by_name_type_tithi",
+    "source_url": "http://harekrishnazp.info/materialy/vajshnavskij-kalendar/1048-ramanudzha-acharya.html",
+    "description": "Imported calendar reference for \"День явления Рамануджи Ачарьи\". English summary still needs editorial translation; the Russian source summary is linked in source_url.",
+    "i18n": {
+      "en": {
+        "name": "Appearance of Ramanudzhi Achari",
+        "description": "Imported calendar reference for \"День явления Рамануджи Ачарьи\". English summary still needs editorial translation; the Russian source summary is linked in source_url."
+      },
+      "ru": {
+        "name": "День явления Рамануджи Ачарьи",
+        "description": "Шри Рамануджа Ачарья явился в 1017 году неподалеку от Мадраса, в Южной Индии, в семье ведических ученых. Шри-вайшнавы утверждают, что он был инкарнацией Лакшмана. Слово Рамануджа означает «последователь Рамы». Он получил это имя, поскольку Лакшман повсюду следует за своим братом Господом Рамачандрой и служит Ему."
+      }
+    }
+  },
+  {
+    "id": "hkzp_541_день_ухода_вриндавана_даса_тхакура",
+    "name": "Disappearance of Vrindavana Dasa Tkhakura",
+    "type": "vaishnava_disappearance",
+    "category": "vaishnava_disappearance",
+    "scope": "matched_harekrishnazp_vaishnavacalendar",
+    "subject": "День ухода Вриндавана Даса Тхакура",
+    "gaudiya_masa": "Madhusudan",
+    "paksha": "Krishna",
+    "tithi": "Dashami",
+    "timing_rule": "sunrise_based",
+    "allow_in_adhika": false,
+    "priority": "medium",
+    "source_status": "matched_by_name_type_tithi",
+    "source_url": "http://harekrishnazp.info/materialy/vajshnavskij-kalendar/646-vrindavana-das-tkhakur.html",
+    "description": "Imported calendar reference for \"День ухода Вриндавана Даса Тхакура\". English summary still needs editorial translation; the Russian source summary is linked in source_url.",
+    "i18n": {
+      "en": {
+        "name": "Disappearance of Vrindavana Dasa Tkhakura",
+        "description": "Imported calendar reference for \"День ухода Вриндавана Даса Тхакура\". English summary still needs editorial translation; the Russian source summary is linked in source_url."
+      },
+      "ru": {
+        "name": "День ухода Вриндавана Даса Тхакура",
+        "description": "Шрила Вриндаван Дас Тхакур родился спустя четыре года, после того как Махапрабху принял санньясу. Его мать звали Шри Нараяни Деви. Она была племянницей Шриниваса Пандита."
+      }
+    }
+  },
+  {
+    "id": "hkzp_541_акшая_тритья_начало_чандана_ятры",
+    "name": "Akshaya Tritya, Nachalo Chandana Yatry",
+    "type": "festival",
+    "category": "festival",
+    "scope": "matched_harekrishnazp_vaishnavacalendar",
+    "subject": "Акшая Тритья, начало Чандана Ятры",
+    "gaudiya_masa": "Madhusudan",
+    "paksha": "Gaura",
+    "tithi": "Dvitiya",
+    "timing_rule": "sunrise_based",
+    "allow_in_adhika": false,
+    "priority": "medium",
+    "source_status": "matched_by_name_type_tithi",
+    "source_url": "http://harekrishnazp.info/materialy/vajshnavskij-kalendar/1299-akshaya-tritya-nachalo-chandana-yatry.html",
+    "description": "Imported calendar reference for \"Акшая Тритья, начало Чандана Ятры\". English summary still needs editorial translation; the Russian source summary is linked in source_url.",
+    "i18n": {
+      "en": {
+        "name": "Akshaya Tritya, Nachalo Chandana Yatry",
+        "description": "Imported calendar reference for \"Акшая Тритья, начало Чандана Ятры\". English summary still needs editorial translation; the Russian source summary is linked in source_url."
+      },
+      "ru": {
+        "name": "Акшая Тритья, начало Чандана Ятры",
+        "description": "Акшая Тритья - один из чудесных дней в году. Не упустите возможности избавиться от всего лишнего и ненужного, освободите место в  вашей жизни для прекрасного и возвышенного."
+      }
+    }
+  },
+  {
+    "id": "hkzp_541_день_явления_шримати_ситы_деви",
+    "name": "Appearance of Shrimati Sity Devi",
+    "type": "vaishnava_appearance",
+    "category": "vaishnava_appearance",
+    "scope": "matched_harekrishnazp_vaishnavacalendar",
+    "subject": "День явления Шримати Ситы Деви",
+    "gaudiya_masa": "Madhusudan",
+    "paksha": "Gaura",
+    "tithi": "Navami",
+    "timing_rule": "sunrise_based",
+    "allow_in_adhika": false,
+    "priority": "medium",
+    "source_status": "matched_by_name_type_tithi",
+    "source_url": "http://harekrishnazp.info/materialy/vajshnavskij-kalendar/676-shrimati-sita-devi.html",
+    "description": "Imported calendar reference for \"День явления Шримати Ситы Деви\". English summary still needs editorial translation; the Russian source summary is linked in source_url.",
+    "i18n": {
+      "en": {
+        "name": "Appearance of Shrimati Sity Devi",
+        "description": "Imported calendar reference for \"День явления Шримати Ситы Деви\". English summary still needs editorial translation; the Russian source summary is linked in source_url."
+      },
+      "ru": {
+        "name": "День явления Шримати Ситы Деви",
+        "description": "Шримати Сита Деви — дочь царя Джанаки и супруга Господа Рамачандры. Она — сама Лакшмиджи, вечная супруга Господа Нарайаны, богиня процветания. Её приемный отец нашел маленькую Ситу в лесу, сразу увидев, как она похожа на Лакшми Деви. Но со временем он забыл об этом и полюбил её как свою дочь."
+      }
+    }
+  },
+  {
+    "id": "hkzp_541_нрисимха_чатурдаши_день_явления_господа_нрисимхадева_пост",
+    "name": "Nrisimkha Chaturdashi - Den Yavleniya Lord Nrisimkhadeva",
+    "type": "divine_appearance",
+    "category": "divine_appearance",
+    "scope": "matched_harekrishnazp_vaishnavacalendar",
+    "subject": "Нрисимха Чатурдаши - день явления Господа Нрисимхадева (пост)",
+    "gaudiya_masa": "Madhusudan",
+    "paksha": "Gaura",
+    "tithi": "Chaturdashi",
+    "timing_rule": "sunrise_based",
+    "allow_in_adhika": false,
+    "priority": "medium",
+    "source_status": "matched_by_name_type_tithi",
+    "source_url": "http://harekrishnazp.info/materialy/vajshnavskij-kalendar/683-nrisimkhadev.html",
+    "description": "Imported calendar reference for \"Нрисимха Чатурдаши - день явления Господа Нрисимхадева (пост)\". English summary still needs editorial translation; the Russian source summary is linked in source_url.",
+    "i18n": {
+      "en": {
+        "name": "Nrisimkha Chaturdashi - Den Yavleniya Lord Nrisimkhadeva",
+        "description": "Imported calendar reference for \"Нрисимха Чатурдаши - день явления Господа Нрисимхадева (пост)\". English summary still needs editorial translation; the Russian source summary is linked in source_url."
+      },
+      "ru": {
+        "name": "Нрисимха Чатурдаши - день явления Господа Нрисимхадева (пост)",
+        "description": "Я приношу свои поклоны Господу Нрисимхадеву, который всегда даёт наставления Своему преданному Прахладу в его сердце. Он побеждает все виды анартх, которые нападают на преданных. Его милость освежает и распространяется подобно свету луны. (Шрипад Шридхара Свами)"
+      }
+    }
+  },
+  {
+    "id": "hkzp_541_день_явления_вриндавана_даса_тхакура",
+    "name": "Appearance of Vrindavana Dasa Tkhakura",
+    "type": "vaishnava_appearance",
+    "category": "vaishnava_appearance",
+    "scope": "matched_harekrishnazp_vaishnavacalendar",
+    "subject": "День явления Вриндавана даса Тхакура",
+    "gaudiya_masa": "Trivikrama",
+    "paksha": "Krishna",
+    "tithi": "Trayodashi",
+    "timing_rule": "sunrise_based",
+    "allow_in_adhika": false,
+    "priority": "medium",
+    "source_status": "superseded_by_scsmath_541_vrindavan_das_appearance",
+    "source_url": "http://harekrishnazp.info/materialy/vajshnavskij-kalendar/646-vrindavana-das-tkhakur.html",
+    "description": "Imported calendar reference for \"День явления Вриндавана даса Тхакура\". English summary still needs editorial translation; the Russian source summary is linked in source_url.",
+    "i18n": {
+      "en": {
+        "name": "Appearance of Vrindavana Dasa Tkhakura",
+        "description": "Imported calendar reference for \"День явления Вриндавана даса Тхакура\". English summary still needs editorial translation; the Russian source summary is linked in source_url."
+      },
+      "ru": {
+        "name": "День явления Вриндавана даса Тхакура",
+        "description": "Шрила Вриндаван Дас Тхакур родился спустя четыре года, после того как Махапрабху принял санньясу. Его мать звали Шри Нараяни Деви. Она была племянницей Шриниваса Пандита."
+      }
+    },
+    "disabled": true
+  },
+  {
+    "id": "hkzp_541_ганга_пуджа",
+    "name": "Ganga Pudzha",
+    "type": "festival",
+    "category": "festival",
+    "scope": "matched_harekrishnazp_vaishnavacalendar",
+    "subject": "Ганга Пуджа",
+    "gaudiya_masa": "Trivikrama",
+    "paksha": "Gaura",
+    "tithi": "Dashami",
+    "timing_rule": "sunrise_based",
+    "allow_in_adhika": false,
+    "priority": "medium",
+    "source_status": "matched_by_name_type_tithi",
+    "source_url": "http://harekrishnazp.info/materialy/vajshnavskij-kalendar/1263-ganga-pudzha.html",
+    "description": "Imported calendar reference for \"Ганга Пуджа\". English summary still needs editorial translation; the Russian source summary is linked in source_url.",
+    "i18n": {
+      "en": {
+        "name": "Ganga Pudzha",
+        "description": "Imported calendar reference for \"Ганга Пуджа\". English summary still needs editorial translation; the Russian source summary is linked in source_url."
+      },
+      "ru": {
+        "name": "Ганга Пуджа",
+        "description": "Ганга Пуджа (Ганга Дашара) - праздник поклонения священной реке Ганге. Это день явления Матери Ганги, день, когда священная река сошла с Небес на Землю."
+      }
+    }
+  },
+  {
+    "id": "hkzp_541_день_явления_шримати_гангаматы_госвамини",
+    "name": "Appearance of Shrimati Gangamaty Gosvamini",
+    "type": "vaishnava_appearance",
+    "category": "vaishnava_appearance",
+    "scope": "matched_harekrishnazp_vaishnavacalendar",
+    "subject": "День явления Шримати Гангаматы Госвамини",
+    "gaudiya_masa": "Trivikrama",
+    "paksha": "Gaura",
+    "tithi": "Dashami",
+    "timing_rule": "sunrise_based",
+    "allow_in_adhika": false,
+    "priority": "medium",
+    "source_status": "matched_by_name_type_tithi",
+    "source_url": "http://harekrishnazp.info/materialy/vajshnavskij-kalendar/734-gangamati-gosvamini.html",
+    "description": "Imported calendar reference for \"День явления Шримати Гангаматы Госвамини\". English summary still needs editorial translation; the Russian source summary is linked in source_url.",
+    "i18n": {
+      "en": {
+        "name": "Appearance of Shrimati Gangamaty Gosvamini",
+        "description": "Imported calendar reference for \"День явления Шримати Гангаматы Госвамини\". English summary still needs editorial translation; the Russian source summary is linked in source_url."
+      },
+      "ru": {
+        "name": "День явления Шримати Гангаматы Госвамини",
+        "description": "На территории нынешней Бенгалии находилось когда-то царство Шри Нареш Нараяны. У царя Нареш Нараяны была дочь по имени Шачи. С самого детства Шачи была величайшей преданной Господа. За короткое время Шачи получила образование. Сначала она погрузилась в грамматику и стихосложение, но достигнув в этих предметах совершенства, она постепенно полностью занялась бесконечным изучением писаний. Несмотря на свой юный возраст, девушка всегда была очарована сознанием Кришны. Когда Шачи выросла, ее красота пленяла всех юношей, но Шачи совершенно не интересовали молодые люди, какими бы красивыми и богатыми они ни были. Она всегда была полна мыслями о Мадана Гопале."
+      }
+    }
+  },
+  {
+    "id": "hkzp_541_день_ухода_гададхары_пандита",
+    "name": "Disappearance of Gadadkhary Pandita",
+    "type": "vaishnava_disappearance",
+    "category": "vaishnava_disappearance",
+    "scope": "matched_harekrishnazp_vaishnavacalendar",
+    "subject": "День ухода Гададхары Пандита",
+    "gaudiya_masa": "Vamana",
+    "paksha": "Krishna",
+    "tithi": "Amavasya",
+    "timing_rule": "sunrise_based",
+    "allow_in_adhika": false,
+    "priority": "medium",
+    "source_status": "matched_by_name_type_tithi",
+    "source_url": "http://harekrishnazp.info/materialy/vajshnavskij-kalendar/765-gadadkhara-pandit.html",
+    "description": "Imported calendar reference for \"День ухода Гададхары Пандита\". English summary still needs editorial translation; the Russian source summary is linked in source_url.",
+    "i18n": {
+      "en": {
+        "name": "Disappearance of Gadadkhary Pandita",
+        "description": "Imported calendar reference for \"День ухода Гададхары Пандита\". English summary still needs editorial translation; the Russian source summary is linked in source_url."
+      },
+      "ru": {
+        "name": "День ухода Гададхары Пандита",
+        "description": "Шри Гададхара даса Тхакур жил в Навадвипа-дхаме, но после ухода Шри Чайтаньи Махапрабху переселился в Катву. В конце жизни он перебрался в деревню под названием Эндиядаха-грама, где соорудил свое последнее жилище. В Катве у Гададхары дасы был ученик по имени Ядунандана Чакраварти."
+      }
+    }
+  },
+  {
+    "id": "hkzp_541_день_ухода_гопалы_бхатты_госвами",
+    "name": "Disappearance of Gopaly Bkhatty Gosvami",
+    "type": "vaishnava_disappearance",
+    "category": "vaishnava_disappearance",
+    "scope": "matched_harekrishnazp_vaishnavacalendar",
+    "subject": "День ухода Гопалы Бхатты Госвами",
+    "gaudiya_masa": "Sridhara",
+    "paksha": "Krishna",
+    "tithi": "Panchami",
+    "timing_rule": "sunrise_based",
+    "allow_in_adhika": false,
+    "priority": "medium",
+    "source_status": "matched_by_name_type_tithi",
+    "source_url": "http://harekrishnazp.info/materialy/vajshnavskij-kalendar/792-gopala-bkhatta-gosvami.html",
+    "description": "Imported calendar reference for \"День ухода Гопалы Бхатты Госвами\". English summary still needs editorial translation; the Russian source summary is linked in source_url.",
+    "i18n": {
+      "en": {
+        "name": "Disappearance of Gopaly Bkhatty Gosvami",
+        "description": "Imported calendar reference for \"День ухода Гопалы Бхатты Госвами\". English summary still needs editorial translation; the Russian source summary is linked in source_url."
+      },
+      "ru": {
+        "name": "День ухода Гопалы Бхатты Госвами",
+        "description": "Шри Гопала Бхатта родился в 1503 году по христианскому летоисчислению, на 13-й день убывающей луны пауши месяца. Шри Гопала Бхатта Госвами был сыном Вьенкатты Бхатты, брахмана, жившего в Шри-Рангаме и получившего посвящение в Шри-сампрадае. Город Шри-Рангам расположен на берегу реки Кавери в округе Танджор, в 16 км к западу от Кумбхаконама."
+      }
+    }
+  },
+  {
+    "id": "hkzp_541_окончание_радха_говинда_джхулан_ятры",
+    "name": "Okonchanie Radkha Govinda Dzhkhulan Yatry",
+    "type": "festival",
+    "category": "festival",
+    "scope": "matched_harekrishnazp_vaishnavacalendar",
+    "subject": "Окончание Радха Говинда Джхулан Ятры",
+    "gaudiya_masa": "Sridhara",
+    "paksha": "Gaura",
+    "tithi": "Purnima",
+    "timing_rule": "sunrise_based",
+    "allow_in_adhika": false,
+    "priority": "medium",
+    "source_status": "matched_by_name_type_tithi",
+    "source_url": "http://harekrishnazp.info/materialy/vajshnavskij-kalendar/1276-radkha-govinda-dzhkhulan-yatra.html",
+    "description": "Imported calendar reference for \"Окончание Радха Говинда Джхулан Ятры\". English summary still needs editorial translation; the Russian source summary is linked in source_url.",
+    "i18n": {
+      "en": {
+        "name": "Okonchanie Radkha Govinda Dzhkhulan Yatry",
+        "description": "Imported calendar reference for \"Окончание Радха Говинда Джхулан Ятры\". English summary still needs editorial translation; the Russian source summary is linked in source_url."
+      },
+      "ru": {
+        "name": "Окончание Радха Говинда Джхулан Ятры",
+        "description": "Во время празднования «фестиваля качелей» - одного из самых известных праздников, что проводятся во Вриндаване - в большинстве из пяти тысяч храмов Вриндавана маленькие Божества Радхи и Кришны перемещаются с алтаря на искусно украшенные качели в храмовой комнате. И каждый вечер после традиционной службы Божества качают на качелях."
+      }
+    }
+  },
+  {
+    "id": "hkzp_541_шри_кришна_джанмаштами_день_явления_господа_шри_кришны_пост",
+    "name": "Sri Krishna Dzhanmashtami - Den Yavleniya Lord Sri Krishny",
+    "type": "divine_appearance",
+    "category": "divine_appearance",
+    "scope": "matched_harekrishnazp_vaishnavacalendar",
+    "subject": "Шри Кришна Джанмаштами - день явления Господа Шри Кришны (пост)",
+    "gaudiya_masa": "Hrishikesha",
+    "paksha": "Krishna",
+    "tithi": "Ashtami",
+    "timing_rule": "sunrise_based",
+    "allow_in_adhika": false,
+    "priority": "medium",
+    "source_status": "matched_by_name_type_tithi",
+    "source_url": "http://harekrishnazp.info/materialy/vajshnavskij-kalendar/825-dzhanmashtami-yavlenie-gospoda-shri-krishny.html",
+    "description": "Imported calendar reference for \"Шри Кришна Джанмаштами - день явления Господа Шри Кришны (пост)\". English summary still needs editorial translation; the Russian source summary is linked in source_url.",
+    "i18n": {
+      "en": {
+        "name": "Sri Krishna Dzhanmashtami - Den Yavleniya Lord Sri Krishny",
+        "description": "Imported calendar reference for \"Шри Кришна Джанмаштами - день явления Господа Шри Кришны (пост)\". English summary still needs editorial translation; the Russian source summary is linked in source_url."
+      },
+      "ru": {
+        "name": "Шри Кришна Джанмаштами - день явления Господа Шри Кришны (пост)",
+        "description": "Когда религия на земле приходит в упадок и воцаряется безбожие, Я нисхожу Сам, о потомок Бхараты. Чтобы освободить праведников и покарать негодяев, Я Сам являюсь на Землю эпоха за эпохой. (Господь Кришна Арджуне, «Бхагавад-гита», гл. 4, текст 7-8.)"
+      }
+    }
+  },
+  {
+    "id": "hkzp_541_день_явления_мадхавы_ачарьи",
+    "name": "Appearance of Madkhavy Achari",
+    "type": "vaishnava_appearance",
+    "category": "vaishnava_appearance",
+    "scope": "matched_harekrishnazp_vaishnavacalendar",
+    "subject": "День явления Мадхавы Ачарьи",
+    "gaudiya_masa": "Padmanabha",
+    "paksha": "Gaura",
+    "tithi": "Dashami",
+    "timing_rule": "sunrise_based",
+    "allow_in_adhika": false,
+    "priority": "medium",
+    "source_status": "matched_by_name_type_tithi",
+    "source_url": "http://harekrishnazp.info/materialy/vajshnavskij-kalendar/1046-madkhvacharya.html",
+    "description": "Imported calendar reference for \"День явления Мадхавы Ачарьи\". English summary still needs editorial translation; the Russian source summary is linked in source_url.",
+    "i18n": {
+      "en": {
+        "name": "Appearance of Madkhavy Achari",
+        "description": "Imported calendar reference for \"День явления Мадхавы Ачарьи\". English summary still needs editorial translation; the Russian source summary is linked in source_url."
+      },
+      "ru": {
+        "name": "День явления Мадхавы Ачарьи",
+        "description": "Шрипад Мадхавачарья явился в этот мир примерно в 1238 года до н.э., в деревне Тулунада, которая находилась на расстоянии около 8 миль к юго-востоку от современного Удупи, Штата Карнатака в Южной Индии. Он родился в семье брахманов и был сыном Мадхьягехи Бхаты."
+      }
+    }
+  },
+  {
+    "id": "hkzp_541_день_ухода_рагхунатхи_даса_госвами",
+    "name": "Disappearance of Ragkhunatkhi Dasa Gosvami",
+    "type": "vaishnava_disappearance",
+    "category": "vaishnava_disappearance",
+    "scope": "matched_harekrishnazp_vaishnavacalendar",
+    "subject": "День ухода Рагхунатхи Даса Госвами",
+    "gaudiya_masa": "Padmanabha",
+    "paksha": "Gaura",
+    "tithi": "Dvadashi",
+    "timing_rule": "sunrise_based",
+    "allow_in_adhika": false,
+    "priority": "medium",
+    "source_status": "matched_by_name_type_tithi",
+    "source_url": "http://harekrishnazp.info/materialy/vajshnavskij-kalendar/1034-ragkhunatkha-das-gosvami.html",
+    "description": "Imported calendar reference for \"День ухода Рагхунатхи Даса Госвами\". English summary still needs editorial translation; the Russian source summary is linked in source_url.",
+    "i18n": {
+      "en": {
+        "name": "Disappearance of Ragkhunatkhi Dasa Gosvami",
+        "description": "Imported calendar reference for \"День ухода Рагхунатхи Даса Госвами\". English summary still needs editorial translation; the Russian source summary is linked in source_url."
+      },
+      "ru": {
+        "name": "День ухода Рагхунатхи Даса Госвами",
+        "description": "Рагхунатха дас родился в 1495 году в селении Шри Кришнапура в Бенгалии в семье богатого землевладельца. Ещё будучи ребенком, он получал наставления об основах учения вайшнавов от Баларама Ачарйи и Харидаса Тхакура. В 1510 году известие о саннйасе Шри Чайтанйи достигло Сантаграма. Узнав, что Нитйананда Прабху отговорил Шри Чайтанйю от паломничества во Вриндаван и привел Его в местность, расположенную близ Шантипура, Рагхунатх Дас просил разрешения отца пойти туда, чтобы увидеть великого Шри Чайтанйю, о котором так много рассказывал ему святой Харидас Тхакур. Но юноша был слишком молод, всего пятнадцати лет от роду, и отец сомневался, стоит ли позволять своему сыну-аристократу общаться с бо..."
+      }
+    }
+  },
+  {
+    "id": "hkzp_541_день_ухода_рагхунатхи_бхатты_госвами",
+    "name": "Disappearance of Ragkhunatkhi Bkhatty Gosvami",
+    "type": "vaishnava_disappearance",
+    "category": "vaishnava_disappearance",
+    "scope": "matched_harekrishnazp_vaishnavacalendar",
+    "subject": "День ухода Рагхунатхи Бхатты Госвами",
+    "gaudiya_masa": "Padmanabha",
+    "paksha": "Gaura",
+    "tithi": "Dvadashi",
+    "timing_rule": "sunrise_based",
+    "allow_in_adhika": false,
+    "priority": "medium",
+    "source_status": "matched_by_name_type_tithi",
+    "source_url": "http://harekrishnazp.info/materialy/vajshnavskij-kalendar/1281-ragkhunatkha-bkhatta-gosvami.html",
+    "description": "Imported calendar reference for \"День ухода Рагхунатхи Бхатты Госвами\". English summary still needs editorial translation; the Russian source summary is linked in source_url.",
+    "i18n": {
+      "en": {
+        "name": "Disappearance of Ragkhunatkhi Bkhatty Gosvami",
+        "description": "Imported calendar reference for \"День ухода Рагхунатхи Бхатты Госвами\". English summary still needs editorial translation; the Russian source summary is linked in source_url."
+      },
+      "ru": {
+        "name": "День ухода Рагхунатхи Бхатты Госвами",
+        "description": "Рагхунатха Бхатта Госвами - личность, о которой известно очень мало. Несмотря на то, что он в совершенстве владел всеми философскими вопросами, он не писал книг, как это делали другие Госвами. Таким образом, современные исследователи лишены возможности почерпнуть оттуда дополнительную информацию. Тем не менее, мы постараемся пролить свет на жизнь этого великого преданного, который был олицетворением чистой бхакти и безраздельного предания себя Верховной Личности Бога."
+      }
+    }
+  },
+  {
+    "id": "hkzp_541_день_ухода_кришнадаса_кавираджа_госвами",
+    "name": "Disappearance of Krishnadasa Kaviradzha Gosvami",
+    "type": "vaishnava_disappearance",
+    "category": "vaishnava_disappearance",
+    "scope": "matched_harekrishnazp_vaishnavacalendar",
+    "subject": "День ухода Кришнадаса Кавираджа Госвами",
+    "gaudiya_masa": "Padmanabha",
+    "paksha": "Gaura",
+    "tithi": "Dvadashi",
+    "timing_rule": "sunrise_based",
+    "allow_in_adhika": false,
+    "priority": "medium",
+    "source_status": "matched_by_name_type_tithi",
+    "source_url": "http://harekrishnazp.info/materialy/vajshnavskij-kalendar/1282-krishnadas-kaviradzh-gosvami.html",
+    "description": "Imported calendar reference for \"День ухода Кришнадаса Кавираджа Госвами\". English summary still needs editorial translation; the Russian source summary is linked in source_url.",
+    "i18n": {
+      "en": {
+        "name": "Disappearance of Krishnadasa Kaviradzha Gosvami",
+        "description": "Imported calendar reference for \"День ухода Кришнадаса Кавираджа Госвами\". English summary still needs editorial translation; the Russian source summary is linked in source_url."
+      },
+      "ru": {
+        "name": "День ухода Кришнадаса Кавираджа Госвами",
+        "description": "Кришнадас Кавирадж Госвами известен, прежде всего, как автор «Шри Чайтанья Чаритамриты», которая благодаря своему литературному великолепию, правдивости, и твердой философской основе сегодня повсеместно рассматривается в качестве главного труда о жизни и глубоком учении Шри Чайтаньи Махапрабху. Шрила Джива Госвами имел обычай оказывать знаки почета квалифицированным преданным, давая им разные титулы. Кришнадаса он назвал Кавираджем (королем поэзии) за его поэтический шедевр «Говинда-Лилиламриту»."
+      }
+    }
+  },
+  {
+    "id": "hkzp_541_бахулаштами",
+    "name": "Bakhulashtami",
+    "type": "festival",
+    "category": "festival",
+    "scope": "matched_harekrishnazp_vaishnavacalendar",
+    "subject": "Бахулаштами",
+    "gaudiya_masa": "Damodara",
+    "paksha": "Krishna",
+    "tithi": "Ashtami",
+    "timing_rule": "sunrise_based",
+    "allow_in_adhika": false,
+    "priority": "medium",
+    "source_status": "matched_by_name_type_tithi",
+    "source_url": "http://harekrishnazp.info/materialy/vajshnavskij-kalendar/316-radkha-kunda.html",
+    "description": "Imported calendar reference for \"Бахулаштами\". English summary still needs editorial translation; the Russian source summary is linked in source_url.",
+    "i18n": {
+      "en": {
+        "name": "Bakhulashtami",
+        "description": "Imported calendar reference for \"Бахулаштами\". English summary still needs editorial translation; the Russian source summary is linked in source_url."
+      },
+      "ru": {
+        "name": "Бахулаштами",
+        "description": "Убив демона, который принял облик быка, Кришна в состоянии эйфории от этой победы пришёл на встречу с Радхикой. Увидев перепачканного в крови быка Кришну, Радха запретила Ему приближаться к ней. Кришна попытался объяснить, что это был демон-оборотень, и Кришна был очень рад и горд, что Ему удалось победить быка. Но Радха была непреклонна, напомнив Кришне, что бык – это олицетворение религии, и убивать быка, как и корову, это очень тяжкий грех. Радха сказала, что до тех пор, пока Кришна не очистится от греха убийства быка, она не станет с Ним (Кришной) встречаться."
+      }
+    }
+  },
+  {
+    "id": "hkzp_541_говардхана_пуджа",
+    "name": "Govardkhana Pudzha",
+    "type": "festival",
+    "category": "festival",
+    "scope": "matched_harekrishnazp_vaishnavacalendar",
+    "subject": "Говардхана Пуджа",
+    "gaudiya_masa": "Damodara",
+    "paksha": "Gaura",
+    "tithi": "Pratipat",
+    "timing_rule": "sunrise_based",
+    "allow_in_adhika": false,
+    "priority": "medium",
+    "source_status": "matched_by_name_type_tithi",
+    "source_url": "http://harekrishnazp.info/materialy/vajshnavskij-kalendar/322-govardkhana-pudzha.html",
+    "description": "Imported calendar reference for \"Говардхана Пуджа\". English summary still needs editorial translation; the Russian source summary is linked in source_url.",
+    "i18n": {
+      "en": {
+        "name": "Govardkhana Pudzha",
+        "description": "Imported calendar reference for \"Говардхана Пуджа\". English summary still needs editorial translation; the Russian source summary is linked in source_url."
+      },
+      "ru": {
+        "name": "Говардхана Пуджа",
+        "description": "Об этой истории упоминается еще в Риг-веде. В одном из гимнов, посвященном «царю небес» Индре, говорится о том, как Кришна, окруженный десятью тысячами соратников, затаился на берегах реки Амсумати (Ямуны), чтобы противостоять гневу Индры. Подробнее об этом рассказывается в «Шримад-Бхагаватам»."
+      }
+    }
+  },
+  {
+    "id": "hkzp_541_день_ухода_шрилы_прабхупады",
+    "name": "Disappearance of Srila Prabkhupady",
+    "type": "vaishnava_disappearance",
+    "category": "vaishnava_disappearance",
+    "scope": "matched_harekrishnazp_vaishnavacalendar",
+    "subject": "День ухода Шрилы Прабхупады",
+    "gaudiya_masa": "Damodara",
+    "paksha": "Gaura",
+    "tithi": "Chaturthi",
+    "timing_rule": "sunrise_based",
+    "allow_in_adhika": false,
+    "priority": "medium",
+    "source_status": "matched_by_name_type_tithi",
+    "source_url": "http://harekrishnazp.info/materialy/vajshnavskij-kalendar/325-den-ukhoda-shrily-prabkhupady.html",
+    "description": "Imported calendar reference for \"День ухода Шрилы Прабхупады\". English summary still needs editorial translation; the Russian source summary is linked in source_url.",
+    "i18n": {
+      "en": {
+        "name": "Disappearance of Srila Prabkhupady",
+        "description": "Imported calendar reference for \"День ухода Шрилы Прабхупады\". English summary still needs editorial translation; the Russian source summary is linked in source_url."
+      },
+      "ru": {
+        "name": "День ухода Шрилы Прабхупады",
+        "description": "Дорогой Шрила Прабхупада, пожалуйста, прими мои самые смиренные поклоны в пыли твоих лотосных стоп."
+      }
+    }
+  },
+  {
+    "id": "hkzp_541_день_ухода_шриниваса_ачарьи",
+    "name": "Disappearance of Shrinivasa Achari",
+    "type": "vaishnava_disappearance",
+    "category": "vaishnava_disappearance",
+    "scope": "matched_harekrishnazp_vaishnavacalendar",
+    "subject": "День ухода Шриниваса Ачарьи",
+    "gaudiya_masa": "Damodara",
+    "paksha": "Gaura",
+    "tithi": "Ashtami",
+    "timing_rule": "sunrise_based",
+    "allow_in_adhika": false,
+    "priority": "medium",
+    "source_status": "matched_by_name_type_tithi",
+    "source_url": "http://harekrishnazp.info/materialy/vajshnavskij-kalendar/688-shrinivas-acharya.html",
+    "description": "Imported calendar reference for \"День ухода Шриниваса Ачарьи\". English summary still needs editorial translation; the Russian source summary is linked in source_url.",
+    "i18n": {
+      "en": {
+        "name": "Disappearance of Shrinivasa Achari",
+        "description": "Imported calendar reference for \"День ухода Шриниваса Ачарьи\". English summary still needs editorial translation; the Russian source summary is linked in source_url."
+      },
+      "ru": {
+        "name": "День ухода Шриниваса Ачарьи",
+        "description": "Став свидетелями церемонии санньясы Господа Гауранги, Чайтанья Даса и его беременная жена посетили Господа Чайтанью в Джаганнатха Пури. «Скоро у твоей жены родится сын по имени Шриниваса,- сказал Господь,- и он распространит все бхакти-шастры Рупы и Санатаны»."
+      }
+    }
+  }
+]
