@@ -1,5 +1,5 @@
 import { addDaysToLocalDate } from "./date-utils.js?v=20260528-8";
-import { dayAstronomy } from "./astronomy-adapter.js?v=20260528-8";
+import { dayAstronomy } from "./astronomy-adapter.js?v=20260612-1";
 
 function findTithiBoundaryAfter(start, targetNumber, maxHours, getTithiInfo) {
   let left = new Date(start);
@@ -68,38 +68,43 @@ export function computeParana(fastDate, ekadashiNumber, location, rules, getTith
   const paranaDate = addDaysToLocalDate(fastDate, 1);
   const astronomy = dayAstronomy(paranaDate, location, rules);
   const dvadashiNumber = ekadashiNumber === 11 ? 12 : 27;
+  const trayodashiNumber = ekadashiNumber === 11 ? 13 : 28;
+  const paranaTithiNumber = ["viddha", "no_sunrise"].includes(fastDayType) ? trayodashiNumber : dvadashiNumber;
   const dvadashiStart = findTithiBoundaryBefore(astronomy.sunrise, dvadashiNumber, 48, getTithiInfo) || astronomy.sunrise;
-  const dvadashiEnd =
-    getTithiInfo(astronomy.sunrise).number === dvadashiNumber
-      ? findTithiBoundaryAfter(astronomy.sunrise, dvadashiNumber, 48, getTithiInfo)
-      : findTithiEndBefore(astronomy.sunrise, dvadashiNumber, 48, getTithiInfo);
-  if (!astronomy.sunrise || !astronomy.sunset || !dvadashiEnd) {
+  const paranaTithiEnd =
+    getTithiInfo(astronomy.sunrise).number === paranaTithiNumber
+      ? findTithiBoundaryAfter(astronomy.sunrise, paranaTithiNumber, 48, getTithiInfo)
+      : findTithiEndBefore(astronomy.sunrise, paranaTithiNumber, 48, getTithiInfo);
+  if (!astronomy.sunrise || !astronomy.sunset || !paranaTithiEnd) {
     return {
       date: paranaDate,
       start: null,
       preferred_end: null,
-      absolute_end: dvadashiEnd,
+      absolute_end: paranaTithiEnd,
       calculation_status: "not_implemented"
     };
   }
 
+  const dvadashiEnd = paranaTithiNumber === dvadashiNumber ? paranaTithiEnd : findTithiEndBefore(astronomy.sunrise, dvadashiNumber, 48, getTithiInfo);
   const hariVasaraEnd = new Date(
-    dvadashiStart.getTime() + rules.parana.hari_vasara_fraction * (dvadashiEnd.getTime() - dvadashiStart.getTime())
+    dvadashiEnd
+      ? dvadashiStart.getTime() + rules.parana.hari_vasara_fraction * (dvadashiEnd.getTime() - dvadashiStart.getTime())
+      : astronomy.sunrise.getTime()
   );
   const pratahEnd = new Date(
     astronomy.sunrise.getTime() +
       rules.parana.pratah_fraction_of_daylight * (astronomy.sunset.getTime() - astronomy.sunrise.getTime())
   );
 
-  const isDvadashiFast = fastDayType !== "normal_ekadashi";
-  const dvadashiEndedBeforeSunrise = dvadashiEnd.getTime() < astronomy.sunrise.getTime();
-  const start = isDvadashiFast
-    ? new Date(Math.max(astronomy.sunrise.getTime(), dvadashiEnd.getTime()))
-    : new Date(Math.max(astronomy.sunrise.getTime(), hariVasaraEnd.getTime()));
-  const preferredEnd =
-    isDvadashiFast || dvadashiEndedBeforeSunrise ? pratahEnd : new Date(Math.min(dvadashiEnd.getTime(), pratahEnd.getTime()));
+  const isNormal = fastDayType === "normal_ekadashi";
+  const isTrisprsa = fastDayType === "trisprsa" || fastDayType === "unmilani_trisprsa";
+  const dvadashiEndedBeforeSunrise = dvadashiEnd ? dvadashiEnd.getTime() < astronomy.sunrise.getTime() : true;
+  const start = isNormal ? new Date(Math.max(astronomy.sunrise.getTime(), hariVasaraEnd.getTime())) : astronomy.sunrise;
+  const preferredEnd = isTrisprsa
+    ? pratahEnd
+    : new Date(Math.min(paranaTithiEnd.getTime(), pratahEnd.getTime()));
   const hasPreferredWindow = preferredEnd.getTime() >= start.getTime();
-  const absoluteEnd = isDvadashiFast || dvadashiEndedBeforeSunrise ? pratahEnd : dvadashiEnd;
+  const absoluteEnd = isTrisprsa || dvadashiEndedBeforeSunrise ? pratahEnd : paranaTithiEnd;
   return {
     date: paranaDate,
     start,

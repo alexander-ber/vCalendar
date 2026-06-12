@@ -1,6 +1,6 @@
 import { addDaysToLocalDate, formatDateTime, formatTime, toIsoDate } from "./date-utils.js?v=20260528-8";
-import { dayAstronomy, tithiInfo } from "./astronomy-adapter.js?v=20260528-8";
-import { computeParana } from "./parana-engine.js?v=20260529-1";
+import { dayAstronomy, tithiInfo } from "./astronomy-adapter.js?v=20260612-1";
+import { computeParana } from "./parana-engine.js?v=20260612-1";
 import { EKADASHI_DB } from "./ekadashi-data.js?v=20260530-2";
 import { MASA_NAMES } from "./masa-engine.js?v=20260528-8";
 
@@ -42,7 +42,8 @@ function findTithiIntervalBetween(start, end, targetNumber) {
   return null;
 }
 
-export function classifyEkadashi(day, nextDay, location, rules) {
+export function classifyEkadashi(day, nextDay, location, rules, previousDay = null) {
+  const previousAtSunrise = previousDay ? tithiInfo(previousDay.astronomy.sunrise) : null;
   const atArunodaya = tithiInfo(day.astronomy.arunodaya);
   const atSunrise = tithiInfo(day.astronomy.sunrise);
   const nextAtSunrise = tithiInfo(nextDay.astronomy.sunrise);
@@ -59,9 +60,16 @@ export function classifyEkadashi(day, nextDay, location, rules) {
     classification = "viddha";
     fastDate = nextDay.date;
     targetNumber = 26;
+  } else if (previousAtSunrise?.number === atSunrise.number && isEkadashi(atSunrise.number)) {
+    const trayodashiNumber = atSunrise.number === 11 ? 13 : 28;
+    classification = nextAtSunrise.number === trayodashiNumber ? "unmilani_trisprsa" : "unmilani";
+    fastDate = candidateDate;
+    targetNumber = atSunrise.number;
   } else if (isEkadashi(atSunrise.number) && nextAtSunrise.number === atSunrise.number) {
-    classification = "double_sunrise";
-    fastDate = nextDay.date;
+    return null;
+  } else if (isEkadashi(atSunrise.number) && nextAtSunrise.number === (atSunrise.number === 11 ? 13 : 28)) {
+    classification = "trisprsa";
+    fastDate = candidateDate;
     targetNumber = atSunrise.number;
   } else if (!isEkadashi(atSunrise.number) && !isEkadashi(nextAtSunrise.number)) {
     const gauraInterval = findTithiIntervalBetween(day.astronomy.sunrise, nextDay.astronomy.sunrise, 11);
@@ -81,7 +89,7 @@ export function classifyEkadashi(day, nextDay, location, rules) {
   if (!classification) return null;
   const paksha = targetNumber === 11 ? "Gaura" : "Krishna";
   const record = ekadashiRecord(day.masa, paksha);
-  const fastDayType = classification === "no_sunrise" ? "no_sunrise" : "normal_ekadashi";
+  const fastDayType = classification === "standard" ? "normal_ekadashi" : classification;
   const parana = computeParana(fastDate, targetNumber, location, rules, tithiInfo, fastDayType);
   return {
     id: `ekadashi_${fastDate}`,
@@ -95,7 +103,7 @@ export function classifyEkadashi(day, nextDay, location, rules) {
     type: "ekadashi",
     category: "vrata",
     classification,
-    candidate_date: candidateDate,
+    candidate_date: previousAtSunrise?.number === targetNumber && classification.startsWith("unmilani") ? previousDay.date : candidateDate,
     fast_date: fastDate,
     fast_day_type: fastDayType,
     parana,
@@ -139,7 +147,7 @@ function classifyVyanjuliMahadvadashi(previousDay, day, nextDay, location, rules
     fast_day_type: "vyanjuli_mahadvadashi",
     parana,
     diagnostics: {
-      previous_sunrise_tithi: previousAtSunrise.name,
+      previous_sunrise_tithi: previousAtSunrise?.name || null,
       tithi_at_sunrise: todayAtSunrise.name,
       next_sunrise_tithi: nextAtSunrise.name,
       rule_applied: "vyanjuli_mahadvadashi"
@@ -224,12 +232,20 @@ export function buildEkadashiEvents(days, location, rules) {
 
   for (let i = 0; i < days.length - 1; i += 1) {
     if (suppressedCandidateDates.has(days[i].date)) continue;
-    const ekadashi = classifyEkadashi(days[i], days[i + 1], location, rules);
+    const ekadashi = classifyEkadashi(days[i], days[i + 1], location, rules, days[i - 1] || null);
     if (!ekadashi) continue;
     if (scheduledFastDates.has(ekadashi.fast_date)) continue;
     if (!byDate.has(ekadashi.fast_date)) byDate.set(ekadashi.fast_date, []);
     byDate.get(ekadashi.fast_date).push(ekadashi);
     scheduledFastDates.add(ekadashi.fast_date);
+
+    if (ekadashi.candidate_date !== ekadashi.fast_date) {
+      const candidateDay = days.find((day) => day.date === ekadashi.candidate_date);
+      if (candidateDay) {
+        if (!byDate.has(ekadashi.candidate_date)) byDate.set(ekadashi.candidate_date, []);
+        byDate.get(ekadashi.candidate_date).push(noFastNoticeForEkadashiDay(candidateDay, ekadashi));
+      }
+    }
 
     const paranaDate = addDaysToLocalDate(ekadashi.fast_date, 1);
     const parana = paranaEventForDate(paranaDate, ekadashi, location.timezone);

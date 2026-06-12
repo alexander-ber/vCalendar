@@ -52,8 +52,8 @@ gh-pages/
 
 ## Current Scope
 
-- Local fixed locations: Maalot, Tel Aviv, Mayapur, Moscow
-- Approximate local astronomy layer
+- Local fixed locations: Maalot, Tel Aviv, Mayapur, Moscow and selected cities
+- Astronomy Engine for rise/set, local angular model for tithi until full ephemeris validation is complete
 - Sunrise, sunset, arunodaya
 - Tithi at sunrise and arunodaya
 - Amanta masa approximation
@@ -76,4 +76,26 @@ This is not a production Panchang yet.
 
 ```bash
 node tests/regression.mjs
+```
+
+## Astronomy Validation Harness
+
+Print calculated astronomy/panchang values for known edge cases:
+
+```bash
+node scripts/validate-astronomy.mjs
+```
+
+Default validation cases include a Navadvip/Mayapur reference window. When local calendars disagree, use that reference first, then compare the local-city shift rules.
+
+Custom window:
+
+```bash
+node scripts/validate-astronomy.mjs --location maalot --start 2026-05-26 --end 2026-05-28
+```
+
+Machine-readable output:
+
+```bash
+node scripts/validate-astronomy.mjs --json --location maalot --date 2026-09-04
 ```
