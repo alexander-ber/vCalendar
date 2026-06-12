@@ -49,6 +49,8 @@ Important validation note: the vendored Astronomy Engine `MoonPhase` result was 
 
 Validation convention: when local results diverge, compare the rule result against the Navadvip/Mayapur reference first, then inspect the local city shift caused by sunrise, arunodaya and tithi-boundary timing.
 
+Follow-up investigation: `scripts/compare-tithi-engines.mjs` compares the current local formula, Astronomy Engine geocentric models, and an Astronomy Engine topocentric model. For Maalot on 2026-05-28, the geocentric Astronomy Engine models put Trayodashi at sunrise, while the topocentric model keeps Dvadashi at sunrise. That means the issue is not simply a bad Moon position; it is the calendar-model choice for tithi longitude. `vaishnavacalendar.org` is useful as a witness for this edge case, but it must not be treated as the single source of truth.
+
 ### Masa calculation
 
 GCAL calculates masa on Pratipat, with special handling when Pratipat is ksaya or vriddhi. Our current implementation derives masa directly from the lunar month interval for any date.
