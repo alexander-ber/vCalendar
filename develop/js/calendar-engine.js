@@ -1,7 +1,7 @@
 import { dayAstronomy, nakshatraInfo, tithiInfo, yogaInfo } from "./astronomy-adapter.js?v=20260530-3";
 import { addDaysToLocalDate, daysInMonth, formatDateTime, formatTime, monthLabel, toIsoDate, weekdayOfIsoDate } from "./date-utils.js?v=20260528-8";
 import { masaForDate } from "./masa-engine.js?v=20260528-18";
-import { buildEkadashiEvents } from "./ekadashi-engine.js?v=20260612-1";
+import { buildEkadashiEvents } from "./ekadashi-engine.js?v=20260612-2";
 import { matchEventsForDay } from "./event-matcher.js?v=20260530-1";
 
 function buildDay(isoDate, location, rules) {
