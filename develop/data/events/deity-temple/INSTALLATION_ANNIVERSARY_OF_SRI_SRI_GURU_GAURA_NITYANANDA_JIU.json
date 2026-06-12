@@ -1,0 +1,31 @@
+{
+  "id": "INSTALLATION_ANNIVERSARY_OF_SRI_SRI_GURU_GAURA_NITYANANDA_JIU",
+  "runtime_id": "scsmath_541_guru_gaura_nityananda_installation",
+  "type": "deity_installation",
+  "category": "deity_temple",
+  "subject": "Sri Sri Guru Gaura Nityananda Jiu",
+  "rules": {
+    "gaudiya_masa": "Madhava",
+    "paksha": "Gaura",
+    "tithi": "Trayodashi",
+    "timing_rule": "noon_based",
+    "allow_in_adhika": false
+  },
+  "source_status": "tithi_rule_from_scsmath_541_observed_next_day_in_sources",
+  "observance_offset_days": 1,
+  "sources": [],
+  "translations": [
+    {
+      "lang": "en",
+      "name": "Installation anniversary of Sri Sri Guru Gaura Nityananda Jiu",
+      "short_description": "Temple or Deity festival connected with Sri Sri Guru Gaura Nityananda Jiu. This event is matched by the tithi rule stored in the calendar database.",
+      "full_description": ""
+    },
+    {
+      "lang": "ru",
+      "name": "Годовщина установки Шри Шри Гуру Гаура Нитьянанды Джиу",
+      "short_description": "Храмовый праздник или день установки Божеств: Годовщина установки Шри Шри Гуру Гаура Нитьянанды Джиу. Событие привязано к титхи, указанному в базе календаря.",
+      "full_description": ""
+    }
+  ]
+}
