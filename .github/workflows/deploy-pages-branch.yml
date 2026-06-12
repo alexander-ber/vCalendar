@@ -8,6 +8,7 @@ on:
 
 permissions:
   contents: write
+  pages: write
 
 concurrency:
   group: pages-${{ github.ref_name }}
@@ -36,6 +37,26 @@ jobs:
 
           git config --global user.name "github-actions[bot]"
           git config --global user.email "41898282+github-actions[bot]@users.noreply.github.com"
+
+          pages_api="https://api.github.com/repos/${GITHUB_REPOSITORY}/pages"
+          pages_payload='{"source":{"branch":"gh-pages","path":"/"}}'
+          pages_status="$(curl -sS -o /tmp/pages-response.json -w "%{http_code}" \
+            -H "Accept: application/vnd.github+json" \
+            -H "Authorization: Bearer ${GITHUB_TOKEN}" \
+            "${pages_api}")"
+          if [ "${pages_status}" = "404" ]; then
+            curl -sS -X POST \
+              -H "Accept: application/vnd.github+json" \
+              -H "Authorization: Bearer ${GITHUB_TOKEN}" \
+              -d "${pages_payload}" \
+              "${pages_api}" >/tmp/pages-response.json
+          else
+            curl -sS -X PUT \
+              -H "Accept: application/vnd.github+json" \
+              -H "Authorization: Bearer ${GITHUB_TOKEN}" \
+              -d "${pages_payload}" \
+              "${pages_api}" >/tmp/pages-response.json
+          fi
 
           mkdir -p "${pages_dir}"
           cd "${pages_dir}"
