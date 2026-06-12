@@ -1,0 +1,33 @@
+{
+  "id": "APPEARANCE_OF_SRILA_BHAKTI_PRAPANNA_TIRTHA_GOSWAMI_MAHARAJ",
+  "runtime_id": "bhakti_prapanna_tirtha_appearance",
+  "type": "vaishnava_appearance",
+  "category": "vaishnava_appearance",
+  "scope": "core_gaudiya",
+  "subject": "Srila Bhakti Prapanna Tirtha Goswami Maharaj",
+  "rules": {
+    "masa": "Shravana",
+    "gaudiya_masa": "Sridhara",
+    "paksha": "Gaura",
+    "tithi": "Purnima",
+    "timing_rule": "sunrise_based",
+    "allow_in_adhika": false
+  },
+  "priority": "medium",
+  "source_status": "user_confirmed_tithi_rule",
+  "sources": [],
+  "translations": [
+    {
+      "lang": "en",
+      "name": "Appearance of Srila Bhakti Prapanna Tirtha Goswami Maharaj",
+      "short_description": "Commemoration of the appearance day of Srila Bhakti Prapanna Tirtha Goswami Maharaj. This event is matched by the Vaishnava tithi rule stored in the calendar database.",
+      "full_description": ""
+    },
+    {
+      "lang": "ru",
+      "name": "Явление Шрилы Бхакти Прапанны Тиртхи Госвами Махараджа",
+      "short_description": "Памятный день явления: Явление Шрилы Бхакти Прапанны Тиртхи Госвами Махараджа. Событие привязано к вайшнавскому титхи, указанному в базе календаря.",
+      "full_description": ""
+    }
+  ]
+}

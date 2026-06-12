@@ -1,0 +1,39 @@
+{
+  "id": "DISAPPEARANCE_OF_PARAMESHVARY_DASA_TKHAKURA",
+  "runtime_id": "hkzp_541_день_ухода_парамешвары_даса_тхакура",
+  "type": "vaishnava_disappearance",
+  "category": "vaishnava_disappearance",
+  "scope": "matched_harekrishnazp_vaishnavacalendar",
+  "subject": "День ухода Парамешвары Даса Тхакура",
+  "rules": {
+    "gaudiya_masa": "Madhusudan",
+    "paksha": "Gaura",
+    "tithi": "Purnima",
+    "timing_rule": "sunrise_based",
+    "allow_in_adhika": false
+  },
+  "priority": "medium",
+  "source_status": "matched_by_name_type_tithi",
+  "sources": [
+    {
+      "type": "description",
+      "url": "http://harekrishnazp.info/materialy/vajshnavskij-kalendar/1150-parameshvara-das.html",
+      "attribution_required": true
+    }
+  ],
+  "translations": [
+    {
+      "lang": "en",
+      "name": "Disappearance of Parameshvary Dasa Tkhakura",
+      "short_description": "Imported calendar reference for \"День ухода Парамешвары Даса Тхакура\". English summary still needs editorial translation; the Russian source summary is linked in source_url.",
+      "full_description": ""
+    },
+    {
+      "lang": "ru",
+      "name": "День ухода Парамешвары Даса Тхакура",
+      "short_description": "Парамешвара Дас Тхакур был постоянным спутником Господа Нитьянанды. Шрила Кришна Даса Кавираджа говорит, что любой, кто помнит имя Парамешвары Даса, легко достигнет любви к Кришне. Парамешвара Дас Тхакур сопровождал Божество Радхарани, которое Джахнава Мата послала во Вриндавану для Говиндаджи. В Кришна-лиле Парамешвара Дас Тхакур - один из двадаша-гопал по имени Арджуна. Его самадхи расположено в области 64 самадхи во Вриндаване.",
+      "full_description": "Парамешвара Дас Тхакур был постоянным спутником Господа Нитьянанды. Шрила Кришна Даса Кавираджа говорит, что любой, кто помнит имя Парамешвары Даса, легко достигнет любви к Кришне. Парамешвара Дас Тхакур сопровождал Божество Радхарани, которое Джахнава Мата послала во Вриндавану для Говиндаджи. В Кришна-лиле Парамешвара Дас Тхакур - один из двадаша-гопал по имени Арджуна. Его самадхи расположено в области 64 самадхи во Вриндаване."
+    }
+  ],
+  "content_license_note": "Source footer says: Распространение материалов сайта горячо приветствуется! При использовании информации на других сайтах, пожалуйста, ставьте ссылку на цитируемый материал."
+}

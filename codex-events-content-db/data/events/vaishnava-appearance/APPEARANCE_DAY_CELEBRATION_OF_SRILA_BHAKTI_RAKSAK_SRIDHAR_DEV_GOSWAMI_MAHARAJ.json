@@ -1,0 +1,30 @@
+{
+  "id": "APPEARANCE_DAY_CELEBRATION_OF_SRILA_BHAKTI_RAKSAK_SRIDHAR_DEV_GOSWAMI_MAHARAJ",
+  "runtime_id": "scsmath_541_sridhar_appearance",
+  "type": "vaishnava_appearance",
+  "category": "vaishnava_appearance",
+  "subject": "Srila Bhakti Raksak Sridhar Dev-Goswami Maharaj",
+  "rules": {
+    "gaudiya_masa": "Damodara",
+    "paksha": "Krishna",
+    "tithi": "Navami",
+    "timing_rule": "sunrise_based",
+    "allow_in_adhika": false
+  },
+  "source_status": "tithi_rule_from_scsmath_541",
+  "sources": [],
+  "translations": [
+    {
+      "lang": "en",
+      "name": "Appearance day celebration of Srila Bhakti Raksak Sridhar Dev-Goswami Maharaj",
+      "short_description": "Commemoration of the appearance day of Srila Bhakti Raksak Sridhar Dev-Goswami Maharaj. This event is matched by the Vaishnava tithi rule stored in the calendar database.",
+      "full_description": ""
+    },
+    {
+      "lang": "ru",
+      "name": "Празднование явления Шрилы Бхакти Ракшака Шридхара Дев-Госвами Махараджа",
+      "short_description": "Памятный день явления: Празднование явления Шрилы Бхакти Ракшака Шридхара Дев-Госвами Махараджа. Событие привязано к вайшнавскому титхи, указанному в базе календаря.",
+      "full_description": ""
+    }
+  ]
+}
