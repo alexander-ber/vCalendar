@@ -64,6 +64,15 @@ const mayapur = LOCATIONS.find((location) => location.id === "mayapur");
 const mayMayapur = eventsByDate(2026, 5, mayapur);
 assert(mayMayapur.get("2026-05-27").some((event) => event.name === "Padmini Ekadashi"));
 
+const vrindavan = LOCATIONS.find((location) => location.id === "vrindavan");
+const mayVrindavan = eventsByDate(2026, 5, vrindavan);
+assert(mayVrindavan.get("2026-05-27").some((event) => event.name === "Padmini Ekadashi" && event.classification === "viddha"));
+assert(
+  mayVrindavan
+    .get("2026-05-28")
+    .some((event) => event.name === "Parana for Padmini Ekadashi" && event.parana.start !== "not implemented")
+);
+
 const marchTelAviv = eventsByDate(2026, 3, telAviv);
 assert(marchTelAviv.get("2026-03-15").some((event) => event.name.includes("Papamochani Ekadashi")));
 assert(marchTelAviv.get("2026-03-29").some((event) => event.name.includes("Kamada Ekadashi")));
