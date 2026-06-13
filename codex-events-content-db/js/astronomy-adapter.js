@@ -1,5 +1,5 @@
-import { Body, Observer, SearchRiseSet } from "../vendor/astronomy-engine.js";
-import { MS_PER_DAY, MS_PER_MINUTE, localDateParts, zonedDateToUtc } from "./date-utils.js";
+import { Body, EclipticGeoMoon, Observer, SearchRiseSet, SunPosition } from "../vendor/astronomy-engine.js";
+import { MS_PER_DAY, MS_PER_MINUTE, addDaysToLocalDate, localDateParts, zonedDateToUtc } from "./date-utils.js";
 
 const DEG = Math.PI / 180;
 const J2000 = 2451545.0;
@@ -114,14 +114,14 @@ export function ayanamsha(date) {
   return 23.8531 + 0.013968 * yearsFrom2000;
 }
 
-export function sunLongitude(date) {
+export function approximateSunLongitude(date) {
   const d = daysSinceJ2000(date);
   const g = normalizeDegrees(357.529 + 0.98560028 * d);
   const q = normalizeDegrees(280.459 + 0.98564736 * d);
   return normalizeDegrees(q + 1.915 * Math.sin(g * DEG) + 0.020 * Math.sin(2 * g * DEG));
 }
 
-export function moonLongitude(date) {
+export function approximateMoonLongitude(date) {
   const d = daysSinceJ2000(date);
   const l0 = normalizeDegrees(218.316 + 13.176396 * d);
   const mMoon = normalizeDegrees(134.963 + 13.064993 * d);
@@ -138,6 +138,26 @@ export function moonLongitude(date) {
       0.186 * Math.sin(mSun * DEG) -
       0.114 * Math.sin(2 * f * DEG)
   );
+}
+
+export function sunLongitude(date) {
+  return approximateSunLongitude(date);
+}
+
+export function moonLongitude(date) {
+  return approximateMoonLongitude(date);
+}
+
+export function ephemerisSunLongitude(date) {
+  return normalizeDegrees(SunPosition(date).elon);
+}
+
+export function ephemerisMoonLongitude(date) {
+  return normalizeDegrees(EclipticGeoMoon(date).lon);
+}
+
+export function ephemerisTithiAngle(date) {
+  return normalizeDegrees(ephemerisMoonLongitude(date) - ephemerisSunLongitude(date));
 }
 
 export function sunSiderealLongitude(date) {
@@ -202,10 +222,26 @@ function localRiseSet(body, location, isoDate, direction) {
   return found && found >= start && found <= end ? found : null;
 }
 
+export function arunodayaForDay(isoDate, location, sunrise, rules) {
+  if (!sunrise) return null;
+  const ekadashiRules = rules?.ekadashi || {};
+  const mode = ekadashiRules.arunodaya_mode || "fixed_offset";
+
+  if (mode === "previous_night_fraction") {
+    const previousSunset = localRiseSet(Body.Sun, location, addDaysToLocalDate(isoDate, -1), -1);
+    if (previousSunset) {
+      const fraction = Number(ekadashiRules.arunodaya_night_fraction || 1 / 15);
+      return new Date(sunrise.getTime() - (sunrise.getTime() - previousSunset.getTime()) * fraction);
+    }
+  }
+
+  return new Date(sunrise.getTime() - (ekadashiRules.arunodaya_offset_minutes || 96) * MS_PER_MINUTE);
+}
+
 export function dayAstronomy(isoDate, location, rules) {
   const sunrise = localRiseSet(Body.Sun, location, isoDate, +1);
   const sunset = localRiseSet(Body.Sun, location, isoDate, -1);
-  const arunodaya = sunrise ? new Date(sunrise.getTime() - rules.ekadashi.arunodaya_offset_minutes * MS_PER_MINUTE) : null;
+  const arunodaya = arunodayaForDay(isoDate, location, sunrise, rules);
   return {
     sunrise,
     sunset,

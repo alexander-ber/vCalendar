@@ -1,8 +1,18 @@
-import { dayAstronomy, nakshatraInfo, tithiInfo, yogaInfo } from "./astronomy-adapter.js?v=20260530-3";
-import { addDaysToLocalDate, daysInMonth, formatDateTime, formatTime, monthLabel, toIsoDate, weekdayOfIsoDate } from "./date-utils.js?v=20260528-8";
+import { dayAstronomy, nakshatraInfo, tithiInfo, yogaInfo } from "./astronomy-adapter.js?v=20260613-2";
+import {
+  addDaysToLocalDate,
+  daysInMonth,
+  formatDateTime,
+  formatTime,
+  monthLabel,
+  partsInTimeZone,
+  toIsoDate,
+  weekdayOfIsoDate,
+  zonedDateToUtc
+} from "./date-utils.js?v=20260528-8";
 import { masaForDate } from "./masa-engine.js?v=20260528-18";
-import { buildEkadashiEvents } from "./ekadashi-engine.js?v=20260612-2";
-import { matchEventsForDay } from "./event-matcher.js?v=20260530-1";
+import { buildEkadashiEvents } from "./ekadashi-engine.js?v=20260613-2";
+import { matchEventsForDay } from "./event-matcher.js?v=20260613-1";
 
 function buildDay(isoDate, location, rules) {
   const astronomy = dayAstronomy(isoDate, location, rules);
@@ -59,6 +69,68 @@ function findTithiEndAfter(start, tithiNumber) {
   return null;
 }
 
+function tithiDistance(previousNumber, currentNumber) {
+  return (currentNumber - previousNumber + 30) % 30;
+}
+
+function missingTithisBetween(previousNumber, currentNumber) {
+  const distance = tithiDistance(previousNumber, currentNumber);
+  if (distance <= 1) return [];
+  const missing = [];
+  let number = previousNumber;
+  for (let i = 1; i < distance; i += 1) {
+    number = number === 30 ? 1 : number + 1;
+    missing.push(number);
+  }
+  return missing;
+}
+
+function findTithiIntervalBetween(start, end, targetNumber) {
+  const step = 30 * 60 * 1000;
+  let cursor = new Date(start);
+  let insideStart = null;
+  while (cursor <= end) {
+    const current = tithiInfo(cursor);
+    if (current.number === targetNumber && !insideStart) insideStart = new Date(cursor);
+    if (insideStart && current.number !== targetNumber) return { start: insideStart, end: new Date(cursor) };
+    cursor = new Date(cursor.getTime() + step);
+  }
+  return insideStart ? { start: insideStart, end } : null;
+}
+
+function annotateTithiStatuses(days) {
+  for (let i = 1; i < days.length; i += 1) {
+    const previous = days[i - 1];
+    const current = days[i];
+    const previousNumber = previous.lunar.tithi_at_sunrise.number;
+    const currentNumber = current.lunar.tithi_at_sunrise.number;
+    const missing = missingTithisBetween(previousNumber, currentNumber);
+    const vriddhi = previousNumber === currentNumber;
+    const ksaya = missing.length > 0;
+    current.lunar.tithi_status = {
+      type: vriddhi ? "vriddhi_second_day" : ksaya ? "ksaya" : "normal",
+      is_vriddhi_second_day: vriddhi,
+      is_ksaya: ksaya,
+      missing_tithi_numbers: missing,
+      missing_tithi_intervals: missing
+        .map((number) => {
+          const interval = findTithiIntervalBetween(previous.astronomy.sunrise, current.astronomy.sunrise, number);
+          return interval ? { number, start: interval.start, end: interval.end } : { number, start: null, end: null };
+        })
+        .filter(Boolean)
+    };
+  }
+  if (days[0]) {
+    days[0].lunar.tithi_status = {
+      type: "unknown",
+      is_vriddhi_second_day: false,
+      is_ksaya: false,
+      missing_tithi_numbers: [],
+      missing_tithi_intervals: []
+    };
+  }
+}
+
 function addPurushottamaBoundaryEvents(days) {
   for (let i = 0; i < days.length; i += 1) {
     const previous = days[i - 1];
@@ -97,12 +169,111 @@ function addPurushottamaBoundaryEvents(days) {
   }
 }
 
+const RASHI_NAMES = [
+  "Mesha",
+  "Vrishabha",
+  "Mithuna",
+  "Karka",
+  "Simha",
+  "Kanya",
+  "Tula",
+  "Vrischika",
+  "Dhanus",
+  "Makara",
+  "Kumbha",
+  "Mina"
+];
+
+function sankrantiDisplayDate(sankranti, timezone, mode = "noon") {
+  const date = toIsoDate(sankranti.at, timezone);
+  const parts = partsInTimeZone(sankranti.at, timezone);
+  const boundaryHour = mode === "midnight" ? 0 : mode === "sunrise" ? 6 : mode === "sunset" ? 18 : 12;
+  const boundary = zonedDateToUtc(parts.year, parts.month, parts.day, boundaryHour, 0, 0, timezone);
+  return sankranti.at <= boundary ? date : addDaysToLocalDate(date, 1);
+}
+
+function sankrantiEvent(sankranti, date, timezone) {
+  const rashi = RASHI_NAMES[sankranti.to] || `Rashi ${sankranti.to + 1}`;
+  return {
+    id: `sankranti_${rashi.toLowerCase()}_${date}`,
+    name: `${rashi} Sankranti`,
+    type: "sankranti",
+    category: "sankranti",
+    description: `${rashi} Sankranti occurs at ${formatDateTime(sankranti.at, timezone)}. Display date uses GCAL noon-to-noon default.`,
+    i18n: {
+      ru: {
+        name: `${rashi} санкранти`,
+        description: `${rashi} санкранти наступает ${formatDateTime(sankranti.at, timezone)}. Дата показа рассчитана по GCAL-режиму noon-to-noon.`
+      }
+    }
+  };
+}
+
+function sankrantiDependentEvent(kind, date) {
+  const eventMap = {
+    ganga_sagara: {
+      name: "Ganga Sagara Mela",
+      ruName: "Ганга Сагара Мела",
+      description: "Observed on Makara Sankranti."
+    },
+    tulasi_begin: {
+      name: "Tulasi Jala Dan begins",
+      ruName: "Начало Туласи Джала Дан",
+      description: "Begins on Mesha Sankranti."
+    },
+    tulasi_end: {
+      name: "Tulasi Jala Dan ends",
+      ruName: "Окончание Туласи Джала Дан",
+      description: "Ends one day before Vrishabha Sankranti."
+    }
+  };
+  const item = eventMap[kind];
+  return {
+    id: `sankranti_dependent_${kind}_${date}`,
+    name: item.name,
+    type: "sankranti_dependent",
+    category: "sankranti",
+    description: item.description,
+    i18n: {
+      ru: {
+        name: item.ruName,
+        description: item.description
+      }
+    }
+  };
+}
+
+function addEventOnce(day, event) {
+  if (!day || day.events.some((existing) => existing.id === event.id)) return;
+  day.events.push(event);
+}
+
+function addSankrantiEvents(days, location) {
+  const byDate = new Map(days.map((day) => [day.date, day]));
+  const seen = new Set();
+  for (const day of days) {
+    for (const sankranti of day.masa.sankrantis || []) {
+      const key = sankranti.at.toISOString();
+      if (seen.has(key)) continue;
+      seen.add(key);
+      const date = sankrantiDisplayDate(sankranti, location.timezone);
+      addEventOnce(byDate.get(date), sankrantiEvent(sankranti, date, location.timezone));
+      if (sankranti.to === 9) addEventOnce(byDate.get(date), sankrantiDependentEvent("ganga_sagara", date));
+      if (sankranti.to === 0) addEventOnce(byDate.get(date), sankrantiDependentEvent("tulasi_begin", date));
+      if (sankranti.to === 1) {
+        const previousDate = addDaysToLocalDate(date, -1);
+        addEventOnce(byDate.get(previousDate), sankrantiDependentEvent("tulasi_end", previousDate));
+      }
+    }
+  }
+}
+
 function attachEvents(days, location, rules, events) {
   const ekadashiByDate = buildEkadashiEvents(days, location, rules);
   const shiftedEventsByDate = new Map();
   for (let i = 0; i < days.length; i += 1) {
     const day = days[i];
-    const generatedEvents = matchEventsForDay(day, events, location.timezone, days[i + 1] || null);
+    const generatedEvents = matchEventsForDay(day, events, location.timezone, days[i + 1] || null, days[i - 1] || null, ekadashiByDate);
     const vrataEvents = ekadashiByDate.get(day.date) || [];
     const currentShiftedEvents = shiftedEventsByDate.get(day.date) || [];
     const currentGeneratedEvents = generatedEvents.filter((event) => {
@@ -117,6 +288,7 @@ function attachEvents(days, location, rules, events) {
     day.events = [...vrataEvents, ...currentGeneratedEvents, ...currentShiftedEvents];
   }
   addPurushottamaBoundaryEvents(days);
+  addSankrantiEvents(days, location);
 }
 
 export function generateCalendar(year, month, location, rules, events) {
@@ -130,6 +302,7 @@ export function generateCalendar(year, month, location, rules, events) {
     days.push(buildDay(addDaysToLocalDate(visibleStart, i), location, rules));
   }
 
+  annotateTithiStatuses(days);
   attachEvents(days, location, rules, events);
 
   return {
@@ -154,6 +327,7 @@ export function generateCalendarRange(startDate, endDate, location, rules, event
     cursor = addDaysToLocalDate(cursor, 1);
   }
 
+  annotateTithiStatuses(days);
   attachEvents(days, location, rules, events);
   const visibleDays = days.filter((day) => day.date >= startDate && day.date <= endDate);
   return {

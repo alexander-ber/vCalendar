@@ -120,6 +120,14 @@ export const LOCATIONS = [
     timezone: "Asia/Kolkata"
   },
   {
+    id: "kolkata",
+    name: "Kolkata, India",
+    group: "Индия",
+    lat: 22.5726,
+    lon: 88.3639,
+    timezone: "Asia/Kolkata"
+  },
+  {
     id: "vrindavan",
     name: "Vrindavan, India",
     group: "Индия",

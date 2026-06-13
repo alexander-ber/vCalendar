@@ -66,7 +66,11 @@ assert(mayMayapur.get("2026-05-27").some((event) => event.name === "Padmini Ekad
 
 const vrindavan = LOCATIONS.find((location) => location.id === "vrindavan");
 const mayVrindavan = eventsByDate(2026, 5, vrindavan);
-assert(mayVrindavan.get("2026-05-27").some((event) => event.name === "Padmini Ekadashi" && event.classification === "viddha"));
+assert(
+  mayVrindavan
+    .get("2026-05-27")
+    .some((event) => event.name === "Padmini Ekadashi" && event.classification === "suddha_after_dashami_viddha" && event.parana_type === "normal_ekadashi")
+);
 assert(
   mayVrindavan
     .get("2026-05-28")

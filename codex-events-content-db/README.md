@@ -105,3 +105,9 @@ Compare tithi engines for boundary-sensitive dates:
 ```bash
 node scripts/compare-tithi-engines.mjs --location maalot --start 2026-05-26 --end 2026-05-28
 ```
+
+Compare against Swiss Ephemeris / Moshier fallback after installing `pyswisseph` into a temporary path:
+
+```bash
+PYTHONPATH=/private/tmp/vcalendar-pydeps node scripts/compare-swiss-tithi.mjs --location mayapur --start 2027-03-18 --end 2027-03-20
+```

@@ -1,21 +1,42 @@
-import { Body, Ecliptic, EclipticGeoMoon, Equator, GeoVector, MoonPhase, Observer, SunPosition } from "../vendor/astronomy-engine.js";
-import { dayAstronomy, normalizeDegrees, tithiAngle, TITHI_NAMES } from "../js/astronomy-adapter.js";
+import { Body, Ecliptic, EclipticGeoMoon, Equator, GeoVector, MoonPhase, Observer, PairLongitude, SunPosition } from "../vendor/astronomy-engine.js";
+import { dayAstronomy, ephemerisTithiAngle, normalizeDegrees, tithiAngle, TITHI_NAMES } from "../js/astronomy-adapter.js";
 import { formatDateTime, formatTime } from "../js/date-utils.js";
 import { LOCATIONS } from "../js/locations-data.js";
 import { RULES } from "../js/rules-data.js";
 
 const DEFAULT_CASES = [
   { location: "mayapur", start: "2026-05-26", end: "2026-05-28", note: "Navadvip/Mayapur Purushottama reference" },
+  { location: "kolkata", start: "2026-07-10", end: "2026-07-11", note: "SCS witness: Yogini shifted Ekadashi" },
+  { location: "mayapur", start: "2026-07-10", end: "2026-07-11", note: "Mayapur comparison: Yogini shifted Ekadashi" },
+  { location: "kolkata", start: "2027-01-18", end: "2027-01-19", note: "SCS witness: Putrada shifted Ekadashi" },
+  { location: "mayapur", start: "2027-01-18", end: "2027-01-19", note: "Mayapur comparison: Putrada shifted Ekadashi" },
+  { location: "kolkata", start: "2027-03-18", end: "2027-03-19", note: "SCS witness: Amalaki shifted Ekadashi" },
+  { location: "mayapur", start: "2027-03-18", end: "2027-03-19", note: "Mayapur comparison: Amalaki shifted Ekadashi" },
   { location: "maalot", start: "2026-05-26", end: "2026-05-28", note: "Maalot Padmini/Vyanjuli edge case" },
   { location: "vrindavan", start: "2026-05-26", end: "2026-05-28", note: "Vrindavan viddha comparison" },
   { location: "mayapur", start: "2026-01-23", end: "2026-01-23", note: "Navadvip/Mayapur Vasanta Panchami cluster" }
 ];
 
+const VIRTUAL_LOCATIONS = [
+  {
+    id: "kolkata",
+    name: "Kolkata, India",
+    lat: 22.5726,
+    lon: 88.3639,
+    timezone: "Asia/Kolkata"
+  }
+];
+
 const STATIC_ENGINES = [
   {
-    id: "local_formula",
-    label: "current local formula",
+    id: "app_current",
+    label: "app current: legacy compatible formula",
     angle: tithiAngle
+  },
+  {
+    id: "app_ephemeris_candidate",
+    label: "candidate: AE apparent geocentric Moon/Sun",
+    angle: ephemerisTithiAngle
   },
   {
     id: "astronomy_moonphase",
@@ -23,16 +44,30 @@ const STATIC_ENGINES = [
     angle: (date) => MoonPhase(date)
   },
   {
+    id: "astronomy_pair_longitude",
+    label: "Astronomy Engine PairLongitude",
+    angle: (date) => PairLongitude(Body.Moon, Body.Sun, date)
+  },
+  {
     id: "astronomy_ecliptic_geo",
-    label: "Astronomy Engine EclipticGeoMoon - SunPosition",
+    label: "Astronomy Engine apparent geocentric Moon - Sun",
     angle: (date) => normalizeDegrees(EclipticGeoMoon(date).lon - SunPosition(date).elon)
   },
   {
     id: "astronomy_geovector",
-    label: "Astronomy Engine Ecliptic(GeoVector)",
+    label: "Astronomy Engine Ecliptic(GeoVector no aberration)",
     angle: (date) => {
       const moon = Ecliptic(GeoVector(Body.Moon, date, false));
       const sun = Ecliptic(GeoVector(Body.Sun, date, false));
+      return normalizeDegrees(moon.elon - sun.elon);
+    }
+  },
+  {
+    id: "astronomy_geovector_aberrated",
+    label: "Astronomy Engine Ecliptic(GeoVector aberration)",
+    angle: (date) => {
+      const moon = Ecliptic(GeoVector(Body.Moon, date, true));
+      const sun = Ecliptic(GeoVector(Body.Sun, date, true));
       return normalizeDegrees(moon.elon - sun.elon);
     }
   }
@@ -44,10 +79,19 @@ function enginesForLocation(location) {
     ...STATIC_ENGINES,
     {
       id: "astronomy_topocentric",
-      label: "Astronomy Engine topocentric Equator -> Ecliptic",
+      label: "Astronomy Engine topocentric Equator -> Ecliptic no aberration",
       angle: (date) => {
         const moon = Ecliptic(Equator(Body.Moon, date, observer, true, false).vec);
         const sun = Ecliptic(Equator(Body.Sun, date, observer, true, false).vec);
+        return normalizeDegrees(moon.elon - sun.elon);
+      }
+    },
+    {
+      id: "astronomy_topocentric_aberrated",
+      label: "Astronomy Engine topocentric Equator -> Ecliptic aberration",
+      angle: (date) => {
+        const moon = Ecliptic(Equator(Body.Moon, date, observer, true, true).vec);
+        const sun = Ecliptic(Equator(Body.Sun, date, observer, true, true).vec);
         return normalizeDegrees(moon.elon - sun.elon);
       }
     }
@@ -82,6 +126,10 @@ function selectedCases() {
     return [{ location, start: date || start, end: date || end || start, note: "custom" }];
   }
   return DEFAULT_CASES;
+}
+
+function resolveLocation(id) {
+  return LOCATIONS.find((item) => item.id === id) || VIRTUAL_LOCATIONS.find((item) => item.id === id);
 }
 
 function tithiFromAngle(angle) {
@@ -140,7 +188,7 @@ function serializeEngine(engine, astronomy, timezone, referenceBoundary) {
 }
 
 function runCase(testCase) {
-  const location = LOCATIONS.find((item) => item.id === testCase.location);
+  const location = resolveLocation(testCase.location);
   if (!location) throw new Error(`Unknown location: ${testCase.location}`);
   const engines = enginesForLocation(location);
   return {
