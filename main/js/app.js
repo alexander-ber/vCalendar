@@ -1,7 +1,7 @@
-import { generateCalendarRange, viewModelForDay } from "./calendar-engine.js?v=20260530-4";
-import { EVENTS } from "./events-data.js?v=20260530-7";
-import { LOCATIONS } from "./locations-data.js?v=20260530-1";
-import { RULES } from "./rules-data.js?v=20260528-17";
+import { generateCalendarRange, viewModelForDay } from "./calendar-engine.js?v=20260613-2";
+import { EVENTS } from "./events-data.js?v=20260613-1";
+import { LOCATIONS } from "./locations-data.js?v=20260613-1";
+import { RULES } from "./rules-data.js?v=20260613-2";
 
 const locationSelect = document.querySelector("#locationSelect");
 const periodFromInput = document.querySelector("#periodFromInput");
@@ -9,7 +9,9 @@ const periodToInput = document.querySelector("#periodToInput");
 const eventsOnlyInput = document.querySelector("#eventsOnlyInput");
 const eventFilterSelect = document.querySelector("#eventFilterSelect");
 const eventFilterChips = document.querySelector("#eventFilterChips");
+const eventJumpSelect = document.querySelector("#eventJumpSelect");
 const renderButton = document.querySelector("#renderButton");
+const thisWeekButton = document.querySelector("#thisWeekButton");
 const thisMonthButton = document.querySelector("#thisMonthButton");
 const fullYearButton = document.querySelector("#fullYearButton");
 const prevMonthTop = document.querySelector("#prevMonthTop");
@@ -18,6 +20,7 @@ const prevMonthBottom = document.querySelector("#prevMonthBottom");
 const nextMonthBottom = document.querySelector("#nextMonthBottom");
 const languageToggle = document.querySelector("#languageToggle");
 const themeToggle = document.querySelector("#themeToggle");
+const fontSizeToggle = document.querySelector("#fontSizeToggle");
 const summaryLocation = document.querySelector("#summaryLocation");
 const summaryTimezone = document.querySelector("#summaryTimezone");
 const calendarTitle = document.querySelector("#calendarTitle");
@@ -29,6 +32,9 @@ const dayDetails = document.querySelector("#dayDetails");
 
 let selectedDate = null;
 let currentLanguage = "ru";
+let jumpHighlightDates = new Set();
+let preferredSelectedDate = null;
+let pendingScrollTarget = null;
 
 const I18N = {
   en: {
@@ -36,6 +42,9 @@ const I18N = {
     day: "Day",
     night: "Night",
     sepia: "Sepia",
+    fontNormal: "Normal font size",
+    fontLarge: "Large font size",
+    fontExtraLarge: "Extra large font size",
     location: "Location",
     periodFrom: "From",
     periodTo: "To",
@@ -69,10 +78,9 @@ const I18N = {
     events: "Events",
     eventDetails: "Event details",
     biography: "Biography",
+    showFullDescription: "Read full description",
     benefits: "Benefits",
     story: "Story",
-    source: "Source",
-    openSource: "Open full article",
     descriptionPending: "Description has not been added to the event database yet.",
     biographyPending: "Biography has not been added to the event database yet.",
     noEvents: "No matched events.",
@@ -89,6 +97,8 @@ const I18N = {
     parana: "Parana",
     calculationPending: "calculation pending",
     notAvailable: "not available",
+    mainControls: "Main controls",
+    eventFinder: "Event finder",
     eventsOnly: "Only days with events",
     eventFilters: "Event filters",
     filterEkadashi: "Ekadashi",
@@ -99,6 +109,10 @@ const I18N = {
     filterVaishnavaAppearance: "Vaishnava appearances",
     filterVaishnavaDisappearance: "Vaishnava disappearances",
     filterDeityTemple: "Deity / temple days",
+    jumpToEvent: "Find event",
+    chooseEvent: "Select event",
+    eventNotFound: "Event was not found in this year.",
+    thisWeek: "This week",
     thisMonth: "This month",
     fullYear: "Full year",
     previousMonth: "Previous period",
@@ -110,6 +124,9 @@ const I18N = {
     day: "День",
     night: "Ночь",
     sepia: "Сепия",
+    fontNormal: "Обычный размер шрифта",
+    fontLarge: "Крупный шрифт",
+    fontExtraLarge: "Очень крупный шрифт",
     location: "Место",
     periodFrom: "С",
     periodTo: "По",
@@ -143,10 +160,9 @@ const I18N = {
     events: "События",
     eventDetails: "Подробности событий",
     biography: "Биография",
+    showFullDescription: "Показать полное описание",
     benefits: "Блага",
     story: "История",
-    source: "Источник",
-    openSource: "Открыть полную статью",
     descriptionPending: "Описание ещё не добавлено в базу событий.",
     biographyPending: "Биография ещё не добавлена в базу событий.",
     noEvents: "Нет найденных событий.",
@@ -163,6 +179,8 @@ const I18N = {
     parana: "Паран",
     calculationPending: "расчёт не завершён",
     notAvailable: "нет",
+    mainControls: "Параметры",
+    eventFinder: "Поиск события",
     eventsOnly: "Только дни с событиями",
     eventFilters: "Фильтры событий",
     filterEkadashi: "Экадаши",
@@ -173,6 +191,10 @@ const I18N = {
     filterVaishnavaAppearance: "Явления вайшнавов",
     filterVaishnavaDisappearance: "Уходы вайшнавов",
     filterDeityTemple: "Божества / храмы",
+    jumpToEvent: "Найти событие",
+    chooseEvent: "Выберите событие",
+    eventNotFound: "Событие не найдено в этом году.",
+    thisWeek: "Неделя",
     thisMonth: "Месяц",
     fullYear: "Год",
     previousMonth: "Предыдущий период",
@@ -239,6 +261,40 @@ const MASA_RU = {
   "half)": "половина)",
   "(2nd": "(2-я"
 };
+
+const EVENT_JUMP_TARGETS = [
+  {
+    id: "janmashtami",
+    labels: { en: "Janmashtami", ru: "Джанмаштами" },
+    patterns: [/джанмаштами/i, /janmashtami/i]
+  },
+  {
+    id: "radhastami",
+    labels: { en: "Radhastami", ru: "Радхаштами" },
+    patterns: [/радхаштами/i, /radhastami/i, /radhashtami/i]
+  },
+  {
+    id: "balaramaPurnima",
+    labels: { en: "Balarama Purnima", ru: "Баларам Пурнима" },
+    patterns: [/balarama_purnima/i, /баларама\s+пурнима/i, /balarama\s+purnima/i]
+  },
+  {
+    id: "rathaYatra",
+    labels: { en: "Ratha Yatra", ru: "Ратха Ятра" },
+    patterns: [/ратха/i, /ratha/i, /гундича/i, /gundicha/i]
+  },
+  {
+    id: "karttik",
+    labels: { en: "Karttik", ru: "Карттик" },
+    patterns: [/карт+ик/i, /kart+ik/i, /дамодара/i, /damodara/i],
+    matchDay: (day) => day.lunar.masa === "Damodara" || day.lunar.masa_display.includes("Damodara")
+  },
+  {
+    id: "navadvipParikrama",
+    labels: { en: "Navadvip Dhama Parikrama", ru: "Навадвип Дхама Парикрама" },
+    patterns: [/навадвип/i, /navadvip/i, /парикрам/i, /parikram/i]
+  }
+];
 
 function currentPeriod() {
   const now = new Date();
@@ -309,7 +365,7 @@ function eventLabel(event) {
   return localizeEventName(event);
 }
 
-function renderDetails(day) {
+function renderDetails(day, options = {}) {
   selectedDate = day.date;
   document.querySelectorAll(".day").forEach((element) => {
     element.classList.toggle("is-selected", element.dataset.date === selectedDate);
@@ -379,6 +435,13 @@ function renderDetails(day) {
       ${tr("tithiAtArunodaya")}: ${localizeTithi(model.arunodayaTithi)}. ${tr("diagnostic")}
     </div>
   `;
+  if (options.scrollToEventDetails) {
+    requestAnimationFrame(() => {
+      const target = document.querySelector(".event-details-panel") || document.querySelector(".details");
+      target?.scrollIntoView({ behavior: "smooth", block: "start" });
+      target?.focus?.({ preventScroll: true });
+    });
+  }
 }
 
 function renderCalendar() {
@@ -431,17 +494,30 @@ function renderCalendar() {
     calendarGrid.append(section);
   }
 
+  const preferredDay = preferredSelectedDate ? visibleDays.find((day) => day.date === preferredSelectedDate) : null;
+  preferredSelectedDate = null;
   const todayInView = visibleDays.find((day) => day.date === today);
   const firstCurrentDay = visibleDays[0];
-  if (todayInView) renderDetails(todayInView);
+  if (preferredDay) renderDetails(preferredDay);
+  else if (todayInView) renderDetails(todayInView);
   else if (firstCurrentDay) renderDetails(firstCurrentDay);
+  if (pendingScrollTarget) {
+    const targetSelector = pendingScrollTarget;
+    pendingScrollTarget = null;
+    requestAnimationFrame(() => {
+      const target = document.querySelector(targetSelector);
+      target?.scrollIntoView({ behavior: "smooth", block: "start" });
+      target?.focus?.({ preventScroll: true });
+    });
+  }
 }
 
 function renderDayButton(day, today, location) {
   const isToday = day.date === today;
+  const isJumpTarget = jumpHighlightDates.has(day.date);
   const button = document.createElement("button");
   button.type = "button";
-  button.className = `day${isToday ? " is-today" : ""}`;
+  button.className = `day${isToday ? " is-today" : ""}${isJumpTarget ? " is-jump-target" : ""}`;
   button.dataset.date = day.date;
   button.innerHTML = `
     <div class="day-topline">
@@ -459,7 +535,7 @@ function renderDayButton(day, today, location) {
         .join("")}
     </div>
   `;
-  button.addEventListener("click", () => renderDetails(day));
+  button.addEventListener("click", () => renderDetails(day, { scrollToEventDetails: true }));
   return button;
 }
 
@@ -609,6 +685,7 @@ function init() {
   initEventsOnly();
   initLanguage();
   initTheme();
+  initFontSize();
   renderButton.addEventListener("click", () => {
     renderButton.disabled = true;
     renderButton.textContent = tr("generating");
@@ -623,6 +700,8 @@ function init() {
   periodToInput.addEventListener("change", renderCalendar);
   eventsOnlyInput.addEventListener("change", renderCalendar);
   eventFilterSelect.addEventListener("change", renderCalendar);
+  eventJumpSelect.addEventListener("change", () => jumpToEventMonth(eventJumpSelect.value));
+  thisWeekButton.addEventListener("click", () => setCurrentWeekPeriod());
   thisMonthButton.addEventListener("click", () => setCurrentMonthPeriod());
   fullYearButton.addEventListener("click", () => setFullYearPeriod());
   prevMonthTop.addEventListener("click", () => shiftPeriod(-1));
@@ -632,12 +711,31 @@ function init() {
   renderCalendar();
 }
 
+function setCurrentWeekPeriod() {
+  normalizePeriodInputs();
+  const dayOfWeek = weekdayOfIsoDate(periodFromInput.value);
+  const mondayOffset = dayOfWeek === 0 ? -6 : 1 - dayOfWeek;
+  const weekStart = shiftIsoDateByDays(periodFromInput.value, mondayOffset);
+  periodFromInput.value = weekStart;
+  periodToInput.value = shiftIsoDateByDays(weekStart, 6);
+  renderCalendar();
+}
+
 function setCurrentMonthPeriod() {
   const [year, month] = periodFromInput.value.split("-").map(Number);
   const monthStart = `${year}-${String(month).padStart(2, "0")}-01`;
   const monthEndDate = new Date(Date.UTC(year, month, 0));
   periodFromInput.value = monthStart;
-  periodToInput.value = `${monthEndDate.getUTCFullYear()}-${String(monthEndDate.getUTCMonth() + 1).padStart(2, "0")}-${String(monthEndDate.getUTCDate()).padStart(2, "0")}`;
+  periodToInput.value = isoDateFromDate(monthEndDate);
+  renderCalendar();
+}
+
+function setMonthPeriodForIsoDate(isoDate) {
+  const [year, month] = isoDate.split("-").map(Number);
+  const monthStart = `${year}-${String(month).padStart(2, "0")}-01`;
+  const monthEndDate = new Date(Date.UTC(year, month, 0));
+  periodFromInput.value = monthStart;
+  periodToInput.value = isoDateFromDate(monthEndDate);
   renderCalendar();
 }
 
@@ -660,7 +758,16 @@ function shiftIsoDateByMonths(isoDate, deltaMonths) {
   const targetMonthFirst = new Date(Date.UTC(year, month - 1 + deltaMonths, 1));
   const lastDay = new Date(Date.UTC(targetMonthFirst.getUTCFullYear(), targetMonthFirst.getUTCMonth() + 1, 0)).getUTCDate();
   const next = new Date(Date.UTC(targetMonthFirst.getUTCFullYear(), targetMonthFirst.getUTCMonth(), Math.min(day, lastDay)));
-  return `${next.getUTCFullYear()}-${String(next.getUTCMonth() + 1).padStart(2, "0")}-${String(next.getUTCDate()).padStart(2, "0")}`;
+  return isoDateFromDate(next);
+}
+
+function shiftIsoDateByDays(isoDate, deltaDays) {
+  const [year, month, day] = isoDate.split("-").map(Number);
+  return isoDateFromDate(new Date(Date.UTC(year, month - 1, day + deltaDays)));
+}
+
+function isoDateFromDate(date) {
+  return `${date.getUTCFullYear()}-${String(date.getUTCMonth() + 1).padStart(2, "0")}-${String(date.getUTCDate()).padStart(2, "0")}`;
 }
 
 function initLanguage() {
@@ -679,12 +786,15 @@ function setLanguage(language) {
   document.documentElement.lang = language;
   languageToggle.textContent = language === "ru" ? "EN" : "RU";
   languageToggle.setAttribute("aria-pressed", String(language === "ru"));
+  eventJumpSelect.setAttribute("aria-label", tr("eventFinder"));
   document.querySelector(".eyebrow").textContent = tr("appSubtitle");
   renderButton.textContent = tr("generate");
   document.querySelectorAll("[data-i18n]").forEach((element) => {
     element.textContent = tr(element.dataset.i18n);
   });
   renderEventFilterChips();
+  renderEventJumpOptions();
+  updateFontSizeButtons();
   if (!selectedDate) dayDetails.textContent = tr("selectDay");
   setTheme(document.documentElement.dataset.theme || "day");
 }
@@ -715,6 +825,53 @@ function renderLocationOptions() {
       return `<optgroup label="${label}">${options}</optgroup>`;
     })
     .join("");
+}
+
+function renderEventJumpOptions() {
+  const selected = eventJumpSelect.value;
+  eventJumpSelect.innerHTML = `
+    <option value="">${tr("chooseEvent")}</option>
+    ${EVENT_JUMP_TARGETS.map((target) => `<option value="${target.id}">${target.labels[currentLanguage] || target.labels.en}</option>`).join("")}
+  `;
+  eventJumpSelect.value = EVENT_JUMP_TARGETS.some((target) => target.id === selected) ? selected : "";
+}
+
+function jumpToEventMonth(targetId) {
+  if (!targetId) return;
+  normalizePeriodInputs();
+  const target = EVENT_JUMP_TARGETS.find((item) => item.id === targetId);
+  if (!target) return;
+  const year = Number(periodFromInput.value.slice(0, 4));
+  const location = LOCATIONS.find((item) => item.id === locationSelect.value) || LOCATIONS[0];
+  const calendar = generateCalendarRange(`${year}-01-01`, `${year}-12-31`, location, RULES, EVENTS);
+  const foundDays = calendar.days.filter((day) => eventJumpMatchesDay(day, target));
+  if (!foundDays.length) {
+    calendarStatus.textContent = `${tr("eventNotFound")} ${year}`;
+    return;
+  }
+  const foundDay = foundDays[0];
+  jumpHighlightDates = new Set(foundDays.map((day) => day.date));
+  preferredSelectedDate = foundDay.date;
+  pendingScrollTarget = ".calendar-wrap";
+  setMonthPeriodForIsoDate(foundDay.date);
+  eventJumpSelect.value = targetId;
+}
+
+function eventJumpMatchesDay(day, target) {
+  if (target.matchDay?.(day)) return true;
+  return day.events.some((event) => {
+    const haystack = [
+      event.id,
+      event.runtime_id,
+      event.subject,
+      event.name,
+      event.i18n?.en?.name,
+      event.i18n?.ru?.name
+    ]
+      .filter(Boolean)
+      .join(" ");
+    return target.patterns.some((pattern) => pattern.test(haystack));
+  });
 }
 
 function renderEventFilterChips() {
@@ -753,6 +910,38 @@ function setTheme(theme) {
     const selected = button.dataset.themeChoice === nextTheme;
     button.classList.toggle("is-active", selected);
     button.setAttribute("aria-pressed", String(selected));
+  });
+}
+
+function initFontSize() {
+  const savedFontSize = localStorage.getItem("vcalendar-font-size");
+  setFontSize(savedFontSize || "large");
+  fontSizeToggle.querySelectorAll("[data-font-size-choice]").forEach((button) => {
+    button.addEventListener("click", () => setFontSize(button.dataset.fontSizeChoice));
+  });
+}
+
+function setFontSize(size) {
+  const nextSize = ["normal", "large", "xlarge"].includes(size) ? size : "large";
+  document.documentElement.dataset.fontSize = nextSize;
+  localStorage.setItem("vcalendar-font-size", nextSize);
+  updateFontSizeButtons();
+}
+
+function updateFontSizeButtons() {
+  const labels = {
+    normal: tr("fontNormal"),
+    large: tr("fontLarge"),
+    xlarge: tr("fontExtraLarge")
+  };
+  const currentSize = document.documentElement.dataset.fontSize || "large";
+  fontSizeToggle.querySelectorAll("[data-font-size-choice]").forEach((button) => {
+    const selected = button.dataset.fontSizeChoice === currentSize;
+    const label = labels[button.dataset.fontSizeChoice] || button.dataset.fontSizeChoice;
+    button.classList.toggle("is-active", selected);
+    button.setAttribute("aria-pressed", String(selected));
+    button.setAttribute("aria-label", label);
+    button.setAttribute("title", label);
   });
 }
 
@@ -803,23 +992,59 @@ function localizeEventName(event) {
 }
 
 function localizeEventDescription(event) {
+  return localizeEventFullDescription(event) || localizeEventShortDescription(event);
+}
+
+function localizeEventShortDescription(event) {
   return localizedEventField(event, "description");
 }
 
+function localizeEventFullDescription(event) {
+  return localizedEventField(event, "full_description");
+}
+
 function localizeClassification(value) {
-  if (currentLanguage !== "ru") return value;
   const map = {
-    standard: "обычный",
-    viddha: "виддха",
-    double_sunrise: "два восхода",
-    no_sunrise: "без восхода",
-    vyanjuli_mahadvadashi: "вьянджули махадвадаши"
+    en: {
+      viddha: "viddha",
+      double_sunrise: "two sunrises",
+      no_sunrise: "no sunrise",
+      dashami_viddha_at_arunodaya: "Dashami at arunodaya",
+      dashami_viddha_at_sunrise: "Dashami at sunrise",
+      vyanjuli_mahadvadashi: "Vyanjuli Mahadvadashi",
+      paksavardhini_mahadvadashi: "Paksavardhini Mahadvadashi",
+      dvadashi_suitable_for_ekadashi_fasting: "Dvadashi fasting day",
+      unmilani: "Unmilani Mahadvadashi",
+      trisprsa: "Trisprsa Mahadvadashi",
+      unmilani_trisprsa: "Unmilani Trisprsa Mahadvadashi",
+      trisprsa_after_dashami_viddha: "shifted after Dashami at arunodaya",
+      suddha_after_dashami_viddha: "shifted after Dashami at arunodaya",
+      trisprsa_after_dashami_sunrise: "shifted after Dashami at sunrise",
+      suddha_after_dashami_sunrise: "shifted after Dashami at sunrise"
+    },
+    ru: {
+      viddha: "виддха",
+      double_sunrise: "два восхода",
+      no_sunrise: "без восхода",
+      dashami_viddha_at_arunodaya: "Дашами на арунодае",
+      dashami_viddha_at_sunrise: "Дашами на восходе",
+      vyanjuli_mahadvadashi: "Вьянджули махадвадаши",
+      paksavardhini_mahadvadashi: "Пакшавардхини махадвадаши",
+      dvadashi_suitable_for_ekadashi_fasting: "пост на Двадаши",
+      unmilani: "Унмилани махадвадаши",
+      trisprsa: "Триспрша махадвадаши",
+      unmilani_trisprsa: "Унмилани триспрша махадвадаши",
+      trisprsa_after_dashami_viddha: "перенос: Дашами на арунодае",
+      suddha_after_dashami_viddha: "перенос: Дашами на арунодае",
+      trisprsa_after_dashami_sunrise: "перенос: Дашами на восходе",
+      suddha_after_dashami_sunrise: "перенос: Дашами на восходе"
+    }
   };
-  return map[value] || value;
+  return (map[currentLanguage] || map.en)[value] || value;
 }
 
 function ekadashiReasonLabel(classification) {
-  if (classification === "standard") return "";
+  if (!classification || classification === "standard" || classification === "suddha_ekadashi" || classification === "normal_ekadashi") return "";
   return localizeClassification(classification);
 }
 
@@ -830,7 +1055,7 @@ function ekadashiDetailLine(event) {
 
 function renderEventDetails(events) {
   return `
-    <section class="event-details-panel">
+    <section class="event-details-panel" tabindex="-1">
       <h3>${tr("eventDetails")}</h3>
       ${events.map((event) => renderEventDetail(event)).join("")}
     </section>
@@ -840,7 +1065,8 @@ function renderEventDetails(events) {
 function renderEventDetail(event) {
   const isBioEvent = event.type === "vaishnava_appearance" || event.type === "vaishnava_disappearance";
   const heading = isBioEvent ? tr("biography") : tr("events");
-  const description = localizeEventDescription(event) || eventNarrativeFallback(event, isBioEvent);
+  const shortDescription = localizeEventShortDescription(event) || eventNarrativeFallback(event, isBioEvent);
+  const fullDescription = localizeEventFullDescription(event);
   const structuredNotes = renderEventStructuredNotes(event);
   return `
     <article class="event-detail-card ${eventClass(event)}">
@@ -849,9 +1075,20 @@ function renderEventDetail(event) {
         <strong>${localizeEventName(event)}</strong>
       </div>
       ${structuredNotes}
-      ${structuredNotes ? "" : `<p>${description}</p>`}
-      ${event.source_url ? `<a class="event-source" href="${event.source_url}" target="_blank" rel="noopener">${tr("openSource")}</a>` : ""}
+      ${structuredNotes || fullDescription ? "" : `<p>${shortDescription}</p>`}
+      ${fullDescription ? renderFullDescription(fullDescription) : ""}
     </article>
+  `;
+}
+
+function renderFullDescription(description) {
+  return `
+    <details class="full-description">
+      <summary aria-label="${tr("showFullDescription")}" title="${tr("showFullDescription")}">
+        <span class="full-description-icon" aria-hidden="true"></span>
+      </summary>
+      <div class="full-description-body">${description}</div>
+    </details>
   `;
 }
 

@@ -1,8 +1,68 @@
-import { MS_PER_DAY, MS_PER_MINUTE, localDateParts, zonedDateToUtc } from "./date-utils.js";
+import { Body, EclipticGeoMoon, Observer, SearchRiseSet, SunPosition } from "../vendor/astronomy-engine.js";
+import { MS_PER_DAY, MS_PER_MINUTE, addDaysToLocalDate, localDateParts, zonedDateToUtc } from "./date-utils.js";
 
 const DEG = Math.PI / 180;
-const RAD = 180 / Math.PI;
 const J2000 = 2451545.0;
+
+export const NAKSHATRA_NAMES = [
+  "Ashvini",
+  "Bharani",
+  "Krittika",
+  "Rohini",
+  "Mrigashirsha",
+  "Ardra",
+  "Punarvasu",
+  "Pushya",
+  "Ashlesha",
+  "Magha",
+  "Purva Phalguni",
+  "Uttara Phalguni",
+  "Hasta",
+  "Chitra",
+  "Swati",
+  "Vishakha",
+  "Anuradha",
+  "Jyeshtha",
+  "Mula",
+  "Purva Ashadha",
+  "Uttara Ashadha",
+  "Shravana",
+  "Dhanishtha",
+  "Shatabhisha",
+  "Purva Bhadrapada",
+  "Uttara Bhadrapada",
+  "Revati"
+];
+
+export const YOGA_NAMES = [
+  "Vishkambha",
+  "Priti",
+  "Ayushman",
+  "Saubhagya",
+  "Shobhana",
+  "Atiganda",
+  "Sukarma",
+  "Dhriti",
+  "Shula",
+  "Ganda",
+  "Vriddhi",
+  "Dhruva",
+  "Vyaghata",
+  "Harshana",
+  "Vajra",
+  "Siddhi",
+  "Vyatipata",
+  "Variyan",
+  "Parigha",
+  "Shiva",
+  "Siddha",
+  "Sadhya",
+  "Shubha",
+  "Shukla",
+  "Brahma",
+  "Indra",
+  "Vaidhriti"
+];
 
 export const TITHI_NAMES = [
   "Gaura Pratipat",
@@ -54,14 +114,14 @@ export function ayanamsha(date) {
   return 23.8531 + 0.013968 * yearsFrom2000;
 }
 
-export function sunLongitude(date) {
+export function approximateSunLongitude(date) {
   const d = daysSinceJ2000(date);
   const g = normalizeDegrees(357.529 + 0.98560028 * d);
   const q = normalizeDegrees(280.459 + 0.98564736 * d);
   return normalizeDegrees(q + 1.915 * Math.sin(g * DEG) + 0.020 * Math.sin(2 * g * DEG));
 }
 
-export function moonLongitude(date) {
+export function approximateMoonLongitude(date) {
   const d = daysSinceJ2000(date);
   const l0 = normalizeDegrees(218.316 + 13.176396 * d);
   const mMoon = normalizeDegrees(134.963 + 13.064993 * d);
@@ -80,6 +140,26 @@ export function moonLongitude(date) {
   );
 }
 
+export function sunLongitude(date) {
+  return approximateSunLongitude(date);
+}
+
+export function moonLongitude(date) {
+  return approximateMoonLongitude(date);
+}
+
+export function ephemerisSunLongitude(date) {
+  return normalizeDegrees(SunPosition(date).elon);
+}
+
+export function ephemerisMoonLongitude(date) {
+  return normalizeDegrees(EclipticGeoMoon(date).lon);
+}
+
+export function ephemerisTithiAngle(date) {
+  return normalizeDegrees(ephemerisMoonLongitude(date) - ephemerisSunLongitude(date));
+}
+
 export function sunSiderealLongitude(date) {
   return normalizeDegrees(sunLongitude(date) - ayanamsha(date));
 }
@@ -96,153 +176,77 @@ export function tithiInfo(date) {
   return { number, name, paksha, angle };
 }
 
-function solarNoonMinutes(dayOfYear, lon, timezoneOffsetMinutes) {
-  const gamma = (2 * Math.PI / 365) * (dayOfYear - 1);
-  const equationOfTime =
-    229.18 *
-    (0.000075 +
-      0.001868 * Math.cos(gamma) -
-      0.032077 * Math.sin(gamma) -
-      0.014615 * Math.cos(2 * gamma) -
-      0.040849 * Math.sin(2 * gamma));
-  return 720 - 4 * lon - equationOfTime + timezoneOffsetMinutes;
+export function nakshatraInfo(date) {
+  const longitude = normalizeDegrees(moonLongitude(date) - ayanamsha(date));
+  const span = 360 / 27;
+  const number = Math.floor(longitude / span) + 1;
+  return {
+    number,
+    name: NAKSHATRA_NAMES[number - 1],
+    longitude,
+    pada: Math.floor((longitude % span) / (span / 4)) + 1
+  };
 }
 
-function dayOfYear(year, month, day) {
-  const start = Date.UTC(year, 0, 0);
-  const current = Date.UTC(year, month - 1, day);
-  return Math.floor((current - start) / MS_PER_DAY);
+export function yogaInfo(date) {
+  const sum = normalizeDegrees(sunSiderealLongitude(date) + normalizeDegrees(moonLongitude(date) - ayanamsha(date)));
+  const span = 360 / 27;
+  const number = Math.floor(sum / span) + 1;
+  return {
+    number,
+    name: YOGA_NAMES[number - 1],
+    angle: sum
+  };
 }
 
-function timezoneOffsetMinutes(date, timezone) {
-  const localAsUtc = zonedDateToUtc(
-    date.getUTCFullYear(),
-    date.getUTCMonth() + 1,
-    date.getUTCDate(),
-    date.getUTCHours(),
-    date.getUTCMinutes(),
-    date.getUTCSeconds(),
-    timezone
-  );
-  return (date.getTime() - localAsUtc.getTime()) / MS_PER_MINUTE;
+function astroDate(value) {
+  if (!value) return null;
+  return value.date instanceof Date ? value.date : new Date(value);
 }
 
-function sunEventForDate(isoDate, location, zenithDegrees, isSunrise) {
+function observerForLocation(location) {
+  return new Observer(location.lat, location.lon, Number(location.elevation_m || 0));
+}
+
+function localDayBounds(isoDate, timezone) {
   const { year, month, day } = localDateParts(isoDate);
-  const noonUtc = zonedDateToUtc(year, month, day, 12, 0, 0, location.timezone);
-  const tzOffset = timezoneOffsetMinutes(noonUtc, location.timezone);
-  const n = dayOfYear(year, month, day);
-  const gamma = (2 * Math.PI / 365) * (n - 1);
-  const decl =
-    0.006918 -
-    0.399912 * Math.cos(gamma) +
-    0.070257 * Math.sin(gamma) -
-    0.006758 * Math.cos(2 * gamma) +
-    0.000907 * Math.sin(2 * gamma) -
-    0.002697 * Math.cos(3 * gamma) +
-    0.00148 * Math.sin(3 * gamma);
-  const latRad = location.lat * DEG;
-  const zenith = zenithDegrees * DEG;
-  const cosHourAngle = (Math.cos(zenith) / (Math.cos(latRad) * Math.cos(decl))) - Math.tan(latRad) * Math.tan(decl);
-  if (cosHourAngle < -1 || cosHourAngle > 1) return null;
-  const hourAngle = Math.acos(cosHourAngle) * RAD;
-  const noonMinutes = solarNoonMinutes(n, location.lon, tzOffset);
-  const localMinutes = isSunrise ? noonMinutes - 4 * hourAngle : noonMinutes + 4 * hourAngle;
-  const hour = Math.floor(localMinutes / 60);
-  const minute = Math.floor(localMinutes % 60);
-  const second = Math.round((localMinutes - Math.floor(localMinutes)) * 60);
-  return zonedDateToUtc(year, month, day, hour, minute, second, location.timezone);
+  const start = zonedDateToUtc(year, month, day, 0, 0, 0, timezone);
+  const end = zonedDateToUtc(year, month, day, 23, 59, 59, timezone);
+  return { start, end };
 }
 
-function obliquity(date) {
-  const yearsFrom2000 = (julianDay(date) - J2000) / 36525;
-  return 23.439291 - 0.0130042 * yearsFrom2000;
+function localRiseSet(body, location, isoDate, direction) {
+  const observer = observerForLocation(location);
+  const { start, end } = localDayBounds(isoDate, location.timezone);
+  const found = astroDate(SearchRiseSet(body, observer, direction, start, 1.2));
+  return found && found >= start && found <= end ? found : null;
 }
 
-function moonLatitude(date) {
-  const d = daysSinceJ2000(date);
-  const f = normalizeDegrees(93.272 + 13.229350 * d);
-  return 5.128 * Math.sin(f * DEG);
-}
+export function arunodayaForDay(isoDate, location, sunrise, rules) {
+  if (!sunrise) return null;
+  const ekadashiRules = rules?.ekadashi || {};
+  const mode = ekadashiRules.arunodaya_mode || "fixed_offset";
 
-function moonEquatorial(date) {
-  const lon = moonLongitude(date) * DEG;
-  const lat = moonLatitude(date) * DEG;
-  const eps = obliquity(date) * DEG;
-  const sinDec = Math.sin(lat) * Math.cos(eps) + Math.cos(lat) * Math.sin(eps) * Math.sin(lon);
-  const dec = Math.asin(sinDec);
-  const y = Math.sin(lon) * Math.cos(eps) - Math.tan(lat) * Math.sin(eps);
-  const x = Math.cos(lon);
-  const ra = Math.atan2(y, x);
-  return { ra: normalizeDegrees(ra * RAD), dec: dec * RAD };
-}
-
-function siderealTime(date, lon) {
-  const jd = julianDay(date);
-  const t = (jd - J2000) / 36525;
-  const gmst = 280.46061837 + 360.98564736629 * (jd - J2000) + 0.000387933 * t * t - (t * t * t) / 38710000;
-  return normalizeDegrees(gmst + lon);
-}
-
-function moonAltitude(date, location) {
-  const { ra, dec } = moonEquatorial(date);
-  const hourAngle = normalizeDegrees(siderealTime(date, location.lon) - ra);
-  const h = hourAngle > 180 ? hourAngle - 360 : hourAngle;
-  const lat = location.lat * DEG;
-  const decRad = dec * DEG;
-  const altitude =
-    Math.asin(Math.sin(lat) * Math.sin(decRad) + Math.cos(lat) * Math.cos(decRad) * Math.cos(h * DEG)) * RAD;
-  return altitude;
-}
-
-function refineMoonHorizonCrossing(left, right, location, targetAltitude) {
-  let a = new Date(left);
-  let b = new Date(right);
-  for (let i = 0; i < 32; i += 1) {
-    const mid = new Date((a.getTime() + b.getTime()) / 2);
-    const leftValue = moonAltitude(a, location) - targetAltitude;
-    const midValue = moonAltitude(mid, location) - targetAltitude;
-    if (Math.sign(leftValue) === Math.sign(midValue)) a = mid;
-    else b = mid;
-  }
-  return b;
-}
-
-function moonEventsForDate(isoDate, location) {
-  const { year, month, day } = localDateParts(isoDate);
-  const start = zonedDateToUtc(year, month, day, 0, 0, 0, location.timezone);
-  const end = zonedDateToUtc(year, month, day, 23, 59, 59, location.timezone);
-  const step = 20 * MS_PER_MINUTE;
-  const targetAltitude = -0.3;
-  let moonrise = null;
-  let moonset = null;
-  let previous = start;
-  let previousValue = moonAltitude(previous, location) - targetAltitude;
-
-  for (let cursor = new Date(start.getTime() + step); cursor <= end; cursor = new Date(cursor.getTime() + step)) {
-    const value = moonAltitude(cursor, location) - targetAltitude;
-    if (Math.sign(previousValue) !== Math.sign(value)) {
-      const eventTime = refineMoonHorizonCrossing(previous, cursor, location, targetAltitude);
-      if (previousValue < value && !moonrise) moonrise = eventTime;
-      if (previousValue > value && !moonset) moonset = eventTime;
+  if (mode === "previous_night_fraction") {
+    const previousSunset = localRiseSet(Body.Sun, location, addDaysToLocalDate(isoDate, -1), -1);
+    if (previousSunset) {
+      const fraction = Number(ekadashiRules.arunodaya_night_fraction || 1 / 15);
+      return new Date(sunrise.getTime() - (sunrise.getTime() - previousSunset.getTime()) * fraction);
     }
-    previous = cursor;
-    previousValue = value;
   }
 
-  return { moonrise, moonset };
+  return new Date(sunrise.getTime() - (ekadashiRules.arunodaya_offset_minutes || 96) * MS_PER_MINUTE);
 }
 
 export function dayAstronomy(isoDate, location, rules) {
-  const sunrise = sunEventForDate(isoDate, location, 90.833, true);
-  const sunset = sunEventForDate(isoDate, location, 90.833, false);
-  const arunodaya = sunrise ? new Date(sunrise.getTime() - rules.ekadashi.arunodaya_offset_minutes * MS_PER_MINUTE) : null;
-  const moon = moonEventsForDate(isoDate, location);
+  const sunrise = localRiseSet(Body.Sun, location, isoDate, +1);
+  const sunset = localRiseSet(Body.Sun, location, isoDate, -1);
+  const arunodaya = arunodayaForDay(isoDate, location, sunrise, rules);
   return {
     sunrise,
     sunset,
     arunodaya,
-    moonrise: moon.moonrise,
-    moonset: moon.moonset
+    moonrise: localRiseSet(Body.Moon, location, isoDate, +1),
+    moonset: localRiseSet(Body.Moon, location, isoDate, -1)
   };
 }

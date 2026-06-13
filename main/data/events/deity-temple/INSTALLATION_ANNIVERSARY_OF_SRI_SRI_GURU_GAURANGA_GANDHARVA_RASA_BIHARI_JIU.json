@@ -1,0 +1,30 @@
+{
+  "id": "INSTALLATION_ANNIVERSARY_OF_SRI_SRI_GURU_GAURANGA_GANDHARVA_RASA_BIHARI_JIU",
+  "runtime_id": "scsmath_541_vrindavan_rasa_bihari_installation",
+  "type": "deity_installation",
+  "category": "deity_temple",
+  "subject": "Sri Sri Guru Gauranga Gandharva Rasa Bihari Jiu",
+  "rules": {
+    "gaudiya_masa": "Damodara",
+    "paksha": "Gaura",
+    "tithi": "Purnima",
+    "timing_rule": "sunrise_based",
+    "allow_in_adhika": false
+  },
+  "source_status": "tithi_rule_from_scsmath_541",
+  "sources": [],
+  "translations": [
+    {
+      "lang": "en",
+      "name": "Installation anniversary of Sri Sri Guru Gauranga Gandharva Rasa Bihari Jiu",
+      "short_description": "Temple or Deity festival connected with Sri Sri Guru Gauranga Gandharva Rasa Bihari Jiu. This event is matched by the tithi rule stored in the calendar database.",
+      "full_description": ""
+    },
+    {
+      "lang": "ru",
+      "name": "Годовщина установки Шри Шри Гуру Гауранга Гандхарва Раса Бихари Джиу",
+      "short_description": "Храмовый праздник или день установки Божеств: Годовщина установки Шри Шри Гуру Гауранга Гандхарва Раса Бихари Джиу. Событие привязано к титхи, указанному в базе календаря.",
+      "full_description": ""
+    }
+  ]
+}

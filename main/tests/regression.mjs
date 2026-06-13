@@ -31,7 +31,7 @@ assert(mayMaalot.get("2026-05-27").some((event) => event.name === "Padmini Ekada
 assert(
   mayMaalot
     .get("2026-05-28")
-    .some((event) => event.name === "Parana for Padmini Ekadashi" && event.parana.start === "05:45" && event.parana.preferred_end === "10:14")
+    .some((event) => event.name === "Parana for Padmini Ekadashi" && event.parana.start === "05:32" && event.parana.preferred_end === "05:45")
 );
 
 const juneMaalotDays = daysByDate(2026, 6, maalot);
@@ -48,14 +48,14 @@ const julyMaalot = eventsByDate(2026, 7, maalot);
 assert(
   julyMaalot
     .get("2026-07-12")
-    .some((event) => event.name === "Parana for Yogini Ekadashi" && event.parana.start === "05:38" && event.parana.preferred_end === "10:22")
+    .some((event) => event.name === "Parana for Yogini Ekadashi" && event.parana.start === "05:39" && event.parana.preferred_end === "10:22")
 );
 
 const augustMaalot = eventsByDate(2026, 8, maalot);
 assert(
   augustMaalot
     .get("2026-08-10")
-    .some((event) => event.name === "Parana for Kamika Ekadashi" && event.parana.start === "05:58" && event.parana.preferred_end === "10:29")
+    .some((event) => event.name === "Parana for Kamika Ekadashi" && event.parana.start === "05:58" && event.parana.preferred_end === "10:28")
 );
 assert(augustMaalot.get("2026-08-28").some((event) => event.name === "Sri Balarama Purnima"));
 assert(augustMaalot.get("2026-08-28").some((event) => event.name.includes("Bhakti Prapanna Tirtha")));
@@ -63,6 +63,19 @@ assert(augustMaalot.get("2026-08-28").some((event) => event.name.includes("Bhakt
 const mayapur = LOCATIONS.find((location) => location.id === "mayapur");
 const mayMayapur = eventsByDate(2026, 5, mayapur);
 assert(mayMayapur.get("2026-05-27").some((event) => event.name === "Padmini Ekadashi"));
+
+const vrindavan = LOCATIONS.find((location) => location.id === "vrindavan");
+const mayVrindavan = eventsByDate(2026, 5, vrindavan);
+assert(
+  mayVrindavan
+    .get("2026-05-27")
+    .some((event) => event.name === "Padmini Ekadashi" && event.classification === "suddha_after_dashami_viddha" && event.parana_type === "normal_ekadashi")
+);
+assert(
+  mayVrindavan
+    .get("2026-05-28")
+    .some((event) => event.name === "Parana for Padmini Ekadashi" && event.parana.start !== "not implemented")
+);
 
 const marchTelAviv = eventsByDate(2026, 3, telAviv);
 assert(marchTelAviv.get("2026-03-15").some((event) => event.name.includes("Papamochani Ekadashi")));

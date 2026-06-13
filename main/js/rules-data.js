@@ -5,7 +5,9 @@ export const RULES = {
     external_validation: false
   },
   ekadashi: {
+    arunodaya_mode: "previous_night_fraction",
     arunodaya_offset_minutes: 96,
+    arunodaya_night_fraction: 1 / 15,
     classification_priority: ["viddha", "double_sunrise", "no_sunrise", "standard"]
   },
   parana: {

@@ -1,0 +1,30 @@
+{
+  "id": "INSTALLATION_ANNIVERSARY_OF_SRI_SADASHIVA_GANGADHAR",
+  "runtime_id": "scsmath_541_sadashiva_gangadhar_installation",
+  "type": "deity_installation",
+  "category": "deity_temple",
+  "subject": "Sri Sadashiva Gangadhar",
+  "rules": {
+    "gaudiya_masa": "Govinda",
+    "paksha": "Krishna",
+    "tithi": "Amavasya",
+    "timing_rule": "sunrise_based",
+    "allow_in_adhika": false
+  },
+  "source_status": "tithi_rule_from_scsmath_541",
+  "sources": [],
+  "translations": [
+    {
+      "lang": "en",
+      "name": "Installation anniversary of Sri Sadashiva Gangadhar",
+      "short_description": "Temple or Deity festival connected with Sri Sadashiva Gangadhar. This event is matched by the tithi rule stored in the calendar database.",
+      "full_description": ""
+    },
+    {
+      "lang": "ru",
+      "name": "Годовщина установки Шри Садашивы Гангадхара",
+      "short_description": "Храмовый праздник или день установки Божеств: Годовщина установки Шри Садашивы Гангадхара. Событие привязано к титхи, указанному в базе календаря.",
+      "full_description": ""
+    }
+  ]
+}

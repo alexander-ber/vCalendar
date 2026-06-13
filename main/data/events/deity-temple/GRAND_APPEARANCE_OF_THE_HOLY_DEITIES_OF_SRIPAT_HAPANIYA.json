@@ -1,0 +1,30 @@
+{
+  "id": "GRAND_APPEARANCE_OF_THE_HOLY_DEITIES_OF_SRIPAT_HAPANIYA",
+  "runtime_id": "scsmath_541_hapaniya_deities_appearance",
+  "type": "deity_installation",
+  "category": "deity_temple",
+  "subject": "Sri Sri Guru Gauranga Radha Gopinath Jiu",
+  "rules": {
+    "gaudiya_masa": "Vishnu",
+    "paksha": "Krishna",
+    "tithi": "Panchami",
+    "timing_rule": "sunrise_based",
+    "allow_in_adhika": false
+  },
+  "source_status": "tithi_rule_from_scsmath_541",
+  "sources": [],
+  "translations": [
+    {
+      "lang": "en",
+      "name": "Grand appearance of the Holy Deities of Sripat Hapaniya",
+      "short_description": "Temple or Deity festival connected with Sri Sri Guru Gauranga Radha Gopinath Jiu. This event is matched by the tithi rule stored in the calendar database.",
+      "full_description": ""
+    },
+    {
+      "lang": "ru",
+      "name": "Великое явление святых Божеств Шрипат Хапании",
+      "short_description": "Храмовый праздник или день установки Божеств: Великое явление святых Божеств Шрипат Хапании. Событие привязано к титхи, указанному в базе календаря.",
+      "full_description": ""
+    }
+  ]
+}

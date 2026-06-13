@@ -1,0 +1,39 @@
+{
+  "id": "RAMACHANDRA_VIDZHAYOTSAVA",
+  "runtime_id": "hkzp_541_рамачандра_виджайотсава",
+  "type": "festival",
+  "category": "festival",
+  "scope": "matched_harekrishnazp_vaishnavacalendar",
+  "subject": "Рамачандра Виджайотсава",
+  "rules": {
+    "gaudiya_masa": "Padmanabha",
+    "paksha": "Gaura",
+    "tithi": "Dashami",
+    "timing_rule": "sunrise_based",
+    "allow_in_adhika": false
+  },
+  "priority": "medium",
+  "source_status": "matched_by_name_type_tithi",
+  "sources": [
+    {
+      "type": "description",
+      "url": "http://harekrishnazp.info/materialy/vajshnavskij-kalendar/1269-ramachandra-vidzhajotsava.html",
+      "attribution_required": true
+    }
+  ],
+  "translations": [
+    {
+      "lang": "en",
+      "name": "Ramachandra Vidzhayotsava",
+      "short_description": "Imported calendar reference for \"Рамачандра Виджайотсава\". English summary still needs editorial translation; the Russian source summary is linked in source_url.",
+      "full_description": ""
+    },
+    {
+      "lang": "ru",
+      "name": "Рамачандра Виджайотсава",
+      "short_description": "В этот день Господь Рамачандра услышал от Ханумана, что тот слышал и видел Ситу на острове Ланка. В честь этой новости Господь Рамачандра провёл праздник, и затем отправился в Шри Ланку.",
+      "full_description": "В этот день Господь Рамачандра услышал от Ханумана, что тот слышал и видел Ситу на острове Ланка. В честь этой новости Господь Рамачандра провёл праздник, и затем отправился в Шри Ланку.\n\nВ день Рамачандра Виджайотсава можно провести пуджу Господу Рамачандре и затем в Его честь накормить вайшнавов. Этот праздник популярен в северной Индии, где по этому поводу огромные бумажные образы демона Раваны сжигаются под громкие песни о победе Господа Рамачандры."
+    }
+  ],
+  "content_license_note": "Source footer says: Распространение материалов сайта горячо приветствуется! При использовании информации на других сайтах, пожалуйста, ставьте ссылку на цитируемый материал."
+}
