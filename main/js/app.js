@@ -11,6 +11,7 @@ const eventFilterSelect = document.querySelector("#eventFilterSelect");
 const eventFilterChips = document.querySelector("#eventFilterChips");
 const eventJumpSelect = document.querySelector("#eventJumpSelect");
 const renderButton = document.querySelector("#renderButton");
+const exportIcsButton = document.querySelector("#exportIcsButton");
 const thisWeekButton = document.querySelector("#thisWeekButton");
 const thisMonthButton = document.querySelector("#thisMonthButton");
 const fullYearButton = document.querySelector("#fullYearButton");
@@ -50,6 +51,9 @@ const I18N = {
     periodTo: "To",
     generate: "Generate",
     generating: "Generating...",
+    exportCalendar: "Export calendar",
+    exportedCalendar: "ICS calendar exported",
+    noEventsToExport: "No events match the current period and filters.",
     timezone: "Timezone",
     loading: "Loading calendar...",
     selectedDay: "Selected Day",
@@ -135,6 +139,9 @@ const I18N = {
     periodTo: "По",
     generate: "Рассчитать",
     generating: "Расчёт...",
+    exportCalendar: "Экспорт в календарь",
+    exportedCalendar: "ICS календарь экспортирован",
+    noEventsToExport: "Нет событий для экспорта с текущим периодом и фильтрами.",
     timezone: "Часовой пояс",
     loading: "Загрузка календаря...",
     selectedDay: "Выбранный день",
@@ -544,6 +551,126 @@ function renderCalendar() {
   }
 }
 
+function exportCurrentCalendarIcs() {
+  normalizePeriodInputs();
+  const location = LOCATIONS.find((item) => item.id === locationSelect.value) || LOCATIONS[0];
+  const calendar = generateCalendarRange(periodFromInput.value, periodToInput.value, location, RULES, EVENTS);
+  const entries = [];
+
+  for (const day of calendar.days) {
+    for (const event of visibleEventsForDay(day)) {
+      entries.push({ day, event });
+    }
+  }
+
+  if (!entries.length) {
+    calendarStatus.textContent = tr("noEventsToExport");
+    return;
+  }
+
+  const ics = buildIcsCalendar(entries, location);
+  const fileName = `vcalendar-${periodFromInput.value}-${periodToInput.value}-${location.id}.ics`;
+  downloadTextFile(fileName, ics, "text/calendar;charset=utf-8");
+  calendarStatus.textContent = `${tr("exportedCalendar")}: ${entries.length}`;
+}
+
+function buildIcsCalendar(entries, location) {
+  const stamp = icsDateTimeUtc(new Date());
+  const lines = [
+    "BEGIN:VCALENDAR",
+    "VERSION:2.0",
+    "PRODID:-//vCalendar//Gaudiya Vaishnava Panchang//EN",
+    "CALSCALE:GREGORIAN",
+    "METHOD:PUBLISH",
+    `X-WR-CALNAME:${icsEscape(`vCalendar ${periodFromInput.value} - ${periodToInput.value}`)}`,
+    `X-WR-TIMEZONE:${icsEscape(location.timezone)}`
+  ];
+
+  entries.forEach(({ day, event }, index) => {
+    lines.push(
+      "BEGIN:VEVENT",
+      `UID:${icsEscape(`${event.id || event.name}-${day.date}-${index}@vcalendar.local`)}`,
+      `DTSTAMP:${stamp}`,
+      `DTSTART;VALUE=DATE:${icsDate(day.date)}`,
+      `DTEND;VALUE=DATE:${icsDate(shiftIsoDateByDays(day.date, 1))}`,
+      `SUMMARY:${icsEscape(localizeEventName(event))}`,
+      `DESCRIPTION:${icsEscape(icsEventDescription(day, event))}`,
+      `LOCATION:${icsEscape(`${location.name} (${location.timezone})`)}`,
+      event.source_url ? `URL:${icsEscape(event.source_url)}` : null,
+      "END:VEVENT"
+    );
+  });
+
+  lines.push("END:VCALENDAR");
+  return lines.filter(Boolean).map(foldIcsLine).join("\r\n") + "\r\n";
+}
+
+function icsEventDescription(day, event) {
+  const lines = [
+    `${tr("gregorianDate")}: ${gregorianLong(day.date)}`,
+    `${tr("masa")}: ${localizeMasa(day.masa.display_name)}`,
+    `${tr("tithiSunrise")}: ${localizeTithi(day.lunar.tithi_at_sunrise.name)}`,
+    `${tr("sun")}: ${calendarTime(day.astronomy.sunrise, day.location.timezone)}-${calendarTime(day.astronomy.sunset, day.location.timezone)}`
+  ];
+
+  if (event.type === "parana" && event.parana) {
+    lines.push(
+      `${tr("paranaTime")}: ${event.parana.start}-${localizeAvailability(event.parana.preferred_end)}`,
+      `${tr("oneFifthEnd")}: ${localizeAvailability(event.parana.one_fifth_end)}`
+    );
+  }
+
+  const description = stripHtml(localizeEventDescription(event));
+  if (description) lines.push("", description);
+  if (event.source_url) lines.push("", event.source_url);
+  return lines.join("\n");
+}
+
+function icsDate(isoDate) {
+  return isoDate.replaceAll("-", "");
+}
+
+function icsDateTimeUtc(date) {
+  return date.toISOString().replace(/[-:]/g, "").replace(/\.\d{3}Z$/, "Z");
+}
+
+function icsEscape(value) {
+  return String(value || "")
+    .replaceAll("\\", "\\\\")
+    .replaceAll("\r\n", "\n")
+    .replaceAll("\r", "\n")
+    .replaceAll("\n", "\\n")
+    .replaceAll(";", "\\;")
+    .replaceAll(",", "\\,");
+}
+
+function foldIcsLine(line) {
+  const chunks = [];
+  let remaining = line;
+  while (remaining.length > 72) {
+    chunks.push(remaining.slice(0, 72));
+    remaining = ` ${remaining.slice(72)}`;
+  }
+  chunks.push(remaining);
+  return chunks.join("\r\n");
+}
+
+function stripHtml(value) {
+  return String(value || "").replace(/<[^>]*>/g, " ").replace(/\s+/g, " ").trim();
+}
+
+function downloadTextFile(fileName, contents, type) {
+  const blob = new Blob([contents], { type });
+  const url = URL.createObjectURL(blob);
+  const link = document.createElement("a");
+  link.href = url;
+  link.download = fileName;
+  document.body.append(link);
+  link.click();
+  link.remove();
+  URL.revokeObjectURL(url);
+}
+
 function renderDayButton(day, today, location) {
   const isToday = day.date === today;
   const isJumpTarget = jumpHighlightDates.has(day.date);
@@ -750,6 +877,7 @@ function init() {
       renderButton.textContent = tr("generate");
     });
   });
+  exportIcsButton.addEventListener("click", exportCurrentCalendarIcs);
   locationSelect.addEventListener("change", renderCalendar);
   periodFromInput.addEventListener("change", renderCalendar);
   periodToInput.addEventListener("change", renderCalendar);
