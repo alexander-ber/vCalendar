@@ -6,6 +6,7 @@ import { RULES } from "../js/rules-data.js";
 
 const maalot = LOCATIONS.find((location) => location.id === "maalot");
 const telAviv = LOCATIONS.find((location) => location.id === "tel-aviv");
+const mayapur = LOCATIONS.find((location) => location.id === "mayapur");
 
 function eventsByDate(year, month, location) {
   const calendar = generateCalendar(year, month, location, RULES, EVENTS);
@@ -48,7 +49,13 @@ const julyMaalot = eventsByDate(2026, 7, maalot);
 assert(
   julyMaalot
     .get("2026-07-12")
-    .some((event) => event.name === "Parana for Yogini Ekadashi" && event.parana.start === "05:39" && event.parana.preferred_end === "10:22")
+    .some(
+      (event) =>
+        event.name === "Parana for Yogini Ekadashi" &&
+        event.parana.start === "05:39" &&
+        event.parana.preferred_end === "10:22" &&
+        event.parana.one_fifth_end === "08:29"
+    )
 );
 
 const augustMaalot = eventsByDate(2026, 8, maalot);
@@ -60,9 +67,18 @@ assert(
 assert(augustMaalot.get("2026-08-28").some((event) => event.name === "Sri Balarama Purnima"));
 assert(augustMaalot.get("2026-08-28").some((event) => event.name.includes("Bhakti Prapanna Tirtha")));
 
-const mayapur = LOCATIONS.find((location) => location.id === "mayapur");
 const mayMayapur = eventsByDate(2026, 5, mayapur);
 assert(mayMayapur.get("2026-05-27").some((event) => event.name === "Padmini Ekadashi"));
+
+const julyMayapur = eventsByDate(2026, 7, mayapur);
+assert(julyMayapur.get("2026-07-29").some((event) => event.name === "Beginning of Chaturmasya"));
+
+const octoberMayapur = eventsByDate(2026, 10, mayapur);
+assert(octoberMayapur.get("2026-10-27").some((event) => event.name === "Beginning of Karttik"));
+
+const novemberMayapur = eventsByDate(2026, 11, mayapur);
+assert(novemberMayapur.get("2026-11-24").some((event) => event.name === "End of Karttik"));
+assert(novemberMayapur.get("2026-11-24").some((event) => event.name === "End of Chaturmasya"));
 
 const vrindavan = LOCATIONS.find((location) => location.id === "vrindavan");
 const mayVrindavan = eventsByDate(2026, 5, vrindavan);

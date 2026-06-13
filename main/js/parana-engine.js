@@ -80,6 +80,7 @@ export function computeParana(fastDate, ekadashiNumber, location, rules, getTith
       date: paranaDate,
       start: null,
       preferred_end: null,
+      one_fifth_end: null,
       absolute_end: paranaTithiEnd,
       calculation_status: "not_implemented"
     };
@@ -94,6 +95,10 @@ export function computeParana(fastDate, ekadashiNumber, location, rules, getTith
   const pratahEnd = new Date(
     astronomy.sunrise.getTime() +
       rules.parana.pratah_fraction_of_daylight * (astronomy.sunset.getTime() - astronomy.sunrise.getTime())
+  );
+  const oneFifthEnd = new Date(
+    astronomy.sunrise.getTime() +
+      (rules.parana.one_fifth_fraction_of_daylight || 1 / 5) * (astronomy.sunset.getTime() - astronomy.sunrise.getTime())
   );
 
   const isNormal = fastDayType === "normal_ekadashi";
@@ -110,6 +115,7 @@ export function computeParana(fastDate, ekadashiNumber, location, rules, getTith
     date: paranaDate,
     start,
     preferred_end: hasPreferredWindow ? preferredEnd : null,
+    one_fifth_end: oneFifthEnd,
     absolute_end: absoluteEnd,
     preferred_window_status: dvadashiEndedBeforeSunrise
       ? "dvadashi_ended_before_sunrise"
@@ -121,7 +127,8 @@ export function computeParana(fastDate, ekadashiNumber, location, rules, getTith
       dvadashi_start: dvadashiStart,
       dvadashi_end: dvadashiEnd,
       hari_vasara_end: hariVasaraEnd,
-      pratah_end: pratahEnd
+      pratah_end: pratahEnd,
+      one_fifth_end: oneFifthEnd
     }
   };
 }

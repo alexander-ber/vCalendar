@@ -562,6 +562,12 @@ button:not(.day):not(.theme-toggle):not(.language-toggle):not(.font-size-button)
   font-weight: 850;
 }
 
+.masa-notice div + div {
+  margin-top: 10px;
+  padding-top: 10px;
+  border-top: 1px solid color-mix(in srgb, var(--accent) 18%, transparent);
+}
+
 .masa-notice small {
   display: block;
   margin-top: 3px;

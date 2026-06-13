@@ -12,7 +12,8 @@ export const RULES = {
   },
   parana: {
     hari_vasara_fraction: 0.25,
-    pratah_fraction_of_daylight: 1 / 3
+    pratah_fraction_of_daylight: 1 / 3,
+    one_fifth_fraction_of_daylight: 1 / 5
   },
   masa: {
     boundary: "amavasya_to_amavasya",

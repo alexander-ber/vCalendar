@@ -1,0 +1,38 @@
+{
+  "id": "KARTTIK_BEGIN",
+  "type": "festival",
+  "category": "festival",
+  "scope": "tithi_rule",
+  "subject": "Karttik / Damodara month",
+  "rules": {
+    "gaudiya_masa": "Damodara",
+    "paksha": "Krishna",
+    "tithi": "Pratipat",
+    "timing_rule": "sunrise_based",
+    "allow_in_adhika": false
+  },
+  "priority": "medium",
+  "source_status": "tithi_rule",
+  "sources": [
+    {
+      "type": "description",
+      "url": "http://harekrishnazp.info/materialy/vajshnavskij-kalendar/1285-damodara.html",
+      "attribution_required": true
+    }
+  ],
+  "translations": [
+    {
+      "lang": "en",
+      "name": "Beginning of Karttik",
+      "short_description": "Karttik, also called Damodara month, begins. This month is especially auspicious for devotional service.",
+      "full_description": "Karttik, or Damodara month, is one of the most cherished periods in the Vaishnava calendar. Devotional service performed during this month is traditionally described as especially powerful and auspicious."
+    },
+    {
+      "lang": "ru",
+      "name": "Начало Карттика",
+      "short_description": "Начинается месяц Карттик, также называемый месяцем Дамодара, особенно благоприятный для преданного служения.",
+      "full_description": "Дамодара - одно из имён Верховного Господа Кришны. Священные писания называют месяц Дамодара, или Карттик, очень благоприятным для духовной деятельности. Говорится, что благо, получаемое от преданного служения в этот месяц, во много раз больше блага, получаемого от служения в остальное время года."
+    }
+  ],
+  "content_license_note": "Source footer says: Распространение материалов сайта горячо приветствуется! При использовании информации на других сайтах, пожалуйста, ставьте ссылку на цитируемый материал."
+}

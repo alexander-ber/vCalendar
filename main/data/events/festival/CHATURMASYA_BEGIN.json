@@ -1,0 +1,38 @@
+{
+  "id": "CHATURMASYA_BEGIN",
+  "type": "festival",
+  "category": "festival",
+  "scope": "tithi_rule",
+  "subject": "Chaturmasya",
+  "rules": {
+    "gaudiya_masa": "Vamana",
+    "paksha": "Gaura",
+    "tithi": "Purnima",
+    "timing_rule": "sunrise_based",
+    "allow_in_adhika": false
+  },
+  "priority": "medium",
+  "source_status": "tithi_rule",
+  "sources": [
+    {
+      "type": "description",
+      "url": "http://harekrishnazp.info/vajshnavskij-kalendar/1928-chaturmasya.html",
+      "attribution_required": true
+    }
+  ],
+  "translations": [
+    {
+      "lang": "en",
+      "name": "Beginning of Chaturmasya",
+      "short_description": "Chaturmasya begins on Guru Purnima and opens a four-month period of spiritual vows and observances.",
+      "full_description": "Chaturmasya is a sacred four-month period during which Vaishnavas take spiritual vows and strengthen devotional practice. In this calendar it begins on Guru Purnima and continues until the last day of Karttik."
+    },
+    {
+      "lang": "ru",
+      "name": "Начало Чатурмасьи",
+      "short_description": "Чатурмасья начинается на Гуру Пурниму и открывает четырёхмесячный период духовных обетов и практики.",
+      "full_description": "Чатурмасья - четыре священных месяца, во время которых даются и выполняются разного рода духовные обеты. Этот период начинается на Гуру Пурниму и продолжается до последнего дня месяца Картика. В это время вайшнавы могут принимать дополнительные ограничения, усиливать садхану, служение, чтение и повторение Святого Имени."
+    }
+  ],
+  "content_license_note": "Source footer says: Распространение материалов сайта горячо приветствуется! При использовании информации на других сайтах, пожалуйста, ставьте ссылку на цитируемый материал."
+}

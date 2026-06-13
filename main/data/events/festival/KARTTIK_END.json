@@ -1,0 +1,38 @@
+{
+  "id": "KARTTIK_END",
+  "type": "festival",
+  "category": "festival",
+  "scope": "tithi_rule",
+  "subject": "Karttik / Damodara month",
+  "rules": {
+    "gaudiya_masa": "Damodara",
+    "paksha": "Gaura",
+    "tithi": "Purnima",
+    "timing_rule": "sunrise_based",
+    "allow_in_adhika": false
+  },
+  "priority": "medium",
+  "source_status": "tithi_rule",
+  "sources": [
+    {
+      "type": "description",
+      "url": "http://harekrishnazp.info/materialy/vajshnavskij-kalendar/1285-damodara.html",
+      "attribution_required": true
+    }
+  ],
+  "translations": [
+    {
+      "lang": "en",
+      "name": "End of Karttik",
+      "short_description": "Karttik, the Damodara month, concludes on Damodara Purnima.",
+      "full_description": "Karttik concludes on Damodara Purnima, the full moon of Damodara month. This day also marks the completion of the final month of Chaturmasya in this calendar."
+    },
+    {
+      "lang": "ru",
+      "name": "Окончание Карттика",
+      "short_description": "Месяц Карттик, или Дамодара, завершается на Дамодара Пурниму.",
+      "full_description": "Карттик завершается на Дамодара Пурниму, полнолуние месяца Дамодара. В этом календаре этот день также отмечает завершение последнего месяца Чатурмасьи."
+    }
+  ],
+  "content_license_note": "Source footer says: Распространение материалов сайта горячо приветствуется! При использовании информации на других сайтах, пожалуйста, ставьте ссылку на цитируемый материал."
+}

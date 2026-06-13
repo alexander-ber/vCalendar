@@ -679,6 +679,35 @@
     }
   },
   {
+    "id": "chaturmasya_begin",
+    "name": "Beginning of Chaturmasya",
+    "type": "festival",
+    "category": "festival",
+    "scope": "tithi_rule",
+    "subject": "Chaturmasya",
+    "gaudiya_masa": "Vamana",
+    "paksha": "Gaura",
+    "tithi": "Purnima",
+    "timing_rule": "sunrise_based",
+    "allow_in_adhika": false,
+    "priority": "medium",
+    "source_status": "tithi_rule",
+    "description": "Chaturmasya begins on Guru Purnima and opens a four-month period of spiritual vows and observances.",
+    "source_url": "http://harekrishnazp.info/vajshnavskij-kalendar/1928-chaturmasya.html",
+    "i18n": {
+      "en": {
+        "name": "Beginning of Chaturmasya",
+        "description": "Chaturmasya begins on Guru Purnima and opens a four-month period of spiritual vows and observances.",
+        "full_description": "Chaturmasya is a sacred four-month period during which Vaishnavas take spiritual vows and strengthen devotional practice. In this calendar it begins on Guru Purnima and continues until the last day of Karttik."
+      },
+      "ru": {
+        "name": "Начало Чатурмасьи",
+        "description": "Чатурмасья начинается на Гуру Пурниму и открывает четырёхмесячный период духовных обетов и практики.",
+        "full_description": "Чатурмасья - четыре священных месяца, во время которых даются и выполняются разного рода духовные обеты. Этот период начинается на Гуру Пурниму и продолжается до последнего дня месяца Картика. В это время вайшнавы могут принимать дополнительные ограничения, усиливать садхану, служение, чтение и повторение Святого Имени."
+      }
+    }
+  },
+  {
     "id": "hkzp_541_джахну_саптами",
     "name": "Dzhakhnu Saptami",
     "type": "festival",
@@ -875,6 +904,64 @@
     }
   },
   {
+    "id": "karttik_begin",
+    "name": "Beginning of Karttik",
+    "type": "festival",
+    "category": "festival",
+    "scope": "tithi_rule",
+    "subject": "Karttik / Damodara month",
+    "gaudiya_masa": "Damodara",
+    "paksha": "Krishna",
+    "tithi": "Pratipat",
+    "timing_rule": "sunrise_based",
+    "allow_in_adhika": false,
+    "priority": "medium",
+    "source_status": "tithi_rule",
+    "description": "Karttik, also called Damodara month, begins. This month is especially auspicious for devotional service.",
+    "source_url": "http://harekrishnazp.info/materialy/vajshnavskij-kalendar/1285-damodara.html",
+    "i18n": {
+      "en": {
+        "name": "Beginning of Karttik",
+        "description": "Karttik, also called Damodara month, begins. This month is especially auspicious for devotional service.",
+        "full_description": "Karttik, or Damodara month, is one of the most cherished periods in the Vaishnava calendar. Devotional service performed during this month is traditionally described as especially powerful and auspicious."
+      },
+      "ru": {
+        "name": "Начало Карттика",
+        "description": "Начинается месяц Карттик, также называемый месяцем Дамодара, особенно благоприятный для преданного служения.",
+        "full_description": "Дамодара - одно из имён Верховного Господа Кришны. Священные писания называют месяц Дамодара, или Карттик, очень благоприятным для духовной деятельности. Говорится, что благо, получаемое от преданного служения в этот месяц, во много раз больше блага, получаемого от служения в остальное время года."
+      }
+    }
+  },
+  {
+    "id": "karttik_end",
+    "name": "End of Karttik",
+    "type": "festival",
+    "category": "festival",
+    "scope": "tithi_rule",
+    "subject": "Karttik / Damodara month",
+    "gaudiya_masa": "Damodara",
+    "paksha": "Gaura",
+    "tithi": "Purnima",
+    "timing_rule": "sunrise_based",
+    "allow_in_adhika": false,
+    "priority": "medium",
+    "source_status": "tithi_rule",
+    "description": "Karttik, the Damodara month, concludes on Damodara Purnima.",
+    "source_url": "http://harekrishnazp.info/materialy/vajshnavskij-kalendar/1285-damodara.html",
+    "i18n": {
+      "en": {
+        "name": "End of Karttik",
+        "description": "Karttik, the Damodara month, concludes on Damodara Purnima.",
+        "full_description": "Karttik concludes on Damodara Purnima, the full moon of Damodara month. This day also marks the completion of the final month of Chaturmasya in this calendar."
+      },
+      "ru": {
+        "name": "Окончание Карттика",
+        "description": "Месяц Карттик, или Дамодара, завершается на Дамодара Пурниму.",
+        "full_description": "Карттик завершается на Дамодара Пурниму, полнолуние месяца Дамодара. В этом календаре этот день также отмечает завершение последнего месяца Чатурмасьи."
+      }
+    }
+  },
+  {
     "id": "hkzp_541_начало_радха_говинда_джхулан_ятры",
     "name": "Nachalo Radkha Govinda Dzhkhulan Yatry",
     "type": "festival",
@@ -960,11 +1047,11 @@
   },
   {
     "id": "hkzp_541_последний_день_чатурмасьи",
-    "name": "Posledniy Den Chaturmasi",
+    "name": "End of Chaturmasya",
     "type": "festival",
     "category": "festival",
     "scope": "matched_harekrishnazp_vaishnavacalendar",
-    "subject": "Последний день Чатурмасьи",
+    "subject": "Окончание Чатурмасьи",
     "gaudiya_masa": "Damodara",
     "paksha": "Gaura",
     "tithi": "Purnima",
@@ -972,15 +1059,16 @@
     "allow_in_adhika": false,
     "priority": "medium",
     "source_status": "matched_by_name_type_tithi",
-    "description": "Imported calendar reference for \"Последний день Чатурмасьи\". English summary still needs editorial translation; the Russian source summary is linked in source_url.",
+    "description": "Chaturmasya concludes on the last day of Karttik, after the four-month period of spiritual vows.",
     "source_url": "http://harekrishnazp.info/vajshnavskij-kalendar/1928-chaturmasya.html",
     "i18n": {
       "en": {
-        "name": "Posledniy Den Chaturmasi",
-        "description": "Imported calendar reference for \"Последний день Чатурмасьи\". English summary still needs editorial translation; the Russian source summary is linked in source_url."
+        "name": "End of Chaturmasya",
+        "description": "Chaturmasya concludes on the last day of Karttik, after the four-month period of spiritual vows.",
+        "full_description": "Chaturmasya concludes on the last day of Karttik. This closes the four-month period traditionally dedicated to additional vows, restraint, pilgrimage, hearing, chanting, and devotional service."
       },
       "ru": {
-        "name": "Последний день Чатурмасьи",
+        "name": "Окончание Чатурмасьи",
         "description": "Чатурмасья - четыре священных месяца, во время которых даются и выполняются разного рода духовные обеты. Это период в 108 дней, который начинается на Гуру Пурниму и заканчивается в последний день месяца Картика.",
         "full_description": "Чатурмасья - четыре священных месяца, во время которых даются и выполняются разного рода духовные обеты. Это период в 108 дней, который начинается на Гуру Пурниму и заканчивается в последний день месяца Картика.\n\nВ это время правитель Вселенной Вишну отдыхает и погружается в глубочайший сон, а его обязанности временно исполняет Господь Шива. Шива, конечно же, сразу стремится очистить Землю от негатива, скверны и «грязи». Известно, что Шиву считают очень строгим и даже жестоким, но в то же время самым справедливым. Тому, кто идет праведным путем, делает это искренне и от всего сердца, Шива дарует свою защиту.\n\nВ этот период в Индии не проводятся свадьбы, торжества, важные обряды. Не рекомендуется также делать большие приобретения, покупать недвижимость или транспортные средства, открывать новый бизнес.\n\nВ то же время это очень благоприятный период для духовной деятельности. Многие люди на протяжении этих четырех месяцев практикуют разного рода аскезы: мауну (обет молчания), строгий пост, бескорыстное служение, воздержание от сексуальных контактов. Предпринимаются массовые паломничества по самым труднодоступным местам.\n\nЭто очень гибкий пост, который могут соблюдать вайшнавы. Его можно проводить самым простым образом, а можно увеличивать аскезы. Философия этого поста основана на том, что Господь Вишну отдыхает в эти четыре месяца. Каждый месяц он переворачивается с бока на бок, поэтому для каждого месяца существуют свои правила и ограничения.\n\nСчитается, что это пост, предназначен для людей, способных следовать обетам продолжительное время. А последний месяц Чатурмасьи, Дамодара, особенно важен для проявления нашей преданности Верховной Личности Бога."
       }
