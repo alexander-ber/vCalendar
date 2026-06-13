@@ -304,6 +304,14 @@ h2 {
   align-items: end;
 }
 
+.control-actions {
+  display: inline-flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  align-items: end;
+  justify-content: flex-end;
+}
+
 .period-controls {
   display: grid;
   grid-template-columns: 1fr 1fr auto;
