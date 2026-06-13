@@ -1,7 +1,7 @@
-import { generateCalendarRange, viewModelForDay } from "./calendar-engine.js?v=20260613-2";
-import { EVENTS } from "./events-data.js?v=20260613-1";
+import { generateCalendarRange, viewModelForDay } from "./calendar-engine.js?v=20260613-4";
+import { EVENTS } from "./events-data.js?v=20260613-2";
 import { LOCATIONS } from "./locations-data.js?v=20260613-1";
-import { RULES } from "./rules-data.js?v=20260613-2";
+import { RULES } from "./rules-data.js?v=20260613-3";
 
 const locationSelect = document.querySelector("#locationSelect");
 const periodFromInput = document.querySelector("#periodFromInput");
@@ -73,7 +73,8 @@ const I18N = {
     fastDate: "Fast date",
     paranaTime: "Parana time",
     start: "Start",
-    preferredEnd: "Preferred end",
+    preferredEnd: "End by 1/3 day",
+    oneFifthEnd: "End by 1/5 day",
     latestEnd: "Latest end",
     events: "Events",
     eventDetails: "Event details",
@@ -90,6 +91,8 @@ const I18N = {
     sun: "Sun",
     today: "Today",
     purushottamaNotice: "Purushottama Maas is active",
+    chaturmasyaNotice: "Chaturmasya is active",
+    karttikNotice: "Karttik / Damodara month is active",
     visibleInMonth: "Visible in this period from",
     to: "to",
     forLocation: "for the selected location",
@@ -155,7 +158,8 @@ const I18N = {
     fastDate: "День поста",
     paranaTime: "Время парана",
     start: "Начало",
-    preferredEnd: "Желательное окончание",
+    preferredEnd: "Окончание по 1/3 дня",
+    oneFifthEnd: "Окончание по 1/5 дня",
     latestEnd: "Последний срок",
     events: "События",
     eventDetails: "Подробности событий",
@@ -172,6 +176,8 @@ const I18N = {
     sun: "Солнце",
     today: "Сегодня",
     purushottamaNotice: "Идёт Пурушоттама маса",
+    chaturmasyaNotice: "Идёт Чатурмасья",
+    karttikNotice: "Идёт Карттик / Дамодара маса",
     visibleInMonth: "Видимо в этом периоде с",
     to: "по",
     forLocation: "для выбранного места",
@@ -287,7 +293,33 @@ const EVENT_JUMP_TARGETS = [
     id: "karttik",
     labels: { en: "Karttik", ru: "Карттик" },
     patterns: [/карт+ик/i, /kart+ik/i, /дамодара/i, /damodara/i],
-    matchDay: (day) => day.lunar.masa === "Damodara" || day.lunar.masa_display.includes("Damodara")
+    matchDay: (day) => day.masa.normal_masa_name === "Damodara" || day.lunar.masa_display.includes("Damodara")
+  },
+  {
+    id: "chaturmasya",
+    labels: { en: "Chaturmasya", ru: "Чатурмасья" },
+    patterns: [/чатурмась/i, /chaturmas/i],
+    matchDay: isChaturmasyaDay
+  },
+  {
+    id: "chaturmasyaBegin",
+    labels: { en: "Beginning of Chaturmasya", ru: "Начало Чатурмасьи" },
+    patterns: [/beginning of chaturmasya/i, /начало\s+чатурмась/i, /chaturmasya_begin/i]
+  },
+  {
+    id: "chaturmasyaEnd",
+    labels: { en: "End of Chaturmasya", ru: "Окончание Чатурмасьи" },
+    patterns: [/end of chaturmasya/i, /окончание\s+чатурмась/i, /chaturmasya_end/i]
+  },
+  {
+    id: "karttikBegin",
+    labels: { en: "Beginning of Karttik", ru: "Начало Карттика" },
+    patterns: [/beginning of karttik/i, /начало\s+карт+ик/i, /karttik_begin/i]
+  },
+  {
+    id: "karttikEnd",
+    labels: { en: "End of Karttik", ru: "Окончание Карттика" },
+    patterns: [/end of karttik/i, /окончание\s+карт+ик/i, /karttik_end/i]
   },
   {
     id: "navadvipParikrama",
@@ -358,7 +390,7 @@ function eventLabel(event) {
     const hasWindow = event.parana.start !== "not implemented" && event.parana.preferred_end !== "not implemented";
     if (!hasWindow) return `${localizeEventName(event)}: ${tr("calculationPending")}`;
     if (event.parana.preferred_end === "not available") {
-      return `${tr("parana")}: ${tr("start").toLowerCase()} ${event.parana.start}; ${tr("latestEnd").toLowerCase()} ${event.parana.absolute_end}`;
+      return `${tr("parana")}: ${tr("start").toLowerCase()} ${event.parana.start}; ${tr("oneFifthEnd").toLowerCase()} ${localizeAvailability(event.parana.one_fifth_end)}`;
     }
     return `${tr("parana")}: ${event.parana.start}-${event.parana.preferred_end}`;
   }
@@ -411,7 +443,7 @@ function renderDetails(day, options = {}) {
                   <dl>
                     <div><dt>${tr("start")}</dt><dd>${event.parana.start}</dd></div>
                     <div><dt>${tr("preferredEnd")}</dt><dd>${localizeAvailability(event.parana.preferred_end)}</dd></div>
-                    <div><dt>${tr("latestEnd")}</dt><dd>${event.parana.absolute_end}</dd></div>
+                    <div><dt>${tr("oneFifthEnd")}</dt><dd>${localizeAvailability(event.parana.one_fifth_end)}</dd></div>
                   </dl>
                   <small>${localizeEventDescription(event)}</small>
                 `
@@ -595,20 +627,43 @@ function tithiEndLabel(day) {
   return endIso === day.date ? time : `${gregorianShort(endIso)} ${time}`;
 }
 
+function isKarttikDay(day) {
+  return day.masa.normal_masa_name === "Damodara";
+}
+
+function isChaturmasyaDay(day) {
+  if (["Sridhara", "Hrishikesha", "Padmanabha", "Damodara"].includes(day.masa.normal_masa_name)) return true;
+  return day.masa.normal_masa_name === "Vamana" && day.lunar.paksha === "Gaura" && day.lunar.tithi_at_sunrise.number === 15;
+}
+
+function periodNotice(labelKey, days) {
+  if (!days.length) return "";
+  return `
+    <div>
+      ${tr(labelKey)}
+      <small>${tr("visibleInMonth")} ${gregorianShort(days[0].date)} ${tr("to")} ${gregorianShort(days.at(-1).date)} ${tr("forLocation")}.</small>
+    </div>
+  `;
+}
+
 function renderMasaNotice(days) {
+  const notices = [];
   const adhikaDays = days.filter((day) => day.lunar.masa_type === "adhika");
-  if (!adhikaDays.length) {
+  if (adhikaDays.length) notices.push(periodNotice("purushottamaNotice", adhikaDays));
+
+  const chaturmasyaDays = days.filter(isChaturmasyaDay);
+  if (chaturmasyaDays.length) notices.push(periodNotice("chaturmasyaNotice", chaturmasyaDays));
+
+  const karttikDays = days.filter(isKarttikDay);
+  if (karttikDays.length) notices.push(periodNotice("karttikNotice", karttikDays));
+
+  if (!notices.length) {
     masaNotice.hidden = true;
     masaNotice.innerHTML = "";
     return;
   }
-  const first = adhikaDays[0];
-  const last = adhikaDays[adhikaDays.length - 1];
   masaNotice.hidden = false;
-  masaNotice.innerHTML = `
-    ${tr("purushottamaNotice")}: ${localizeMasa(first.masa.display_name)}
-    <small>${tr("visibleInMonth")} ${gregorianShort(first.date)} ${tr("to")} ${gregorianShort(last.date)} ${tr("forLocation")}.</small>
-  `;
+  masaNotice.innerHTML = notices.join("");
 }
 
 function gregorianShort(isoDate) {

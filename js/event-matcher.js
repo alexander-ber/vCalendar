@@ -53,6 +53,10 @@ function nextTithiNumber(number) {
   return number === 30 ? 1 : number + 1;
 }
 
+function tithiDistance(fromNumber, toNumber) {
+  return (toNumber - fromNumber + 30) % 30;
+}
+
 function masaMatches(day, event) {
   if (event.gaudiya_masa) return day.masa.normal_masa_name === event.gaudiya_masa;
   return day.lunar.masa === event.masa;
@@ -195,7 +199,7 @@ function matchGenericGcalTithiEvent(day, event, nextDay, previousDay) {
 
   if (today === target && tomorrow === target) return true;
   if (previous === beforeTarget && today === afterTarget) return true;
-  if (previous === beforeTarget && today === target && tomorrow === afterTarget) return true;
+  if (previous === beforeTarget && today === target && tithiDistance(target, tomorrow) > 0) return true;
   return false;
 }
 

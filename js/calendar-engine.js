@@ -11,8 +11,8 @@ import {
   zonedDateToUtc
 } from "./date-utils.js?v=20260528-8";
 import { masaForDate } from "./masa-engine.js?v=20260528-18";
-import { buildEkadashiEvents } from "./ekadashi-engine.js?v=20260613-2";
-import { matchEventsForDay } from "./event-matcher.js?v=20260613-1";
+import { buildEkadashiEvents } from "./ekadashi-engine.js?v=20260613-3";
+import { matchEventsForDay } from "./event-matcher.js?v=20260613-2";
 
 function buildDay(isoDate, location, rules) {
   const astronomy = dayAstronomy(isoDate, location, rules);
