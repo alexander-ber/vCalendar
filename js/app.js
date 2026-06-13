@@ -1,7 +1,7 @@
-import { generateCalendarRange, viewModelForDay } from "./calendar-engine.js?v=20260612-2";
-import { EVENTS } from "./events-data.js?v=20260530-7";
-import { LOCATIONS } from "./locations-data.js?v=20260530-1";
-import { RULES } from "./rules-data.js?v=20260528-17";
+import { generateCalendarRange, viewModelForDay } from "./calendar-engine.js?v=20260613-2";
+import { EVENTS } from "./events-data.js?v=20260613-1";
+import { LOCATIONS } from "./locations-data.js?v=20260613-1";
+import { RULES } from "./rules-data.js?v=20260613-2";
 
 const locationSelect = document.querySelector("#locationSelect");
 const periodFromInput = document.querySelector("#periodFromInput");
@@ -1004,22 +1004,47 @@ function localizeEventFullDescription(event) {
 }
 
 function localizeClassification(value) {
-  if (currentLanguage !== "ru") return value;
   const map = {
-    standard: "обычный",
-    viddha: "виддха",
-    double_sunrise: "два восхода",
-    no_sunrise: "без восхода",
-    vyanjuli_mahadvadashi: "вьянджули махадвадаши",
-    unmilani: "унмилани махадвадаши",
-    trisprsa: "триспрша махадвадаши",
-    unmilani_trisprsa: "унмилани триспрша махадвадаши"
+    en: {
+      viddha: "viddha",
+      double_sunrise: "two sunrises",
+      no_sunrise: "no sunrise",
+      dashami_viddha_at_arunodaya: "Dashami at arunodaya",
+      dashami_viddha_at_sunrise: "Dashami at sunrise",
+      vyanjuli_mahadvadashi: "Vyanjuli Mahadvadashi",
+      paksavardhini_mahadvadashi: "Paksavardhini Mahadvadashi",
+      dvadashi_suitable_for_ekadashi_fasting: "Dvadashi fasting day",
+      unmilani: "Unmilani Mahadvadashi",
+      trisprsa: "Trisprsa Mahadvadashi",
+      unmilani_trisprsa: "Unmilani Trisprsa Mahadvadashi",
+      trisprsa_after_dashami_viddha: "shifted after Dashami at arunodaya",
+      suddha_after_dashami_viddha: "shifted after Dashami at arunodaya",
+      trisprsa_after_dashami_sunrise: "shifted after Dashami at sunrise",
+      suddha_after_dashami_sunrise: "shifted after Dashami at sunrise"
+    },
+    ru: {
+      viddha: "виддха",
+      double_sunrise: "два восхода",
+      no_sunrise: "без восхода",
+      dashami_viddha_at_arunodaya: "Дашами на арунодае",
+      dashami_viddha_at_sunrise: "Дашами на восходе",
+      vyanjuli_mahadvadashi: "Вьянджули махадвадаши",
+      paksavardhini_mahadvadashi: "Пакшавардхини махадвадаши",
+      dvadashi_suitable_for_ekadashi_fasting: "пост на Двадаши",
+      unmilani: "Унмилани махадвадаши",
+      trisprsa: "Триспрша махадвадаши",
+      unmilani_trisprsa: "Унмилани триспрша махадвадаши",
+      trisprsa_after_dashami_viddha: "перенос: Дашами на арунодае",
+      suddha_after_dashami_viddha: "перенос: Дашами на арунодае",
+      trisprsa_after_dashami_sunrise: "перенос: Дашами на восходе",
+      suddha_after_dashami_sunrise: "перенос: Дашами на восходе"
+    }
   };
-  return map[value] || value;
+  return (map[currentLanguage] || map.en)[value] || value;
 }
 
 function ekadashiReasonLabel(classification) {
-  if (classification === "standard") return "";
+  if (!classification || classification === "standard" || classification === "suddha_ekadashi" || classification === "normal_ekadashi") return "";
   return localizeClassification(classification);
 }
 
