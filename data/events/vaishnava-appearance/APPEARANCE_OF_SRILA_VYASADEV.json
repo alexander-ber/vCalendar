@@ -1,0 +1,30 @@
+{
+  "id": "APPEARANCE_OF_SRILA_VYASADEV",
+  "runtime_id": "scsmath_541_vyasadev_appearance",
+  "type": "vaishnava_appearance",
+  "category": "vaishnava_appearance",
+  "subject": "Srila Vyasadev",
+  "rules": {
+    "gaudiya_masa": "Vamana",
+    "paksha": "Gaura",
+    "tithi": "Purnima",
+    "timing_rule": "sunrise_based",
+    "allow_in_adhika": false
+  },
+  "source_status": "tithi_rule_from_scsmath_541",
+  "sources": [],
+  "translations": [
+    {
+      "lang": "en",
+      "name": "Appearance of Srila Vyasadev",
+      "short_description": "Commemoration of the appearance day of Srila Vyasadev. This event is matched by the Vaishnava tithi rule stored in the calendar database.",
+      "full_description": ""
+    },
+    {
+      "lang": "ru",
+      "name": "Явление Шрилы Вьясадева",
+      "short_description": "Памятный день явления: Явление Шрилы Вьясадева. Событие привязано к вайшнавскому титхи, указанному в базе календаря.",
+      "full_description": ""
+    }
+  ]
+}

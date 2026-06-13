@@ -1,0 +1,30 @@
+{
+  "id": "DISAPPEARANCE_FESTIVAL_OF_SRILA_BHAKTI_RAKSAK_SRIDHAR_DEV_GOSWAMI_MAHARAJ",
+  "runtime_id": "scsmath_541_bhakti_raksak_sridhar_disappearance",
+  "type": "vaishnava_disappearance",
+  "category": "vaishnava_disappearance",
+  "subject": "Srila Bhakti Raksak Sridhar Dev-Goswami Maharaj",
+  "rules": {
+    "gaudiya_masa": "Sridhara",
+    "paksha": "Krishna",
+    "tithi": "Amavasya",
+    "timing_rule": "sunrise_based",
+    "allow_in_adhika": false
+  },
+  "source_status": "tithi_rule_from_scsmath_541",
+  "sources": [],
+  "translations": [
+    {
+      "lang": "en",
+      "name": "Disappearance festival of Srila Bhakti Raksak Sridhar Dev-Goswami Maharaj",
+      "short_description": "Commemoration of the disappearance day of Srila Bhakti Raksak Sridhar Dev-Goswami Maharaj. This event is matched by the Vaishnava tithi rule stored in the calendar database.",
+      "full_description": ""
+    },
+    {
+      "lang": "ru",
+      "name": "Фестиваль ухода Шрилы Бхакти Ракшака Шридхара Дев-Госвами Махараджа",
+      "short_description": "Памятный день ухода: Фестиваль ухода Шрилы Бхакти Ракшака Шридхара Дев-Госвами Махараджа. Событие привязано к вайшнавскому титхи, указанному в базе календаря.",
+      "full_description": ""
+    }
+  ]
+}

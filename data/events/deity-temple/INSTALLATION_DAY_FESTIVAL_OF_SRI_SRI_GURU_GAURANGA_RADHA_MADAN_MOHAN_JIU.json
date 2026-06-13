@@ -1,0 +1,30 @@
+{
+  "id": "INSTALLATION_DAY_FESTIVAL_OF_SRI_SRI_GURU_GAURANGA_RADHA_MADAN_MOHAN_JIU",
+  "runtime_id": "scsmath_541_madan_mohan_installation",
+  "type": "deity_installation",
+  "category": "deity_temple",
+  "subject": "Sri Sri Guru Gauranga Radha Madan Mohan Jiu",
+  "rules": {
+    "gaudiya_masa": "Trivikrama",
+    "paksha": "Gaura",
+    "tithi": "Pratipat",
+    "timing_rule": "sunrise_based",
+    "allow_in_adhika": false
+  },
+  "source_status": "tithi_rule_from_scsmath_541",
+  "sources": [],
+  "translations": [
+    {
+      "lang": "en",
+      "name": "Installation day festival of Sri Sri Guru Gauranga Radha Madan Mohan Jiu",
+      "short_description": "Temple or Deity festival connected with Sri Sri Guru Gauranga Radha Madan Mohan Jiu. This event is matched by the tithi rule stored in the calendar database.",
+      "full_description": ""
+    },
+    {
+      "lang": "ru",
+      "name": "Праздник установки Шри Шри Гуру Гауранга Радха Мадан Мохана Джиу",
+      "short_description": "Храмовый праздник или день установки Божеств: Праздник установки Шри Шри Гуру Гауранга Радха Мадан Мохана Джиу. Событие привязано к титхи, указанному в базе календаря.",
+      "full_description": ""
+    }
+  ]
+}
