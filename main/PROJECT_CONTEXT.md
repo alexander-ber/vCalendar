@@ -216,10 +216,10 @@ These are the user's strict rules, saved for future calculations.
 ### 5.1 Arunodaya
 
 ```text
-arunodaya = local_sunrise - 96 minutes
+arunodaya = local_sunrise - (previous_night_duration / 15)
 ```
 
-This is mandatory.
+The old fixed `96 minutes before sunrise` model is retained only as a comparison mode. Current runtime rules use `previous_night_fraction`.
 
 ### 5.2 Inputs For Ekadashi Classification
 
@@ -228,7 +228,7 @@ For candidate day `D`:
 ```json
 {
   "sunrise_D": "timestamp",
-  "arunodaya_D": "sunrise_D - 96 minutes",
+  "arunodaya_D": "sunrise_D - previous_night_duration / 15",
   "tithi_at_arunodaya_D": "Dashami/Ekadashi/etc",
   "tithi_at_sunrise_D": "Dashami/Ekadashi/etc",
   "tithi_at_sunrise_D_plus_1": "Ekadashi/Dvadashi/etc",
@@ -1246,7 +1246,9 @@ Must contain:
 {
   "rules_version": "v1",
   "ekadashi": {
+    "arunodaya_mode": "previous_night_fraction",
     "arunodaya_offset_minutes": 96,
+    "arunodaya_night_fraction": 0.06666666666666667,
     "classification_priority": [
       "viddha",
       "double_sunrise",
@@ -1256,7 +1258,8 @@ Must contain:
   },
   "parana": {
     "hari_vasara_fraction": 0.25,
-    "pratah_fraction_of_daylight": 0.3333333333333333
+    "pratah_fraction_of_daylight": 0.3333333333333333,
+    "one_fifth_fraction_of_daylight": 0.2
   },
   "masa": {
     "boundary": "amavasya_to_amavasya",

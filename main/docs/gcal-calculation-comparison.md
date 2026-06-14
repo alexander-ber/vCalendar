@@ -198,11 +198,15 @@ The final GCAL phase applies DST/time corrections to:
 - A first-pass GCAL Dvadashi/Mahadvadashi rule layer, including Dvadashi suitable for fasting, Vyanjuli, Paksavardhini and nakshatra Mahadvadashi.
 - Separate `candidate_no_fast_reason`, `fast_day_type` and `parana_type` for shifted Ekadashi cases.
 - Parana window from sunrise, Dvadashi, Hari-vasara and pratah-kala, including Viddha, Vyanjuli, Unmilani, Trisprsa and a first-pass nakshatra Mahadvadashi branch.
+- Parana display exposes both the primary `1/3` daylight pratah-kala end and an additional `1/5` daylight marker used by some calendars.
 - Day-level tithi status: normal, ksaya and second day of vriddhi.
 - Lunar-rule event matching by masa/paksha/tithi.
 - Generic tithi event matching using the GCAL vriddhi/ksaya decision table, so repeated tithis do not duplicate events on both days.
 - Dedicated first-pass rules for Govardhana Puja, Sri Krishna Janmashtami, Gaura Purnima and Rama Navami.
 - Event offsets through `observance_offset_days`.
+- Tithi-level period markers for Chaturmasya and Karttik/Damodara, with no Gregorian-date anchors.
+- Chaturmasya month 1, 2, and 3 start markers are also tithi-level events and include the month-specific restriction text in event details.
+- ICS export for the selected period using the current UI event filters.
 - Sankranti notes with GCAL's default noon-to-noon placement, plus Ganga Sagara Mela and Tulasi Jala Dan begin/end.
 - Localized event data and full descriptions.
 - Browser-only static app with no runtime dependency on external Panchang data.
@@ -267,6 +271,12 @@ GCAL has seven parana cases:
 - Jaya/Papanasini
 
 Our parana model now separates normal, Viddha, no-sunrise, Vyanjuli, Unmilani and Trisprsa branches. It also has a first-pass nakshatra-specific branch for Jayanti/Vijaya/Jaya/Papanasini. That branch still needs real-world validation cases.
+
+UI convention:
+
+- `End by 1/3 day` is the primary pratah-kala marker: `sunrise + 1/3 * daylight`.
+- `End by 1/5 day` is an additional comparison marker: `sunrise + 1/5 * daylight`.
+- The old generic `latest end` label is not shown in the day details panel, although `absolute_end` remains available internally for diagnostics and fallback text.
 
 ### Built-in appearance days
 

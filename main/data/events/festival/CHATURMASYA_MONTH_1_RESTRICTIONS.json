@@ -1,0 +1,31 @@
+{
+  "id": "CHATURMASYA_MONTH_1_RESTRICTIONS",
+  "type": "festival",
+  "category": "festival",
+  "scope": "tithi_rule",
+  "subject": "Chaturmasya month 1 restrictions",
+  "rules": {
+    "gaudiya_masa": "Vamana",
+    "paksha": "Gaura",
+    "tithi": "Purnima",
+    "timing_rule": "sunrise_based",
+    "allow_in_adhika": false
+  },
+  "priority": "medium",
+  "source_status": "tithi_rule",
+  "sources": [],
+  "translations": [
+    {
+      "lang": "en",
+      "name": "Chaturmasya Month 1: Restrictions",
+      "short_description": "Chaturmasya month 1 begins. Restrictions: traditionally devotees avoid leafy greens and spinach during this month.",
+      "full_description": "Chaturmasya month 1 begins on Guru Purnima.\n\nRestrictions: during the first month of Chaturmasya devotees traditionally avoid leafy greens, spinach, and similar green leafy preparations. The vow is taken as a practical support for restraint, remembrance, and stronger devotional practice."
+    },
+    {
+      "lang": "ru",
+      "name": "Чатурмасья Месяц 1: Ограничения",
+      "short_description": "Начинается первый месяц Чатурмасьи. Ограничения: традиционно в этот месяц избегают зелени, шпината и похожих листовых овощей.",
+      "full_description": "Начинается первый месяц Чатурмасьи, который открывается на Гуру Пурниму.\n\nОграничения: в первый месяц Чатурмасьи традиционно избегают зелени, шпината и похожих листовых овощей. Этот обет принимается как практическая поддержка воздержания, памятования и более сильной духовной практики."
+    }
+  ]
+}

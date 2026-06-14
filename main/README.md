@@ -59,8 +59,13 @@ gh-pages/
 - Amanta masa approximation
 - Adhika/Purushottama detection by Sankranti count
 - Ekadashi classification: viddha, double sunrise, no sunrise, standard
-- Parana window model
+- Parana window model with 1/3-day and 1/5-day daylight markers
 - Local event matching from lunar rules
+- Chaturmasya and Karttik period markers from lunar/tithi rules, not Gregorian dates
+- Chaturmasya month 1, 2, and 3 start markers, each with a restrictions event description
+- ICS export for the selected period and active event filters
+- Period navigation preserves the active range shape: week shifts by 7 days, month by calendar month, year by calendar year, and custom ranges by their own length.
+- The status line reports Gregorian calendar days for an unfiltered range, or shown days when the event-only filter is active.
 
 ## Important POC Limits
 
