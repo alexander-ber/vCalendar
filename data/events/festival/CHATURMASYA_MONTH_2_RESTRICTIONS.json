@@ -1,0 +1,31 @@
+{
+  "id": "CHATURMASYA_MONTH_2_RESTRICTIONS",
+  "type": "festival",
+  "category": "festival",
+  "scope": "tithi_rule",
+  "subject": "Chaturmasya month 2 restrictions",
+  "rules": {
+    "gaudiya_masa": "Sridhara",
+    "paksha": "Gaura",
+    "tithi": "Purnima",
+    "timing_rule": "sunrise_based",
+    "allow_in_adhika": false
+  },
+  "priority": "medium",
+  "source_status": "tithi_rule",
+  "sources": [],
+  "translations": [
+    {
+      "lang": "en",
+      "name": "Chaturmasya Month 2: Restrictions",
+      "short_description": "Chaturmasya month 2 begins. Restrictions: traditionally devotees avoid yogurt during this month.",
+      "full_description": "Chaturmasya month 2 begins on the full moon following the first Chaturmasya month.\n\nRestrictions: during the second month of Chaturmasya devotees traditionally avoid yogurt. The vow is kept as a simple daily reminder that the Chaturmasya period is meant for restraint, steadiness, and increased devotional attention."
+    },
+    {
+      "lang": "ru",
+      "name": "Чатурмасья Месяц 2: Ограничения",
+      "short_description": "Начинается второй месяц Чатурмасьи. Ограничения: традиционно в этот месяц избегают йогурта.",
+      "full_description": "Начинается второй месяц Чатурмасьи, на полнолуние после первого месяца Чатурмасьи.\n\nОграничения: во второй месяц Чатурмасьи традиционно избегают йогурта. Этот обет служит простым ежедневным напоминанием о том, что период Чатурмасьи предназначен для воздержания, устойчивости и усиленного внимания к преданному служению."
+    }
+  ]
+}

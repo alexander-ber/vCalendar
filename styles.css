@@ -1,6 +1,6 @@
 :root {
   color-scheme: light;
-  --font-scale: 1;
+  --font-scale: 0.94;
   --ink: #1d2635;
   --muted: #66758a;
   --subtle: #8b98aa;
@@ -29,11 +29,11 @@
 }
 
 :root[data-font-size="large"] {
-  --font-scale: 1.14;
+  --font-scale: 1.08;
 }
 
 :root[data-font-size="xlarge"] {
-  --font-scale: 1.28;
+  --font-scale: 1.22;
 }
 
 :root[data-theme="night"] {
@@ -166,6 +166,8 @@ h2 {
 .header-actions {
   display: flex;
   align-items: center;
+  flex-wrap: wrap;
+  justify-content: flex-end;
   gap: 12px;
 }
 
@@ -300,12 +302,13 @@ h2 {
 }
 
 .primary-controls {
-  grid-template-columns: minmax(220px, 1fr) minmax(380px, 1.2fr) auto;
+  grid-template-columns: minmax(220px, 0.8fr) minmax(420px, 1.4fr);
   align-items: end;
 }
 
 .control-actions {
   display: inline-flex;
+  grid-column: 1 / -1;
   flex-wrap: wrap;
   gap: 8px;
   align-items: end;
@@ -314,14 +317,16 @@ h2 {
 
 .period-controls {
   display: grid;
-  grid-template-columns: 1fr 1fr auto;
+  grid-template-columns: repeat(2, minmax(170px, 1fr)) minmax(250px, auto);
   gap: 10px;
   align-items: end;
 }
 
 .quick-range {
-  display: inline-flex;
+  display: grid;
+  grid-template-columns: repeat(3, minmax(86px, 1fr));
   gap: 8px;
+  width: 100%;
   min-height: 42px;
   align-items: end;
 }
@@ -459,6 +464,12 @@ button:not(.day):not(.theme-toggle):not(.language-toggle):not(.font-size-button)
 
 .primary-button {
   min-width: 118px;
+}
+
+.control-actions .primary-button,
+.control-actions .secondary-button,
+.quick-range .secondary-button {
+  min-width: 0;
 }
 
 .summary {
@@ -848,6 +859,59 @@ button:not(.day):not(.theme-toggle):not(.language-toggle):not(.font-size-button)
   line-height: 1.5;
 }
 
+.terms-help {
+  justify-self: start;
+}
+
+.terms-help summary {
+  display: inline-grid;
+  width: 42px;
+  height: 42px;
+  place-items: center;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  color: var(--accent-strong);
+  background: var(--accent-soft);
+  cursor: pointer;
+  font-weight: 950;
+  list-style: none;
+}
+
+.terms-help summary::-webkit-details-marker {
+  display: none;
+}
+
+.terms-help summary::marker {
+  content: "";
+}
+
+.terms-help dl {
+  display: grid;
+  gap: 8px;
+  max-width: 760px;
+  margin: 10px 0 0;
+  border: 1px solid var(--soft-line);
+  border-radius: 8px;
+  padding: 12px;
+  background: var(--panel-raised);
+}
+
+.terms-help div {
+  display: grid;
+  gap: 2px;
+}
+
+.terms-help dt {
+  color: var(--accent-strong);
+  font-weight: 900;
+}
+
+.terms-help dd {
+  margin: 0;
+  color: var(--muted);
+  font-weight: 750;
+}
+
 .detail-grid {
   display: grid;
   grid-template-columns: repeat(4, minmax(0, 1fr));
@@ -1098,6 +1162,29 @@ button:not(.day):not(.theme-toggle):not(.language-toggle):not(.font-size-button)
   font-size: 13px;
 }
 
+@media (max-width: 1120px) {
+  .primary-controls {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .period-controls {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .quick-range {
+    grid-column: 1 / -1;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
+  .control-actions {
+    justify-content: stretch;
+  }
+
+  .control-actions > button {
+    flex: 1 1 220px;
+  }
+}
+
 @media (max-width: 820px) {
   .app-shell {
     width: min(100% - 20px, 1440px);
@@ -1116,7 +1203,6 @@ button:not(.day):not(.theme-toggle):not(.language-toggle):not(.font-size-button)
     grid-template-columns: 1fr;
   }
 
-  .quick-range,
   .filter-panel-head {
     align-items: stretch;
     flex-direction: column;
@@ -1191,5 +1277,52 @@ button:not(.day):not(.theme-toggle):not(.language-toggle):not(.font-size-button)
   .full-description-body {
     padding: 14px;
     line-height: 1.65;
+  }
+}
+
+@media (max-width: 560px) {
+  .app-shell {
+    width: min(100% - 12px, 1440px);
+  }
+
+  .topbar,
+  .controls,
+  .summary,
+  .calendar-wrap,
+  .details {
+    padding-inline: 14px;
+  }
+
+  .header-actions {
+    display: grid;
+    grid-template-columns: 1fr;
+  }
+
+  .language-toggle,
+  .theme-toggle,
+  .font-size-toggle {
+    width: 100%;
+  }
+
+  .theme-toggle,
+  .font-size-toggle {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
+  .theme-toggle button,
+  .font-size-toggle button {
+    min-width: 0;
+    padding-inline: 6px;
+  }
+
+  .quick-range,
+  .control-actions {
+    display: grid;
+    grid-template-columns: 1fr;
+  }
+
+  .control-actions > button {
+    width: 100%;
   }
 }

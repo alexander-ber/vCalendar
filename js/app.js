@@ -1,5 +1,5 @@
 import { generateCalendarRange, viewModelForDay } from "./calendar-engine.js?v=20260613-4";
-import { EVENTS } from "./events-data.js?v=20260613-2";
+import { EVENTS } from "./events-data.js?v=20260614-2";
 import { LOCATIONS } from "./locations-data.js?v=20260613-1";
 import { RULES } from "./rules-data.js?v=20260613-3";
 
@@ -54,11 +54,23 @@ const I18N = {
     exportCalendar: "Export calendar",
     exportedCalendar: "ICS calendar exported",
     noEventsToExport: "No events match the current period and filters.",
+    termsHelp: "Sanskrit terms",
+    masaTerm: "Masa",
+    masaTermDescription: "Lunar month used for Vaishnava calendar observances.",
+    pakshaTerm: "Paksha",
+    pakshaTermDescription: "Half of the lunar month: Gaura is waxing, Krishna is waning.",
+    tithiTerm: "Tithi",
+    tithiTermDescription: "Lunar day, calculated from the Moon-Sun angular distance.",
+    arunodayaTerm: "Arunodaya",
+    arunodayaTermDescription: "Pre-dawn period used for Ekadashi purity rules; here it is 1/15 of the previous night before sunrise.",
+    paranaTerm: "Parana",
+    paranaTermDescription: "The proper window for breaking an Ekadashi fast.",
     timezone: "Timezone",
     loading: "Loading calendar...",
     selectedDay: "Selected Day",
     selectDay: "Select a day in the calendar.",
-    visibleDays: "visible days",
+    calendarDays: "calendar days",
+    shownDays: "shown days",
     updated: "updated",
     gregorianDate: "Gregorian date",
     isoDate: "ISO date",
@@ -142,11 +154,23 @@ const I18N = {
     exportCalendar: "Экспорт в календарь",
     exportedCalendar: "ICS календарь экспортирован",
     noEventsToExport: "Нет событий для экспорта с текущим периодом и фильтрами.",
+    termsHelp: "Санскритские термины",
+    masaTerm: "Маса",
+    masaTermDescription: "Лунный месяц, по которому определяются вайшнавские календарные события.",
+    pakshaTerm: "Пакша",
+    pakshaTermDescription: "Половина лунного месяца: Гаура - растущая Луна, Кришна - убывающая.",
+    tithiTerm: "Титхи",
+    tithiTermDescription: "Лунный день, рассчитывается по угловому расстоянию между Луной и Солнцем.",
+    arunodayaTerm: "Арунодая",
+    arunodayaTermDescription: "Предрассветный период для правил чистоты Экадаши; сейчас считается как 1/15 предыдущей ночи до восхода.",
+    paranaTerm: "Паран",
+    paranaTermDescription: "Правильное окно для выхода из поста Экадаши.",
     timezone: "Часовой пояс",
     loading: "Загрузка календаря...",
     selectedDay: "Выбранный день",
     selectDay: "Выберите день в календаре.",
-    visibleDays: "видимых дней",
+    calendarDays: "календарных дней",
+    shownDays: "показано дней",
     updated: "обновлено",
     gregorianDate: "Григорианская дата",
     isoDate: "ISO дата",
@@ -314,6 +338,21 @@ const EVENT_JUMP_TARGETS = [
     patterns: [/beginning of chaturmasya/i, /начало\s+чатурмась/i, /chaturmasya_begin/i]
   },
   {
+    id: "chaturmasyaMonth1",
+    labels: { en: "Chaturmasya Month 1", ru: "Чатурмасья Месяц 1" },
+    patterns: [/chaturmasya_month_1/i, /chaturmasya month 1/i, /чатурмась[яи]\s+месяц\s+1/i]
+  },
+  {
+    id: "chaturmasyaMonth2",
+    labels: { en: "Chaturmasya Month 2", ru: "Чатурмасья Месяц 2" },
+    patterns: [/chaturmasya_month_2/i, /chaturmasya month 2/i, /чатурмась[яи]\s+месяц\s+2/i]
+  },
+  {
+    id: "chaturmasyaMonth3",
+    labels: { en: "Chaturmasya Month 3", ru: "Чатурмасья Месяц 3" },
+    patterns: [/chaturmasya_month_3/i, /chaturmasya month 3/i, /чатурмась[яи]\s+месяц\s+3/i]
+  },
+  {
     id: "chaturmasyaEnd",
     labels: { en: "End of Chaturmasya", ru: "Окончание Чатурмасьи" },
     patterns: [/end of chaturmasya/i, /окончание\s+чатурмась/i, /chaturmasya_end/i]
@@ -414,6 +453,7 @@ function renderDetails(day, options = {}) {
   const ekadashiEvents = model.events.filter((event) => event.type === "ekadashi");
   const paranaEvents = model.events.filter((event) => event.type === "parana");
   dayDetails.innerHTML = `
+    ${renderSanskritTermsHelp()}
     <div class="detail-grid">
       <div class="detail-item"><span>${tr("gregorianDate")}</span>${gregorianLong(model.date)}</div>
       <div class="detail-item"><span>${tr("isoDate")}</span>${model.date}</div>
@@ -483,19 +523,32 @@ function renderDetails(day, options = {}) {
   }
 }
 
+function renderSanskritTermsHelp() {
+  const terms = [
+    ["masaTerm", "masaTermDescription"],
+    ["pakshaTerm", "pakshaTermDescription"],
+    ["tithiTerm", "tithiTermDescription"],
+    ["arunodayaTerm", "arunodayaTermDescription"],
+    ["paranaTerm", "paranaTermDescription"]
+  ];
+  return `
+    <details class="terms-help">
+      <summary aria-label="${tr("termsHelp")}" title="${tr("termsHelp")}">
+        <span aria-hidden="true">i</span>
+      </summary>
+      <dl>
+        ${terms.map(([term, description]) => `<div><dt>${tr(term)}</dt><dd>${tr(description)}</dd></div>`).join("")}
+      </dl>
+    </details>
+  `;
+}
+
 function renderCalendar() {
   normalizePeriodInputs();
   const location = LOCATIONS.find((item) => item.id === locationSelect.value) || LOCATIONS[0];
   locationSelect.value = location.id;
   const calendar = generateCalendarRange(periodFromInput.value, periodToInput.value, location, RULES, EVENTS);
 
-  calendarTitle.textContent = periodTitle(periodFromInput.value, periodToInput.value);
-  calendarStatus.textContent = `${calendar.days.length} ${tr("visibleDays")} - ${tr("updated")} ${new Intl.DateTimeFormat("en-GB", {
-    hour: "2-digit",
-    minute: "2-digit",
-    second: "2-digit",
-    hour12: false
-  }).format(new Date())}`;
   summaryLocation.textContent = `${location.name} (${location.lat.toFixed(3)}, ${location.lon.toFixed(3)})`;
   summaryTimezone.textContent = location.timezone;
   renderMasaNotice(calendar.days);
@@ -505,6 +558,13 @@ function renderCalendar() {
 
   const today = currentIsoDate();
   const visibleDays = eventsOnlyInput.checked ? calendar.days.filter((day) => visibleEventsForDay(day).length > 0) : calendar.days;
+  calendarTitle.textContent = periodTitle(periodFromInput.value, periodToInput.value);
+  calendarStatus.textContent = `${visibleDays.length} ${eventsOnlyInput.checked ? tr("shownDays") : tr("calendarDays")} - ${tr("updated")} ${new Intl.DateTimeFormat("en-GB", {
+    hour: "2-digit",
+    minute: "2-digit",
+    second: "2-digit",
+    hour12: false
+  }).format(new Date())}`;
   if (!visibleDays.length) {
     calendarGrid.innerHTML = `<div class="calendar-loading">${tr("noEventDays")}</div>`;
     dayDetails.textContent = tr("selectDay");
@@ -684,8 +744,7 @@ function renderDayButton(day, today, location) {
       <span class="moon-symbol" title="${localizePaksha(day.lunar.paksha)}">${moonSymbol(day.lunar.tithi_at_sunrise.name, day.lunar.paksha)}</span>
     </div>
     ${isToday ? `<div class="today-pill">${tr("today")}</div>` : ""}
-    <div class="lunar-line">${localizeMasa(day.lunar.masa_display)} • ${tithiDisplayLine(day)}</div>
-    <div class="tithi-end">${tr("until")} ${tithiEndLabel(day)}</div>
+    <div class="lunar-line">${localizeMasa(day.lunar.masa_display)} • ${tithiDisplayLine(day)} ${tr("until")} ${tithiEndLabel(day)}</div>
     <div class="times"><span class="time-icon" aria-label="${tr("sun")}">☀</span>${calendarTime(day.astronomy.sunrise, location.timezone)}-${calendarTime(day.astronomy.sunset, location.timezone)}</div>
     <div class="times"><span class="time-icon" aria-label="${tr("moonrise")}">☾</span>${calendarTimeOrDash(day.astronomy.moonrise, location.timezone)}-${calendarTimeOrDash(day.astronomy.moonset, location.timezone)} · ${Math.round(day.lunar.tithi_angle_at_sunrise)}°</div>
     <div class="events">
@@ -807,6 +866,7 @@ function gregorianDayLine(isoDate) {
     day: "numeric",
     month: "short",
     weekday: "short",
+    year: "numeric",
     timeZone: "UTC"
   }).format(new Date(`${isoDate}T12:00:00Z`));
 }
@@ -834,7 +894,9 @@ function monthTitle(year, month) {
 }
 
 function periodTitle(startDate, endDate) {
-  if (startDate.slice(0, 7) === endDate.slice(0, 7)) {
+  const mode = periodShiftMode(startDate, endDate);
+  if (mode.type === "year") return String(startDate.slice(0, 4));
+  if (mode.type === "month") {
     const [year, month] = startDate.split("-").map(Number);
     return monthTitle(year, month);
   }
@@ -929,11 +991,43 @@ function setFullYearPeriod() {
   renderCalendar();
 }
 
-function shiftPeriod(deltaMonths) {
+function shiftPeriod(direction) {
   normalizePeriodInputs();
-  periodFromInput.value = shiftIsoDateByMonths(periodFromInput.value, deltaMonths);
-  periodToInput.value = shiftIsoDateByMonths(periodToInput.value, deltaMonths);
+  const mode = periodShiftMode(periodFromInput.value, periodToInput.value);
+  if (mode.type === "week") {
+    periodFromInput.value = shiftIsoDateByDays(periodFromInput.value, 7 * direction);
+    periodToInput.value = shiftIsoDateByDays(periodToInput.value, 7 * direction);
+  } else if (mode.type === "month") {
+    periodFromInput.value = shiftIsoDateByMonths(periodFromInput.value, direction);
+    const [year, month] = periodFromInput.value.split("-").map(Number);
+    periodToInput.value = isoDateFromDate(new Date(Date.UTC(year, month, 0)));
+  } else if (mode.type === "year") {
+    const year = Number(periodFromInput.value.slice(0, 4)) + direction;
+    periodFromInput.value = `${year}-01-01`;
+    periodToInput.value = `${year}-12-31`;
+  } else {
+    const deltaDays = mode.days * direction;
+    periodFromInput.value = shiftIsoDateByDays(periodFromInput.value, deltaDays);
+    periodToInput.value = shiftIsoDateByDays(periodToInput.value, deltaDays);
+  }
   renderCalendar();
+}
+
+function periodShiftMode(startDate, endDate) {
+  const [startYear, startMonth] = startDate.split("-").map(Number);
+  const monthStart = `${startYear}-${String(startMonth).padStart(2, "0")}-01`;
+  const monthEnd = isoDateFromDate(new Date(Date.UTC(startYear, startMonth, 0)));
+  if (startDate === monthStart && endDate === monthEnd) return { type: "month" };
+  if (startDate === `${startYear}-01-01` && endDate === `${startYear}-12-31`) return { type: "year" };
+  const days = daysBetweenInclusive(startDate, endDate);
+  if (days === 7) return { type: "week" };
+  return { type: "custom", days };
+}
+
+function daysBetweenInclusive(startDate, endDate) {
+  const start = Date.parse(`${startDate}T00:00:00Z`);
+  const end = Date.parse(`${endDate}T00:00:00Z`);
+  return Math.max(1, Math.round((end - start) / (24 * 60 * 60 * 1000)) + 1);
 }
 
 function shiftIsoDateByMonths(isoDate, deltaMonths) {
@@ -979,7 +1073,7 @@ function setLanguage(language) {
   renderEventJumpOptions();
   updateFontSizeButtons();
   if (!selectedDate) dayDetails.textContent = tr("selectDay");
-  setTheme(document.documentElement.dataset.theme || "day");
+  updateThemeButtons();
 }
 
 function eventFilterLabels() {
@@ -1076,21 +1170,28 @@ function renderEventFilterChips() {
 
 function initTheme() {
   const savedTheme = localStorage.getItem("vcalendar-theme");
+  const userThemeSelected = localStorage.getItem("vcalendar-theme-user-set") === "true" || (savedTheme && savedTheme !== "sepia");
   const defaultVersion = localStorage.getItem("vcalendar-theme-default-version");
-  const theme = defaultVersion === "sepia-20260606" ? savedTheme || "sepia" : "sepia";
-  setTheme(theme);
+  const theme = userThemeSelected && savedTheme ? savedTheme : defaultVersion === "sepia-20260606" ? savedTheme || "sepia" : "sepia";
+  setTheme(theme, false);
   localStorage.setItem("vcalendar-theme-default-version", "sepia-20260606");
   themeToggle.querySelectorAll("[data-theme-choice]").forEach((button) => {
-    button.addEventListener("click", () => setTheme(button.dataset.themeChoice));
+    button.addEventListener("click", () => setTheme(button.dataset.themeChoice, true));
   });
 }
 
-function setTheme(theme) {
-  const nextTheme = ["day", "night", "sepia"].includes(theme) ? theme : "day";
+function setTheme(theme, userSelected = false) {
+  const nextTheme = ["day", "night", "sepia"].includes(theme) ? theme : "sepia";
   document.documentElement.dataset.theme = nextTheme;
   localStorage.setItem("vcalendar-theme", nextTheme);
+  if (userSelected) localStorage.setItem("vcalendar-theme-user-set", "true");
+  updateThemeButtons();
+}
+
+function updateThemeButtons() {
+  const currentTheme = document.documentElement.dataset.theme || "sepia";
   themeToggle.querySelectorAll("[data-theme-choice]").forEach((button) => {
-    const selected = button.dataset.themeChoice === nextTheme;
+    const selected = button.dataset.themeChoice === currentTheme;
     button.classList.toggle("is-active", selected);
     button.setAttribute("aria-pressed", String(selected));
   });
@@ -1098,16 +1199,18 @@ function setTheme(theme) {
 
 function initFontSize() {
   const savedFontSize = localStorage.getItem("vcalendar-font-size");
-  setFontSize(savedFontSize || "large");
+  const userFontSelected = localStorage.getItem("vcalendar-font-size-user-set") === "true" || (savedFontSize && savedFontSize !== "large");
+  setFontSize(userFontSelected && savedFontSize ? savedFontSize : "normal", false);
   fontSizeToggle.querySelectorAll("[data-font-size-choice]").forEach((button) => {
-    button.addEventListener("click", () => setFontSize(button.dataset.fontSizeChoice));
+    button.addEventListener("click", () => setFontSize(button.dataset.fontSizeChoice, true));
   });
 }
 
-function setFontSize(size) {
-  const nextSize = ["normal", "large", "xlarge"].includes(size) ? size : "large";
+function setFontSize(size, userSelected = false) {
+  const nextSize = ["normal", "large", "xlarge"].includes(size) ? size : "normal";
   document.documentElement.dataset.fontSize = nextSize;
   localStorage.setItem("vcalendar-font-size", nextSize);
+  if (userSelected) localStorage.setItem("vcalendar-font-size-user-set", "true");
   updateFontSizeButtons();
 }
 
@@ -1117,7 +1220,7 @@ function updateFontSizeButtons() {
     large: tr("fontLarge"),
     xlarge: tr("fontExtraLarge")
   };
-  const currentSize = document.documentElement.dataset.fontSize || "large";
+  const currentSize = document.documentElement.dataset.fontSize || "normal";
   fontSizeToggle.querySelectorAll("[data-font-size-choice]").forEach((button) => {
     const selected = button.dataset.fontSizeChoice === currentSize;
     const label = labels[button.dataset.fontSizeChoice] || button.dataset.fontSizeChoice;

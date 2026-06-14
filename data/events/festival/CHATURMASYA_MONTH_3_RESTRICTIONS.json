@@ -1,0 +1,31 @@
+{
+  "id": "CHATURMASYA_MONTH_3_RESTRICTIONS",
+  "type": "festival",
+  "category": "festival",
+  "scope": "tithi_rule",
+  "subject": "Chaturmasya month 3 restrictions",
+  "rules": {
+    "gaudiya_masa": "Hrishikesha",
+    "paksha": "Gaura",
+    "tithi": "Purnima",
+    "timing_rule": "sunrise_based",
+    "allow_in_adhika": false
+  },
+  "priority": "medium",
+  "source_status": "tithi_rule",
+  "sources": [],
+  "translations": [
+    {
+      "lang": "en",
+      "name": "Chaturmasya Month 3: Restrictions",
+      "short_description": "Chaturmasya month 3 begins. Restrictions: traditionally devotees avoid milk during this month.",
+      "full_description": "Chaturmasya month 3 begins on the full moon following the second Chaturmasya month.\n\nRestrictions: during the third month of Chaturmasya devotees traditionally avoid milk. The observance is meant to keep the practitioner mindful of the vow and to support a more concentrated devotional life."
+    },
+    {
+      "lang": "ru",
+      "name": "Чатурмасья Месяц 3: Ограничения",
+      "short_description": "Начинается третий месяц Чатурмасьи. Ограничения: традиционно в этот месяц избегают молока.",
+      "full_description": "Начинается третий месяц Чатурмасьи, на полнолуние после второго месяца Чатурмасьи.\n\nОграничения: в третий месяц Чатурмасьи традиционно избегают молока. Такое соблюдение помогает помнить об обете и поддерживает более сосредоточенную духовную жизнь."
+    }
+  ]
+}
