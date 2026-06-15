@@ -1,19 +1,18 @@
 {
-  "id": "BKHISHMA_PANCHAKA",
-  "runtime_id": "hkzp_541_бхишма_панчака",
+  "id": "BHISHMA_PANCHAKA_END",
   "type": "festival",
   "category": "festival",
-  "scope": "tithi_rule_period_start",
-  "subject": "Bhishma Panchaka begins",
+  "scope": "tithi_rule_period_end",
+  "subject": "Bhishma Panchaka ends",
   "rules": {
     "gaudiya_masa": "Damodara",
     "paksha": "Gaura",
-    "tithi": "Ekadashi",
+    "tithi": "Purnima",
     "timing_rule": "sunrise_based",
     "allow_in_adhika": false
   },
   "priority": "medium",
-  "source_status": "tithi_rule_period_start",
+  "source_status": "tithi_rule_period_end",
   "sources": [
     {
       "type": "description",
@@ -24,14 +23,14 @@
   "translations": [
     {
       "lang": "en",
-      "name": "Beginning of Bhishma Panchaka",
-      "short_description": "Bhishma Panchaka begins on Damodara/Kartika Gaura Ekadashi and continues through Damodara Purnima, the final five days of Karttik.",
-      "full_description": "Bhishma Panchaka begins on Damodara/Kartika Gaura Ekadashi and continues through Damodara Purnima. These are the final five days of Karttik: Ekadashi, Dvadashi, Trayodashi, Chaturdashi, and Purnima.\n\nThe period is traditionally observed in remembrance of Bhishmadev and is considered a powerful closing observance of Karttik and Chaturmasya. Devotees may take a special vrata during these five days for the pleasure of Lord Vishnu, choosing a suitable level of restriction according to health, capacity, and guidance.\n\nCommon observances include increased chanting, hearing, prayer, worship of the Lord, offerings connected with Bhishmadev, and a simple restricted diet such as Ekadashi prasadam, havishya, fruits, milk, or water according to one's vow. The essential mood is not external austerity alone, but focused remembrance, humility, and devotional service."
+      "name": "End of Bhishma Panchaka",
+      "short_description": "Bhishma Panchaka concludes on Damodara/Kartika Gaura Purnima, the final day of Karttik.",
+      "full_description": "Bhishma Panchaka concludes on Damodara/Kartika Gaura Purnima. This is the fifth and final day of the five-day observance that begins on Gaura Ekadashi.\n\nThe conclusion of Bhishma Panchaka also closes the final stretch of Karttik and Chaturmasya observances. Devotees complete their chosen vrata with remembrance of Bhishmadev, prayer, offerings, hearing and chanting, and devotional service."
     },
     {
       "lang": "ru",
-      "name": "Начало Бхишма Панчаки",
-      "short_description": "Бхишма Панчака начинается на Дамодара/Картика Гаура Экадаши и продолжается до Дамодара Пурнимы: это последние пять дней Карттика.",
+      "name": "Окончание Бхишма Панчаки",
+      "short_description": "Бхишма Панчака завершается на Дамодара/Картика Гаура Пурниму, в последний день Карттика.",
       "full_description": "Последние пять дней месяца Картики традиционно называются Бхишма Панчака. В эти дни ушёл Бхишмадев. В «Хари-бхакти-виласе» говорится, что в Бхишма Панчаку ради удовлетворения Господа человеку следует соблюдать пост на определенные виды пищи. Хотя это ограничение не обязательно, Кришна остается доволен таким человеком. Таким образом, если Вы не соблюдали поста в Чатурмасью, то пост в Бхишма-панчаку выполнит роль Чатурмасьи.\n\nВ эти дни можно выбрать для себя подходящий рацион – это может быть пост на экадашном прасаде, на хавишье, на фруктах, на молоке или на воде. О Бхишма-панчаке рассказывается в таких писаниях, как Падма-пурана (Брахма-кханда, гл. 23), Сканда-пурана (Вишну-кханда, Картика-махатмья, гл. 32), Гаруда-пурана (Пурва-кханда, гл. 123).\n\nПост - это не только ограничения для языка, но и, в первую очередь, возможность для ума сосредоточиться на духовном. Поскольку это дни ухода деда Бхишмы, и у него не осталось прямых потомков, преданные, как его потомки, предлагают ему подношения. Каждый день следует непосредственно или в уме совершать омовение в священной Ганге, которая считается матерью Бхишмадевы, а ему самому предлагать воду Ганги. Кроме того, рекомендуется повторять как можно больше Святых Имен, молиться о чём-то сокровенном. Самое главное – делать это с любовью, уважением и почтением."
     }
   ],

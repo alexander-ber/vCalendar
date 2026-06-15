@@ -74,7 +74,7 @@ const julyMayapur = eventsByDate(2026, 7, mayapur);
 assert(julyMayapur.get("2026-07-29").some((event) => event.name === "Beginning of Chaturmasya"));
 
 const octoberMayapur = eventsByDate(2026, 10, mayapur);
-assert(octoberMayapur.get("2026-10-27").some((event) => event.name === "Beginning of Karttik"));
+assert(octoberMayapur.get("2026-10-26").some((event) => event.name === "Beginning of Karttik"));
 
 const novemberMayapur = eventsByDate(2026, 11, mayapur);
 assert(novemberMayapur.get("2026-11-24").some((event) => event.name === "End of Karttik"));

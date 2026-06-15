@@ -1,0 +1,38 @@
+{
+  "id": "APPEARANCE_OF_VAMSHIVADANA_THAKUR",
+  "type": "vaishnava_appearance",
+  "category": "vaishnava_appearance",
+  "scope": "matched_harekrishnazp_vaishnavacalendar",
+  "subject": "Appearance of Srila Vamshivadana Thakur",
+  "rules": {
+    "gaudiya_masa": "Vishnu",
+    "paksha": "Gaura",
+    "tithi": "Purnima",
+    "timing_rule": "sunrise_based",
+    "allow_in_adhika": false
+  },
+  "priority": "medium",
+  "source_status": "matched_by_name_type_tithi",
+  "sources": [
+    {
+      "type": "description",
+      "url": "http://harekrishnazp.info/materialy/vajshnavskij-kalendar/1123-vamshivadana-tkhakur.html",
+      "attribution_required": true
+    }
+  ],
+  "translations": [
+    {
+      "lang": "en",
+      "name": "Appearance of Srila Vamshivadana Thakur",
+      "short_description": "Detailed Russian source text has been imported for Appearance of Srila Vamshivadana Thakur. English editorial translation is pending.",
+      "full_description": ""
+    },
+    {
+      "lang": "ru",
+      "name": "День явления Вамшиваданы Тхакура",
+      "short_description": "Вамшивадана Тхакур также известен под именем Вамши дас. Сведения о нём довольно скудны, однако известно, что во время его рождения Господь Чайтанья и Шри Адвайта Прабху находились в его доме. Вамшивадана Тхакур известен как автор чудесных поем и песен, выражающих философию гаудия-вайшнавизма. Он считается воплощением флейты (вамши) Господа Муралиманохары. Произведения Вамшиваданы Тхакура содержат необычайно приятный вкус преданности.",
+      "full_description": "Вамшивадана Тхакур также известен под именем Вамши дас. Сведения о нём довольно скудны, однако известно, что во время его рождения Господь Чайтанья и Шри Адвайта Прабху находились в его доме. Вамшивадана Тхакур известен как автор чудесных поем и песен, выражающих философию гаудия-вайшнавизма. Он считается воплощением флейты (вамши) Господа Муралиманохары. Произведения Вамшиваданы Тхакура содержат необычайно приятный вкус преданности.\n\nПосле ухода Шримати Вишнуприи Деви, Вамши дас перенес её Божество Махапрабху в Коладвипу (современную Навадвипу), где и начал поклоняться Ему вместе с Божеством Кришны по имени Пранаваллабха."
+    }
+  ],
+  "content_license_note": "Source footer says: Распространение материалов сайта горячо приветствуется! При использовании информации на других сайтах, пожалуйста, ставьте ссылку на цитируемый материал."
+}

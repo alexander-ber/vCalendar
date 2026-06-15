@@ -1,0 +1,38 @@
+{
+  "id": "SRI_KRISHNA_VASANTA_RASA",
+  "type": "festival",
+  "category": "festival",
+  "scope": "matched_harekrishnazp_vaishnavacalendar",
+  "subject": "Sri Krishna Vasanta Rasa",
+  "rules": {
+    "gaudiya_masa": "Vishnu",
+    "paksha": "Gaura",
+    "tithi": "Purnima",
+    "timing_rule": "sunrise_based",
+    "allow_in_adhika": false
+  },
+  "priority": "medium",
+  "source_status": "matched_by_name_type_tithi",
+  "sources": [
+    {
+      "type": "description",
+      "url": "http://harekrishnazp.info/materialy/vajshnavskij-kalendar/1257-shri-krishna-vasanta-rasa.html",
+      "attribution_required": true
+    }
+  ],
+  "translations": [
+    {
+      "lang": "en",
+      "name": "Sri Krishna Vasanta Rasa",
+      "short_description": "Detailed Russian source text has been imported for Sri Krishna Vasanta Rasa. English editorial translation is pending.",
+      "full_description": ""
+    },
+    {
+      "lang": "ru",
+      "name": "Шри Кришна Васанта Раса",
+      "short_description": "Шри Кришна Васанта Раса похож на осенний танец раса, только с тем различием, что он проводится весной, и все одеваются в жёлтое. Весенний танец раса Господа Кришны проходит ночью в полнолуние. Кришна, играя на флейте на берегу Ямуны во Вриндаване, пленяет сердца Шримати Радхики и всех гопи Враджа и они устремляются на встречу с ним.",
+      "full_description": "Шри Кришна Васанта Раса похож на осенний танец раса, только с тем различием, что он проводится весной, и все одеваются в жёлтое. Весенний танец раса Господа Кришны проходит ночью в полнолуние. Кришна, играя на флейте на берегу Ямуны во Вриндаване, пленяет сердца Шримати Радхики и всех гопи Враджа и они устремляются на встречу с ним.\n\nВ эту ночь преданные обычно оставляют горшки со сладким рисом паяшам (один из видов сладкого риса) для наслаждения Господа во время Его танца раса."
+    }
+  ],
+  "content_license_note": "Source footer says: Распространение материалов сайта горячо приветствуется! При использовании информации на других сайтах, пожалуйста, ставьте ссылку на цитируемый материал."
+}

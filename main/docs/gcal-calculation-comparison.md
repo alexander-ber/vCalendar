@@ -205,7 +205,10 @@ The final GCAL phase applies DST/time corrections to:
 - Dedicated first-pass rules for Govardhana Puja, Sri Krishna Janmashtami, Gaura Purnima and Rama Navami.
 - Event offsets through `observance_offset_days`.
 - Tithi-level period markers for Chaturmasya and Karttik/Damodara, with no Gregorian-date anchors.
+- Karttik / Damodara vrata begins on Padmanabha Gaura Purnima and ends on Damodara Gaura Purnima.
+- Karttik restrictions are represented as a separate event on the same opening Purnima.
 - Chaturmasya month 1, 2, and 3 start markers are also tithi-level events and include the month-specific restriction text in event details.
+- Bhishma Panchaka is treated as a tithi-level period: Damodara/Kartika Gaura Ekadashi through Damodara/Kartika Gaura Purnima, inclusive.
 - ICS export for the selected period using the current UI event filters.
 - Sankranti notes with GCAL's default noon-to-noon placement, plus Ganga Sagara Mela and Tulasi Jala Dan begin/end.
 - Localized event data and full descriptions.

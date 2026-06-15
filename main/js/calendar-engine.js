@@ -11,7 +11,7 @@ import {
   zonedDateToUtc
 } from "./date-utils.js?v=20260528-8";
 import { masaForDate } from "./masa-engine.js?v=20260528-18";
-import { buildEkadashiEvents } from "./ekadashi-engine.js?v=20260613-3";
+import { buildEkadashiEvents } from "./ekadashi-engine.js?v=20260615-1";
 import { matchEventsForDay } from "./event-matcher.js?v=20260613-2";
 
 function buildDay(isoDate, location, rules) {
@@ -248,6 +248,50 @@ function addEventOnce(day, event) {
   day.events.push(event);
 }
 
+function isBhishmaPanchakaDay(day) {
+  const tithi = day.lunar.tithi_at_sunrise.number;
+  return day.masa.normal_masa_name === "Damodara" && day.lunar.paksha === "Gaura" && tithi >= 11 && tithi <= 15;
+}
+
+function hasBhishmaPanchakaEvent(day) {
+  return day.events.some((event) => {
+    const haystack = [event.id, event.name, event.subject, event.i18n?.en?.name, event.i18n?.ru?.name].filter(Boolean).join(" ");
+    return /bhishma|bkhishma|бхишма/i.test(haystack);
+  });
+}
+
+function bhishmaPanchakaActiveEvent(day) {
+  return {
+    id: `bhishma_panchaka_active_${day.date}`,
+    name: "Bhishma Panchaka",
+    type: "festival",
+    category: "festival",
+    description: "Bhishma Panchaka is active: the five-day observance from Damodara/Kartika Gaura Ekadashi through Damodara Purnima.",
+    i18n: {
+      en: {
+        name: "Bhishma Panchaka",
+        description: "Bhishma Panchaka is active: the five-day observance from Damodara/Kartika Gaura Ekadashi through Damodara Purnima.",
+        full_description:
+          "Bhishma Panchaka is active. These are the final five days of Karttik, observed from Gaura Ekadashi through Purnima in Damodara/Kartika masa. Devotees may take a special vrata with increased chanting, hearing, prayer, worship, and a suitable dietary restriction."
+      },
+      ru: {
+        name: "Бхишма Панчака",
+        description: "Идёт Бхишма Панчака: пятидневный обет от Дамодара/Картика Гаура Экадаши до Дамодара Пурнимы.",
+        full_description:
+          "Идёт Бхишма Панчака. Это последние пять дней Карттика, которые соблюдаются от Гаура Экадаши до Пурнимы в Дамодара/Картика масе. Преданные могут принимать особый обет с усиленным повторением Святого Имени, слушанием, молитвой, поклонением и подходящим ограничением в пище."
+      }
+    }
+  };
+}
+
+function addBhishmaPanchakaActiveEvents(days) {
+  for (const day of days) {
+    if (isBhishmaPanchakaDay(day) && !hasBhishmaPanchakaEvent(day)) {
+      addEventOnce(day, bhishmaPanchakaActiveEvent(day));
+    }
+  }
+}
+
 function addSankrantiEvents(days, location) {
   const byDate = new Map(days.map((day) => [day.date, day]));
   const seen = new Set();
@@ -288,6 +332,7 @@ function attachEvents(days, location, rules, events) {
     day.events = [...vrataEvents, ...currentGeneratedEvents, ...currentShiftedEvents];
   }
   addPurushottamaBoundaryEvents(days);
+  addBhishmaPanchakaActiveEvents(days);
   addSankrantiEvents(days, location);
 }
 

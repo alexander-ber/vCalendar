@@ -1,0 +1,547 @@
+{
+  "generated_at": "2026-06-15T18:01:19.134Z",
+  "note": "Events from harekrishnazp not auto-imported as tithi events. No Gregorian date rules should be created from this list.",
+  "count": 36,
+  "events": [
+    {
+      "title": "Ганга Сагара Мела",
+      "kind": "festival",
+      "source_url": "http://harekrishnazp.info/materialy/vajshnavskij-kalendar/1013-ganga-sagara-mela.html",
+      "reason": "solar_or_sankranti_related_not_tithi_rule",
+      "best_candidate": {
+        "score": 0.33,
+        "rule": {
+          "gaudiya_masa": "Govinda",
+          "paksha": "Krishna",
+          "tithi": "Amavasya"
+        },
+        "line": "17 . (Вторник) Амавасья. Годовщина установления Шри Садашивы Гангадхара, Шри Говинда Кунда, Навадвип."
+      }
+    },
+    {
+      "title": "Бхишмаштами (день явления Бхишмадевы)",
+      "kind": "appearance",
+      "source_url": "http://harekrishnazp.info/materialy/vajshnavskij-kalendar/1295-bkhishmashtami-den-yavleniya-bkhishmadevy.html",
+      "reason": "no_confident_name_tithi_match",
+      "best_candidate": {
+        "score": 1,
+        "rule": {
+          "gaudiya_masa": "Damodara",
+          "paksha": "Gaura",
+          "tithi": "Ekadashi"
+        },
+        "line": "20 . (Пятница) Гаура Экадаши. Шри Уттхана экадаши . Пост (в Навадвипе). День явления Триданди Свами Шримад Бхакти Дайита Мадхава Госвами Махараджа. День ухода Ом Вишнупада Парамахамсы Шри Шрилы Гауракишора даса Бабаджи Махараджа . Шри Бхишма Панчакам."
+      }
+    },
+    {
+      "title": "Шри Кришна Мадхура Утсава",
+      "kind": "festival",
+      "source_url": "http://harekrishnazp.info/materialy/vajshnavskij-kalendar/1057-shri-krishna-madkhura-utsava-madkhurotsava-prazdnik-sladostej.html",
+      "reason": "no_confident_name_tithi_match",
+      "best_candidate": {
+        "score": 0.67,
+        "rule": {
+          "gaudiya_masa": "Madhava",
+          "paksha": "Gaura",
+          "tithi": "Panchami"
+        },
+        "line": "23 . (Пятница) Гаура Панчами. Шри Кришна Васанта Панчами . День явления Шрилы Рагхунатха даса Госвами. День явления Шри Вишнуприи Деви . День явления Шрилы Пундарика Видьянидхи. День явления Шрилы Рагхунандана Тхакура. День ухода Шрилы Вишванатха Чакраварти Тхакура. День ухода Триданди Свами Шримад Бхакти Вивека Бхарати Махараджа. День ухода Триданди Свами Шримад Бхакти Сварупа Парвата Махараджа. Шри Сарасвати Пуджа."
+      }
+    },
+    {
+      "title": "День ухода Ишвары Пури",
+      "kind": "disappearance",
+      "source_url": "http://harekrishnazp.info/materialy/vajshnavskij-kalendar/1069-ishvara-puri.html",
+      "reason": "no_confident_name_tithi_match",
+      "best_candidate": {
+        "score": 1,
+        "rule": {
+          "gaudiya_masa": "хришикеш",
+          "paksha": "Gaura",
+          "tithi": "Purnima"
+        },
+        "line": "26 . (Суббота) Пурнима. Вишварупа Махотсав. Завершение ежемесячного фестиваля в Навадвипе."
+      }
+    },
+    {
+      "title": "Даманака Ропана Двадаши",
+      "kind": "festival",
+      "source_url": "http://harekrishnazp.info/materialy/vajshnavskij-kalendar/1297-damanaka-ropana-dvadashi.html",
+      "reason": "no_confident_name_tithi_match",
+      "best_candidate": {
+        "score": 0.67,
+        "rule": {
+          "gaudiya_masa": "Madhava",
+          "paksha": "Krishna",
+          "tithi": "Dashami"
+        },
+        "line": "13 . (Вторник) Кришна Дашами. Шриман Махапрабху ночью покидает Навадвип и отправляется в Катву, чтобы принять санньясу (День, в который Махапрабху покидает дом, чтобы принять санньясу — макара-санкранти — вычисляется каждый год по солнечному календарю)."
+      }
+    },
+    {
+      "title": "Начало Туласи Джала Дана",
+      "kind": "festival",
+      "source_url": "http://harekrishnazp.info/materialy/vajshnavskij-kalendar/1298-tulasi-dzhala-dana.html",
+      "reason": "solar_or_sankranti_related_not_tithi_rule",
+      "best_candidate": {
+        "score": 0.5,
+        "rule": {
+          "gaudiya_masa": "Govinda",
+          "paksha": "Gaura",
+          "tithi": "Ekadashi"
+        },
+        "line": "27 . (Пятница) Гаура Экадаши. Амалаки экадаши . Пост (в Навадвипе). Начало Шри Навадвип Дхамa Парикрамы. Парикрама Шри Ишодьяна, Шри Йогапитха (места явления Шримана Махапрабху), Шривас Ангана, Шри Нрисимха Мандира, Шри Адвайта Бхавана, Мурари Гупта Бхавана, Шри Чайтанья Матха, храма Шри Шри Гандхарвика-Гиридхари и Шримана Махапрабху, а также ачарьев четырёх вайшнавских сампрадай, самадхи-мандира Шрилы Прабхупады, самадхи Шрилы Гауракишора даса Бабаджи Махараджа, самадхи Шри Чханда Кази, Шараданга Шри Джаганнатха Мандира, Шридхар Ангана, Шри Симантадвипа, Шри Рудрадвипа и Шри Антардвипа."
+      }
+    },
+    {
+      "title": "День ухода Мадху Пандита",
+      "kind": "disappearance",
+      "source_url": "http://harekrishnazp.info/materialy/vajshnavskij-kalendar/675-madkhu-pandit.html",
+      "reason": "no_confident_name_tithi_match",
+      "best_candidate": {
+        "score": 1,
+        "rule": {
+          "gaudiya_masa": "Narayana",
+          "paksha": "Krishna",
+          "tithi": "Ekadashi"
+        },
+        "line": "3 . (Воскресенье) Кришна Экадаши. Сапхала экадаши . Пост (в Навадвипе). День ухода Шрилы Девананды Пандита. День ухода Шримад Бхакти Пракаш Араньи Махараджа."
+      }
+    },
+    {
+      "title": "День явления Рукмини Деви (Рукмини Двадаши)",
+      "kind": "appearance",
+      "source_url": "http://harekrishnazp.info/materialy/vajshnavskij-kalendar/680-rukmini-devi.html",
+      "reason": "no_confident_name_tithi_match",
+      "best_candidate": {
+        "score": 0.33,
+        "rule": {
+          "gaudiya_masa": "Madhava",
+          "paksha": "Krishna",
+          "tithi": "Dashami"
+        },
+        "line": "13 . (Вторник) Кришна Дашами. Шриман Махапрабху ночью покидает Навадвип и отправляется в Катву, чтобы принять санньясу (День, в который Махапрабху покидает дом, чтобы принять санньясу — макара-санкранти — вычисляется каждый год по солнечному календарю)."
+      }
+    },
+    {
+      "title": "День ухода Джаянанды Прабху",
+      "kind": "disappearance",
+      "source_url": "http://harekrishnazp.info/materialy/vajshnavskij-kalendar/682-dzhayananda-prabkhu.html",
+      "reason": "no_confident_name_tithi_match",
+      "best_candidate": {
+        "score": 0,
+        "rule": {
+          "gaudiya_masa": "Madhava",
+          "paksha": "Krishna",
+          "tithi": "Tritiya"
+        },
+        "line": "6 . (Вторник) Кришна Трития. День явления Шрилы Гопала Бхатты Госвами Прабху. День ухода Шрилы Рамачандры Кавираджа."
+      }
+    },
+    {
+      "title": "День явления Радха-Рамана Деваджи",
+      "kind": "appearance",
+      "source_url": "http://harekrishnazp.info/materialy/vajshnavskij-kalendar/265-shri-shri-radkha-raman.html",
+      "reason": "no_confident_name_tithi_match",
+      "best_candidate": {
+        "score": 0.67,
+        "rule": {
+          "gaudiya_masa": "Govinda",
+          "paksha": "Gaura",
+          "tithi": "Tritiya"
+        },
+        "line": "20 . (Пятница) Гаура Трития. Фестиваль, посвящённый годовщине установления Божеств Шри Шри Гуру Гауранги Радха Раманасундар Джиу в Шри Чайтанья Сарасвата Кришнанушилана Санге, Кайкали, Калькутта."
+      }
+    },
+    {
+      "title": "Окончание Туласи Джала Дана",
+      "kind": "festival",
+      "source_url": "http://harekrishnazp.info/materialy/vajshnavskij-kalendar/1298-tulasi-dzhala-dana.html",
+      "reason": "solar_or_sankranti_related_not_tithi_rule",
+      "best_candidate": {
+        "score": 0.25,
+        "rule": {
+          "gaudiya_masa": "Madhava",
+          "paksha": "Krishna",
+          "tithi": "Chaturthi"
+        },
+        "line": "7 . (Среда) Кришна Чатурти. День ухода Шрипада Ядавенду Бхакти Чандана."
+      }
+    },
+    {
+      "title": "Начало Ратха Ятры",
+      "kind": "festival",
+      "source_url": "http://harekrishnazp.info/materialy/vajshnavskij-kalendar/1274-ratkha-yatra.html",
+      "reason": "needs_manual_tithi_confirmation",
+      "best_candidate": {
+        "score": 0.67,
+        "rule": {
+          "gaudiya_masa": "Madhusudana",
+          "paksha": "Gaura",
+          "tithi": "Dvitiya"
+        },
+        "line": "19 . (Воскресенье) Гаура Двития. Акшая Трития: удачный день для начала нового дела. Начало 21‑дневной Чандан Ятры Шри Шри Джаганнатхадева. День явления Триданди Свами Шримад Бхакти Вичара Джаджавара Махараджа."
+      }
+    },
+    {
+      "title": "День ухода Шивананды Сены",
+      "kind": "disappearance",
+      "source_url": "http://harekrishnazp.info/materialy/vajshnavskij-kalendar/774-shivananda-sena.html",
+      "reason": "no_confident_name_tithi_match",
+      "best_candidate": {
+        "score": 0.5,
+        "rule": {
+          "gaudiya_masa": "Govinda",
+          "paksha": "Gaura",
+          "tithi": "Dvadashi"
+        },
+        "line": "28 . (Суббота) Гаура Двадаши. Паран 06:05 — 09:55 (в Навадвипе). Парикрама храма Праудха Майи, Вриддха Шивы, Божества Шри Гауранги, установленного Шри Вишнуприей, Самадхи Мандира Шри Джаганнатха даса Бабаджи Махараджа, Шри Коладвипа и других святых мест. День ухода Шрилы Мадхавендры Пури."
+      }
+    },
+    {
+      "title": "Хера Панчами",
+      "kind": "festival",
+      "source_url": "http://harekrishnazp.info/materialy/vajshnavskij-kalendar/1275-khera-panchami.html",
+      "reason": "no_confident_name_tithi_match",
+      "best_candidate": {
+        "score": 1,
+        "rule": {
+          "gaudiya_masa": "Vamana",
+          "paksha": "Gaura",
+          "tithi": "Shashthi"
+        },
+        "line": "20 . (Понедельник) Гаура Шаштхи. Хера Панчами. Шри Шри Лакшми Виджая (в день праздника в Шри Пури Дхаме)."
+      }
+    },
+    {
+      "title": "Возвращение Ратха Ятры",
+      "kind": "festival",
+      "source_url": "http://harekrishnazp.info/materialy/vajshnavskij-kalendar/1274-ratkha-yatra.html",
+      "reason": "needs_manual_tithi_confirmation",
+      "best_candidate": {
+        "score": 0.67,
+        "rule": {
+          "gaudiya_masa": "Vamana",
+          "paksha": "Gaura",
+          "tithi": "Dvitiya"
+        },
+        "line": "16 . (Четверг) Гаура Двития. Ратха-ятра Шри Джаганнатхадева. День ухода Шрилы Сварупа Дамодара Госвами."
+      }
+    },
+    {
+      "title": "Начало первого месяца Чатурмасьи",
+      "kind": "festival",
+      "source_url": "http://harekrishnazp.info/materialy/vajshnavskij-kalendar/1928-chaturmasya.html",
+      "reason": "already_modeled_as_period_boundary_or_restriction",
+      "best_candidate": {
+        "score": 0.5,
+        "rule": {
+          "gaudiya_masa": "Vamana",
+          "paksha": "Gaura",
+          "tithi": "Purnima"
+        },
+        "line": "29 . (Среда) Пурнима. Шри Гуру Пурнима. Явление Шрилы Вьясадева. Начало чатурмасьи (когда врата начинается в Пурниму, как принято в ШЧСМ). День ухода Шрилы Санатаны Госвами Прабху."
+      }
+    },
+    {
+      "title": "Начало второго месяца Чатурмасьи",
+      "kind": "festival",
+      "source_url": "http://harekrishnazp.info/materialy/vajshnavskij-kalendar/1928-chaturmasya.html",
+      "reason": "already_modeled_as_period_boundary_or_restriction",
+      "best_candidate": {
+        "score": 0.5,
+        "rule": {
+          "gaudiya_masa": "Vamana",
+          "paksha": "Gaura",
+          "tithi": "Purnima"
+        },
+        "line": "29 . (Среда) Пурнима. Шри Гуру Пурнима. Явление Шрилы Вьясадева. Начало чатурмасьи (когда врата начинается в Пурниму, как принято в ШЧСМ). День ухода Шрилы Санатаны Госвами Прабху."
+      }
+    },
+    {
+      "title": "День отъезда Шрилы Прабхупады в США",
+      "kind": "festival",
+      "source_url": "http://harekrishnazp.info/materialy/vajshnavskij-kalendar/1280-pribytie-shrily-prabkhupady-v-ssha.html",
+      "reason": "needs_manual_tithi_confirmation",
+      "best_candidate": {
+        "score": 0.5,
+        "rule": {
+          "gaudiya_masa": "Madhava",
+          "paksha": "Krishna",
+          "tithi": "Chaturthi"
+        },
+        "line": "7 . (Среда) Кришна Чатурти. День ухода Шрипада Ядавенду Бхакти Чандана."
+      }
+    },
+    {
+      "title": "День явления Шримати Ситы Тхакурани",
+      "kind": "appearance",
+      "source_url": "http://harekrishnazp.info/materialy/vajshnavskij-kalendar/847-sita-tkhakurani.html",
+      "reason": "no_confident_name_tithi_match",
+      "best_candidate": {
+        "score": 0.5,
+        "rule": {
+          "gaudiya_masa": "Govinda",
+          "paksha": "Krishna",
+          "tithi": "Panchami"
+        },
+        "line": "6 . (Пятница) Кришна Панчами. 153-й благословенный праздник явления основателя Шри Чайтанья Матха и всех мировых Гаудия Матхов, Бхагавана Шри Шрилы Бхактисиддханты Сарасвати Госвами Прабхупады . Годовщина установления Шри Гупта Говардхана, Шри Мандира, Шри Говинда Кунды в Навадвипе . День ухода Шрилы Пурушоттама Тхакура."
+      }
+    },
+    {
+      "title": "Лалита Шашти",
+      "kind": "festival",
+      "source_url": "http://harekrishnazp.info/materialy/vajshnavskij-kalendar/848-lalita.html",
+      "reason": "no_confident_name_tithi_match",
+      "best_candidate": {
+        "score": 0.5,
+        "rule": {
+          "gaudiya_masa": "Madhava",
+          "paksha": "Krishna",
+          "tithi": "Shashthi"
+        },
+        "line": "9 . (Пятница) Кришна Шаштхи. День ухода Шрилы Джаядева Госвами."
+      }
+    },
+    {
+      "title": "Ананта Чатурдаши Врата",
+      "kind": "festival",
+      "source_url": "http://harekrishnazp.info/materialy/vajshnavskij-kalendar/1277-ananta-chaturdashi-vrata.html",
+      "reason": "needs_manual_tithi_confirmation",
+      "best_candidate": {
+        "score": 0.5,
+        "rule": {
+          "gaudiya_masa": "Madhava",
+          "paksha": "Krishna",
+          "tithi": "Dashami"
+        },
+        "line": "13 . (Вторник) Кришна Дашами. Шриман Махапрабху ночью покидает Навадвип и отправляется в Катву, чтобы принять санньясу (День, в который Махапрабху покидает дом, чтобы принять санньясу — макара-санкранти — вычисляется каждый год по солнечному календарю)."
+      }
+    },
+    {
+      "title": "Принятие санньясы Шрилой Прабхупадой",
+      "kind": "festival",
+      "source_url": "http://harekrishnazp.info/materialy/vajshnavskij-kalendar/1279-prinyatie-sannyasy-shriloj-prabkhupadoj.html",
+      "reason": "needs_manual_tithi_confirmation",
+      "best_candidate": {
+        "score": 0.33,
+        "rule": {
+          "gaudiya_masa": "Madhava",
+          "paksha": "Krishna",
+          "tithi": "Chaturthi"
+        },
+        "line": "7 . (Среда) Кришна Чатурти. День ухода Шрипада Ядавенду Бхакти Чандана."
+      }
+    },
+    {
+      "title": "Начало третьего месяца Чатурмасьи",
+      "kind": "festival",
+      "source_url": "http://harekrishnazp.info/materialy/vajshnavskij-kalendar/1928-chaturmasya.html",
+      "reason": "already_modeled_as_period_boundary_or_restriction",
+      "best_candidate": {
+        "score": 0.5,
+        "rule": {
+          "gaudiya_masa": "Vamana",
+          "paksha": "Gaura",
+          "tithi": "Purnima"
+        },
+        "line": "29 . (Среда) Пурнима. Шри Гуру Пурнима. Явление Шрилы Вьясадева. Начало чатурмасьи (когда врата начинается в Пурниму, как принято в ШЧСМ). День ухода Шрилы Санатаны Госвами Прабху."
+      }
+    },
+    {
+      "title": "Прибытие Шрилы Прабхупады в США",
+      "kind": "festival",
+      "source_url": "http://harekrishnazp.info/materialy/vajshnavskij-kalendar/1280-pribytie-shrily-prabkhupady-v-ssha.html",
+      "reason": "needs_manual_tithi_confirmation",
+      "best_candidate": {
+        "score": 1,
+        "rule": {
+          "gaudiya_masa": "Vishnu",
+          "paksha": "Krishna",
+          "tithi": "Dvadashi"
+        },
+        "line": "16 . (Понедельник) Кришна Двадаши. Паран 05:51 — 07:59 (в Навадвипе). Фестиваль в честь дня прибытия Шримана Махапрабху в Вараханагар. День ухода Шрилы Говинды Гхоша Тхакура. День ухода Шрипада Сатьендрачандры Бхаттачарьи Маходоя."
+      }
+    },
+    {
+      "title": "Дурга Пуджа",
+      "kind": "festival",
+      "source_url": "http://harekrishnazp.info/materialy/vajshnavskij-kalendar/1268-durga-pudzha.html",
+      "reason": "needs_manual_tithi_confirmation",
+      "best_candidate": {
+        "score": 0,
+        "rule": {
+          "gaudiya_masa": "Madhava",
+          "paksha": "Krishna",
+          "tithi": "Tritiya"
+        },
+        "line": "6 . (Вторник) Кришна Трития. День явления Шрилы Гопала Бхатты Госвами Прабху. День ухода Шрилы Рамачандры Кавираджа."
+      }
+    },
+    {
+      "title": "Шри Кришна Шарадия Расаятра",
+      "kind": "festival",
+      "source_url": "http://harekrishnazp.info/materialy/vajshnavskij-kalendar/1284-krishna-sharadiya-rasayatra.html",
+      "reason": "no_confident_name_tithi_match",
+      "best_candidate": {
+        "score": 1,
+        "rule": {
+          "gaudiya_masa": "Padmanabha",
+          "paksha": "Gaura",
+          "tithi": "Purnima"
+        },
+        "line": "26 . (Понедельник) Пурнима. Шарадия Раса Ятра Шри Кришны. День ухода Шрилы Мурари Гупты. Начало Урджа враты, Дамодар враты, Картика враты и Нияма-сева враты, если врата начата в Пурниму, как это принято в Шри Чайтанья Сарасват Матхе."
+      }
+    },
+    {
+      "title": "Лакшми Пуджа",
+      "kind": "festival",
+      "source_url": "http://harekrishnazp.info/materialy/vajshnavskij-kalendar/1283-lakshmi-pudzha.html",
+      "reason": "no_confident_name_tithi_match",
+      "best_candidate": {
+        "score": 1,
+        "rule": {
+          "gaudiya_masa": "Madhusudana",
+          "paksha": "Gaura",
+          "tithi": "Dvitiya"
+        },
+        "line": "19 . (Воскресенье) Гаура Двития. Акшая Трития: удачный день для начала нового дела. Начало 21‑дневной Чандан Ятры Шри Шри Джаганнатхадева. День явления Триданди Свами Шримад Бхакти Вичара Джаджавара Махараджа."
+      }
+    },
+    {
+      "title": "День явления Вирабхадры",
+      "kind": "appearance",
+      "source_url": "http://harekrishnazp.info/materialy/vajshnavskij-kalendar/897-virabkhadra.html",
+      "reason": "no_confident_name_tithi_match",
+      "best_candidate": {
+        "score": 1,
+        "rule": {
+          "gaudiya_masa": "Madhava",
+          "paksha": "Gaura",
+          "tithi": "Ekadashi"
+        },
+        "line": "29 . (Четверг) Гаура Экадаши. Бхаими экадаши . Пост (в Навадвипе)."
+      }
+    },
+    {
+      "title": "Бали Дайтьяраджа Пуджа",
+      "kind": "festival",
+      "source_url": "http://harekrishnazp.info/materialy/vajshnavskij-kalendar/1287-bali-dajtyaradzha-pudzha.html",
+      "reason": "needs_manual_tithi_confirmation",
+      "best_candidate": {
+        "score": 0.5,
+        "rule": {
+          "gaudiya_masa": "Vishnu",
+          "paksha": "Gaura",
+          "tithi": "Purnima"
+        },
+        "line": "2 . (Четверг) Пурнима. Васанта Раса Шри Кришны. Раса Ятра Шри Баларамы. День явления Шрилы Вамшивадананды Тхакура. День явления Шрилы Шьямананды Прабху."
+      }
+    },
+    {
+      "title": "Джагаддхатри Пуджа",
+      "kind": "festival",
+      "source_url": "http://harekrishnazp.info/materialy/vajshnavskij-kalendar/1289-dzhagaddkhatri-pudzha.html",
+      "reason": "needs_manual_tithi_confirmation",
+      "best_candidate": {
+        "score": 0,
+        "rule": {
+          "gaudiya_masa": "Madhava",
+          "paksha": "Krishna",
+          "tithi": "Tritiya"
+        },
+        "line": "6 . (Вторник) Кришна Трития. День явления Шрилы Гопала Бхатты Госвами Прабху. День ухода Шрилы Рамачандры Кавираджа."
+      }
+    },
+    {
+      "title": "Шри Кришна Расаятра",
+      "kind": "festival",
+      "source_url": "http://harekrishnazp.info/materialy/vajshnavskij-kalendar/1291-krishna-rasayatra.html",
+      "reason": "no_confident_name_tithi_match",
+      "best_candidate": {
+        "score": 1,
+        "rule": {
+          "gaudiya_masa": "Vishnu",
+          "paksha": "Gaura",
+          "tithi": "Purnima"
+        },
+        "line": "2 . (Четверг) Пурнима. Васанта Раса Шри Кришны. Раса Ятра Шри Баларамы. День явления Шрилы Вамшивадананды Тхакура. День явления Шрилы Шьямананды Прабху."
+      }
+    },
+    {
+      "title": "Туласи Шалаграма Виваха",
+      "kind": "festival",
+      "source_url": "http://harekrishnazp.info/materialy/vajshnavskij-kalendar/1292-tulasi-shalagrama-vivakha.html",
+      "reason": "no_confident_name_tithi_match",
+      "best_candidate": {
+        "score": 0.33,
+        "rule": {
+          "gaudiya_masa": "Govinda",
+          "paksha": "Gaura",
+          "tithi": "Chaturthi"
+        },
+        "line": "21 . (Суббота) Гаура Чатурти. День явления Шрилы Пурушоттама Тхакура. День ухода Шрипада Туласидаса Даса Адхикари Прабху."
+      }
+    },
+    {
+      "title": "Начало Катьяяни Враты",
+      "kind": "festival",
+      "source_url": "http://harekrishnazp.info/materialy/vajshnavskij-kalendar/1294-katyayani-vrata.html",
+      "reason": "needs_manual_tithi_confirmation",
+      "best_candidate": {
+        "score": 0.67,
+        "rule": {
+          "gaudiya_masa": "Padmanabha",
+          "paksha": "Gaura",
+          "tithi": "Purnima"
+        },
+        "line": "26 . (Понедельник) Пурнима. Шарадия Раса Ятра Шри Кришны. День ухода Шрилы Мурари Гупты. Начало Урджа враты, Дамодар враты, Картика враты и Нияма-сева враты, если врата начата в Пурниму, как это принято в Шри Чайтанья Сарасват Матхе."
+      }
+    },
+    {
+      "title": "Одана Шашти",
+      "kind": "festival",
+      "source_url": "http://harekrishnazp.info/materialy/vajshnavskij-kalendar/1296-odana-shashti.html",
+      "reason": "no_confident_name_tithi_match",
+      "best_candidate": {
+        "score": 1,
+        "rule": {
+          "gaudiya_masa": "Damodara",
+          "paksha": "Gaura",
+          "tithi": "Ashtami"
+        },
+        "line": "17 . (Вторник) Гаура Аштами. Шри Гопаштами, Шри Гоштхаштами, Го пуджа и Го Грас-дан. День ухода Шрилы Шриниваса Ачарьи. День ухода Шрилы Гададхара даса Госвами. День ухода Шрилы Дхананджаи Пандита."
+      }
+    },
+    {
+      "title": "День явления Бхагавад-гиты",
+      "kind": "appearance",
+      "source_url": "http://harekrishnazp.info/materialy/vajshnavskij-kalendar/949-den-yavleniya-bkhagavad-gity.html",
+      "reason": "no_confident_name_tithi_match",
+      "best_candidate": {
+        "score": 0.5,
+        "rule": {
+          "gaudiya_masa": "Madhava",
+          "paksha": "Gaura",
+          "tithi": "Ekadashi"
+        },
+        "line": "29 . (Четверг) Гаура Экадаши. Бхаими экадаши . Пост (в Навадвипе)."
+      }
+    },
+    {
+      "title": "Окончание Катьяяни Враты",
+      "kind": "festival",
+      "source_url": "http://harekrishnazp.info/materialy/vajshnavskij-kalendar/1294-katyayani-vrata.html",
+      "reason": "needs_manual_tithi_confirmation",
+      "best_candidate": {
+        "score": 0.67,
+        "rule": {
+          "gaudiya_masa": "Damodara",
+          "paksha": "Gaura",
+          "tithi": "Purnima"
+        },
+        "line": "24 . (Вторник) Пурнима. Раса Ятра Шри Кришны. День явления Шрилы Нимбарки Ачарьи. День ухода Шрилы Сундарананды Тхакура. Окончание Чатурмасьи и Нияма-сева врат, если они начинались с пурнимы, как это принято в Шри Чайтанья Сарасват Матхе."
+      }
+    }
+  ]
+}

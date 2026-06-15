@@ -1,9 +1,9 @@
 {
-  "id": "KARTTIK_BEGIN",
+  "id": "KARTTIK_RESTRICTIONS",
   "type": "festival",
   "category": "festival",
   "scope": "tithi_rule",
-  "subject": "Karttik / Damodara vrata begins",
+  "subject": "Karttik / Damodara vrata restrictions",
   "rules": {
     "gaudiya_masa": "Padmanabha",
     "paksha": "Gaura",
@@ -18,19 +18,24 @@
       "type": "description",
       "url": "http://harekrishnazp.info/materialy/vajshnavskij-kalendar/1285-damodara.html",
       "attribution_required": true
+    },
+    {
+      "type": "description",
+      "url": "http://harekrishnazp.info/vajshnavskij-kalendar/1928-chaturmasya.html",
+      "attribution_required": true
     }
   ],
   "translations": [
     {
       "lang": "en",
-      "name": "Beginning of Karttik",
-      "short_description": "Karttik, also called Damodara vrata, begins on the full moon before Damodara masa and continues through Damodara Purnima.",
-      "full_description": "Karttik, or Damodara vrata, begins on the full moon before Damodara masa and continues through Damodara Purnima. This follows the Gaudiya Vaishnava observance period: the vrata opens on Purnima and then continues through the Damodara lunar month. Devotional service performed during this month is traditionally described as especially powerful and auspicious."
+      "name": "Karttik Restrictions",
+      "short_description": "Restrictions for Karttik / Damodara vrata begin. Traditionally, devotees avoid urad dal / black gram during this period.",
+      "full_description": "Restrictions for Karttik / Damodara vrata begin on the opening Purnima before Damodara masa.\n\nRestrictions: during this period, which is also the final month of Chaturmasya, devotees traditionally avoid urad dal / black gram. According to capacity and guidance, devotees may also take additional personal vows: increased chanting, daily offering of lamps to Damodara, extra hearing and reading, simpler food, and more concentrated devotional service.\n\nThe heart of the vrata is not external austerity alone, but remembrance of Lord Damodara and a sincere effort to deepen devotion throughout the Karttik period."
     },
     {
       "lang": "ru",
-      "name": "Начало Карттика",
-      "short_description": "Карттик, или Дамодара-врата, начинается на Пурниму перед Дамодара масой и продолжается до Дамодара Пурнимы.",
+      "name": "Ограничения Карттика",
+      "short_description": "Начинаются ограничения Карттика / Дамодара-враты. Традиционно в этот период избегают урад-дала / чёрного маша.",
       "full_description": "Дамодара – одно из многочисленных имён Всевышнего Господа Кришны. В произведении «Вишну-сахасранаме», что буквально переводится как «Тысяча Имён Вишну», составленном великим мудрецом Шрилой Вьясадевой, имя Дамодара упоминается как 367-е имя Господа Вишну (имя аватары Всевышнего Господа), который поддерживает существование всей Вселенной. Священные писания называют месяц Дамодара очень благоприятным для духовной деятельности. Говорится, что благо, получаемое от преданного служения в месяц Картика, во много раз больше блага, получаемого от служения в остальное время года.\n\nОсобенность месяца Дамодара в том, что Всевышний Господь очень милостив в месяц Картика и с легкостью раздаёт Свою беспричинную милость. И самый простой способ удовлетворить Господа в этот дорогой для Его сердца период - это каждый день предлагать Ему лампадку или фитилек с гхи и петь для Него «Дамодараштаку». Зная это могущество месяца Дамодара, все вайшнавы мира, преданные Господа Кришны, в этот период каждый день предлагают Всевышнему Господу маленькие горящие лампадки (или фитильки) и воспевают бхаджан, прославляющий Всевышнего Господа как Дамодару. Этот бхаджан, «Дамодараштака», упоминается в «Падма-пуране» в беседе Сатьяврата Муни с Нарадой и Шаунакой Риши.\n\nА в Индии, в стране, где Ведическая культура сохранилась в наибольшей степени, месяц Картика является официально принятым восьмым месяцем в едином национальном календаре Индии. Но жители западного штата Индии Гуджарат пошли ещё дальше – у них Картика, или Дамодара, является первым месяцем в году.\n\nЧитайте подробнее о месяце Дамодара, смотрите видео с текстом Дамодараштаки, подпевайте..."
     }
   ],

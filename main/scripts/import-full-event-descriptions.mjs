@@ -2,6 +2,7 @@ import fs from "node:fs/promises";
 import path from "node:path";
 
 const EVENTS_ROOT = "data/events";
+const EKADASHI_DB = "data/ekadashi.json";
 const CACHE_DIR = "/private/tmp/harekrishnazp-event-pages";
 const USER_AGENT = "Mozilla/5.0";
 const HAREKRISHNAZP_ORIGIN = "http://harekrishnazp.info";
@@ -92,6 +93,12 @@ function ensureRussianTranslation(content) {
   return ru;
 }
 
+function ensureEkadashiRussianTranslation(content) {
+  content.i18n ||= {};
+  content.i18n.ru ||= {};
+  return content.i18n.ru;
+}
+
 async function main() {
   const files = await jsonFiles(EVENTS_ROOT);
   const byUrl = new Map();
@@ -103,7 +110,15 @@ async function main() {
     byUrl.get(source.url).push({ file, content, source });
   }
 
+  const ekadashi = JSON.parse(await fs.readFile(EKADASHI_DB, "utf8"));
+  for (const content of ekadashi) {
+    if (!content.source_url?.startsWith(HAREKRISHNAZP_ORIGIN)) continue;
+    if (!byUrl.has(content.source_url)) byUrl.set(content.source_url, []);
+    byUrl.get(content.source_url).push({ content, isEkadashi: true });
+  }
+
   let updated = 0;
+  let updatedEkadashi = 0;
   const failed = [];
   for (const [url, items] of byUrl) {
     try {
@@ -111,6 +126,13 @@ async function main() {
       const fullDescription = articleDescription(html);
       if (!fullDescription) throw new Error("empty article description");
       for (const item of items) {
+        if (item.isEkadashi) {
+          const ru = ensureEkadashiRussianTranslation(item.content);
+          ru.full_description = fullDescription;
+          item.content.content_license_note = DISTRIBUTION_NOTE;
+          updatedEkadashi += 1;
+          continue;
+        }
         const ru = ensureRussianTranslation(item.content);
         ru.full_description = fullDescription;
         item.content.content_license_note = DISTRIBUTION_NOTE;
@@ -123,7 +145,9 @@ async function main() {
     }
   }
 
-  console.log(JSON.stringify({ urls: byUrl.size, updated, failed }, null, 2));
+  if (updatedEkadashi) await fs.writeFile(EKADASHI_DB, `${JSON.stringify(ekadashi, null, 2)}\n`);
+
+  console.log(JSON.stringify({ urls: byUrl.size, updated, updatedEkadashi, failed }, null, 2));
 }
 
 main().catch((error) => {
