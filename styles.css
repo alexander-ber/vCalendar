@@ -403,7 +403,27 @@ input {
 }
 
 .event-jump-panel {
+  display: grid;
+  gap: 10px;
   max-width: 520px;
+}
+
+.event-search-row {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 46px;
+  gap: 8px;
+}
+
+.event-search-button {
+  min-width: 46px;
+  min-height: 42px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  color: var(--accent-strong);
+  background: var(--accent-soft);
+  font-size: 24px;
+  font-weight: 900;
+  line-height: 1;
 }
 
 .event-jump-select {
@@ -900,12 +920,37 @@ button:not(.day):not(.theme-toggle):not(.language-toggle):not(.font-size-button)
   background: var(--deity-soft);
 }
 
+.event-more {
+  width: fit-content;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  padding: 4px 9px;
+  color: var(--muted);
+  background: var(--panel);
+  font-size: calc(12px * var(--font-scale));
+  font-weight: 900;
+}
+
 .details-body {
   display: grid;
   gap: 10px;
   margin-top: 12px;
   color: var(--ink);
   line-height: 1.5;
+}
+
+.selected-day-panel {
+  display: grid;
+  gap: 10px;
+  margin-top: 4px;
+  border-top: 1px solid var(--soft-line);
+  padding-top: 14px;
+}
+
+.selected-day-panel h3 {
+  margin: 0;
+  color: var(--ink);
+  font-size: calc(20px * var(--font-scale));
 }
 
 .terms-help {
@@ -1211,6 +1256,40 @@ button:not(.day):not(.theme-toggle):not(.language-toggle):not(.font-size-button)
   font-size: 13px;
 }
 
+.diagnostic summary {
+  cursor: pointer;
+  color: var(--ink);
+  font-weight: 900;
+}
+
+.diagnostic-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+  gap: 8px;
+  margin: 10px 0 0;
+}
+
+.diagnostic-grid div {
+  border: 1px solid var(--soft-line);
+  border-radius: 8px;
+  padding: 8px;
+  background: var(--panel);
+}
+
+.diagnostic-grid dt {
+  color: var(--subtle);
+  font-size: calc(11px * var(--font-scale));
+  font-weight: 900;
+  text-transform: uppercase;
+}
+
+.diagnostic-grid dd {
+  margin: 3px 0 0;
+  color: var(--ink);
+  font-size: calc(13px * var(--font-scale));
+  line-height: 1.35;
+}
+
 @media (max-width: 1120px) {
   .primary-controls {
     grid-template-columns: minmax(0, 1fr);
@@ -1313,6 +1392,11 @@ button:not(.day):not(.theme-toggle):not(.language-toggle):not(.font-size-button)
     padding: 14px;
   }
 
+  .events {
+    gap: 6px;
+    padding-top: 10px;
+  }
+
   .event {
     padding: 8px 9px;
   }
@@ -1389,5 +1473,65 @@ button:not(.day):not(.theme-toggle):not(.language-toggle):not(.font-size-button)
 
   .control-actions > button {
     width: 100%;
+  }
+
+  .event-jump-panel {
+    max-width: none;
+  }
+
+  .event-search-row {
+    grid-template-columns: minmax(0, 1fr) 44px;
+  }
+
+  .event-search-button {
+    min-width: 44px;
+    font-size: 20px;
+  }
+
+  .day {
+    border-radius: 9px;
+    padding: 12px;
+  }
+
+  .day-topline {
+    margin-bottom: 5px;
+  }
+
+  .gregorian-main {
+    font-size: calc(16px * var(--font-scale));
+  }
+
+  .moon-symbol {
+    width: 29px;
+    height: 29px;
+  }
+
+  .moon-svg {
+    width: 21px;
+    height: 21px;
+  }
+
+  .lunar-line {
+    min-height: 0;
+    font-size: calc(11.5px * var(--font-scale));
+  }
+
+  .times {
+    margin-top: 6px;
+    font-size: calc(11.5px * var(--font-scale));
+  }
+
+  .event {
+    border-radius: 7px;
+    padding: 6px 8px;
+    font-size: calc(11.5px * var(--font-scale));
+  }
+
+  .event-more {
+    padding: 3px 8px;
+  }
+
+  .diagnostic-grid {
+    grid-template-columns: 1fr;
   }
 }

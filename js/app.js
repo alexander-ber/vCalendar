@@ -10,6 +10,8 @@ const eventsOnlyInput = document.querySelector("#eventsOnlyInput");
 const eventFilterSelect = document.querySelector("#eventFilterSelect");
 const eventFilterChips = document.querySelector("#eventFilterChips");
 const eventJumpSelect = document.querySelector("#eventJumpSelect");
+const eventSearchInput = document.querySelector("#eventSearchInput");
+const eventSearchButton = document.querySelector("#eventSearchButton");
 const renderButton = document.querySelector("#renderButton");
 const exportIcsButton = document.querySelector("#exportIcsButton");
 const thisWeekButton = document.querySelector("#thisWeekButton");
@@ -22,8 +24,6 @@ const nextMonthBottom = document.querySelector("#nextMonthBottom");
 const languageToggle = document.querySelector("#languageToggle");
 const themeToggle = document.querySelector("#themeToggle");
 const fontSizeToggle = document.querySelector("#fontSizeToggle");
-const summaryLocation = document.querySelector("#summaryLocation");
-const summaryTimezone = document.querySelector("#summaryTimezone");
 const calendarTitle = document.querySelector("#calendarTitle");
 const calendarStatus = document.querySelector("#calendarStatus");
 const masaNotice = document.querySelector("#masaNotice");
@@ -105,6 +105,13 @@ const I18N = {
     biographyPending: "Biography has not been added to the event database yet.",
     noEvents: "No matched events.",
     diagnostic: "This POC calculates locally in browser JS and does not use external Panchang calendars as runtime data.",
+    calculationDetails: "Calculation details",
+    calculationEngine: "Calculation engine",
+    ekadashiRule: "Ekadashi rule",
+    paranaFormula: "Parana formula",
+    hariVasaraEnd: "Hari-vasara ends",
+    dvadashiStart: "Dvadashi starts",
+    dvadashiEnd: "Dvadashi ends",
     tithiAtArunodaya: "Tithi at arunodaya",
     until: "until",
     sun: "Sun",
@@ -139,6 +146,9 @@ const I18N = {
     filterDeityTemple: "Deity / temple days",
     jumpToEvent: "Find event",
     chooseEvent: "Select event",
+    eventSearch: "Search event",
+    eventSearchPlaceholder: "Search by event name",
+    eventSearchFound: "Found matches",
     eventNotFound: "Event was not found in this year.",
     thisWeek: "This week",
     thisMonth: "This month",
@@ -213,6 +223,13 @@ const I18N = {
     biographyPending: "Биография ещё не добавлена в базу событий.",
     noEvents: "Нет найденных событий.",
     diagnostic: "Этот POC считает локально в браузере и не использует внешние панчанги как источник данных.",
+    calculationDetails: "Детали расчёта",
+    calculationEngine: "Движок расчёта",
+    ekadashiRule: "Правило Экадаши",
+    paranaFormula: "Формула парана",
+    hariVasaraEnd: "Окончание Хари-васары",
+    dvadashiStart: "Начало Двадаши",
+    dvadashiEnd: "Окончание Двадаши",
     tithiAtArunodaya: "Титхи на арунодае",
     until: "до",
     sun: "Солнце",
@@ -247,6 +264,9 @@ const I18N = {
     filterDeityTemple: "Божества / храмы",
     jumpToEvent: "Найти событие",
     chooseEvent: "Выберите событие",
+    eventSearch: "Поиск события",
+    eventSearchPlaceholder: "Например: Нитьянанда",
+    eventSearchFound: "Найдено совпадений",
     eventNotFound: "Событие не найдено в этом году.",
     thisWeek: "Неделя",
     thisMonth: "Месяц",
@@ -477,21 +497,34 @@ function renderDetails(day, options = {}) {
   const paranaEvents = model.events.filter((event) => event.type === "parana");
   dayDetails.innerHTML = `
     ${renderSanskritTermsHelp()}
-    <div class="detail-grid">
-      <div class="detail-item"><span>${tr("gregorianDate")}</span>${gregorianLong(model.date)}</div>
-      <div class="detail-item"><span>${tr("isoDate")}</span>${model.date}</div>
-      <div class="detail-item"><span>${tr("sunrise")}</span>${model.sunrise}</div>
-      <div class="detail-item"><span>${tr("sunset")}</span>${model.sunset}</div>
-      <div class="detail-item"><span>${tr("moonrise")}</span>${model.moonrise}</div>
-      <div class="detail-item"><span>${tr("moonset")}</span>${model.moonset}</div>
-      <div class="detail-item"><span>${tr("moonAngle")}</span>${model.moonAngle} deg</div>
-      <div class="detail-item"><span>${tr("arunodaya")}</span>${model.arunodaya}</div>
-      <div class="detail-item"><span>${tr("masa")}</span>${localizeMasa(model.masa)}</div>
-      <div class="detail-item"><span>${tr("paksha")}</span>${localizePaksha(model.paksha)}</div>
-      <div class="detail-item"><span>${tr("tithiSunrise")}</span>${localizeTithi(model.tithi)}</div>
-      <div class="detail-item"><span>${tr("tithiEnds")}</span>${model.tithiEnd}</div>
-      <div class="detail-item"><span>${tr("tithiAngle")}</span>${model.angle} deg</div>
+    <div>
+      <strong>${tr("events")}</strong>
+      <div class="events">
+        ${
+          model.events.length
+            ? model.events.map((event) => `<div class="event ${eventClass(event)}">${eventLabel(event)}</div>`).join("")
+            : `<span>${tr("noEvents")}</span>`
+        }
+      </div>
     </div>
+    ${model.events.length ? renderEventDetails(model.events) : ""}
+    <section class="selected-day-panel">
+      <h3>${tr("selectedDay")}</h3>
+      <div class="detail-grid">
+        <div class="detail-item"><span>${tr("gregorianDate")}</span>${gregorianLong(model.date)}</div>
+        <div class="detail-item"><span>${tr("isoDate")}</span>${model.date}</div>
+        <div class="detail-item"><span>${tr("sunrise")}</span>${model.sunrise}</div>
+        <div class="detail-item"><span>${tr("sunset")}</span>${model.sunset}</div>
+        <div class="detail-item"><span>${tr("moonrise")}</span>${model.moonrise}</div>
+        <div class="detail-item"><span>${tr("moonset")}</span>${model.moonset}</div>
+        <div class="detail-item"><span>${tr("moonAngle")}</span>${model.moonAngle} deg</div>
+        <div class="detail-item"><span>${tr("arunodaya")}</span>${model.arunodaya}</div>
+        <div class="detail-item"><span>${tr("masa")}</span>${localizeMasa(model.masa)}</div>
+        <div class="detail-item"><span>${tr("paksha")}</span>${localizePaksha(model.paksha)}</div>
+        <div class="detail-item"><span>${tr("tithiSunrise")}</span>${localizeTithi(model.tithi)}</div>
+        <div class="detail-item"><span>${tr("tithiEnds")}</span>${model.tithiEnd}</div>
+        <div class="detail-item"><span>${tr("tithiAngle")}</span>${model.angle} deg</div>
+      </div>
     ${
       ekadashiEvents.length
         ? `<div class="ekadashi-panel">
@@ -522,20 +555,8 @@ function renderDetails(day, options = {}) {
           </div>`
         : ""
     }
-    <div>
-      <strong>${tr("events")}</strong>
-      <div class="events">
-        ${
-          model.events.length
-            ? model.events.map((event) => `<div class="event ${eventClass(event)}">${eventLabel(event)}</div>`).join("")
-            : `<span>${tr("noEvents")}</span>`
-        }
-      </div>
-    </div>
-    ${model.events.length ? renderEventDetails(model.events) : ""}
-    <div class="diagnostic">
-      ${tr("tithiAtArunodaya")}: ${localizeTithi(model.arunodayaTithi)}. ${tr("diagnostic")}
-    </div>
+      ${renderCalculationDetails(day, model, ekadashiEvents, paranaEvents)}
+    </section>
   `;
   if (options.scrollToEventDetails) {
     requestAnimationFrame(() => {
@@ -544,6 +565,66 @@ function renderDetails(day, options = {}) {
       target?.focus?.({ preventScroll: true });
     });
   }
+}
+
+function renderCalculationDetails(day, model, ekadashiEvents, paranaEvents) {
+  const baseRows = [
+    [tr("sunrise"), model.sunrise],
+    [tr("arunodaya"), model.arunodaya],
+    [tr("tithiSunrise"), localizeTithi(model.tithi)],
+    [tr("tithiAtArunodaya"), localizeTithi(model.arunodayaTithi)],
+    [tr("tithiEnds"), model.tithiEnd],
+    [tr("tithiAngle"), `${model.angle} deg`],
+    [tr("calculationEngine"), tr("diagnostic")]
+  ];
+  const ekadashiRows = ekadashiEvents.flatMap((event) => [
+    [tr("ekadashiName"), localizeEventName(event)],
+    [tr("ekadashiRule"), localizeClassification(event.diagnostics?.rule_applied || event.classification || event.fast_day_type || "standard")],
+    [tr("fastDate"), event.fast_date || ""],
+    event.candidate_no_fast_reason
+      ? [tr("noFast"), localizeClassification(event.candidate_no_fast_reason)]
+      : null
+  ]).filter(Boolean);
+  const ekadashiParanaRows = ekadashiEvents.flatMap((event) => {
+    const diagnostics = event.parana?.diagnostics || {};
+    return [
+      [tr("paranaFormula"), event.parana_type ? localizeClassification(event.parana_type) : ""],
+      [tr("dvadashiStart"), diagnosticTime(diagnostics.dvadashi_start, day.location.timezone)],
+      [tr("hariVasaraEnd"), diagnosticTime(diagnostics.hari_vasara_end, day.location.timezone)],
+      [tr("dvadashiEnd"), diagnosticTime(diagnostics.dvadashi_end, day.location.timezone)],
+      [tr("preferredEnd"), diagnosticTime(diagnostics.pratah_end, day.location.timezone)],
+      [tr("oneFifthEnd"), diagnosticTime(diagnostics.one_fifth_end, day.location.timezone)]
+    ].filter(([, value]) => value);
+  });
+  const paranaRows = paranaEvents.flatMap((event) => [
+    [tr("parana"), localizeEventName(event)],
+    [tr("start"), localizeAvailability(event.parana?.start)],
+    [tr("preferredEnd"), localizeAvailability(event.parana?.preferred_end)],
+    [tr("oneFifthEnd"), localizeAvailability(event.parana?.one_fifth_end)],
+    [tr("latestEnd"), localizeAvailability(event.parana?.absolute_end)]
+  ]);
+
+  return `
+    <details class="diagnostic diagnostic-panel">
+      <summary>${tr("calculationDetails")}</summary>
+      <dl class="diagnostic-grid">
+        ${renderDiagnosticRows([...baseRows, ...ekadashiRows, ...ekadashiParanaRows, ...paranaRows])}
+      </dl>
+    </details>
+  `;
+}
+
+function renderDiagnosticRows(rows) {
+  return rows
+    .filter(([, value]) => value !== undefined && value !== null && value !== "")
+    .map(([label, value]) => `<div><dt>${label}</dt><dd>${value}</dd></div>`)
+    .join("");
+}
+
+function diagnosticTime(value, timezone) {
+  if (!value) return "";
+  if (value instanceof Date) return calendarTime(value, timezone);
+  return String(value);
 }
 
 function renderSanskritTermsHelp() {
@@ -573,8 +654,6 @@ function renderCalendar() {
   locationSelect.value = location.id;
   const calendar = generateCalendarRange(periodFromInput.value, periodToInput.value, location, RULES, EVENTS);
 
-  summaryLocation.textContent = `${location.name} (${location.lat.toFixed(3)}, ${location.lon.toFixed(3)})`;
-  summaryTimezone.textContent = location.timezone;
   renderMasaNotice(calendar.days);
   calendarHeader.innerHTML = "";
   calendarGrid.innerHTML = "";
@@ -759,6 +838,7 @@ function downloadTextFile(fileName, contents, type) {
 function renderDayButton(day, today, location) {
   const isToday = day.date === today;
   const isJumpTarget = jumpHighlightDates.has(day.date);
+  const events = visibleEventsForDay(day);
   const button = document.createElement("button");
   button.type = "button";
   button.className = `day${isToday ? " is-today" : ""}${isJumpTarget ? " is-jump-target" : ""}`;
@@ -775,14 +855,22 @@ function renderDayButton(day, today, location) {
     </div>
     <div class="times"><span class="time-icon" aria-label="${tr("sun")}">☀</span>${calendarTime(day.astronomy.sunrise, location.timezone)}-${calendarTime(day.astronomy.sunset, location.timezone)}</div>
     <div class="times"><span class="time-icon" aria-label="${tr("moonrise")}">☾</span>${calendarTimeOrDash(day.astronomy.moonrise, location.timezone)}-${calendarTimeOrDash(day.astronomy.moonset, location.timezone)} · ${Math.round(day.lunar.tithi_angle_at_sunrise)}°</div>
-    <div class="events">
-      ${visibleEventsForDay(day)
-        .map((event) => `<div class="event ${eventClass(event)}">${eventLabel(event)}</div>`)
-        .join("")}
-    </div>
+    ${renderDayEventBadges(events)}
   `;
   button.addEventListener("click", () => renderDetails(day, { scrollToEventDetails: true }));
   return button;
+}
+
+function renderDayEventBadges(events) {
+  const maxVisibleEvents = 2;
+  const visible = events.slice(0, maxVisibleEvents);
+  const hiddenCount = events.length - visible.length;
+  return `
+    <div class="events">
+      ${visible.map((event) => `<div class="event ${eventClass(event)}">${eventLabel(event)}</div>`).join("")}
+      ${hiddenCount > 0 ? `<div class="event-more">+${hiddenCount}</div>` : ""}
+    </div>
+  `;
 }
 
 function tithiDisplayLine(day) {
@@ -1049,6 +1137,12 @@ function init() {
   eventsOnlyInput.addEventListener("change", renderCalendar);
   eventFilterSelect.addEventListener("change", renderCalendar);
   eventJumpSelect.addEventListener("change", () => jumpToEventMonth(eventJumpSelect.value));
+  eventSearchButton.addEventListener("click", jumpToEventSearch);
+  eventSearchInput.addEventListener("keydown", (event) => {
+    if (event.key !== "Enter") return;
+    event.preventDefault();
+    jumpToEventSearch();
+  });
   thisWeekButton.addEventListener("click", () => setCurrentWeekPeriod());
   thisMonthButton.addEventListener("click", () => setCurrentMonthPeriod());
   fullYearButton.addEventListener("click", () => setFullYearPeriod());
@@ -1070,6 +1164,7 @@ function setCurrentWeekPeriod() {
   const weekStart = shiftIsoDateByDays(periodFromInput.value, mondayOffset);
   periodFromInput.value = weekStart;
   periodToInput.value = shiftIsoDateByDays(weekStart, 6);
+  pendingScrollTarget = ".calendar-wrap";
   renderCalendar();
 }
 
@@ -1079,6 +1174,7 @@ function setCurrentMonthPeriod() {
   const monthEndDate = new Date(Date.UTC(year, month, 0));
   periodFromInput.value = monthStart;
   periodToInput.value = isoDateFromDate(monthEndDate);
+  pendingScrollTarget = ".calendar-wrap";
   renderCalendar();
 }
 
@@ -1095,6 +1191,7 @@ function setFullYearPeriod() {
   const [year] = periodFromInput.value.split("-").map(Number);
   periodFromInput.value = `${year}-01-01`;
   periodToInput.value = `${year}-12-31`;
+  pendingScrollTarget = ".calendar-wrap";
   renderCalendar();
 }
 
@@ -1171,10 +1268,16 @@ function setLanguage(language) {
   languageToggle.textContent = language === "ru" ? "EN" : "RU";
   languageToggle.setAttribute("aria-pressed", String(language === "ru"));
   eventJumpSelect.setAttribute("aria-label", tr("eventFinder"));
+  eventSearchInput.setAttribute("aria-label", tr("eventSearch"));
+  eventSearchButton.setAttribute("aria-label", tr("eventSearch"));
+  eventSearchButton.setAttribute("title", tr("eventSearch"));
   document.querySelector(".eyebrow").textContent = tr("appSubtitle");
   renderButton.textContent = tr("generate");
   document.querySelectorAll("[data-i18n]").forEach((element) => {
     element.textContent = tr(element.dataset.i18n);
+  });
+  document.querySelectorAll("[data-i18n-placeholder]").forEach((element) => {
+    element.setAttribute("placeholder", tr(element.dataset.i18nPlaceholder));
   });
   renderEventFilterChips();
   renderEventJumpOptions();
@@ -1229,8 +1332,26 @@ function jumpToEventMonth(targetId) {
   const location = LOCATIONS.find((item) => item.id === locationSelect.value) || LOCATIONS[0];
   const calendar = generateCalendarRange(`${year}-01-01`, `${year}-12-31`, location, RULES, EVENTS);
   const foundDays = calendar.days.filter((day) => eventJumpMatchesDay(day, target));
+  jumpToFoundDays(foundDays, `${target.labels[currentLanguage] || target.labels.en} ${year}`);
+  eventJumpSelect.value = targetId;
+}
+
+function jumpToEventSearch() {
+  normalizePeriodInputs();
+  const query = eventSearchInput.value.trim();
+  if (!query) return;
+  const year = Number(periodFromInput.value.slice(0, 4));
+  const location = LOCATIONS.find((item) => item.id === locationSelect.value) || LOCATIONS[0];
+  const calendar = generateCalendarRange(`${year}-01-01`, `${year}-12-31`, location, RULES, EVENTS);
+  const needle = normalizeSearchText(query);
+  const foundDays = calendar.days.filter((day) => dayMatchesSearch(day, needle));
+  eventJumpSelect.value = "";
+  jumpToFoundDays(foundDays, `"${query}" ${year}`);
+}
+
+function jumpToFoundDays(foundDays, label) {
   if (!foundDays.length) {
-    calendarStatus.textContent = `${tr("eventNotFound")} ${year}`;
+    calendarStatus.textContent = `${tr("eventNotFound")} ${label}`;
     return;
   }
   const foundDay = foundDays[0];
@@ -1238,7 +1359,7 @@ function jumpToEventMonth(targetId) {
   preferredSelectedDate = foundDay.date;
   pendingScrollTarget = `.day[data-date="${foundDay.date}"]`;
   setMonthPeriodForIsoDate(foundDay.date);
-  eventJumpSelect.value = targetId;
+  calendarStatus.textContent = `${tr("eventSearchFound")}: ${foundDays.length}`;
 }
 
 function eventJumpMatchesDay(day, target) {
@@ -1256,6 +1377,49 @@ function eventJumpMatchesDay(day, target) {
       .join(" ");
     return target.patterns.some((pattern) => pattern.test(haystack));
   });
+}
+
+function dayMatchesSearch(day, needle) {
+  const dayText = [
+    day.date,
+    day.masa.display_name,
+    day.masa.normal_masa_name,
+    day.lunar.paksha,
+    day.lunar.tithi_at_sunrise.name,
+    localizeMasa(day.masa.display_name),
+    localizePaksha(day.lunar.paksha),
+    localizeTithi(day.lunar.tithi_at_sunrise.name)
+  ].join(" ");
+  const eventText = day.events.map(eventSearchText).join(" ");
+  return normalizeSearchText(`${dayText} ${eventText}`).includes(needle);
+}
+
+function eventSearchText(event) {
+  return [
+    event.id,
+    event.runtime_id,
+    event.subject,
+    event.name,
+    event.description,
+    event.full_description,
+    event.ekadashi_id,
+    event.i18n?.en?.name,
+    event.i18n?.en?.description,
+    event.i18n?.en?.full_description,
+    event.i18n?.ru?.name,
+    event.i18n?.ru?.description,
+    event.i18n?.ru?.full_description
+  ]
+    .filter(Boolean)
+    .join(" ");
+}
+
+function normalizeSearchText(value) {
+  return String(value || "")
+    .toLowerCase()
+    .replaceAll("ё", "е")
+    .replace(/\s+/g, " ")
+    .trim();
 }
 
 function renderEventFilterChips() {
