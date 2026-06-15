@@ -1,0 +1,38 @@
+{
+  "id": "KRISHNA_PHULA_DOLA_SALILA_VIHARA",
+  "type": "festival",
+  "category": "festival",
+  "scope": "matched_harekrishnazp_vaishnavacalendar",
+  "subject": "Krishna Phula Dola and Salila Vihara",
+  "rules": {
+    "gaudiya_masa": "Madhusudana",
+    "paksha": "Gaura",
+    "tithi": "Purnima",
+    "timing_rule": "sunrise_based",
+    "allow_in_adhika": false
+  },
+  "priority": "medium",
+  "source_status": "matched_by_name_type_tithi",
+  "sources": [
+    {
+      "type": "description",
+      "url": "http://harekrishnazp.info/materialy/vajshnavskij-kalendar/1262-krishna-pkhula-dola-shalila-vikhara.html",
+      "attribution_required": true
+    }
+  ],
+  "translations": [
+    {
+      "lang": "en",
+      "name": "Krishna Phula Dola and Salila Vihara",
+      "short_description": "Detailed Russian source text has been imported for Krishna Phula Dola and Salila Vihara. English editorial translation is pending.",
+      "full_description": ""
+    },
+    {
+      "lang": "ru",
+      "name": "Кришна Пхула Дола, Шалила Вихара",
+      "short_description": "Кришна Пхула Дола, Шалила Вихара - летний фестиваль лодок для Божеств Шри Шри Радха-Кришны. В Кришна-Баларам Мандире (Вриндаван) преданные наполняют огромный мраморный двор водой, изготовляют лодку для удовольствия Шри Шри Радха-Шьямасундары, и с любовью катают Их по пруду в сопровождении киртана.",
+      "full_description": "Кришна Пхула Дола, Шалила Вихара - летний фестиваль лодок для Божеств Шри Шри Радха-Кришны. В Кришна-Баларам Мандире (Вриндаван) преданные наполняют огромный мраморный двор водой, изготовляют лодку для удовольствия Шри Шри Радха-Шьямасундары, и с любовью катают Их по пруду в сопровождении киртана."
+    }
+  ],
+  "content_license_note": "Source footer says: Распространение материалов сайта горячо приветствуется! При использовании информации на других сайтах, пожалуйста, ставьте ссылку на цитируемый материал."
+}

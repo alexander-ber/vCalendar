@@ -1,6 +1,6 @@
-import { generateCalendarRange, viewModelForDay } from "./calendar-engine.js?v=20260613-4";
-import { EVENTS } from "./events-data.js?v=20260614-2";
-import { LOCATIONS } from "./locations-data.js?v=20260613-1";
+import { generateCalendarRange, viewModelForDay } from "./calendar-engine.js?v=20260615-1";
+import { EVENTS } from "./events-data.js?v=20260615-1";
+import { LOCATIONS } from "./locations-data.js?v=20260615-1";
 import { RULES } from "./rules-data.js?v=20260613-3";
 
 const locationSelect = document.querySelector("#locationSelect");
@@ -36,6 +36,7 @@ let currentLanguage = "ru";
 let jumpHighlightDates = new Set();
 let preferredSelectedDate = null;
 let pendingScrollTarget = null;
+const MAX_RENDER_DAYS = 400;
 
 const I18N = {
   en: {
@@ -51,6 +52,8 @@ const I18N = {
     periodTo: "To",
     generate: "Generate",
     generating: "Generating...",
+    periodChanged: "Period changed. Press Generate to recalculate.",
+    periodTooLarge: "Selected period is too large. Please choose up to one calendar year.",
     exportCalendar: "Export calendar",
     exportedCalendar: "ICS calendar exported",
     noEventsToExport: "No events match the current period and filters.",
@@ -105,10 +108,16 @@ const I18N = {
     tithiAtArunodaya: "Tithi at arunodaya",
     until: "until",
     sun: "Sun",
+    moonWaxing: "waxing moon",
+    moonWaning: "waning moon",
+    moonNew: "new moon",
+    moonFull: "full moon",
+    moonIllumination: "illumination",
     today: "Today",
     purushottamaNotice: "Purushottama Maas is active",
     chaturmasyaNotice: "Chaturmasya is active",
     karttikNotice: "Karttik / Damodara month is active",
+    bhishmaPanchakaNotice: "Bhishma Panchaka is active",
     visibleInMonth: "Visible in this period from",
     to: "to",
     forLocation: "for the selected location",
@@ -151,6 +160,8 @@ const I18N = {
     periodTo: "По",
     generate: "Рассчитать",
     generating: "Расчёт...",
+    periodChanged: "Период изменён. Нажмите «Рассчитать», чтобы обновить календарь.",
+    periodTooLarge: "Слишком большой период. Выберите период до одного календарного года.",
     exportCalendar: "Экспорт в календарь",
     exportedCalendar: "ICS календарь экспортирован",
     noEventsToExport: "Нет событий для экспорта с текущим периодом и фильтрами.",
@@ -205,10 +216,16 @@ const I18N = {
     tithiAtArunodaya: "Титхи на арунодае",
     until: "до",
     sun: "Солнце",
+    moonWaxing: "растущая Луна",
+    moonWaning: "убывающая Луна",
+    moonNew: "новолуние",
+    moonFull: "полнолуние",
+    moonIllumination: "освещённость",
     today: "Сегодня",
     purushottamaNotice: "Идёт Пурушоттама маса",
     chaturmasyaNotice: "Идёт Чатурмасья",
     karttikNotice: "Идёт Карттик / Дамодара маса",
+    bhishmaPanchakaNotice: "Идёт Бхишма Панчака",
     visibleInMonth: "Видимо в этом периоде с",
     to: "по",
     forLocation: "для выбранного места",
@@ -324,7 +341,13 @@ const EVENT_JUMP_TARGETS = [
     id: "karttik",
     labels: { en: "Karttik", ru: "Карттик" },
     patterns: [/карт+ик/i, /kart+ik/i, /дамодара/i, /damodara/i],
-    matchDay: (day) => day.masa.normal_masa_name === "Damodara" || day.lunar.masa_display.includes("Damodara")
+    matchDay: isKarttikDay
+  },
+  {
+    id: "bhishmaPanchaka",
+    labels: { en: "Bhishma Panchaka", ru: "Бхишма Панчака" },
+    patterns: [/bhishma/i, /bkhishma/i, /бхишма/i],
+    matchDay: isBhishmaPanchakaDay
   },
   {
     id: "chaturmasya",
@@ -517,7 +540,7 @@ function renderDetails(day, options = {}) {
   if (options.scrollToEventDetails) {
     requestAnimationFrame(() => {
       const target = document.querySelector(".event-details-panel") || document.querySelector(".details");
-      target?.scrollIntoView({ behavior: "smooth", block: "start" });
+      target?.scrollIntoView({ behavior: "smooth", block: "center" });
       target?.focus?.({ preventScroll: true });
     });
   }
@@ -545,6 +568,7 @@ function renderSanskritTermsHelp() {
 
 function renderCalendar() {
   normalizePeriodInputs();
+  if (!ensureRenderablePeriod()) return;
   const location = LOCATIONS.find((item) => item.id === locationSelect.value) || LOCATIONS[0];
   locationSelect.value = location.id;
   const calendar = generateCalendarRange(periodFromInput.value, periodToInput.value, location, RULES, EVENTS);
@@ -613,6 +637,7 @@ function renderCalendar() {
 
 function exportCurrentCalendarIcs() {
   normalizePeriodInputs();
+  if (!ensureRenderablePeriod()) return;
   const location = LOCATIONS.find((item) => item.id === locationSelect.value) || LOCATIONS[0];
   const calendar = generateCalendarRange(periodFromInput.value, periodToInput.value, location, RULES, EVENTS);
   const entries = [];
@@ -741,10 +766,13 @@ function renderDayButton(day, today, location) {
   button.innerHTML = `
     <div class="day-topline">
       <span class="gregorian-main">${gregorianDayLine(day.date)}</span>
-      <span class="moon-symbol" title="${localizePaksha(day.lunar.paksha)}">${moonSymbol(day.lunar.tithi_at_sunrise.name, day.lunar.paksha)}</span>
+      ${moonPhaseIcon(day)}
     </div>
     ${isToday ? `<div class="today-pill">${tr("today")}</div>` : ""}
-    <div class="lunar-line">${localizeMasa(day.lunar.masa_display)} • ${tithiDisplayLine(day)} ${tr("until")} ${tithiEndLabel(day)}</div>
+    <div class="lunar-line">
+      <span class="lunar-masa">${localizeMasaCompact(day.lunar.masa_display)}</span>
+      <span class="lunar-tithi">${tithiDisplayLine(day)} ${tr("until")} ${tithiEndLabel(day)}</span>
+    </div>
     <div class="times"><span class="time-icon" aria-label="${tr("sun")}">☀</span>${calendarTime(day.astronomy.sunrise, location.timezone)}-${calendarTime(day.astronomy.sunset, location.timezone)}</div>
     <div class="times"><span class="time-icon" aria-label="${tr("moonrise")}">☾</span>${calendarTimeOrDash(day.astronomy.moonrise, location.timezone)}-${calendarTimeOrDash(day.astronomy.moonset, location.timezone)} · ${Math.round(day.lunar.tithi_angle_at_sunrise)}°</div>
     <div class="events">
@@ -796,6 +824,14 @@ function normalizePeriodInputs() {
   }
 }
 
+function ensureRenderablePeriod() {
+  if (daysBetweenInclusive(periodFromInput.value, periodToInput.value) <= MAX_RENDER_DAYS) return true;
+  calendarGrid.innerHTML = `<div class="calendar-loading">${tr("periodTooLarge")}</div>`;
+  calendarStatus.textContent = tr("periodTooLarge");
+  dayDetails.textContent = tr("selectDay");
+  return false;
+}
+
 function isIsoDate(value) {
   return /^\d{4}-\d{2}-\d{2}$/.test(value);
 }
@@ -814,7 +850,14 @@ function tithiEndLabel(day) {
 }
 
 function isKarttikDay(day) {
-  return day.masa.normal_masa_name === "Damodara";
+  const isOpeningPurnima =
+    day.masa.normal_masa_name === "Padmanabha" && day.lunar.paksha === "Gaura" && day.lunar.tithi_at_sunrise.number === 15;
+  return isOpeningPurnima || day.masa.normal_masa_name === "Damodara";
+}
+
+function isBhishmaPanchakaDay(day) {
+  const tithi = day.lunar.tithi_at_sunrise.number;
+  return day.masa.normal_masa_name === "Damodara" && day.lunar.paksha === "Gaura" && tithi >= 11 && tithi <= 15;
 }
 
 function isChaturmasyaDay(day) {
@@ -842,6 +885,9 @@ function renderMasaNotice(days) {
 
   const karttikDays = days.filter(isKarttikDay);
   if (karttikDays.length) notices.push(periodNotice("karttikNotice", karttikDays));
+
+  const bhishmaPanchakaDays = days.filter(isBhishmaPanchakaDay);
+  if (bhishmaPanchakaDays.length) notices.push(periodNotice("bhishmaPanchakaNotice", bhishmaPanchakaDays));
 
   if (!notices.length) {
     masaNotice.hidden = true;
@@ -871,10 +917,67 @@ function gregorianDayLine(isoDate) {
   }).format(new Date(`${isoDate}T12:00:00Z`));
 }
 
-function moonSymbol(tithiName, paksha) {
-  if (tithiName === "Purnima") return "○";
-  if (tithiName === "Amavasya") return "●";
-  return paksha === "Gaura" ? "☽" : "☾";
+function moonPhaseIcon(day) {
+  const phase = normalizedMoonAngle(day.lunar.tithi_angle_at_sunrise);
+  const illumination = moonIllumination(phase);
+  const percent = Math.round(illumination * 100);
+  const label = moonPhaseLabel(phase, percent);
+  return `<span class="moon-symbol" title="${label}" aria-label="${label}">${moonPhaseSvg(phase, illumination)}</span>`;
+}
+
+function normalizedMoonAngle(angle) {
+  return ((Number(angle) % 360) + 360) % 360;
+}
+
+function moonIllumination(phase) {
+  return (1 - Math.cos((phase * Math.PI) / 180)) / 2;
+}
+
+function moonPhaseLabel(phase, percent) {
+  if (isNewMoonPhase(phase)) return `${tr("moonNew")} · ${tr("moonIllumination")} ${percent}%`;
+  if (isFullMoonPhase(phase)) return `${tr("moonFull")} · ${tr("moonIllumination")} ${percent}%`;
+  const direction = phase < 180 ? tr("moonWaxing") : tr("moonWaning");
+  return `${direction} · ${tr("moonIllumination")} ${percent}%`;
+}
+
+function isNewMoonPhase(phase) {
+  return phase <= 1 || phase >= 359;
+}
+
+function isFullMoonPhase(phase) {
+  return Math.abs(phase - 180) <= 1;
+}
+
+function moonPhaseSvg(phase, illumination) {
+  const waxing = phase < 180;
+  const clamped = Math.max(0, Math.min(1, illumination));
+  if (isNewMoonPhase(phase)) {
+    return `<svg class="moon-svg" viewBox="0 0 32 32" aria-hidden="true"><circle class="moon-dark" cx="16" cy="16" r="14"></circle></svg>`;
+  }
+  if (isFullMoonPhase(phase)) {
+    return `<svg class="moon-svg" viewBox="0 0 32 32" aria-hidden="true"><circle class="moon-lit moon-full-disc" cx="16" cy="16" r="14"></circle></svg>`;
+  }
+
+  if (clamped <= 0.5) {
+    const controlX = waxing ? 30 - clamped * 28 : 2 + clamped * 28;
+    const sweep = waxing ? 1 : 0;
+    return `
+      <svg class="moon-svg" viewBox="0 0 32 32" aria-hidden="true">
+        <circle class="moon-dark" cx="16" cy="16" r="14"></circle>
+        <path class="moon-lit" d="M16 2 A14 14 0 0 ${sweep} 16 30 Q ${controlX.toFixed(2)} 16 16 2 Z"></path>
+      </svg>
+    `;
+  }
+
+  const darkFraction = 1 - clamped;
+  const controlX = waxing ? 2 + darkFraction * 28 : 30 - darkFraction * 28;
+  const sweep = waxing ? 0 : 1;
+  return `
+    <svg class="moon-svg" viewBox="0 0 32 32" aria-hidden="true">
+      <circle class="moon-lit moon-full-disc" cx="16" cy="16" r="14"></circle>
+      <path class="moon-dark" d="M16 2 A14 14 0 0 ${sweep} 16 30 Q ${controlX.toFixed(2)} 16 16 2 Z"></path>
+    </svg>
+  `;
 }
 
 function gregorianLong(isoDate) {
@@ -941,8 +1044,8 @@ function init() {
   });
   exportIcsButton.addEventListener("click", exportCurrentCalendarIcs);
   locationSelect.addEventListener("change", renderCalendar);
-  periodFromInput.addEventListener("change", renderCalendar);
-  periodToInput.addEventListener("change", renderCalendar);
+  periodFromInput.addEventListener("change", markPeriodChanged);
+  periodToInput.addEventListener("change", markPeriodChanged);
   eventsOnlyInput.addEventListener("change", renderCalendar);
   eventFilterSelect.addEventListener("change", renderCalendar);
   eventJumpSelect.addEventListener("change", () => jumpToEventMonth(eventJumpSelect.value));
@@ -954,6 +1057,10 @@ function init() {
   prevMonthBottom.addEventListener("click", () => shiftPeriod(-1));
   nextMonthBottom.addEventListener("click", () => shiftPeriod(1));
   renderCalendar();
+}
+
+function markPeriodChanged() {
+  calendarStatus.textContent = tr("periodChanged");
 }
 
 function setCurrentWeekPeriod() {
@@ -1129,7 +1236,7 @@ function jumpToEventMonth(targetId) {
   const foundDay = foundDays[0];
   jumpHighlightDates = new Set(foundDays.map((day) => day.date));
   preferredSelectedDate = foundDay.date;
-  pendingScrollTarget = ".calendar-wrap";
+  pendingScrollTarget = `.day[data-date="${foundDay.date}"]`;
   setMonthPeriodForIsoDate(foundDay.date);
   eventJumpSelect.value = targetId;
 }
@@ -1267,6 +1374,12 @@ function localizeMasa(value) {
         .join(" ")
     )
     .join(" / ");
+}
+
+function localizeMasaCompact(value) {
+  return localizeMasa(value)
+    .replace(/\s+маса/gi, "")
+    .replace(/\s+masa/gi, "");
 }
 
 function localizedEventField(event, field) {

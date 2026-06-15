@@ -40,6 +40,14 @@ export const LOCATIONS = [
     timezone: "Europe/Kyiv"
   },
   {
+    id: "mariupol",
+    name: "Mariupol, Ukraine",
+    group: "Пост СССР",
+    lat: 47.0971,
+    lon: 37.5434,
+    timezone: "Europe/Kyiv"
+  },
+  {
     id: "minsk",
     name: "Minsk, Belarus",
     group: "Пост СССР",
