@@ -497,7 +497,7 @@ function renderDetails(day, options = {}) {
         ? `<div class="ekadashi-panel">
             <span>${tr("ekadashiName")}</span>
             <strong>${ekadashiEvents.map((event) => localizeEventName(event)).join(", ")}</strong>
-            <p>${ekadashiEvents.map((event) => localizeEventDescription(event)).join(" ")}</p>
+            <p>${ekadashiEvents.map((event) => localizeEventShortDescription(event)).filter(Boolean).join(" ")}</p>
             <small>${ekadashiEvents.map((event) => ekadashiDetailLine(event)).join(" | ")}</small>
           </div>`
         : ""
