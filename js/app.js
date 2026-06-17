@@ -1,4 +1,4 @@
-import { generateCalendarRange, viewModelForDay } from "./calendar-engine.js?v=20260615-1";
+import { generateCalendarRange, viewModelForDay } from "./calendar-engine.js?v=20260617-1";
 import { EVENTS } from "./events-data.js?v=20260615-1";
 import { LOCATIONS } from "./locations-data.js?v=20260615-1";
 import { RULES } from "./rules-data.js?v=20260613-3";
@@ -1582,8 +1582,8 @@ function localizeClassification(value) {
       unmilani_trisprsa: "Unmilani Trisprsa Mahadvadashi",
       trisprsa_after_dashami_viddha: "shifted after Dashami at arunodaya",
       suddha_after_dashami_viddha: "shifted after Dashami at arunodaya",
-      trisprsa_after_dashami_sunrise: "shifted after Dashami at sunrise",
-      suddha_after_dashami_sunrise: "shifted after Dashami at sunrise"
+      trisprsa_after_dashami_sunrise: "shifted from previous day: Dashami at sunrise",
+      suddha_after_dashami_sunrise: "shifted from previous day: Dashami at sunrise"
     },
     ru: {
       viddha: "виддха",
@@ -1599,8 +1599,8 @@ function localizeClassification(value) {
       unmilani_trisprsa: "Унмилани триспрша махадвадаши",
       trisprsa_after_dashami_viddha: "перенос: Дашами на арунодае",
       suddha_after_dashami_viddha: "перенос: Дашами на арунодае",
-      trisprsa_after_dashami_sunrise: "перенос: Дашами на восходе",
-      suddha_after_dashami_sunrise: "перенос: Дашами на восходе"
+      trisprsa_after_dashami_sunrise: "перенос с предыдущего дня: Дашами на восходе",
+      suddha_after_dashami_sunrise: "перенос с предыдущего дня: Дашами на восходе"
     }
   };
   return (map[currentLanguage] || map.en)[value] || value;
@@ -1608,11 +1608,16 @@ function localizeClassification(value) {
 
 function ekadashiReasonLabel(classification) {
   if (!classification || classification === "standard" || classification === "suddha_ekadashi" || classification === "normal_ekadashi") return "";
+  if (classification === "suddha_after_dashami_sunrise") return "";
+  if (classification === "trisprsa_after_dashami_sunrise") return localizeClassification("trisprsa");
   return localizeClassification(classification);
 }
 
 function ekadashiDetailLine(event) {
   const reason = ekadashiReasonLabel(event.classification);
+  if (reason && event.candidate_date && event.candidate_date !== event.fast_date) {
+    return `${tr("fastDate")} ${event.fast_date}, ${reason} (${event.candidate_date})`;
+  }
   return reason ? `${tr("fastDate")} ${event.fast_date}, ${reason}` : `${tr("fastDate")} ${event.fast_date}`;
 }
 

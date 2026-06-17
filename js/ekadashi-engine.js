@@ -531,12 +531,18 @@ function scheduleEkadashi(byDate, ekadashi, days, timezone) {
   addEvent(byDate, ekadashi.fast_date, ekadashi);
   if (ekadashi.candidate_date !== ekadashi.fast_date) {
     const candidateDay = days.find((day) => day.date === ekadashi.candidate_date);
-    if (candidateDay) addEvent(byDate, ekadashi.candidate_date, noFastNoticeForEkadashiDay(candidateDay, ekadashi));
+    if (shouldShowNoFastNotice(candidateDay)) {
+      addEvent(byDate, ekadashi.candidate_date, noFastNoticeForEkadashiDay(candidateDay, ekadashi));
+    }
   }
 
   const paranaDate = addDaysToLocalDate(ekadashi.fast_date, 1);
   const parana = paranaEventForDate(paranaDate, ekadashi, timezone);
   if (parana) addEvent(byDate, paranaDate, parana);
+}
+
+function shouldShowNoFastNotice(day) {
+  return Boolean(day && isEkadashi(day.lunar.tithi_at_sunrise.number));
 }
 
 export function buildEkadashiEvents(days, location, rules) {
@@ -569,7 +575,7 @@ export function buildEkadashiEvents(days, location, rules) {
   for (const [date, notice] of noFastByDate.entries()) {
     if (byDate.get(date)?.some((event) => event.type === "ekadashi_notice")) continue;
     const day = days.find((item) => item.date === date);
-    if (day) addEvent(byDate, date, noFastNoticeForEkadashiDay(day, notice, notice.targetNumber));
+    if (shouldShowNoFastNotice(day)) addEvent(byDate, date, noFastNoticeForEkadashiDay(day, notice, notice.targetNumber));
   }
 
   return byDate;
