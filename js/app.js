@@ -108,6 +108,7 @@ const I18N = {
     calculationDetails: "Calculation details",
     calculationEngine: "Calculation engine",
     ekadashiRule: "Ekadashi rule",
+    shiftReason: "Shift reason",
     paranaFormula: "Parana formula",
     hariVasaraEnd: "Hari-vasara ends",
     dvadashiStart: "Dvadashi starts",
@@ -226,6 +227,7 @@ const I18N = {
     calculationDetails: "Детали расчёта",
     calculationEngine: "Движок расчёта",
     ekadashiRule: "Правило Экадаши",
+    shiftReason: "Причина переноса",
     paranaFormula: "Формула парана",
     hariVasaraEnd: "Окончание Хари-васары",
     dvadashiStart: "Начало Двадаши",
@@ -580,6 +582,7 @@ function renderCalculationDetails(day, model, ekadashiEvents, paranaEvents) {
   const ekadashiRows = ekadashiEvents.flatMap((event) => [
     [tr("ekadashiName"), localizeEventName(event)],
     [tr("ekadashiRule"), localizeClassification(event.diagnostics?.rule_applied || event.classification || event.fast_day_type || "standard")],
+    [tr("shiftReason"), ekadashiCalculationExplanation(event)],
     [tr("fastDate"), event.fast_date || ""],
     event.candidate_no_fast_reason
       ? [tr("noFast"), localizeClassification(event.candidate_no_fast_reason)]
@@ -1604,6 +1607,43 @@ function localizeClassification(value) {
     }
   };
   return (map[currentLanguage] || map.en)[value] || value;
+}
+
+function ekadashiCalculationExplanation(event) {
+  const rule = event.diagnostics?.rule_applied || event.classification || event.fast_day_type || "";
+  const firstDate = event.candidate_date && event.candidate_date !== event.fast_date ? event.candidate_date : "";
+  const fastDate = event.fast_date || "";
+  const spanRu = firstDate && fastDate ? ` (${firstDate} и ${fastDate})` : "";
+  const spanEn = firstDate && fastDate ? ` (${firstDate} and ${fastDate})` : "";
+  const map = {
+    en: {
+      unmilani: `Ekadashi is present at two consecutive sunrises${spanEn}; by the Unmilani rule the fast is observed on the second solar day.`,
+      unmilani_trisprsa: `Ekadashi is present at two consecutive sunrises${spanEn}, and the following Dvadashi/Trayodashi condition makes it Unmilani Trisprsa; the fast is observed on the second solar day.`,
+      trisprsa: "Dvadashi is not available at the next sunrise in the normal way, so the fast follows the Trisprsa Mahadvadashi rule.",
+      trisprsa_after_dashami_viddha: "The previous Ekadashi candidate was Dashami-viddha at arunodaya; the fast shifts to the next suitable Trisprsa day.",
+      suddha_after_dashami_viddha: "The previous Ekadashi candidate was Dashami-viddha at arunodaya; the fast shifts to the next clean Ekadashi day.",
+      trisprsa_after_dashami_sunrise: "The previous solar day began with Dashami at sunrise and Ekadashi started later; the fast is observed on the next suitable Trisprsa day.",
+      suddha_after_dashami_sunrise: "The previous solar day began with Dashami at sunrise and Ekadashi started later; the fast is observed on the next clean Ekadashi day.",
+      vyanjuli_mahadvadashi: "Dvadashi extends across two sunrises, so the fast follows the Vyanjuli Mahadvadashi rule.",
+      paksavardhini_mahadvadashi: "A vriddhi full moon or new moon occurs later in the paksha, so the fast follows the Paksavardhini Mahadvadashi rule.",
+      dvadashi_suitable_for_ekadashi_fasting: "Ekadashi was affected by Dashami at arunodaya; the suitable fasting day is Dvadashi.",
+      no_sunrise: "Ekadashi does not touch sunrise on a solar day, so the fast shifts to the next suitable day."
+    },
+    ru: {
+      unmilani: `Экадаши присутствует на двух восходах подряд${spanRu}; по правилу Унмилани пост соблюдается во второй солнечный день.`,
+      unmilani_trisprsa: `Экадаши присутствует на двух восходах подряд${spanRu}, а следующее условие Двадаши/Трайодаши делает случай Унмилани Триспрша; пост соблюдается во второй солнечный день.`,
+      trisprsa: "Двадаши не доступна на следующем восходе обычным образом, поэтому пост определяется по правилу Триспрша Махадвадаши.",
+      trisprsa_after_dashami_viddha: "Предыдущий кандидат Экадаши был Дашами-виддха на арунодае; пост переносится на следующий подходящий день Триспрша.",
+      suddha_after_dashami_viddha: "Предыдущий кандидат Экадаши был Дашами-виддха на арунодае; пост переносится на следующий чистый день Экадаши.",
+      trisprsa_after_dashami_sunrise: "Предыдущий солнечный день начался с Дашами на восходе, а Экадаши началась позже; пост соблюдается в следующий подходящий день Триспрша.",
+      suddha_after_dashami_sunrise: "Предыдущий солнечный день начался с Дашами на восходе, а Экадаши началась позже; пост соблюдается в следующий чистый день Экадаши.",
+      vyanjuli_mahadvadashi: "Двадаши растянулась на два восхода подряд, поэтому пост определяется по правилу Вьянджули Махадвадаши.",
+      paksavardhini_mahadvadashi: "Позже в этой пакше есть вриддхи Пурнима или Амавасья, поэтому пост определяется по правилу Пакшавардхини Махадвадаши.",
+      dvadashi_suitable_for_ekadashi_fasting: "Экадаши была затронута Дашами на арунодае; подходящим днём поста становится Двадаши.",
+      no_sunrise: "Экадаши не попала на восход ни одного солнечного дня, поэтому пост переносится на следующий подходящий день."
+    }
+  };
+  return (map[currentLanguage] || map.en)[rule] || "";
 }
 
 function ekadashiReasonLabel(classification) {
