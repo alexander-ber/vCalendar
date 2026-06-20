@@ -10,6 +10,7 @@ const eventsOnlyInput = document.querySelector("#eventsOnlyInput");
 const eventFilterSelect = document.querySelector("#eventFilterSelect");
 const eventFilterChips = document.querySelector("#eventFilterChips");
 const eventJumpSelect = document.querySelector("#eventJumpSelect");
+const vaishnavaJumpSelect = document.querySelector("#vaishnavaJumpSelect");
 const eventSearchInput = document.querySelector("#eventSearchInput");
 const eventSearchButton = document.querySelector("#eventSearchButton");
 const renderButton = document.querySelector("#renderButton");
@@ -36,6 +37,8 @@ let currentLanguage = "ru";
 let jumpHighlightDates = new Set();
 let preferredSelectedDate = null;
 let pendingScrollTarget = null;
+let vaishnavaTypeaheadText = "";
+let vaishnavaTypeaheadTimer = null;
 const MAX_RENDER_DAYS = 400;
 
 const I18N = {
@@ -147,6 +150,8 @@ const I18N = {
     filterDeityTemple: "Deity / temple days",
     jumpToEvent: "Find event",
     chooseEvent: "Select event",
+    chooseVaishnava: "Select Vaishnava",
+    vaishnavaFinder: "Find Vaishnava",
     eventSearch: "Search event",
     eventSearchPlaceholder: "Search by event name",
     eventSearchFound: "Found matches",
@@ -266,6 +271,8 @@ const I18N = {
     filterDeityTemple: "Божества / храмы",
     jumpToEvent: "Найти событие",
     chooseEvent: "Выберите событие",
+    chooseVaishnava: "Выберите вайшнава",
+    vaishnavaFinder: "Поиск вайшнава",
     eventSearch: "Поиск события",
     eventSearchPlaceholder: "Например: Нитьянанда",
     eventSearchFound: "Найдено совпадений",
@@ -1140,6 +1147,8 @@ function init() {
   eventsOnlyInput.addEventListener("change", renderCalendar);
   eventFilterSelect.addEventListener("change", renderCalendar);
   eventJumpSelect.addEventListener("change", () => jumpToEventMonth(eventJumpSelect.value));
+  vaishnavaJumpSelect.addEventListener("change", () => jumpToVaishnava(vaishnavaJumpSelect.value));
+  vaishnavaJumpSelect.addEventListener("keydown", handleVaishnavaSelectTypeahead);
   eventSearchButton.addEventListener("click", jumpToEventSearch);
   eventSearchInput.addEventListener("keydown", (event) => {
     if (event.key !== "Enter") return;
@@ -1271,6 +1280,7 @@ function setLanguage(language) {
   languageToggle.textContent = language === "ru" ? "EN" : "RU";
   languageToggle.setAttribute("aria-pressed", String(language === "ru"));
   eventJumpSelect.setAttribute("aria-label", tr("eventFinder"));
+  vaishnavaJumpSelect.setAttribute("aria-label", tr("vaishnavaFinder"));
   eventSearchInput.setAttribute("aria-label", tr("eventSearch"));
   eventSearchButton.setAttribute("aria-label", tr("eventSearch"));
   eventSearchButton.setAttribute("title", tr("eventSearch"));
@@ -1284,6 +1294,7 @@ function setLanguage(language) {
   });
   renderEventFilterChips();
   renderEventJumpOptions();
+  renderVaishnavaJumpOptions();
   updateFontSizeButtons();
   if (!selectedDate) dayDetails.textContent = tr("selectDay");
   updateThemeButtons();
@@ -1326,6 +1337,16 @@ function renderEventJumpOptions() {
   eventJumpSelect.value = EVENT_JUMP_TARGETS.some((target) => target.id === selected) ? selected : "";
 }
 
+function renderVaishnavaJumpOptions() {
+  const selected = vaishnavaJumpSelect.value;
+  const targets = vaishnavaJumpTargets();
+  vaishnavaJumpSelect.innerHTML = `
+    <option value="">${tr("chooseVaishnava")}</option>
+    ${targets.map((target) => `<option value="${target.id}">${target.label}</option>`).join("")}
+  `;
+  vaishnavaJumpSelect.value = targets.some((target) => target.id === selected) ? selected : "";
+}
+
 function jumpToEventMonth(targetId) {
   if (!targetId) return;
   normalizePeriodInputs();
@@ -1335,8 +1356,25 @@ function jumpToEventMonth(targetId) {
   const location = LOCATIONS.find((item) => item.id === locationSelect.value) || LOCATIONS[0];
   const calendar = generateCalendarRange(`${year}-01-01`, `${year}-12-31`, location, RULES, EVENTS);
   const foundDays = calendar.days.filter((day) => eventJumpMatchesDay(day, target));
+  renderVaishnavaJumpOptions();
+  vaishnavaJumpSelect.value = "";
   jumpToFoundDays(foundDays, `${target.labels[currentLanguage] || target.labels.en} ${year}`);
   eventJumpSelect.value = targetId;
+}
+
+function jumpToVaishnava(targetId) {
+  if (!targetId) return;
+  normalizePeriodInputs();
+  const target = vaishnavaJumpTargets().find((item) => item.id === targetId);
+  if (!target) return;
+  ensureVaishnavaFiltersEnabled();
+  const year = Number(periodFromInput.value.slice(0, 4));
+  const location = LOCATIONS.find((item) => item.id === locationSelect.value) || LOCATIONS[0];
+  const calendar = generateCalendarRange(`${year}-01-01`, `${year}-12-31`, location, RULES, EVENTS);
+  const foundDays = calendar.days.filter((day) => day.events.some((event) => target.eventIds.has(event.id) || target.keys.has(vaishnavaPersonKey(event))));
+  eventJumpSelect.value = "";
+  jumpToFoundDays(foundDays, `${target.label} ${year}`);
+  vaishnavaJumpSelect.value = targetId;
 }
 
 function jumpToEventSearch() {
@@ -1349,6 +1387,8 @@ function jumpToEventSearch() {
   const needle = normalizeSearchText(query);
   const foundDays = calendar.days.filter((day) => dayMatchesSearch(day, needle));
   eventJumpSelect.value = "";
+  renderVaishnavaJumpOptions();
+  vaishnavaJumpSelect.value = "";
   jumpToFoundDays(foundDays, `"${query}" ${year}`);
 }
 
@@ -1380,6 +1420,105 @@ function eventJumpMatchesDay(day, target) {
       .join(" ");
     return target.patterns.some((pattern) => pattern.test(haystack));
   });
+}
+
+function handleVaishnavaSelectTypeahead(event) {
+  if (event.key === "Enter" && vaishnavaJumpSelect.value) {
+    event.preventDefault();
+    jumpToVaishnava(vaishnavaJumpSelect.value);
+    return;
+  }
+  if (event.key === "Escape") {
+    vaishnavaTypeaheadText = "";
+    return;
+  }
+  if (event.key === "Backspace") {
+    event.preventDefault();
+    vaishnavaTypeaheadText = vaishnavaTypeaheadText.slice(0, -1);
+    selectVaishnavaTypeaheadMatch();
+    return;
+  }
+  if (event.key.length !== 1 || event.metaKey || event.ctrlKey || event.altKey) return;
+  event.preventDefault();
+  vaishnavaTypeaheadText += event.key;
+  selectVaishnavaTypeaheadMatch();
+}
+
+function selectVaishnavaTypeaheadMatch() {
+  clearTimeout(vaishnavaTypeaheadTimer);
+  vaishnavaTypeaheadTimer = setTimeout(() => {
+    vaishnavaTypeaheadText = "";
+  }, 1200);
+  const needle = normalizeSearchText(vaishnavaTypeaheadText);
+  if (!needle) return;
+  const target = vaishnavaJumpTargets().find((item) => normalizeSearchText(`${item.label} ${item.id} ${item.searchText}`).includes(needle));
+  if (!target) return;
+  vaishnavaJumpSelect.value = target.id;
+  calendarStatus.textContent = `${tr("vaishnavaFinder")}: ${target.label}`;
+}
+
+function vaishnavaJumpTargets() {
+  const targets = new Map();
+  for (const event of EVENTS.filter(isVaishnavaEvent)) {
+    const key = vaishnavaPersonKey(event);
+    if (!key) continue;
+    const label = vaishnavaPersonLabel(event);
+    const searchText = normalizeSearchText(`${key} ${label} ${event.subject || ""} ${event.name || ""} ${event.i18n?.en?.name || ""} ${event.i18n?.ru?.name || ""}`);
+    if (!targets.has(key)) {
+      targets.set(key, {
+        id: key,
+        label,
+        searchText,
+        eventIds: new Set(),
+        keys: new Set([key])
+      });
+    }
+    const target = targets.get(key);
+    target.eventIds.add(event.id);
+    target.keys.add(key);
+    target.searchText = `${target.searchText} ${searchText}`;
+    if (label.length < target.label.length) target.label = label;
+  }
+  return [...targets.values()].sort((a, b) => a.label.localeCompare(b.label, currentLanguage === "ru" ? "ru" : "en"));
+}
+
+function isVaishnavaEvent(event) {
+  return event.type === "vaishnava_appearance" || event.type === "vaishnava_disappearance";
+}
+
+function vaishnavaPersonKey(event) {
+  return normalizeSearchText(cleanVaishnavaPersonLabel(event.subject || event.name || event.i18n?.en?.name || event.id));
+}
+
+function vaishnavaPersonLabel(event) {
+  return cleanVaishnavaPersonLabel(localizeEventName(event) || event.subject || event.name || event.id);
+}
+
+function cleanVaishnavaPersonLabel(value) {
+  return String(value || "")
+    .replace(/^День\s+(явления|ухода)\s+/i, "")
+    .replace(/^Празднование\s+(явления|ухода)\s+/i, "")
+    .replace(/^Явление\s+/i, "")
+    .replace(/^Уход\s+/i, "")
+    .replace(/^Appearance festival of\s+/i, "")
+    .replace(/^Disappearance festival of\s+/i, "")
+    .replace(/^Appearance day celebration of\s+/i, "")
+    .replace(/^Disappearance day celebration of\s+/i, "")
+    .replace(/^Appearance of\s+/i, "")
+    .replace(/^Disappearance of\s+/i, "")
+    .replace(/\s+/g, " ")
+    .trim();
+}
+
+function ensureVaishnavaFiltersEnabled() {
+  setFilterSelectedWithoutRender("vaishnavaAppearance", true);
+  setFilterSelectedWithoutRender("vaishnavaDisappearance", true);
+  renderEventFilterChips();
+}
+
+function setFilterSelectedWithoutRender(value, selected) {
+  const option = [...eventFilterSelect.options].find((item) => item.value === value);
+  if (option) option.selected = selected;
 }
 
 function dayMatchesSearch(day, needle) {
