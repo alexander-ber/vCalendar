@@ -463,6 +463,73 @@ function classifyNoSunriseEkadashi(days, index, location, rules) {
 function noFastNoticeForEkadashiDay(day, ekadashiOrReason, targetNumber = null) {
   const ekadashi = ekadashiOrReason?.type === "ekadashi" ? ekadashiOrReason : null;
   const reason = ekadashi?.candidate_no_fast_reason || ekadashiOrReason?.reason || "not_suitable_for_fast";
+  const reasonDetails = {
+    dashami_viddha_at_arunodaya: {
+      en: "Dashami is still present at arunodaya, so this Ekadashi is Dashami-viddha and is not accepted as the fasting day. The fast is observed on the next suitable solar day.",
+      ru: "На арунодае ещё присутствует Дашами, поэтому эта Экадаши считается Дашами-виддха и не принимается как день поста. Пост соблюдается в следующий подходящий солнечный день."
+    },
+    dashami_viddha_at_sunrise: {
+      en: "The solar day begins with Dashami at sunrise and Ekadashi starts later. Therefore this civil date is not the fasting day; the fast is observed on the next suitable sunrise day.",
+      ru: "Солнечный день начинается с Дашами на восходе, а Экадаши наступает позже. Поэтому эта гражданская дата не является днём поста; пост соблюдается в следующий подходящий день на восходе."
+    },
+    tomorrow_is_unmilani: {
+      en: "Ekadashi is present at two consecutive sunrises. By the Unmilani Mahadvadashi rule, the first solar day is observed without fasting and the fast is kept on the second day.",
+      ru: "Экадаши присутствует на двух восходах подряд. По правилу Унмилани Махадвадаши первый солнечный день проходит без поста, а пост соблюдается во второй день."
+    },
+    today_is_unmilani: {
+      en: "Ekadashi extends across two consecutive sunrises, so by the Unmilani Mahadvadashi rule the fast is observed on the second solar day.",
+      ru: "Экадаши растягивается на два восхода подряд, поэтому по правилу Унмилани Махадвадаши пост соблюдается во второй солнечный день."
+    },
+    today_is_unmilani_trisprsa: {
+      en: "Ekadashi is present at two consecutive sunrises and Trayodashi is present at the following sunrise. This combination forms Unmilani Trisprsa Mahadvadashi, so the fast is observed on the second Ekadashi sunrise.",
+      ru: "Экадаши присутствует на двух восходах подряд, а на следующем восходе уже наступает Трайодаши. Такое сочетание образует Унмилани Триспрша Махадвадаши, поэтому пост соблюдается во второй день Экадаши."
+    },
+    next_day_is_vyanjuli_mahadvadashi: {
+      en: "Dvadashi extends across two consecutive sunrises after a pure Ekadashi. By the Vyanjuli Mahadvadashi rule, the fast is observed on the first Dvadashi sunrise instead of the preceding Ekadashi day.",
+      ru: "После чистой Экадаши Двадаши растягивается на два восхода подряд. По правилу Вьянджули Махадвадаши пост соблюдается в первый день Двадаши, а не в предшествующий день Экадаши."
+    },
+    next_full_or_new_moon_is_vriddhi: {
+      en: "By the Paksavardhini Mahadvadashi rule, when the Purnima or Amavasya at the end of the paksha extends across two solar days, the Ekadashi fast is observed on the following Dvadashi.",
+      ru: "По правилу Пакшавардхини Махадвадаши, если в конце этой пакши Пурнима или Амавасья растягивается на два солнечных дня, пост переносится с Экадаши на следующую Двадаши."
+    },
+    paksavardhini_mahadvadashi: {
+      en: "Purnima or Amavasya at the end of this paksha extends across two solar days. By the Paksavardhini Mahadvadashi rule, the fast is observed on Dvadashi.",
+      ru: "Пурнима или Амавасья в конце этой пакши растягивается на два солнечных дня. По правилу Пакшавардхини Махадвадаши пост соблюдается на Двадаши."
+    },
+    vyanjuli_mahadvadashi: {
+      en: "Dvadashi extends across two consecutive sunrises after a pure Ekadashi. By the Vyanjuli Mahadvadashi rule, the fast is observed on the first Dvadashi sunrise.",
+      ru: "После чистой Экадаши Двадаши растягивается на два восхода подряд. По правилу Вьянджули Махадвадаши пост соблюдается в первый день Двадаши."
+    },
+    nakshatra_mahadvadashi: {
+      en: "The Dvadashi sunrise and its nakshatra satisfy one of the special Jaya, Vijaya, Jayanti, or Papanasini Mahadvadashi combinations. Therefore the fast is observed on this Dvadashi.",
+      ru: "Двадаши на восходе и её накшатра образуют одно из особых сочетаний Джая, Виджая, Джаянти или Папанашини Махадвадаши. Поэтому пост соблюдается в эту Двадаши."
+    },
+    jaya_mahadvadashi: {
+      en: "Gaura Dvadashi and the required Punarvasu nakshatra combination form Jaya Mahadvadashi, so the fast is observed on this Dvadashi.",
+      ru: "Гаура Двадаши и требуемое сочетание с накшатрой Пунарвасу образуют Джая Махадвадаши, поэтому пост соблюдается в эту Двадаши."
+    },
+    vijaya_mahadvadashi: {
+      en: "Gaura Dvadashi and the required Shravana nakshatra combination form Vijaya Mahadvadashi, so the fast is observed on this Dvadashi.",
+      ru: "Гаура Двадаши и требуемое сочетание с накшатрой Шравана образуют Виджая Махадвадаши, поэтому пост соблюдается в эту Двадаши."
+    },
+    jayanti_mahadvadashi: {
+      en: "Gaura Dvadashi and the required Rohini nakshatra combination form Jayanti Mahadvadashi, so the fast is observed on this Dvadashi.",
+      ru: "Гаура Двадаши и требуемое сочетание с накшатрой Рохини образуют Джаянти Махадвадаши, поэтому пост соблюдается в эту Двадаши."
+    },
+    papanasini_mahadvadashi: {
+      en: "Gaura Dvadashi and the required Pushya nakshatra combination form Papanasini Mahadvadashi, so the fast is observed on this Dvadashi.",
+      ru: "Гаура Двадаши и требуемое сочетание с накшатрой Пушья образуют Папанашини Махадвадаши, поэтому пост соблюдается в эту Двадаши."
+    },
+    ekadashi_has_no_sunrise: {
+      en: "Ekadashi begins after one sunrise and ends before the next, so it does not touch any sunrise. The fast is therefore observed on the next suitable solar day.",
+      ru: "Экадаши начинается после одного восхода и заканчивается до следующего, поэтому не попадает ни на один восход. Пост переносится на следующий подходящий солнечный день."
+    },
+    not_suitable_for_fast: {
+      en: "The sunrise and tithi conditions do not satisfy the rules for an Ekadashi fasting day, so the fast is assigned to the next suitable day.",
+      ru: "Условия титхи на восходе не соответствуют правилам дня поста Экадаши, поэтому пост назначается на следующий подходящий день."
+    }
+  }[reason];
+  const reasonLabel = reason.replaceAll("_", " ");
   const ekadashiNameRu = ekadashi?.i18n?.ru?.name || ekadashi?.name || "Экадаши";
   const fastDate = ekadashi?.fast_date || ekadashiOrReason?.fastDate || null;
   const tithiName = day.lunar.tithi_at_sunrise.name;
@@ -474,13 +541,15 @@ function noFastNoticeForEkadashiDay(day, ekadashiOrReason, targetNumber = null) 
     type: "ekadashi_notice",
     category: "vrata",
     candidate_no_fast_reason: reason,
-    description: fastDate ? `${ekadashi?.name || "Ekadashi"} fast is observed on ${fastDate} because ${reason.replaceAll("_", " ")} applies.` : `Ekadashi is not suitable for fast because ${reason.replaceAll("_", " ")} applies.`,
+    description: fastDate
+      ? `${ekadashi?.name || "Ekadashi"} fast is observed on ${fastDate} because ${reasonLabel} applies.${reasonDetails ? ` ${reasonDetails.en}` : ""}`
+      : `Ekadashi is not suitable for fast because ${reasonLabel} applies.${reasonDetails ? ` ${reasonDetails.en}` : ""}`,
     i18n: {
       ru: {
         name: `${targetLabel.replace("Gaura", "Гаура").replace("Krishna", "Кришна").replace("Ekadashi", "Экадаши")} — без поста`,
         description: fastDate
-          ? `Пост ${ekadashiNameRu} соблюдается ${fastDate}, потому что применяется правило ${reason.replaceAll("_", " ")}.`
-          : `Этот день не подходит для поста Экадаши: ${reason.replaceAll("_", " ")}.`
+          ? `Пост ${ekadashiNameRu} соблюдается ${fastDate}, потому что применяется правило ${reasonLabel}.${reasonDetails ? ` ${reasonDetails.ru}` : ""}`
+          : `Этот день не подходит для поста Экадаши: ${reasonLabel}.${reasonDetails ? ` ${reasonDetails.ru}` : ""}`
       }
     }
   };
