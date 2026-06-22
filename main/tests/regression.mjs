@@ -9,6 +9,9 @@ const telAviv = LOCATIONS.find((location) => location.id === "tel-aviv");
 const mayapur = LOCATIONS.find((location) => location.id === "mayapur");
 const kathmandu = LOCATIONS.find((location) => location.id === "kathmandu");
 
+assert(LOCATIONS.filter((location) => location.group === "Израиль").every((location) => location.week_start === 0));
+assert(LOCATIONS.filter((location) => location.group !== "Израиль").every((location) => (location.week_start ?? 1) === 1));
+
 function eventsByDate(year, month, location) {
   const calendar = generateCalendar(year, month, location, RULES, EVENTS);
   return new Map(calendar.days.map((day) => [day.date, day.events]));
