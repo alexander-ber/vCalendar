@@ -1,6 +1,6 @@
 import { generateCalendarRange, viewModelForDay } from "./calendar-engine.js?v=20260622-1";
 import { EVENTS } from "./events-data.js?v=20260615-1";
-import { LOCATIONS } from "./locations-data.js?v=20260622-1";
+import { LOCATIONS } from "./locations-data.js?v=20260622-2";
 import { RULES } from "./rules-data.js?v=20260613-3";
 
 const locationSelect = document.querySelector("#locationSelect");
@@ -290,6 +290,20 @@ const WEEKDAYS = {
   en: ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"],
   ru: ["Вс", "Пн", "Вт", "Ср", "Чт", "Пт", "Сб"]
 };
+
+function weekStartForLocation(location) {
+  return location.week_start ?? 1;
+}
+
+function orderedWeekdays(location) {
+  const labels = WEEKDAYS[currentLanguage];
+  const start = weekStartForLocation(location);
+  return [...labels.slice(start), ...labels.slice(0, start)];
+}
+
+function weekdayOffsetForLocation(isoDate, location) {
+  return (weekdayOfIsoDate(isoDate) - weekStartForLocation(location) + 7) % 7;
+}
 
 const TITHI_RU = {
   Pratipat: "Пратипад",
@@ -689,12 +703,12 @@ function renderCalendar() {
     section.className = `month-section${eventsOnlyInput.checked ? " is-event-list" : ""}`;
     section.innerHTML = `
       <h3 class="month-section-title">${monthTitle(Number(monthKey.slice(0, 4)), Number(monthKey.slice(5, 7)))}</h3>
-      <div class="calendar-header">${WEEKDAYS[currentLanguage].map((label) => `<span>${label}</span>`).join("")}</div>
+      <div class="calendar-header">${orderedWeekdays(location).map((label) => `<span>${label}</span>`).join("")}</div>
       <div class="month-section-grid"></div>
     `;
     const grid = section.querySelector(".month-section-grid");
     if (!eventsOnlyInput.checked) {
-      for (let i = 0; i < weekdayOfIsoDate(days[0].date); i += 1) {
+      for (let i = 0; i < weekdayOffsetForLocation(days[0].date, location); i += 1) {
         const spacer = document.createElement("div");
         spacer.className = "day-spacer";
         grid.append(spacer);
@@ -1171,9 +1185,11 @@ function markPeriodChanged() {
 
 function setCurrentWeekPeriod() {
   normalizePeriodInputs();
+  const location = LOCATIONS.find((item) => item.id === locationSelect.value) || LOCATIONS[0];
   const dayOfWeek = weekdayOfIsoDate(periodFromInput.value);
-  const mondayOffset = dayOfWeek === 0 ? -6 : 1 - dayOfWeek;
-  const weekStart = shiftIsoDateByDays(periodFromInput.value, mondayOffset);
+  const startDay = weekStartForLocation(location);
+  const startOffset = -((dayOfWeek - startDay + 7) % 7);
+  const weekStart = shiftIsoDateByDays(periodFromInput.value, startOffset);
   periodFromInput.value = weekStart;
   periodToInput.value = shiftIsoDateByDays(weekStart, 6);
   pendingScrollTarget = ".calendar-wrap";

@@ -3,6 +3,7 @@ export const LOCATIONS = [
     id: "maalot",
     name: "Maalot, Israel",
     group: "Израиль",
+    week_start: 0,
     lat: 33.016,
     lon: 35.277,
     timezone: "Asia/Jerusalem"
@@ -11,6 +12,7 @@ export const LOCATIONS = [
     id: "tel-aviv",
     name: "Tel Aviv, Israel",
     group: "Израиль",
+    week_start: 0,
     lat: 32.0853,
     lon: 34.7818,
     timezone: "Asia/Jerusalem"
@@ -19,6 +21,7 @@ export const LOCATIONS = [
     id: "beer-sheva",
     name: "Beer Sheva, Israel",
     group: "Израиль",
+    week_start: 0,
     lat: 31.25297,
     lon: 34.79146,
     timezone: "Asia/Jerusalem"
@@ -27,6 +30,7 @@ export const LOCATIONS = [
     id: "eilat",
     name: "Eilat, Israel",
     group: "Израиль",
+    week_start: 0,
     lat: 29.5577,
     lon: 34.9519,
     timezone: "Asia/Jerusalem"
