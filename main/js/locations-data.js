@@ -34,7 +34,7 @@ export const LOCATIONS = [
   {
     id: "kyiv",
     name: "Kyiv, Ukraine",
-    group: "Пост СССР",
+    group: "Украина",
     lat: 50.4501,
     lon: 30.5234,
     timezone: "Europe/Kyiv"
@@ -42,7 +42,7 @@ export const LOCATIONS = [
   {
     id: "mariupol",
     name: "Mariupol, Ukraine",
-    group: "Пост СССР",
+    group: "Украина",
     lat: 47.0971,
     lon: 37.5434,
     timezone: "Europe/Kyiv"
@@ -50,7 +50,7 @@ export const LOCATIONS = [
   {
     id: "minsk",
     name: "Minsk, Belarus",
-    group: "Пост СССР",
+    group: "Беларусь",
     lat: 53.9006,
     lon: 27.559,
     timezone: "Europe/Minsk"
@@ -58,7 +58,7 @@ export const LOCATIONS = [
   {
     id: "voronezh",
     name: "Voronezh, Russia",
-    group: "Пост СССР",
+    group: "Россия",
     lat: 51.6608,
     lon: 39.2003,
     timezone: "Europe/Moscow"
@@ -66,7 +66,7 @@ export const LOCATIONS = [
   {
     id: "orsk",
     name: "Orsk, Russia",
-    group: "Пост СССР",
+    group: "Россия",
     lat: 51.2293,
     lon: 58.4752,
     timezone: "Asia/Yekaterinburg"
@@ -74,7 +74,7 @@ export const LOCATIONS = [
   {
     id: "orenburg",
     name: "Orenburg, Russia",
-    group: "Пост СССР",
+    group: "Россия",
     lat: 51.7682,
     lon: 55.0968,
     timezone: "Asia/Yekaterinburg"
@@ -82,7 +82,7 @@ export const LOCATIONS = [
   {
     id: "barnaul",
     name: "Barnaul, Russia",
-    group: "Пост СССР",
+    group: "Россия",
     lat: 53.3478,
     lon: 83.7785,
     timezone: "Asia/Barnaul"
@@ -152,9 +152,17 @@ export const LOCATIONS = [
     timezone: "Asia/Kolkata"
   },
   {
+    id: "kathmandu",
+    name: "Kathmandu, Nepal",
+    group: "Непал",
+    lat: 27.7172,
+    lon: 85.324,
+    timezone: "Asia/Kathmandu"
+  },
+  {
     id: "moscow",
     name: "Moscow, Russia",
-    group: "Пост СССР",
+    group: "Россия",
     lat: 55.7558,
     lon: 37.6173,
     timezone: "Europe/Moscow"

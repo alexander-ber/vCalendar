@@ -1,6 +1,6 @@
 import { generateCalendarRange, viewModelForDay } from "./calendar-engine.js?v=20260617-1";
 import { EVENTS } from "./events-data.js?v=20260615-1";
-import { LOCATIONS } from "./locations-data.js?v=20260615-1";
+import { LOCATIONS } from "./locations-data.js?v=20260622-1";
 import { RULES } from "./rules-data.js?v=20260613-3";
 
 const locationSelect = document.querySelector("#locationSelect");
