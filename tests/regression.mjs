@@ -7,6 +7,7 @@ import { RULES } from "../js/rules-data.js";
 const maalot = LOCATIONS.find((location) => location.id === "maalot");
 const telAviv = LOCATIONS.find((location) => location.id === "tel-aviv");
 const mayapur = LOCATIONS.find((location) => location.id === "mayapur");
+const kathmandu = LOCATIONS.find((location) => location.id === "kathmandu");
 
 function eventsByDate(year, month, location) {
   const calendar = generateCalendar(year, month, location, RULES, EVENTS);
@@ -44,6 +45,13 @@ const purushottamaRange = generateCalendar(2026, 5, maalot, RULES, EVENTS);
 assert(purushottamaRange.days.find((day) => day.date === "2026-05-17").events.some((event) => event.name === "Start of Purushottama Masa"));
 const juneMaalot = generateCalendar(2026, 6, maalot, RULES, EVENTS);
 assert(juneMaalot.days.find((day) => day.date === "2026-06-15").events.some((event) => event.name === "End of Purushottama Masa"));
+
+const juneKathmandu = eventsByDate(2026, 6, kathmandu);
+assert(
+  juneKathmandu
+    .get("2026-06-25")
+    .some((event) => event.type === "ekadashi_notice" && event.i18n?.ru?.description.includes("Пакшавардхини Махадвадаши"))
+);
 
 const julyMaalot = eventsByDate(2026, 7, maalot);
 assert(
@@ -100,6 +108,17 @@ assert(marchTelAviv.get("2026-03-29").some((event) => event.name.includes("Kamad
 const marchMaalot = eventsByDate(2026, 3, maalot);
 assert.equal(marchMaalot.get("2026-03-15").filter((event) => event.name === "Papamochani Ekadashi").length, 1);
 assert.equal(marchMaalot.get("2026-03-16").filter((event) => event.name === "Parana for Papamochani Ekadashi").length, 1);
+assert(
+  marchMaalot
+    .get("2026-03-14")
+    .some((event) => event.type === "ekadashi_notice" && event.i18n?.ru?.description.includes("Унмилани Махадвадаши"))
+);
+
+assert(
+  mayMaalot
+    .get("2026-05-26")
+    .some((event) => event.type === "ekadashi_notice" && event.i18n?.ru?.description.includes("Вьянджули Махадвадаши"))
+);
 
 const januaryMaalot = eventsByDate(2026, 1, maalot);
 assert(januaryMaalot.get("2026-01-25").some((event) => event.type === "vaishnava_appearance" && event.name.includes("Advaita")));
