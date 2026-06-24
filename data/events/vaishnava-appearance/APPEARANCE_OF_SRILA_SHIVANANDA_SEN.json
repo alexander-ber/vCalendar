@@ -1,0 +1,32 @@
+{
+  "id": "APPEARANCE_OF_SRILA_SHIVANANDA_SEN",
+  "type": "vaishnava_appearance",
+  "category": "vaishnava_appearance",
+  "scope": "content_record_needs_tithi_rule",
+  "subject": "Srila Shivananda Sen",
+  "rules": {},
+  "disabled": true,
+  "source_status": "needs_exact_lunar_rule",
+  "sources": [
+    {
+      "type": "biography",
+      "url": "http://harekrishnazp.info/materialy/vajshnavskij-kalendar/774-shivananda-sena.html",
+      "attribution_required": true
+    }
+  ],
+  "translations": [
+    {
+      "lang": "en",
+      "name": "Appearance of Srila Shivananda Sen",
+      "short_description": "Biography record prepared; the tithi for the appearance day still needs a reliable calendar source before the event is shown.",
+      "full_description": "Srila Shivananda Sen was a close associate of Sri Chaitanya Mahaprabhu and a caring servant of the Vaishnavas. The local biography text is shared with his disappearance event. This appearance record is intentionally disabled until a reliable tithi rule is confirmed."
+    },
+    {
+      "lang": "ru",
+      "name": "День явления Шивананды Сены",
+      "short_description": "Биографическая запись подготовлена; титхи явления нужно подтвердить по надёжному календарному источнику, прежде чем показывать событие.",
+      "full_description": "Шрила Шивананда Сена был близким спутником Шри Чайтаньи Махапрабху и заботливым слугой вайшнавов. Биография уже добавлена в событие его ухода. Эта запись явления намеренно отключена, пока не будет подтверждено точное правило титхи."
+    }
+  ],
+  "content_license_note": "Source footer says: Распространение материалов сайта горячо приветствуется! При использовании информации на других сайтах, пожалуйста, ставьте ссылку на цитируемый материал."
+}

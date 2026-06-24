@@ -82,7 +82,11 @@ const mayMayapur = eventsByDate(2026, 5, mayapur);
 assert(mayMayapur.get("2026-05-27").some((event) => event.name === "Padmini Ekadashi"));
 
 const julyMayapur = eventsByDate(2026, 7, mayapur);
+assert(julyMayapur.get("2026-07-16").some((event) => event.name === "Beginning of Ratha Yatra"));
+assert(julyMayapur.get("2026-07-16").some((event) => event.name === "Disappearance of Srila Shivananda Sen"));
+assert(julyMayapur.get("2026-07-24").some((event) => event.name === "Punar Yatra of Sri Jagannathdev"));
 assert(julyMayapur.get("2026-07-29").some((event) => event.name === "Beginning of Chaturmasya"));
+assert(EVENTS.some((event) => event.id === "appearance_of_srila_shivananda_sen" && event.disabled === true));
 
 const octoberMayapur = eventsByDate(2026, 10, mayapur);
 assert(octoberMayapur.get("2026-10-26").some((event) => event.name === "Beginning of Karttik"));

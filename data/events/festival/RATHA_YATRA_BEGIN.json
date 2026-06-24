@@ -1,0 +1,43 @@
+{
+  "id": "RATHA_YATRA_BEGIN",
+  "type": "festival",
+  "category": "festival",
+  "scope": "matched_harekrishnazp_vaishnavacalendar",
+  "subject": "Ratha Yatra of Sri Jagannathdev",
+  "rules": {
+    "gaudiya_masa": "Vamana",
+    "paksha": "Gaura",
+    "tithi": "Dvitiya",
+    "timing_rule": "sunrise_based",
+    "allow_in_adhika": false
+  },
+  "priority": "high",
+  "source_status": "matched_by_name_type_tithi",
+  "sources": [
+    {
+      "type": "description",
+      "url": "http://harekrishnazp.info/materialy/vajshnavskij-kalendar/1274-ratkha-yatra.html",
+      "attribution_required": true
+    },
+    {
+      "type": "tithi",
+      "url": "https://vaishnavacalendar.org/nabadwip/541/en/",
+      "attribution_required": false
+    }
+  ],
+  "translations": [
+    {
+      "lang": "en",
+      "name": "Beginning of Ratha Yatra",
+      "short_description": "The chariot festival of Lord Jagannath, Lord Balabhadra, and Subhadra Devi begins on Vamana Gaura Dvitiya.",
+      "full_description": "Ratha Yatra is celebrated every year in Puri, the sacred temple city of Odisha. Lord Jagannath, Lord Balabhadra, Subhadra Devi, and Sudarshan are brought from Sri Mandir in a solemn procession and placed upon immense, brightly decorated chariots. Thousands of devotees draw the chariots along the Bada Danda toward the Gundicha temple.\n\nThis festival is one of the most merciful public forms of darshan. The Lord, who normally remains upon the altar, comes out to be seen by everyone. Saints and scriptures glorify the sight of Lord Jagannath on His chariot, and even touching the chariot or its ropes is praised as spiritually auspicious.\n\nThe three chariots are built anew each year. Lord Jagannath rides on Nandighosha, Lord Balabhadra on Taladhvaja, and Subhadra Devi on Darpadalana. After the Pahandi procession, the chariots are pulled, beginning with Balabhadra's chariot, then Subhadra's, and finally Lord Jagannath's chariot.\n\nIn the Gaudiya tradition this day is also deeply connected with Sri Chaitanya Mahaprabhu's ecstatic participation in the Ratha Yatra of Puri."
+    },
+    {
+      "lang": "ru",
+      "name": "Начало Ратха Ятры",
+      "short_description": "Начало праздника колесниц Господа Джаганнатхи, Господа Балабхадры и Субхадры Деви. Событие приходится на Вамана масу, Гаура Двитию.",
+      "full_description": "Ратха Ятра празднуется ежегодно в Пури, священном храмовом городе в Ориссе. Господствующие Божества главного храма Шри Мандира - Господь Джаганнатха, Господь Балабхадра, Богиня Субхадра и Сударшана - выносятся из храма в торжественной процессии и устанавливаются на огромные, ярко украшенные колесницы. Тысячи преданных тянут колесницы по Бада Данда, большой улице, к храму Гундича.\n\nЭтот праздник является одной из самых милостивых форм публичного даршана. Господь, обычно пребывающий на алтаре, выходит наружу, чтобы Его могли увидеть все. Святые и писания прославляют даршан Господа Джаганнатхи на колеснице, а прикосновение к колеснице или верёвкам считается духовно благоприятным.\n\nТри колесницы строятся заново каждый год. Господь Джаганнатха едет на Нандигхоше, Господь Балабхадра - на Таладхвадже, а Субхадра Деви - на Дарпадалане. После процессии Паханди колесницы начинают тянуть: сначала колесницу Балабхадры, затем Субхадры и, наконец, колесницу Господа Джаганнатхи.\n\nВ гаудия-вайшнавской традиции этот день особенно связан с экстатическим участием Шри Чайтаньи Махапрабху в Ратха Ятре в Пури."
+    }
+  ],
+  "content_license_note": "Source footer says: Распространение материалов сайта горячо приветствуется! При использовании информации на других сайтах, пожалуйста, ставьте ссылку на цитируемый материал."
+}
