@@ -7,6 +7,7 @@ const locationSelect = document.querySelector("#locationSelect");
 const periodFromInput = document.querySelector("#periodFromInput");
 const periodToInput = document.querySelector("#periodToInput");
 const compactViewInput = document.querySelector("#compactViewInput");
+const controlsPanel = document.querySelector("#controlsPanel");
 const mainControlsPanel = document.querySelector("#mainControlsPanel");
 const eventsOnlyInput = document.querySelector("#eventsOnlyInput");
 const eventFilterSelect = document.querySelector("#eventFilterSelect");
@@ -28,6 +29,8 @@ const languageToggle = document.querySelector("#languageToggle");
 const themeToggle = document.querySelector("#themeToggle");
 const fontSizeToggle = document.querySelector("#fontSizeToggle");
 const calendarTitle = document.querySelector("#calendarTitle");
+const calendarMonthSelect = document.querySelector("#calendarMonthSelect");
+const calendarYearSelect = document.querySelector("#calendarYearSelect");
 const calendarStatus = document.querySelector("#calendarStatus");
 const masaNotice = document.querySelector("#masaNotice");
 const calendarHeader = document.querySelector("#calendarHeader");
@@ -50,6 +53,7 @@ const I18N = {
     night: "Night",
     sepia: "Serpia",
     settings: "Settings",
+    viewSettings: "View",
     fontNormal: "Normal font size",
     fontLarge: "Large font size",
     fontExtraLarge: "Extra large font size",
@@ -173,6 +177,7 @@ const I18N = {
     night: "Ночь",
     sepia: "Серпия",
     settings: "Настройки",
+    viewSettings: "Вид",
     fontNormal: "Обычный размер шрифта",
     fontLarge: "Крупный шрифт",
     fontExtraLarge: "Очень крупный шрифт",
@@ -698,6 +703,7 @@ function renderCalendar() {
   if (!ensureRenderablePeriod()) return;
   const location = LOCATIONS.find((item) => item.id === locationSelect.value) || LOCATIONS[0];
   locationSelect.value = location.id;
+  syncCalendarPicker();
   const calendar = generateCalendarRange(periodFromInput.value, periodToInput.value, location, RULES, EVENTS);
 
   renderMasaNotice(calendar.days);
@@ -712,12 +718,7 @@ function renderCalendar() {
       ? calendar.days.filter((day) => visibleEventsForDay(day).length > 0)
       : calendar.days;
   calendarTitle.textContent = periodTitle(periodFromInput.value, periodToInput.value);
-  calendarStatus.textContent = `${visibleDays.length} ${eventsOnlyInput.checked && !compactViewInput.checked ? tr("shownDays") : tr("calendarDays")} - ${tr("updated")} ${new Intl.DateTimeFormat("en-GB", {
-    hour: "2-digit",
-    minute: "2-digit",
-    second: "2-digit",
-    hour12: false
-  }).format(new Date())}`;
+  calendarStatus.textContent = "";
   if (!visibleDays.length) {
     calendarGrid.innerHTML = `<div class="calendar-loading">${tr("noEventDays")}</div>`;
     dayDetails.textContent = tr("selectDay");
@@ -728,7 +729,7 @@ function renderCalendar() {
     const section = document.createElement("section");
     section.className = `month-section${eventsOnlyInput.checked && !compactViewInput.checked ? " is-event-list" : ""}${compactViewInput.checked ? " is-compact" : ""}`;
     section.innerHTML = `
-      <h3 class="month-section-title">${monthTitle(Number(monthKey.slice(0, 4)), Number(monthKey.slice(5, 7)))}</h3>
+      ${compactViewInput.checked ? "" : `<h3 class="month-section-title">${monthTitle(Number(monthKey.slice(0, 4)), Number(monthKey.slice(5, 7)))}</h3>`}
       <div class="calendar-header">${orderedWeekdays(location).map((label) => `<span>${label}</span>`).join("")}</div>
       <div class="month-section-grid"></div>
     `;
@@ -1166,6 +1167,38 @@ function monthTitle(year, month) {
   );
 }
 
+function monthName(month) {
+  return new Intl.DateTimeFormat(dateLocale(), { month: "long", timeZone: "UTC" }).format(new Date(Date.UTC(2026, month - 1, 1)));
+}
+
+function syncCalendarPicker() {
+  const [year, month] = periodFromInput.value.split("-").map(Number);
+  calendarMonthSelect.innerHTML = Array.from({ length: 12 }, (_, index) => {
+    const value = String(index + 1).padStart(2, "0");
+    return `<option value="${value}">${monthName(index + 1)}</option>`;
+  }).join("");
+  const startYear = Math.max(1800, year - 80);
+  const endYear = Math.min(2200, year + 80);
+  calendarYearSelect.innerHTML = Array.from({ length: endYear - startYear + 1 }, (_, index) => {
+    const value = String(startYear + index);
+    return `<option value="${value}">${value}</option>`;
+  }).join("");
+  calendarMonthSelect.value = String(month).padStart(2, "0");
+  calendarYearSelect.value = String(year);
+}
+
+function setPeriodFromCalendarPicker() {
+  const year = Number(calendarYearSelect.value);
+  const month = Number(calendarMonthSelect.value);
+  if (!year || !month) return;
+  const monthStart = `${year}-${String(month).padStart(2, "0")}-01`;
+  const monthEndDate = new Date(Date.UTC(year, month, 0));
+  periodFromInput.value = monthStart;
+  periodToInput.value = isoDateFromDate(monthEndDate);
+  pendingScrollTarget = ".calendar-wrap";
+  renderCalendar();
+}
+
 function periodTitle(startDate, endDate) {
   const mode = periodShiftMode(startDate, endDate);
   if (mode.type === "year") return String(startDate.slice(0, 4));
@@ -1194,6 +1227,7 @@ function calendarTimeOrDash(date, timezone) {
 }
 
 function init() {
+  if (controlsPanel) controlsPanel.open = false;
   locationSelect.innerHTML = renderLocationOptions();
   locationSelect.value = "maalot";
   const period = currentPeriod();
@@ -1229,6 +1263,8 @@ function init() {
     event.preventDefault();
     jumpToEventSearch();
   });
+  calendarMonthSelect.addEventListener("change", setPeriodFromCalendarPicker);
+  calendarYearSelect.addEventListener("change", setPeriodFromCalendarPicker);
   thisWeekButton.addEventListener("click", () => setCurrentWeekPeriod());
   thisMonthButton.addEventListener("click", () => setCurrentMonthPeriod());
   fullYearButton.addEventListener("click", () => setFullYearPeriod());
@@ -1241,6 +1277,7 @@ function init() {
 
 function markPeriodChanged() {
   calendarStatus.textContent = tr("periodChanged");
+  syncCalendarPicker();
 }
 
 function setCurrentWeekPeriod() {
@@ -1371,6 +1408,7 @@ function setLanguage(language) {
   renderEventFilterChips();
   renderEventJumpOptions();
   renderVaishnavaJumpOptions();
+  syncCalendarPicker();
   updateFontSizeButtons();
   if (!selectedDate) dayDetails.textContent = tr("selectDay");
   updateThemeButtons();
