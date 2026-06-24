@@ -23,10 +23,15 @@
         </div>
       </header>
 
-      <section class="controls" aria-label="Calendar controls">
+      <details id="controlsPanel" class="controls controls-collapsible" aria-label="Calendar controls">
+        <summary>
+          <span data-i18n="settings">Settings</span>
+          <span class="collapse-icon" aria-hidden="true"></span>
+        </summary>
+        <div class="controls-stack">
         <details class="collapsible-panel settings-collapsible">
           <summary>
-            <span data-i18n="settings">Settings</span>
+            <span data-i18n="viewSettings">View</span>
             <span class="collapse-icon" aria-hidden="true"></span>
           </summary>
           <div class="settings-panel">
@@ -46,7 +51,7 @@
             </label>
           </div>
         </details>
-        <details id="mainControlsPanel" class="collapsible-panel" open>
+        <details id="mainControlsPanel" class="collapsible-panel">
           <summary>
             <span data-i18n="mainControls">Main controls</span>
             <span class="collapse-icon" aria-hidden="true"></span>
@@ -125,14 +130,21 @@
             </select>
           </div>
         </details>
-      </section>
+        </div>
+      </details>
 
       <section class="calendar-wrap" tabindex="-1">
         <div class="section-head">
           <button id="prevMonthTop" class="icon-button" type="button" aria-label="Previous month">‹</button>
-          <h2 id="calendarTitle">April 2026</h2>
+          <div class="calendar-title-control">
+            <h2 id="calendarTitle">April 2026</h2>
+            <div class="month-year-picker" aria-label="Month and year picker">
+              <select id="calendarMonthSelect" aria-label="Month"></select>
+              <select id="calendarYearSelect" aria-label="Year"></select>
+            </div>
+          </div>
           <button id="nextMonthTop" class="icon-button" type="button" aria-label="Next month">›</button>
-          <span id="calendarStatus">Local calculation</span>
+          <span id="calendarStatus"></span>
         </div>
         <div id="masaNotice" class="masa-notice" hidden></div>
         <div id="calendarHeader" class="calendar-header"></div>

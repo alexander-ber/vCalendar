@@ -16,8 +16,9 @@
   --accent-tint: #f5f9ff;
   --festival: #a66a2b;
   --festival-soft: #fff6e9;
-  --ekadashi: #5f67c8;
-  --ekadashi-soft: #f0f2ff;
+  --ekadashi: #3949ab;
+  --ekadashi-border: #d4a017;
+  --ekadashi-soft: #eef1ff;
   --parana: #3b8a78;
   --parana-soft: #eefaf5;
   --vaishnava: #8667b8;
@@ -53,8 +54,9 @@
   --accent-tint: rgba(122, 167, 255, 0.08);
   --festival: #fbbf24;
   --festival-soft: rgba(251, 191, 36, 0.13);
-  --ekadashi: #a5b4fc;
-  --ekadashi-soft: rgba(165, 180, 252, 0.14);
+  --ekadashi: #c7d2fe;
+  --ekadashi-border: #d4a017;
+  --ekadashi-soft: rgba(57, 73, 171, 0.24);
   --parana: #6ee7b7;
   --parana-soft: rgba(110, 231, 183, 0.13);
   --vaishnava: #c4b5fd;
@@ -82,8 +84,9 @@
   --accent-tint: #fbf3e4;
   --festival: #9a3412;
   --festival-soft: #fff1df;
-  --ekadashi: #5b5abf;
-  --ekadashi-soft: #eeecff;
+  --ekadashi: #3949ab;
+  --ekadashi-border: #d4a017;
+  --ekadashi-soft: #eef1ff;
   --parana: #23705f;
   --parana-soft: #e6f5ee;
   --vaishnava: #7a4ca0;
@@ -262,6 +265,49 @@ h2 {
   gap: 12px;
   margin-top: 16px;
   padding: 18px;
+}
+
+.controls > summary {
+  display: flex;
+  min-height: 48px;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  border: 1px solid var(--soft-line);
+  border-radius: 10px;
+  padding: 10px 14px;
+  color: var(--ink);
+  background: var(--panel-raised);
+  cursor: pointer;
+  font-size: calc(15px * var(--font-scale));
+  font-weight: 900;
+  list-style: none;
+  user-select: none;
+}
+
+.controls > summary::-webkit-details-marker {
+  display: none;
+}
+
+.controls > summary::marker {
+  content: "";
+}
+
+.controls > summary:hover {
+  color: var(--accent-strong);
+}
+
+.controls[open] > summary .collapse-icon {
+  transform: rotate(225deg);
+}
+
+.controls-stack {
+  display: grid;
+  gap: 12px;
+}
+
+.controls:not([open]) .controls-stack {
+  display: none;
 }
 
 .collapsible-panel {
@@ -574,10 +620,46 @@ button:not(.day):not(.compact-day):not(.theme-toggle):not(.language-toggle):not(
 
 .section-head {
   display: grid;
-  grid-template-columns: auto 1fr auto auto;
+  grid-template-columns: auto minmax(0, 1fr) auto;
   align-items: center;
   gap: 12px;
   margin-bottom: 18px;
+}
+
+.calendar-title-control {
+  display: grid;
+  justify-items: center;
+  gap: 8px;
+  min-width: 0;
+  text-align: center;
+}
+
+.calendar-title-control h2 {
+  margin: 0;
+}
+
+.month-year-picker {
+  display: inline-grid;
+  grid-template-columns: minmax(120px, auto) minmax(86px, auto);
+  gap: 8px;
+  align-items: center;
+}
+
+.month-year-picker select {
+  min-height: 34px;
+  border-radius: 999px;
+  padding: 5px 28px 5px 11px;
+  font-size: calc(12px * var(--font-scale));
+  font-weight: 850;
+  text-transform: capitalize;
+}
+
+#calendarStatus:empty {
+  display: none;
+}
+
+#calendarStatus:not(:empty) {
+  grid-column: 1 / -1;
 }
 
 .icon-button,
@@ -791,6 +873,7 @@ button:not(.day):not(.compact-day):not(.theme-toggle):not(.language-toggle):not(
 }
 
 .compact-ekadashi {
+  border-color: var(--ekadashi-border);
   color: var(--ekadashi);
   background: var(--ekadashi-soft);
 }
@@ -839,7 +922,7 @@ button:not(.day):not(.compact-day):not(.theme-toggle):not(.language-toggle):not(
 }
 
 .compact-dot.compact-ekadashi {
-  background: var(--ekadashi);
+  background: var(--ekadashi-border);
 }
 
 .compact-dot.compact-parana {
@@ -1056,7 +1139,7 @@ button:not(.day):not(.compact-day):not(.theme-toggle):not(.language-toggle):not(
 }
 
 .event.ekadashi {
-  border-color: var(--ekadashi);
+  border-color: var(--ekadashi-border);
   color: var(--ekadashi);
   background: var(--ekadashi-soft);
 }
@@ -1242,7 +1325,7 @@ button:not(.day):not(.compact-day):not(.theme-toggle):not(.language-toggle):not(
 }
 
 .ekadashi-panel {
-  border: 1px solid color-mix(in srgb, var(--ekadashi) 32%, var(--line));
+  border: 1px solid var(--ekadashi-border);
   border-radius: 8px;
   padding: 12px 14px;
   color: var(--ekadashi);
@@ -1442,7 +1525,7 @@ button:not(.day):not(.compact-day):not(.theme-toggle):not(.language-toggle):not(
 }
 
 .event-detail-card.ekadashi {
-  border-left-color: var(--ekadashi);
+  border-left-color: var(--ekadashi-border);
 }
 
 .event-detail-card.parana {
@@ -1587,7 +1670,7 @@ button:not(.day):not(.compact-day):not(.theme-toggle):not(.language-toggle):not(
   }
 
   .section-head {
-    align-items: flex-start;
+    align-items: center;
     grid-template-columns: auto 1fr auto;
   }
 
@@ -1694,6 +1777,11 @@ button:not(.day):not(.compact-day):not(.theme-toggle):not(.language-toggle):not(
   .font-size-toggle button {
     min-width: 0;
     padding-inline: 6px;
+  }
+
+  .month-year-picker {
+    grid-template-columns: minmax(0, 1fr) 86px;
+    width: min(100%, 260px);
   }
 
   .quick-range,
