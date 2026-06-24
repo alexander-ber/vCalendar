@@ -49,6 +49,7 @@ const I18N = {
     day: "Day",
     night: "Night",
     sepia: "Serpia",
+    settings: "Settings",
     fontNormal: "Normal font size",
     fontLarge: "Large font size",
     fontExtraLarge: "Extra large font size",
@@ -171,6 +172,7 @@ const I18N = {
     day: "День",
     night: "Ночь",
     sepia: "Серпия",
+    settings: "Настройки",
     fontNormal: "Обычный размер шрифта",
     fontLarge: "Крупный шрифт",
     fontExtraLarge: "Очень крупный шрифт",
@@ -535,23 +537,34 @@ function renderDetails(day, options = {}) {
       </div>
     </div>
     ${model.events.length ? renderEventDetails(model.events) : ""}
-    <section class="selected-day-panel">
-      <h3>${tr("selectedDay")}</h3>
-      <div class="detail-grid">
-        <div class="detail-item"><span>${tr("gregorianDate")}</span>${gregorianLong(model.date)}</div>
-        <div class="detail-item"><span>${tr("isoDate")}</span>${model.date}</div>
-        <div class="detail-item"><span>${tr("sunrise")}</span>${model.sunrise}</div>
-        <div class="detail-item"><span>${tr("sunset")}</span>${model.sunset}</div>
-        <div class="detail-item"><span>${tr("moonrise")}</span>${model.moonrise}</div>
-        <div class="detail-item"><span>${tr("moonset")}</span>${model.moonset}</div>
-        <div class="detail-item"><span>${tr("moonAngle")}</span>${model.moonAngle} deg</div>
-        <div class="detail-item"><span>${tr("arunodaya")}</span>${model.arunodaya}</div>
-        <div class="detail-item"><span>${tr("masa")}</span>${localizeMasa(model.masa)}</div>
-        <div class="detail-item"><span>${tr("paksha")}</span>${localizePaksha(model.paksha)}</div>
-        <div class="detail-item"><span>${tr("tithiSunrise")}</span>${localizeTithi(model.tithi)}</div>
-        <div class="detail-item"><span>${tr("tithiEnds")}</span>${model.tithiEnd}</div>
-        <div class="detail-item"><span>${tr("tithiAngle")}</span>${model.angle} deg</div>
-      </div>
+    <details id="selectedDayPanel" class="collapsible-panel selected-day-collapsible" ${options.scrollToDetails || options.scrollToEventDetails || options.openSelectedDay ? "open" : ""}>
+      <summary>
+        <span>${tr("selectedDay")}</span>
+        <span class="collapse-icon" aria-hidden="true"></span>
+      </summary>
+      <section class="selected-day-panel">
+        <div class="compact-detail-grid">
+          <div class="compact-detail-card compact-detail-card-wide">
+            <span>${tr("gregorianDate")}</span>
+            <strong>${gregorianLong(model.date)}</strong>
+            <small>${tr("isoDate")}: ${model.date}</small>
+          </div>
+          <div class="compact-detail-card">
+            <span>${tr("sun")}</span>
+            <strong>${model.sunrise}-${model.sunset}</strong>
+            <small>${tr("arunodaya")}: ${model.arunodaya}</small>
+          </div>
+          <div class="compact-detail-card">
+            <span>${tr("moonrise")} / ${tr("moonset")}</span>
+            <strong>${model.moonrise}-${model.moonset}</strong>
+            <small>${tr("moonAngle")}: ${model.moonAngle} deg</small>
+          </div>
+          <div class="compact-detail-card compact-detail-card-wide">
+            <span>${tr("masa")} / ${tr("paksha")}</span>
+            <strong>${localizeMasa(model.masa)} · ${localizePaksha(model.paksha)}</strong>
+            <small>${tr("tithiSunrise")}: ${localizeTithi(model.tithi)} · ${tr("tithiEnds")}: ${model.tithiEnd} · ${tr("tithiAngle")}: ${model.angle} deg</small>
+          </div>
+        </div>
     ${
       ekadashiEvents.length
         ? `<div class="ekadashi-panel">
@@ -582,8 +595,9 @@ function renderDetails(day, options = {}) {
           </div>`
         : ""
     }
-      ${renderCalculationDetails(day, model, ekadashiEvents, paranaEvents)}
-    </section>
+        ${renderCalculationDetails(day, model, ekadashiEvents, paranaEvents)}
+      </section>
+    </details>
   `;
   if (options.scrollToEventDetails) {
     requestAnimationFrame(() => {
