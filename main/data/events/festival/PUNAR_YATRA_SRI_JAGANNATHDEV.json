@@ -1,0 +1,43 @@
+{
+  "id": "PUNAR_YATRA_SRI_JAGANNATHDEV",
+  "type": "festival",
+  "category": "festival",
+  "scope": "matched_harekrishnazp_vaishnavacalendar",
+  "subject": "Punar Yatra of Sri Jagannathdev",
+  "rules": {
+    "gaudiya_masa": "Vamana",
+    "paksha": "Gaura",
+    "tithi": "Dashami",
+    "timing_rule": "sunrise_based",
+    "allow_in_adhika": false
+  },
+  "priority": "high",
+  "source_status": "matched_by_name_type_tithi",
+  "sources": [
+    {
+      "type": "description",
+      "url": "http://harekrishnazp.info/materialy/vajshnavskij-kalendar/1274-ratkha-yatra.html",
+      "attribution_required": true
+    },
+    {
+      "type": "tithi",
+      "url": "https://vaishnavacalendar.org/nabadwip/541/en/",
+      "attribution_required": false
+    }
+  ],
+  "translations": [
+    {
+      "lang": "en",
+      "name": "Punar Yatra of Sri Jagannathdev",
+      "short_description": "Return car festival of Sri Jagannathdev after the stay at Gundicha temple.",
+      "full_description": "After the Lord's stay at the Gundicha temple, the return journey is celebrated as Punar Yatra, also known as Bahuda Yatra. Lord Jagannath, Lord Balabhadra, and Subhadra Devi return from Gundicha to Sri Mandir on Their chariots.\n\nOn the return path the Deities are traditionally offered poda pitha, a special cake made from rice, lentils, jaggery, and coconut. Near the end of the festival the Lord is dressed in golden ornaments in the celebrated Suna Besha, and the sweet drink Adhara Pana is offered.\n\nThe return also carries a tender dramatic mood: Lakshmi Devi, having been left behind at the main temple, expresses loving displeasure before the Lord is finally welcomed back to His jeweled throne."
+    },
+    {
+      "lang": "ru",
+      "name": "Возвращение Ратха Ятры",
+      "short_description": "Праздник возвращения Господа Джаганнатхи после пребывания в храме Гундича.",
+      "full_description": "После пребывания Господа в храме Гундича отмечается Пунар Ятра, или Бахуда Ятра, - обратное путешествие. Господь Джаганнатха, Господь Балабхадра и Субхадра Деви возвращаются из Гундичи в Шри Мандир на Своих колесницах.\n\nНа обратном пути Божествам традиционно предлагают пода питху - особый пирог из риса, чечевицы, пальмового сахара и кокоса. Ближе к завершению праздника Господа украшают золотыми одеяниями и украшениями в знаменитом Суна Беша, а также предлагают сладкий напиток Адхара Пана.\n\nВозвращение несёт и нежное драматическое настроение: Лакшми Деви, оставшаяся в главном храме, выражает любовное недовольство, прежде чем Господь вновь будет принят на Свой усыпанный драгоценностями трон."
+    }
+  ],
+  "content_license_note": "Source footer says: Распространение материалов сайта горячо приветствуется! При использовании информации на других сайтах, пожалуйста, ставьте ссылку на цитируемый материал."
+}

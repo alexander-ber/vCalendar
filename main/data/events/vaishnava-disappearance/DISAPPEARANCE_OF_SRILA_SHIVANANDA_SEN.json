@@ -1,0 +1,43 @@
+{
+  "id": "DISAPPEARANCE_OF_SRILA_SHIVANANDA_SEN",
+  "type": "vaishnava_disappearance",
+  "category": "vaishnava_disappearance",
+  "scope": "matched_harekrishnazp_vaishnavacalendar",
+  "subject": "Srila Shivananda Sen",
+  "rules": {
+    "gaudiya_masa": "Vamana",
+    "paksha": "Gaura",
+    "tithi": "Dvitiya",
+    "timing_rule": "sunrise_based",
+    "allow_in_adhika": false
+  },
+  "priority": "medium",
+  "source_status": "matched_by_name_type_tithi",
+  "sources": [
+    {
+      "type": "description",
+      "url": "http://harekrishnazp.info/materialy/vajshnavskij-kalendar/774-shivananda-sena.html",
+      "attribution_required": true
+    },
+    {
+      "type": "tithi",
+      "url": "http://harekrishnazp.info/189-vajshnavskij-kalendar-ekadashi/2384-tel-aviv-izrail-vajshnavskij-kalendar-ekadashi.html",
+      "attribution_required": true
+    }
+  ],
+  "translations": [
+    {
+      "lang": "en",
+      "name": "Disappearance of Srila Shivananda Sen",
+      "short_description": "Srila Shivananda Sen cared for the devotees travelling every year to Jagannath Puri for Ratha Yatra.",
+      "full_description": "Every year, about a month before Chaturmasya, Srila Shivananda Sen led a group of roughly two hundred devotees to the Ratha Yatra festival in Jagannath Puri. He arranged their food, tolls, travel, and lodging, personally ensuring that the devotees had whatever they needed.\n\nShivananda Sen showed the compassion of a Vaishnava toward all living beings, whether human beings or animals. Once a stray dog joined the travelling party. Shivananda fed the dog and even paid for it to cross the river with the devotees. When the dog later disappeared, he sent many people to search for it. Upon reaching Puri, the devotees saw Sri Chaitanya Mahaprabhu throwing coconut pulp to that very dog. After tasting Mahaprabhu's maha-prasada, the dog became purified, and when it was no longer seen the next day, Shivananda Sen understood that by the Lord's mercy it had attained liberation.\n\nWhile observing Chaturmasya in Puri, Shivananda and the other devotees regularly bathed in the blissful company of Sri Chaitanya Mahaprabhu. He used everything he possessed in the service of Krishna and the Vaishnavas. His whole family and servants were faithful followers of Lord Gauranga.\n\nKavi Karnapura, the son of Shivananda Sen, writes in Sri Gaura-ganoddesha-dipika that Shivananda Sen was an embodiment of Sri Chaitanya Deva's love, and in Krishna-lila he is Vira-gopi, a messenger of Srimati Radharani. Devakinandan Das glorifies him: \"I bow to Shivananda Sen, who is filled with divine love. For him, social position, life, and wealth are all embodied in the lotus feet of Sri Gaura Raya.\" His samadhi is situated among the sixty-four samadhis in Vrindavan."
+    },
+    {
+      "lang": "ru",
+      "name": "День ухода Шивананды Сены",
+      "short_description": "Шивананда Сена заботился о преданных, каждый год отправлявшихся на фестиваль Ратха Ятры в Джаганнатха Пури.",
+      "full_description": "Каждый год за месяц до наступления чатурмасьи Шивананда Сена возглавлял группу примерно из двухсот преданных, направлявшихся на фестиваль Ратха Ятры в Джаганнатха Пури. Он оплачивал питание, пошлины, переезд и жильё. Он лично следил за тем, чтобы преданные были обеспечены всем необходимым.\n\nШивананда Сена проявлял сострадание вайшнава ко всем живым существам, независимо от того, были это люди или животные. Однажды к группе присоединилась бездомная собака. Шивананда накормил её и даже оплатил переправу через реку вместе со всеми преданными. Когда собака исчезла, он отправил многих людей на её поиски. Прибыв в Пури, преданные увидели, как Шри Чайтанья Махапрабху бросает этой собаке мякоть кокосового ореха. Вкусив маха-прасад Махапрабху, собака очистилась, а когда на следующий день её уже не увидели, Шивананда Сена понял, что по милости Господа она обрела освобождение.\n\nСоблюдая чатурмасью в Пури, Шивананда и остальные преданные регулярно принимали омовение в блаженном обществе Шри Чайтаньи Махапрабху. В служении Кришне и вайшнавам Шивананда использовал всё, чем обладал. Вся его семья и слуги были верными последователями Господа Гауранги.\n\nКави Карнапура, сын Шивананды Сены, пишет в «Гаура-ганнодеша-дипике», что Шивананда Сена был воплощением любви Шри Чайтанья Девы, а в кришна-лиле он является Вира-гопи, посланницей Шримати Радхарани. Девакинандана дас прославляет его словами: «Я склоняюсь перед Шиванандой Сеной, исполненным божественной любви. Для него общественное положение, жизнь и богатство воплощены в лотосных стопах Шри Гаура Райи». Его самадхи расположено в районе шестидесяти четырёх самадхи во Вриндаване."
+    }
+  ],
+  "content_license_note": "Source footer says: Распространение материалов сайта горячо приветствуется! При использовании информации на других сайтах, пожалуйста, ставьте ссылку на цитируемый материал."
+}

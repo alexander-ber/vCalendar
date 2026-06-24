@@ -6,6 +6,8 @@ import { RULES } from "./rules-data.js?v=20260613-3";
 const locationSelect = document.querySelector("#locationSelect");
 const periodFromInput = document.querySelector("#periodFromInput");
 const periodToInput = document.querySelector("#periodToInput");
+const compactViewInput = document.querySelector("#compactViewInput");
+const mainControlsPanel = document.querySelector("#mainControlsPanel");
 const eventsOnlyInput = document.querySelector("#eventsOnlyInput");
 const eventFilterSelect = document.querySelector("#eventFilterSelect");
 const eventFilterChips = document.querySelector("#eventFilterChips");
@@ -46,7 +48,7 @@ const I18N = {
     appSubtitle: "Gaudiya Vaishnava Panchang POC",
     day: "Day",
     night: "Night",
-    sepia: "Sepia",
+    sepia: "Serpia",
     fontNormal: "Normal font size",
     fontLarge: "Large font size",
     fontExtraLarge: "Extra large font size",
@@ -60,6 +62,7 @@ const I18N = {
     exportCalendar: "Export calendar",
     exportedCalendar: "ICS calendar exported",
     noEventsToExport: "No events match the current period and filters.",
+    compactView: "Compact view",
     termsHelp: "Sanskrit terms",
     masaTerm: "Masa",
     masaTermDescription: "Lunar month used for Vaishnava calendar observances.",
@@ -167,7 +170,7 @@ const I18N = {
     appSubtitle: "Гаудия-вайшнавский панчанг POC",
     day: "День",
     night: "Ночь",
-    sepia: "Сепия",
+    sepia: "Серпия",
     fontNormal: "Обычный размер шрифта",
     fontLarge: "Крупный шрифт",
     fontExtraLarge: "Очень крупный шрифт",
@@ -181,6 +184,7 @@ const I18N = {
     exportCalendar: "Экспорт в календарь",
     exportedCalendar: "ICS календарь экспортирован",
     noEventsToExport: "Нет событий для экспорта с текущим периодом и фильтрами.",
+    compactView: "Компактный вид",
     termsHelp: "Санскритские термины",
     masaTerm: "Маса",
     masaTermDescription: "Лунный месяц, по которому определяются вайшнавские календарные события.",
@@ -511,7 +515,7 @@ function eventLabel(event) {
 
 function renderDetails(day, options = {}) {
   selectedDate = day.date;
-  document.querySelectorAll(".day").forEach((element) => {
+  document.querySelectorAll(".day, .compact-day").forEach((element) => {
     element.classList.toggle("is-selected", element.dataset.date === selectedDate);
   });
   const model = viewModelForDay(day);
@@ -586,6 +590,10 @@ function renderDetails(day, options = {}) {
       const target = document.querySelector(".event-details-panel") || document.querySelector(".details");
       target?.scrollIntoView({ behavior: "smooth", block: "center" });
       target?.focus?.({ preventScroll: true });
+    });
+  } else if (options.scrollToDetails) {
+    requestAnimationFrame(() => {
+      dayDetails.closest(".details")?.scrollIntoView({ behavior: "smooth", block: "start" });
     });
   }
 }
@@ -682,11 +690,15 @@ function renderCalendar() {
   calendarHeader.innerHTML = "";
   calendarGrid.innerHTML = "";
   calendarGrid.classList.add("is-range");
+  calendarGrid.classList.toggle("is-compact", compactViewInput.checked);
 
   const today = currentIsoDate();
-  const visibleDays = eventsOnlyInput.checked ? calendar.days.filter((day) => visibleEventsForDay(day).length > 0) : calendar.days;
+  const visibleDays =
+    eventsOnlyInput.checked && !compactViewInput.checked
+      ? calendar.days.filter((day) => visibleEventsForDay(day).length > 0)
+      : calendar.days;
   calendarTitle.textContent = periodTitle(periodFromInput.value, periodToInput.value);
-  calendarStatus.textContent = `${visibleDays.length} ${eventsOnlyInput.checked ? tr("shownDays") : tr("calendarDays")} - ${tr("updated")} ${new Intl.DateTimeFormat("en-GB", {
+  calendarStatus.textContent = `${visibleDays.length} ${eventsOnlyInput.checked && !compactViewInput.checked ? tr("shownDays") : tr("calendarDays")} - ${tr("updated")} ${new Intl.DateTimeFormat("en-GB", {
     hour: "2-digit",
     minute: "2-digit",
     second: "2-digit",
@@ -700,14 +712,14 @@ function renderCalendar() {
 
   for (const [monthKey, days] of groupDaysByMonth(visibleDays)) {
     const section = document.createElement("section");
-    section.className = `month-section${eventsOnlyInput.checked ? " is-event-list" : ""}`;
+    section.className = `month-section${eventsOnlyInput.checked && !compactViewInput.checked ? " is-event-list" : ""}${compactViewInput.checked ? " is-compact" : ""}`;
     section.innerHTML = `
       <h3 class="month-section-title">${monthTitle(Number(monthKey.slice(0, 4)), Number(monthKey.slice(5, 7)))}</h3>
       <div class="calendar-header">${orderedWeekdays(location).map((label) => `<span>${label}</span>`).join("")}</div>
       <div class="month-section-grid"></div>
     `;
     const grid = section.querySelector(".month-section-grid");
-    if (!eventsOnlyInput.checked) {
+    if (!eventsOnlyInput.checked || compactViewInput.checked) {
       for (let i = 0; i < weekdayOffsetForLocation(days[0].date, location); i += 1) {
         const spacer = document.createElement("div");
         spacer.className = "day-spacer";
@@ -715,7 +727,7 @@ function renderCalendar() {
       }
     }
     for (const day of days) {
-      grid.append(renderDayButton(day, today, location));
+      grid.append(compactViewInput.checked ? renderCompactDayButton(day, today) : renderDayButton(day, today, location));
     }
     calendarGrid.append(section);
   }
@@ -883,6 +895,38 @@ function renderDayButton(day, today, location) {
   `;
   button.addEventListener("click", () => renderDetails(day, { scrollToEventDetails: true }));
   return button;
+}
+
+function renderCompactDayButton(day, today) {
+  const isToday = day.date === today;
+  const isJumpTarget = jumpHighlightDates.has(day.date);
+  const events = visibleEventsForDay(day);
+  const tone = dayEventTone(events);
+  const button = document.createElement("button");
+  button.type = "button";
+  button.className = `compact-day compact-${tone}${isToday ? " is-today" : ""}${isJumpTarget ? " is-jump-target" : ""}`;
+  button.dataset.date = day.date;
+  button.setAttribute("aria-label", `${gregorianLong(day.date)}${events.length ? `, ${events.map(eventLabel).join(", ")}` : ""}`);
+  button.innerHTML = `
+    <span class="compact-day-number">${Number(day.date.slice(8, 10))}</span>
+    ${events.length ? `<span class="compact-event-dots" aria-hidden="true">${eventTones(events).slice(0, 3).map((item) => `<span class="compact-dot compact-${item}"></span>`).join("")}</span>` : ""}
+  `;
+  button.addEventListener("click", () => renderDetails(day, { scrollToDetails: true }));
+  return button;
+}
+
+function dayEventTone(events) {
+  return eventTones(events)[0] || "plain";
+}
+
+function eventTones(events) {
+  const priority = ["ekadashi", "parana", "vaishnava", "festival", "deity", "purushottama", "notice"];
+  const tones = new Set(
+    events
+      .map((event) => eventClass(event).split(" ")[0])
+      .filter(Boolean)
+  );
+  return priority.filter((tone) => tones.has(tone));
 }
 
 function renderDayEventBadges(events) {
@@ -1142,6 +1186,7 @@ function init() {
   periodFromInput.value = period.start;
   periodToInput.value = period.end;
   initEventsOnly();
+  initCompactView();
   initLanguage();
   initTheme();
   initFontSize();
@@ -1159,6 +1204,7 @@ function init() {
   periodFromInput.addEventListener("change", markPeriodChanged);
   periodToInput.addEventListener("change", markPeriodChanged);
   eventsOnlyInput.addEventListener("change", renderCalendar);
+  compactViewInput.addEventListener("change", renderCalendar);
   eventFilterSelect.addEventListener("change", renderCalendar);
   eventJumpSelect.addEventListener("change", () => jumpToEventMonth(eventJumpSelect.value));
   vaishnavaJumpSelect.addEventListener("change", () => jumpToVaishnava(vaishnavaJumpSelect.value));
@@ -1666,6 +1712,20 @@ function initEventsOnly() {
   eventsOnlyInput.addEventListener("change", () => {
     localStorage.setItem("vcalendar-events-only", String(eventsOnlyInput.checked));
   });
+}
+
+function initCompactView() {
+  const saved = localStorage.getItem("vcalendar-compact-view");
+  compactViewInput.checked = saved === "true";
+  syncCompactViewControls();
+  compactViewInput.addEventListener("change", () => {
+    localStorage.setItem("vcalendar-compact-view", String(compactViewInput.checked));
+    syncCompactViewControls();
+  });
+}
+
+function syncCompactViewControls() {
+  if (compactViewInput.checked && mainControlsPanel) mainControlsPanel.open = false;
 }
 
 function tr(key) {

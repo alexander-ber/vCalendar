@@ -336,6 +336,21 @@ h2 {
   justify-content: flex-end;
 }
 
+.compact-switch {
+  min-height: 42px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  padding: 8px 12px;
+  background: var(--panel-raised);
+}
+
+.header-compact-switch {
+  min-height: 38px;
+  border-radius: 999px;
+  padding: 6px 12px;
+  font-weight: 850;
+}
+
 .period-controls {
   display: grid;
   grid-template-columns: repeat(2, minmax(170px, 1fr)) minmax(250px, auto);
@@ -469,7 +484,7 @@ input {
   accent-color: var(--accent);
 }
 
-button:not(.day):not(.theme-toggle):not(.language-toggle):not(.font-size-button):not(.icon-button):not(.nav-button):not(.filter-chip):not(.secondary-button) {
+button:not(.day):not(.compact-day):not(.theme-toggle):not(.language-toggle):not(.font-size-button):not(.icon-button):not(.nav-button):not(.filter-chip):not(.secondary-button) {
   min-height: 42px;
   border: 1px solid transparent;
   border-radius: 8px;
@@ -480,7 +495,7 @@ button:not(.day):not(.theme-toggle):not(.language-toggle):not(.font-size-button)
   cursor: pointer;
 }
 
-button:not(.day):not(.theme-toggle):not(.language-toggle):not(.font-size-button):not(.icon-button):not(.nav-button):not(.filter-chip):not(.secondary-button):hover {
+button:not(.day):not(.compact-day):not(.theme-toggle):not(.language-toggle):not(.font-size-button):not(.icon-button):not(.nav-button):not(.filter-chip):not(.secondary-button):hover {
   background: var(--accent-strong);
 }
 
@@ -686,6 +701,151 @@ button:not(.day):not(.theme-toggle):not(.language-toggle):not(.font-size-button)
 
 .month-section.is-event-list .month-section-grid {
   grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+}
+
+.month-section.is-compact {
+  max-width: 760px;
+  margin-inline: auto;
+  gap: 16px;
+}
+
+.month-section.is-compact .month-section-title {
+  text-align: center;
+}
+
+.month-section.is-compact .calendar-header {
+  gap: 4px;
+  margin-bottom: 0;
+  text-align: center;
+  font-size: calc(13px * var(--font-scale));
+}
+
+.month-section.is-compact .calendar-header span {
+  padding: 0;
+}
+
+.month-section.is-compact .month-section-grid {
+  grid-template-columns: repeat(7, minmax(0, 1fr));
+  gap: 8px;
+}
+
+.compact-day {
+  position: relative;
+  display: grid;
+  place-items: center;
+  width: 100%;
+  min-width: 0;
+  aspect-ratio: 1;
+  border: 1px solid transparent;
+  border-radius: 999px;
+  padding: 0;
+  color: var(--ink);
+  background: transparent;
+  font-size: clamp(18px, 4vw, 30px);
+  font-weight: 700;
+  line-height: 1;
+  cursor: pointer;
+  transition:
+    background 160ms ease,
+    border-color 160ms ease,
+    color 160ms ease,
+    transform 160ms ease;
+}
+
+.compact-day:hover,
+.compact-day:focus {
+  border-color: color-mix(in srgb, var(--accent) 48%, var(--line));
+  outline: 2px solid color-mix(in srgb, var(--accent) 24%, transparent);
+  outline-offset: 1px;
+}
+
+.compact-day.is-selected {
+  border-color: var(--ink);
+  box-shadow: inset 0 0 0 1px var(--ink);
+}
+
+.compact-day.is-today {
+  color: white;
+  background: var(--accent);
+}
+
+.compact-day.is-jump-target {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--accent) 18%, transparent);
+}
+
+.compact-day-number {
+  position: relative;
+  z-index: 1;
+}
+
+.compact-ekadashi {
+  color: var(--ekadashi);
+  background: var(--ekadashi-soft);
+}
+
+.compact-parana {
+  color: var(--parana);
+  background: var(--parana-soft);
+}
+
+.compact-vaishnava {
+  color: var(--vaishnava);
+  background: var(--vaishnava-soft);
+}
+
+.compact-festival {
+  color: var(--festival);
+  background: var(--festival-soft);
+}
+
+.compact-deity {
+  color: var(--deity);
+  background: var(--deity-soft);
+}
+
+.compact-purushottama,
+.compact-notice {
+  color: var(--accent-strong);
+  background: var(--accent-soft);
+}
+
+.compact-event-dots {
+  position: absolute;
+  bottom: 8%;
+  left: 50%;
+  display: flex;
+  max-width: 70%;
+  transform: translateX(-50%);
+  gap: 3px;
+}
+
+.compact-dot {
+  width: 5px;
+  height: 5px;
+  border-radius: 999px;
+  background: var(--festival);
+}
+
+.compact-dot.compact-ekadashi {
+  background: var(--ekadashi);
+}
+
+.compact-dot.compact-parana {
+  background: var(--parana);
+}
+
+.compact-dot.compact-vaishnava {
+  background: var(--vaishnava);
+}
+
+.compact-dot.compact-deity {
+  background: var(--deity);
+}
+
+.compact-dot.compact-purushottama,
+.compact-dot.compact-notice {
+  background: var(--accent);
 }
 
 .day {
@@ -1311,6 +1471,10 @@ button:not(.day):not(.theme-toggle):not(.language-toggle):not(.font-size-button)
   .control-actions > button {
     flex: 1 1 220px;
   }
+
+  .control-actions .compact-switch {
+    flex: 1 1 220px;
+  }
 }
 
 @media (max-width: 820px) {
@@ -1358,7 +1522,8 @@ button:not(.day):not(.theme-toggle):not(.language-toggle):not(.font-size-button)
 
   .language-toggle,
   .theme-toggle,
-  .font-size-toggle {
+  .font-size-toggle,
+  .header-compact-switch {
     min-height: 44px;
   }
 
@@ -1385,6 +1550,15 @@ button:not(.day):not(.theme-toggle):not(.language-toggle):not(.font-size-button)
 
   .calendar-header {
     display: none;
+  }
+
+  .calendar-grid.is-compact .calendar-header {
+    display: grid;
+    grid-template-columns: repeat(7, minmax(0, 1fr));
+  }
+
+  .calendar-grid.is-compact .month-section-grid {
+    grid-template-columns: repeat(7, minmax(0, 1fr));
   }
 
   .day {
@@ -1449,7 +1623,8 @@ button:not(.day):not(.theme-toggle):not(.language-toggle):not(.font-size-button)
 
   .language-toggle,
   .theme-toggle,
-  .font-size-toggle {
+  .font-size-toggle,
+  .header-compact-switch {
     width: 100%;
   }
 
@@ -1471,8 +1646,25 @@ button:not(.day):not(.theme-toggle):not(.language-toggle):not(.font-size-button)
     grid-template-columns: 1fr;
   }
 
-  .control-actions > button {
+  .control-actions > button,
+  .control-actions .compact-switch {
     width: 100%;
+  }
+
+  .month-section.is-compact {
+    gap: 12px;
+  }
+
+  .month-section.is-compact .month-section-grid {
+    gap: 4px;
+  }
+
+  .compact-day {
+    font-size: clamp(20px, 7.8vw, 30px);
+  }
+
+  .compact-event-dots {
+    bottom: 6%;
   }
 
   .event-jump-panel {
