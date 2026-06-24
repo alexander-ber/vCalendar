@@ -6,7 +6,7 @@
     <title>Шри Чайтанья Шридхар Сева Ашрам</title>
     <link rel="icon" href="assets/scsashram-logo.png?v=20260614-1" type="image/png">
     <link rel="apple-touch-icon" href="assets/scsashram-logo.png?v=20260614-1">
-    <link rel="stylesheet" href="styles.css?v=20260624-2">
+    <link rel="stylesheet" href="styles.css?v=20260624-4">
   </head>
   <body>
     <main class="app-shell">
@@ -20,24 +20,32 @@
         </div>
         <div class="header-actions">
           <button id="languageToggle" class="language-toggle" type="button" aria-pressed="false">RU</button>
-          <div id="fontSizeToggle" class="font-size-toggle" role="group" aria-label="Font size">
-            <button class="font-size-button" type="button" data-font-size-choice="normal" aria-label="Normal font size" title="Normal font size">A</button>
-            <button class="font-size-button" type="button" data-font-size-choice="large" aria-label="Large font size" title="Large font size">A+</button>
-            <button class="font-size-button" type="button" data-font-size-choice="xlarge" aria-label="Extra large font size" title="Extra large font size">A++</button>
-          </div>
-          <div id="themeToggle" class="theme-toggle" role="group" aria-label="Theme">
-            <button type="button" data-theme-choice="day" data-i18n="day">Day</button>
-            <button type="button" data-theme-choice="night" data-i18n="night">Night</button>
-            <button type="button" data-theme-choice="sepia" data-i18n="sepia">Sepia</button>
-          </div>
-          <label class="switch-label compact-switch header-compact-switch">
-            <input id="compactViewInput" type="checkbox">
-            <span data-i18n="compactView">Compact view</span>
-          </label>
         </div>
       </header>
 
       <section class="controls" aria-label="Calendar controls">
+        <details class="collapsible-panel settings-collapsible">
+          <summary>
+            <span data-i18n="settings">Settings</span>
+            <span class="collapse-icon" aria-hidden="true"></span>
+          </summary>
+          <div class="settings-panel">
+            <div id="fontSizeToggle" class="font-size-toggle" role="group" aria-label="Font size">
+              <button class="font-size-button" type="button" data-font-size-choice="normal" aria-label="Normal font size" title="Normal font size">A</button>
+              <button class="font-size-button" type="button" data-font-size-choice="large" aria-label="Large font size" title="Large font size">A+</button>
+              <button class="font-size-button" type="button" data-font-size-choice="xlarge" aria-label="Extra large font size" title="Extra large font size">A++</button>
+            </div>
+            <div id="themeToggle" class="theme-toggle" role="group" aria-label="Theme">
+              <button type="button" data-theme-choice="day" data-i18n="day">Day</button>
+              <button type="button" data-theme-choice="night" data-i18n="night">Night</button>
+              <button type="button" data-theme-choice="sepia" data-i18n="sepia">Sepia</button>
+            </div>
+            <label class="switch-label compact-switch header-compact-switch">
+              <input id="compactViewInput" type="checkbox">
+              <span data-i18n="compactView">Compact view</span>
+            </label>
+          </div>
+        </details>
         <details id="mainControlsPanel" class="collapsible-panel" open>
           <summary>
             <span data-i18n="mainControls">Main controls</span>
@@ -142,6 +150,6 @@
       </section>
     </main>
 
-    <script type="module" src="js/app.js?v=20260624-2"></script>
+    <script type="module" src="js/app.js?v=20260624-3"></script>
   </body>
 </html>
