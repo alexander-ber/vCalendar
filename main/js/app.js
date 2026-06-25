@@ -1241,6 +1241,7 @@ function init() {
   initLanguage();
   initTheme();
   initFontSize();
+  initSettingsPopupDismiss();
   renderButton.addEventListener("click", () => {
     renderButton.disabled = true;
     renderButton.textContent = tr("generating");
@@ -1276,6 +1277,21 @@ function init() {
   prevMonthBottom.addEventListener("click", () => shiftPeriod(-1));
   nextMonthBottom.addEventListener("click", () => shiftPeriod(1));
   renderCalendar();
+}
+
+function initSettingsPopupDismiss() {
+  if (!controlsPanel) return;
+
+  document.addEventListener("click", (event) => {
+    if (!controlsPanel.open) return;
+    if (controlsPanel.contains(event.target)) return;
+    controlsPanel.open = false;
+  });
+
+  document.addEventListener("keydown", (event) => {
+    if (event.key !== "Escape" || !controlsPanel.open) return;
+    controlsPanel.open = false;
+  });
 }
 
 function markPeriodChanged() {
