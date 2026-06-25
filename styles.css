@@ -1487,38 +1487,59 @@ button:not(.day):not(.compact-day):not(.theme-toggle):not(.language-toggle):not(
   gap: 8px;
 }
 
-.event-details-panel h3 {
-  margin: 2px 0 0;
-  color: var(--ink);
-  font-size: calc(18px * var(--font-scale));
-}
-
 .event-detail-card {
   border: 1px solid var(--line);
   border-left: 4px solid var(--festival);
   border-radius: 8px;
-  padding: 11px 13px;
   background: var(--panel-raised);
+  overflow: hidden;
 }
 
-.event-detail-card span {
-  display: block;
-  color: var(--muted);
-  font-size: calc(12px * var(--font-scale));
-  font-weight: 850;
-  text-transform: uppercase;
+.event-detail-card summary::-webkit-details-marker {
+  display: none;
+}
+
+.event-detail-card summary::marker {
+  content: "";
+}
+
+.event-detail-summary {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 12px;
+  min-height: 52px;
+  padding: 10px 12px;
+  cursor: pointer;
+  list-style: none;
 }
 
 .event-detail-card strong {
   display: block;
   color: var(--ink);
   font-size: calc(16px * var(--font-scale));
+  line-height: 1.25;
+}
+
+.event-detail-card .full-description-icon {
+  width: calc(13px * var(--font-scale));
+  height: calc(13px * var(--font-scale));
+}
+
+.event-detail-card[open] .event-detail-summary .full-description-icon {
+  transform: rotate(225deg) translate(-2px, -1px);
+}
+
+.event-detail-body {
+  display: grid;
+  gap: 8px;
+  padding: 0 12px 12px;
 }
 
 .event-notes {
   display: grid;
   gap: 6px;
-  margin: 9px 0 0;
+  margin: 0;
 }
 
 .event-notes div {

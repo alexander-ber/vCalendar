@@ -533,16 +533,7 @@ function renderDetails(day, options = {}) {
   const ekadashiEvents = model.events.filter((event) => event.type === "ekadashi");
   const paranaEvents = model.events.filter((event) => event.type === "parana");
   dayDetails.innerHTML = `
-    <div>
-      <div class="events">
-        ${
-          model.events.length
-            ? model.events.map((event) => `<div class="event ${eventClass(event)}">${eventLabel(event)}</div>`).join("")
-            : `<span>${tr("noEvents")}</span>`
-        }
-      </div>
-    </div>
-    ${model.events.length ? renderEventDetails(model.events) : ""}
+    ${model.events.length ? renderEventDetails(model.events) : `<div class="events-empty">${tr("noEvents")}</div>`}
     ${renderSanskritTermsHelp()}
     <details id="selectedDayPanel" class="collapsible-panel selected-day-collapsible" ${options.scrollToDetails || options.scrollToEventDetails || options.openSelectedDay ? "open" : ""}>
       <summary>
@@ -1962,14 +1953,17 @@ function renderEventDetail(event) {
   const fullDescription = localizeEventFullDescription(event);
   const structuredNotes = renderEventStructuredNotes(event);
   return `
-    <article class="event-detail-card ${eventClass(event)}">
-      <div>
+    <details class="event-detail-card ${eventClass(event)}">
+      <summary class="event-detail-summary">
         <strong>${localizeEventName(event)}</strong>
+        <span class="full-description-icon" aria-hidden="true"></span>
+      </summary>
+      <div class="event-detail-body">
+        ${structuredNotes}
+        ${structuredNotes || fullDescription ? "" : `<p>${shortDescription}</p>`}
+        ${fullDescription ? `<div class="full-description-body">${fullDescription}</div>` : ""}
       </div>
-      ${structuredNotes}
-      ${structuredNotes || fullDescription ? "" : `<p>${shortDescription}</p>`}
-      ${fullDescription ? renderFullDescription(fullDescription) : ""}
-    </article>
+    </details>
   `;
 }
 
