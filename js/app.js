@@ -533,9 +533,7 @@ function renderDetails(day, options = {}) {
   const ekadashiEvents = model.events.filter((event) => event.type === "ekadashi");
   const paranaEvents = model.events.filter((event) => event.type === "parana");
   dayDetails.innerHTML = `
-    ${renderSanskritTermsHelp()}
     <div>
-      <strong>${tr("events")}</strong>
       <div class="events">
         ${
           model.events.length
@@ -545,6 +543,7 @@ function renderDetails(day, options = {}) {
       </div>
     </div>
     ${model.events.length ? renderEventDetails(model.events) : ""}
+    ${renderSanskritTermsHelp()}
     <details id="selectedDayPanel" class="collapsible-panel selected-day-collapsible" ${options.scrollToDetails || options.scrollToEventDetails || options.openSelectedDay ? "open" : ""}>
       <summary>
         <span>${tr("selectedDay")}</span>
@@ -1952,7 +1951,6 @@ function ekadashiDetailLine(event) {
 function renderEventDetails(events) {
   return `
     <section class="event-details-panel" tabindex="-1">
-      <h3>${tr("eventDetails")}</h3>
       ${events.map((event) => renderEventDetail(event)).join("")}
     </section>
   `;
@@ -1960,14 +1958,12 @@ function renderEventDetails(events) {
 
 function renderEventDetail(event) {
   const isBioEvent = event.type === "vaishnava_appearance" || event.type === "vaishnava_disappearance";
-  const heading = isBioEvent ? tr("biography") : tr("events");
   const shortDescription = localizeEventShortDescription(event) || eventNarrativeFallback(event, isBioEvent);
   const fullDescription = localizeEventFullDescription(event);
   const structuredNotes = renderEventStructuredNotes(event);
   return `
     <article class="event-detail-card ${eventClass(event)}">
       <div>
-        <span>${heading}</span>
         <strong>${localizeEventName(event)}</strong>
       </div>
       ${structuredNotes}
