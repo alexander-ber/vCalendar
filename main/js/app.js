@@ -26,6 +26,7 @@ const nextMonthTop = document.querySelector("#nextMonthTop");
 const prevMonthBottom = document.querySelector("#prevMonthBottom");
 const nextMonthBottom = document.querySelector("#nextMonthBottom");
 const languageToggle = document.querySelector("#languageToggle");
+const brandTitleLink = document.querySelector("#brandTitleLink");
 const themeToggle = document.querySelector("#themeToggle");
 const fontSizeToggle = document.querySelector("#fontSizeToggle");
 const calendarTitle = document.querySelector("#calendarTitle");
@@ -49,6 +50,7 @@ const MAX_RENDER_DAYS = 400;
 const I18N = {
   en: {
     appSubtitle: "Gaudiya Vaishnava Panchang POC",
+    appTitle: "Sree Caitanya Sridhar Seva Ashram",
     day: "Day",
     night: "Night",
     sepia: "Serpia",
@@ -173,6 +175,7 @@ const I18N = {
   },
   ru: {
     appSubtitle: "Гаудия-вайшнавский панчанг POC",
+    appTitle: "Шри Чайтанья Шридхар Сева Ашрам",
     day: "День",
     night: "Ночь",
     sepia: "Серпия",
@@ -1398,6 +1401,8 @@ function setLanguage(language) {
   eventSearchButton.setAttribute("aria-label", tr("eventSearch"));
   eventSearchButton.setAttribute("title", tr("eventSearch"));
   document.querySelector(".eyebrow").textContent = tr("appSubtitle");
+  brandTitleLink.textContent = tr("appTitle");
+  document.title = tr("appTitle");
   renderButton.textContent = tr("generate");
   document.querySelectorAll("[data-i18n]").forEach((element) => {
     element.textContent = tr(element.dataset.i18n);

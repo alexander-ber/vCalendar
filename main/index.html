@@ -6,7 +6,7 @@
     <title>Шри Чайтанья Шридхар Сева Ашрам</title>
     <link rel="icon" href="assets/scsashram-logo.png?v=20260614-1" type="image/png">
     <link rel="apple-touch-icon" href="assets/scsashram-logo.png?v=20260614-1">
-    <link rel="stylesheet" href="styles.css?v=20260624-4">
+    <link rel="stylesheet" href="styles.css?v=20260625-1">
   </head>
   <body>
     <main class="app-shell">
@@ -15,123 +15,122 @@
           <img class="brand-logo" src="assets/scsashram-logo.png?v=20260614-1" alt="Шри Чайтанья Шридхар Сева Ашрам">
           <div class="brand-copy">
             <p class="eyebrow">Gaudiya Vaishnava Panchang POC</p>
-            <h1>Шри Чайтанья Шридхар Сева Ашрам</h1>
+            <h1><a id="brandTitleLink" href="https://scsseva.com/about/" target="_blank" rel="noopener">Шри Чайтанья Шридхар Сева Ашрам</a></h1>
           </div>
         </div>
         <div class="header-actions">
           <button id="languageToggle" class="language-toggle" type="button" aria-pressed="false">RU</button>
+          <details id="controlsPanel" class="controls controls-collapsible" aria-label="Calendar controls">
+            <summary>
+              <span data-i18n="settings">Settings</span>
+              <span class="collapse-icon" aria-hidden="true"></span>
+            </summary>
+            <div class="controls-stack">
+              <details class="collapsible-panel settings-collapsible">
+                <summary>
+                  <span data-i18n="viewSettings">View</span>
+                  <span class="collapse-icon" aria-hidden="true"></span>
+                </summary>
+                <div class="settings-panel">
+                  <div id="fontSizeToggle" class="font-size-toggle" role="group" aria-label="Font size">
+                    <button class="font-size-button" type="button" data-font-size-choice="normal" aria-label="Normal font size" title="Normal font size">A</button>
+                    <button class="font-size-button" type="button" data-font-size-choice="large" aria-label="Large font size" title="Large font size">A+</button>
+                    <button class="font-size-button" type="button" data-font-size-choice="xlarge" aria-label="Extra large font size" title="Extra large font size">A++</button>
+                  </div>
+                  <div id="themeToggle" class="theme-toggle" role="group" aria-label="Theme">
+                    <button type="button" data-theme-choice="day" data-i18n="day">Day</button>
+                    <button type="button" data-theme-choice="night" data-i18n="night">Night</button>
+                    <button type="button" data-theme-choice="sepia" data-i18n="sepia">Sepia</button>
+                  </div>
+                  <label class="switch-label compact-switch header-compact-switch">
+                    <input id="compactViewInput" type="checkbox">
+                    <span data-i18n="compactView">Compact view</span>
+                  </label>
+                </div>
+              </details>
+              <details id="mainControlsPanel" class="collapsible-panel">
+                <summary>
+                  <span data-i18n="mainControls">Main controls</span>
+                  <span class="collapse-icon" aria-hidden="true"></span>
+                </summary>
+                <div class="control-row primary-controls">
+                  <label class="location-control">
+                    <span data-i18n="location">Location</span>
+                    <select id="locationSelect">
+                      <option value="maalot">Maalot, Israel</option>
+                    </select>
+                  </label>
+                  <div class="period-controls">
+                    <label>
+                      <span data-i18n="periodFrom">From</span>
+                      <input id="periodFromInput" type="date" value="2026-05-01">
+                    </label>
+                    <label>
+                      <span data-i18n="periodTo">To</span>
+                      <input id="periodToInput" type="date" value="2026-05-31">
+                    </label>
+                    <div class="quick-range" aria-label="Quick ranges">
+                      <button id="thisWeekButton" class="secondary-button" type="button" data-i18n="thisWeek">This week</button>
+                      <button id="thisMonthButton" class="secondary-button" type="button" data-i18n="thisMonth">This month</button>
+                      <button id="fullYearButton" class="secondary-button" type="button" data-i18n="fullYear">Full year</button>
+                    </div>
+                  </div>
+                  <div class="control-actions">
+                    <button id="renderButton" class="primary-button" type="button">Generate</button>
+                    <button id="exportIcsButton" class="secondary-button" type="button" data-i18n="exportCalendar">Export calendar</button>
+                  </div>
+                </div>
+              </details>
+              <details class="collapsible-panel">
+                <summary>
+                  <span data-i18n="eventFinder">Event finder</span>
+                  <span class="collapse-icon" aria-hidden="true"></span>
+                </summary>
+                <div class="event-jump-panel">
+                  <div class="event-search-row">
+                    <input
+                      id="eventSearchInput"
+                      class="event-search-input"
+                      type="search"
+                      autocomplete="off"
+                      data-i18n-placeholder="eventSearchPlaceholder"
+                      placeholder="Search by event name"
+                    />
+                    <button id="eventSearchButton" class="event-search-button" type="button" aria-label="Search event">⌕</button>
+                  </div>
+                  <select id="eventJumpSelect" class="event-jump-select" aria-label="Find event"></select>
+                  <select id="vaishnavaJumpSelect" class="event-jump-select" aria-label="Find Vaishnava"></select>
+                </div>
+              </details>
+              <details class="collapsible-panel filter-collapsible">
+                <summary>
+                  <span data-i18n="eventFilters">Event filters</span>
+                  <span class="collapse-icon" aria-hidden="true"></span>
+                </summary>
+                <div class="filter-panel">
+                  <div class="filter-panel-head">
+                    <label class="switch-label">
+                      <input id="eventsOnlyInput" type="checkbox" checked>
+                      <span data-i18n="eventsOnly">Only days with events</span>
+                    </label>
+                  </div>
+                  <div id="eventFilterChips" class="filter-chips" aria-label="Event filters"></div>
+                  <select id="eventFilterSelect" class="event-filter-select" multiple aria-hidden="true" tabindex="-1">
+                    <option value="ekadashi" selected>Ekadashi</option>
+                    <option value="parana" selected>Parana</option>
+                    <option value="purushottama" selected>Purushottama</option>
+                    <option value="festival" selected>Festivals</option>
+                    <option value="divineAppearance" selected>Divine appearances</option>
+                    <option value="vaishnavaAppearance" selected>Vaishnava appearances</option>
+                    <option value="vaishnavaDisappearance" selected>Vaishnava disappearances</option>
+                    <option value="deityTemple" selected>Deity / temple days</option>
+                  </select>
+                </div>
+              </details>
+            </div>
+          </details>
         </div>
       </header>
-
-      <details id="controlsPanel" class="controls controls-collapsible" aria-label="Calendar controls">
-        <summary>
-          <span data-i18n="settings">Settings</span>
-          <span class="collapse-icon" aria-hidden="true"></span>
-        </summary>
-        <div class="controls-stack">
-        <details class="collapsible-panel settings-collapsible">
-          <summary>
-            <span data-i18n="viewSettings">View</span>
-            <span class="collapse-icon" aria-hidden="true"></span>
-          </summary>
-          <div class="settings-panel">
-            <div id="fontSizeToggle" class="font-size-toggle" role="group" aria-label="Font size">
-              <button class="font-size-button" type="button" data-font-size-choice="normal" aria-label="Normal font size" title="Normal font size">A</button>
-              <button class="font-size-button" type="button" data-font-size-choice="large" aria-label="Large font size" title="Large font size">A+</button>
-              <button class="font-size-button" type="button" data-font-size-choice="xlarge" aria-label="Extra large font size" title="Extra large font size">A++</button>
-            </div>
-            <div id="themeToggle" class="theme-toggle" role="group" aria-label="Theme">
-              <button type="button" data-theme-choice="day" data-i18n="day">Day</button>
-              <button type="button" data-theme-choice="night" data-i18n="night">Night</button>
-              <button type="button" data-theme-choice="sepia" data-i18n="sepia">Sepia</button>
-            </div>
-            <label class="switch-label compact-switch header-compact-switch">
-              <input id="compactViewInput" type="checkbox">
-              <span data-i18n="compactView">Compact view</span>
-            </label>
-          </div>
-        </details>
-        <details id="mainControlsPanel" class="collapsible-panel">
-          <summary>
-            <span data-i18n="mainControls">Main controls</span>
-            <span class="collapse-icon" aria-hidden="true"></span>
-          </summary>
-          <div class="control-row primary-controls">
-            <label class="location-control">
-              <span data-i18n="location">Location</span>
-              <select id="locationSelect">
-                <option value="maalot">Maalot, Israel</option>
-              </select>
-            </label>
-            <div class="period-controls">
-              <label>
-                <span data-i18n="periodFrom">From</span>
-                <input id="periodFromInput" type="date" value="2026-05-01">
-              </label>
-              <label>
-                <span data-i18n="periodTo">To</span>
-                <input id="periodToInput" type="date" value="2026-05-31">
-              </label>
-              <div class="quick-range" aria-label="Quick ranges">
-                <button id="thisWeekButton" class="secondary-button" type="button" data-i18n="thisWeek">This week</button>
-                <button id="thisMonthButton" class="secondary-button" type="button" data-i18n="thisMonth">This month</button>
-                <button id="fullYearButton" class="secondary-button" type="button" data-i18n="fullYear">Full year</button>
-              </div>
-            </div>
-            <div class="control-actions">
-              <button id="renderButton" class="primary-button" type="button">Generate</button>
-              <button id="exportIcsButton" class="secondary-button" type="button" data-i18n="exportCalendar">Export calendar</button>
-            </div>
-          </div>
-        </details>
-        <details class="collapsible-panel">
-          <summary>
-            <span data-i18n="eventFinder">Event finder</span>
-            <span class="collapse-icon" aria-hidden="true"></span>
-          </summary>
-          <div class="event-jump-panel">
-            <div class="event-search-row">
-              <input
-                id="eventSearchInput"
-                class="event-search-input"
-                type="search"
-                autocomplete="off"
-                data-i18n-placeholder="eventSearchPlaceholder"
-                placeholder="Search by event name"
-              />
-              <button id="eventSearchButton" class="event-search-button" type="button" aria-label="Search event">⌕</button>
-            </div>
-            <select id="eventJumpSelect" class="event-jump-select" aria-label="Find event"></select>
-            <select id="vaishnavaJumpSelect" class="event-jump-select" aria-label="Find Vaishnava"></select>
-          </div>
-        </details>
-        <details class="collapsible-panel filter-collapsible">
-          <summary>
-            <span data-i18n="eventFilters">Event filters</span>
-            <span class="collapse-icon" aria-hidden="true"></span>
-          </summary>
-          <div class="filter-panel">
-            <div class="filter-panel-head">
-              <label class="switch-label">
-                <input id="eventsOnlyInput" type="checkbox" checked>
-                <span data-i18n="eventsOnly">Only days with events</span>
-              </label>
-            </div>
-            <div id="eventFilterChips" class="filter-chips" aria-label="Event filters"></div>
-            <select id="eventFilterSelect" class="event-filter-select" multiple aria-hidden="true" tabindex="-1">
-              <option value="ekadashi" selected>Ekadashi</option>
-              <option value="parana" selected>Parana</option>
-              <option value="purushottama" selected>Purushottama</option>
-              <option value="festival" selected>Festivals</option>
-              <option value="divineAppearance" selected>Divine appearances</option>
-              <option value="vaishnavaAppearance" selected>Vaishnava appearances</option>
-              <option value="vaishnavaDisappearance" selected>Vaishnava disappearances</option>
-              <option value="deityTemple" selected>Deity / temple days</option>
-            </select>
-          </div>
-        </details>
-        </div>
-      </details>
 
       <section class="calendar-wrap" tabindex="-1">
         <div class="section-head">
@@ -162,6 +161,6 @@
       </section>
     </main>
 
-    <script type="module" src="js/app.js?v=20260624-3"></script>
+    <script type="module" src="js/app.js?v=20260625-1"></script>
   </body>
 </html>
