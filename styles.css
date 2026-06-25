@@ -915,9 +915,15 @@ button:not(.day):not(.compact-day):not(.theme-toggle):not(.language-toggle):not(
   outline: none;
 }
 
-.compact-day.is-today {
-  color: white;
-  background: var(--accent);
+.compact-day.is-today::after {
+  position: absolute;
+  right: 18%;
+  bottom: 10%;
+  left: 18%;
+  height: 5px;
+  border-radius: 999px;
+  background: #d6332a;
+  content: "";
 }
 
 .compact-day.is-jump-target {
@@ -935,6 +941,10 @@ button:not(.day):not(.compact-day):not(.theme-toggle):not(.language-toggle):not(
   border-color: var(--ekadashi-border);
   color: var(--ekadashi);
   background: var(--ekadashi-soft);
+}
+
+.compact-day.compact-ekadashi.is-selected {
+  border-color: var(--ekadashi-border);
 }
 
 .compact-parana {
@@ -965,11 +975,14 @@ button:not(.day):not(.compact-day):not(.theme-toggle):not(.language-toggle):not(
 
 .compact-event-dots {
   position: absolute;
-  bottom: 12%;
-  left: 50%;
+  top: 50%;
+  right: 12%;
+  bottom: auto;
+  left: auto;
   display: flex;
-  max-width: 70%;
-  transform: translateX(-50%);
+  flex-direction: column;
+  max-width: none;
+  transform: translateY(-50%);
   gap: 3px;
 }
 
@@ -1718,6 +1731,31 @@ button:not(.day):not(.compact-day):not(.theme-toggle):not(.language-toggle):not(
     justify-content: flex-start;
   }
 
+  .controls-stack {
+    top: calc(100% + 8px);
+    right: auto;
+    left: 50%;
+    width: min(360px, calc(100vw - 24px));
+    max-height: min(70vh, 520px);
+    gap: 8px;
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    border-radius: 14px;
+    padding: 10px;
+    transform: translateX(-50%);
+    animation: none;
+  }
+
+  .controls-stack .collapsible-panel {
+    border-radius: 12px;
+  }
+
+  .controls-stack .collapsible-panel > summary {
+    min-height: 42px;
+    padding: 8px 10px;
+    font-size: calc(13px * var(--font-scale));
+  }
+
   .language-toggle,
   .theme-toggle,
   .font-size-toggle,
@@ -1819,8 +1857,8 @@ button:not(.day):not(.compact-day):not(.theme-toggle):not(.language-toggle):not(
   }
 
   .controls-stack {
-    right: 14px;
-    width: min(720px, calc(100vw - 28px));
+    width: min(360px, calc(100vw - 24px));
+    padding: 8px;
   }
 
   .header-actions {
