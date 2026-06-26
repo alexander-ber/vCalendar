@@ -706,30 +706,26 @@ button:not(.day):not(.compact-day):not(.theme-toggle):not(.language-toggle):not(
 
 .month-year-picker {
   display: inline-grid;
-  grid-template-columns: minmax(190px, auto) minmax(132px, auto);
+  grid-template-columns: minmax(190px, 260px);
   gap: 12px;
   align-items: center;
 }
 
-.month-year-picker select {
+.month-year-picker input {
   appearance: none;
   -webkit-appearance: none;
   min-height: 48px;
   border-radius: 999px;
-  padding: 8px 46px 8px 18px;
-  background-image:
-    linear-gradient(45deg, transparent 50%, currentColor 50%),
-    linear-gradient(135deg, currentColor 50%, transparent 50%);
-  background-position:
-    calc(100% - 24px) 52%,
-    calc(100% - 16px) 52%;
-  background-size:
-    8px 8px,
-    8px 8px;
-  background-repeat: no-repeat;
+  padding: 8px 18px;
   font-size: calc(15px * var(--font-scale));
   font-weight: 900;
-  text-transform: capitalize;
+}
+
+.month-year-picker input::-webkit-calendar-picker-indicator {
+  width: 22px;
+  height: 22px;
+  cursor: pointer;
+  opacity: 0.88;
 }
 
 #calendarStatus:empty {
@@ -1938,8 +1934,8 @@ button:not(.day):not(.compact-day):not(.theme-toggle):not(.language-toggle):not(
   }
 
   .month-year-picker {
-    grid-template-columns: minmax(0, 1fr) 128px;
-    width: min(100%, 348px);
+    grid-template-columns: minmax(0, 1fr);
+    width: min(100%, 260px);
   }
 
   .quick-range,

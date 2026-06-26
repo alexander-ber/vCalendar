@@ -6,7 +6,7 @@
     <title>Шри Чайтанья Шридхар Сева Ашрам</title>
     <link rel="icon" href="assets/scsashram-logo.png?v=20260614-1" type="image/png">
     <link rel="apple-touch-icon" href="assets/scsashram-logo.png?v=20260614-1">
-    <link rel="stylesheet" href="styles.css?v=20260626-3">
+    <link rel="stylesheet" href="styles.css?v=20260626-4">
   </head>
   <body>
     <main class="app-shell">
@@ -141,8 +141,7 @@
           <div class="calendar-title-control">
             <h2 id="calendarTitle" class="sr-only">April 2026</h2>
             <div class="month-year-picker" aria-label="Month and year picker">
-              <select id="calendarMonthSelect" aria-label="Month"></select>
-              <select id="calendarYearSelect" aria-label="Year"></select>
+              <input id="calendarMonthPicker" type="month" min="1800-01" max="2200-12" aria-label="Month and year">
             </div>
           </div>
           <button id="nextMonthTop" class="icon-button" type="button" aria-label="Next month">›</button>
@@ -164,6 +163,6 @@
       </section>
     </main>
 
-    <script type="module" src="js/app.js?v=20260626-9"></script>
+    <script type="module" src="js/app.js?v=20260626-10"></script>
   </body>
 </html>
