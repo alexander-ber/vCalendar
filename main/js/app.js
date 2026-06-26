@@ -1,4 +1,4 @@
-import { generateCalendarRange, viewModelForDay } from "./calendar-engine.js?v=20260626-1";
+import { generateCalendarRange, viewModelForDay } from "./calendar-engine.js?v=20260626-2";
 import { EVENTS } from "./events-data.js?v=20260615-1";
 import { LOCATIONS } from "./locations-data.js?v=20260626-1";
 import { RULES } from "./rules-data.js?v=20260613-3";
@@ -1936,7 +1936,7 @@ function ekadashiCalculationExplanation(event) {
       trisprsa_after_dashami_sunrise: "The previous solar day began with Dashami at sunrise and Ekadashi started later; the fast is observed on the next suitable Trisprsa day.",
       suddha_after_dashami_sunrise: "The previous solar day began with Dashami at sunrise and Ekadashi started later; the fast is observed on the next clean Ekadashi day.",
       vyanjuli_mahadvadashi: "Dvadashi extends across two sunrises, so the fast follows the Vyanjuli Mahadvadashi rule.",
-      paksavardhini_mahadvadashi: "A vriddhi full moon or new moon occurs later in the paksha, so the fast follows the Paksavardhini Mahadvadashi rule.",
+      paksavardhini_mahadvadashi: "The next Pratipat after Gaura paksha or Amavasya after Krishna paksha is vriddhi, so the fast follows the Paksavardhini Mahadvadashi rule.",
       dvadashi_suitable_for_ekadashi_fasting: "Ekadashi was affected by Dashami at arunodaya; the suitable fasting day is Dvadashi.",
       no_sunrise: "Ekadashi does not touch sunrise on a solar day, so the fast shifts to the next suitable day."
     },
@@ -1949,7 +1949,7 @@ function ekadashiCalculationExplanation(event) {
       trisprsa_after_dashami_sunrise: "Предыдущий солнечный день начался с Дашами на восходе, а Экадаши началась позже; пост соблюдается в следующий подходящий день Триспрша.",
       suddha_after_dashami_sunrise: "Предыдущий солнечный день начался с Дашами на восходе, а Экадаши началась позже; пост соблюдается в следующий чистый день Экадаши.",
       vyanjuli_mahadvadashi: "Двадаши растянулась на два восхода подряд, поэтому пост определяется по правилу Вьянджули Махадвадаши.",
-      paksavardhini_mahadvadashi: "Позже в этой пакше есть вриддхи Пурнима или Амавасья, поэтому пост определяется по правилу Пакшавардхини Махадвадаши.",
+      paksavardhini_mahadvadashi: "Следующая Пратипад после Гаура-пакши или Амавасья после Кришна-пакши является вриддхи, поэтому пост определяется по правилу Пакшавардхини Махадвадаши.",
       dvadashi_suitable_for_ekadashi_fasting: "Экадаши была затронута Дашами на арунодае; подходящим днём поста становится Двадаши.",
       no_sunrise: "Экадаши не попала на восход ни одного солнечного дня, поэтому пост переносится на следующий подходящий день."
     }

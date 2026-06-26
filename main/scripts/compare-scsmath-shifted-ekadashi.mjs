@@ -5,6 +5,16 @@ import { RULES } from "../js/rules-data.js";
 
 const SCS_NABADWIP_541_SHIFT_CASES = [
   {
+    label: "Nirjala Ekadashi / Nabadwip witness",
+    range: ["2026-06-23", "2026-07-02"],
+    witness: [
+      { date: "2026-06-25", expectation: "fast", name: "Nirjala Ekadashi" },
+      { date: "2026-06-26", expectation: "parana" },
+      { date: "2026-06-26", expectation: "no_fast_event" },
+      { date: "2026-06-27", expectation: "no_parana" }
+    ]
+  },
+  {
     label: "Yogini Ekadashi dashami-viddha",
     range: ["2026-07-09", "2026-07-12"],
     witness: [
@@ -88,6 +98,8 @@ function satisfies(facts, witness) {
   if (witness.expectation === "fast") return facts.fast.length > 0;
   if (witness.expectation === "no_fast") return facts.no_fast.length > 0;
   if (witness.expectation === "parana") return facts.parana.length > 0;
+  if (witness.expectation === "no_fast_event") return facts.fast.length === 0;
+  if (witness.expectation === "no_parana") return facts.parana.length === 0;
   if (witness.expectation === "no_fast_or_plain_ekadashi") return facts.no_fast.length > 0 || facts.tithi_sunrise.includes("Ekadashi");
   return false;
 }

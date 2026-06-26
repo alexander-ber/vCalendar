@@ -7,6 +7,7 @@ import { RULES } from "../js/rules-data.js";
 const maalot = LOCATIONS.find((location) => location.id === "maalot");
 const telAviv = LOCATIONS.find((location) => location.id === "tel-aviv");
 const mayapur = LOCATIONS.find((location) => location.id === "mayapur");
+const nabadwip = LOCATIONS.find((location) => location.id === "nabadwip");
 const kathmandu = LOCATIONS.find((location) => location.id === "kathmandu");
 
 assert(LOCATIONS.filter((location) => location.group === "Израиль").every((location) => location.week_start === 0));
@@ -53,8 +54,13 @@ const juneKathmandu = eventsByDate(2026, 6, kathmandu);
 assert(
   juneKathmandu
     .get("2026-06-25")
-    .some((event) => event.type === "ekadashi_notice" && event.i18n?.ru?.description.includes("Пакшавардхини Махадвадаши"))
+    .some((event) => event.type === "ekadashi" && event.name === "Nirjala Ekadashi")
 );
+
+const juneNabadwip = eventsByDate(2026, 6, nabadwip);
+assert(juneNabadwip.get("2026-06-25").some((event) => event.type === "ekadashi" && event.name === "Nirjala Ekadashi"));
+assert(juneNabadwip.get("2026-06-26").some((event) => event.name === "Parana for Nirjala Ekadashi"));
+assert(!juneNabadwip.get("2026-06-26").some((event) => event.type === "ekadashi" && event.name === "Nirjala Ekadashi"));
 
 const julyMaalot = eventsByDate(2026, 7, maalot);
 assert(
