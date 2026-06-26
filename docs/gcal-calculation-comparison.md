@@ -25,6 +25,8 @@ GCAL calculates a date range in phases:
 
 GCAL tests Dvadashi only when today's sunrise tithi is Dvadashi and yesterday's sunrise tithi is less than Dvadashi.
 
+Implementation note: in this project that outer guard is explicit. For Gaura Dvadashi the previous sunrise must be Gaura Dashami or Gaura Ekadashi; for Krishna Dvadashi it must be Krishna Dashami or Krishna Ekadashi. Only then are the Dvadashi tests 1.3.1-1.3.4 evaluated.
+
 The PDF then applies these checks in order:
 
 1. If today is Gaura Dvadashi and the nakshatra test succeeds, today is a nakshatra Mahadvadashi.
@@ -226,6 +228,8 @@ Validation convention: when local results diverge, compare the rule result again
 
 Follow-up investigation: `scripts/compare-tithi-engines.mjs` compares the current local formula, Astronomy Engine geocentric models, and an Astronomy Engine topocentric model. `scripts/compare-swiss-tithi.mjs` compares Swiss/Moshier geocentric and topocentric results against the same sunrise/arunodaya anchors. For Maalot on 2026-05-28, the geocentric high-precision candidates put Trayodashi at sunrise, while the topocentric candidates keep Dvadashi at sunrise. That means the issue is not simply a bad Moon position; it is the calendar-model choice for tithi longitude. `vaishnavacalendar.org` and SCS Math are useful witnesses for these edge cases, but neither should be treated as the single source of truth.
 
+The same harness now includes a `surya_siddhanta_mean` diagnostic engine. It uses the classical Surya Siddhanta mahayuga mean revolution counts for the Sun and Moon from the Kali Yuga epoch, so it is useful as a siddhantic baseline when comparing against Saraswat Math-style witnesses. It is not yet the full true Surya Siddhanta model with manda corrections, so it must not be promoted to production tithi calculation without further validation.
+
 ### Masa calculation
 
 GCAL calculates masa on Pratipat, with special handling when Pratipat is ksaya or vriddhi. Our current implementation derives masa directly from the lunar month interval for any date.
@@ -242,7 +246,9 @@ GCAL has a richer Dvadashi decision table:
 - Paksavardhini Mahadvadashi
 - Dvadashi suitable for Ekadashi fasting
 
-We now implement the Dvadashi-shift table as a first pass: Vyanjuli, Paksavardhini, Dvadashi suitable for Ekadashi fasting, and nakshatra Mahadvadashi.
+We now implement the Dvadashi-shift table as a first pass: Vyanjuli, Paksavardhini, Dvadashi suitable for Ekadashi fasting, and nakshatra Mahadvadashi. Paksavardhini must be checked against the next Pratipat after Gaura paksha or Amavasya after Krishna paksha, not against a repeated Purnima itself. The Nabadwip Nirjala 2026 witness catches this distinction: Purnima repeats on 29-30 June, but the Ekadashi fast remains on 25 June with parana on 26 June.
+
+Nabadwip Nirjala 2026 also exposes a separate astronomy-model discrepancy. The Saraswat Math panjika lists 29 June as Purnima and 30 June as Krishna Pratipad, while the current local formula and modern apparent geocentric candidates can keep Purnima present at the 30 June sunrise. That discrepancy must be investigated as a tithi engine/model question, not as a Paksavardhini Ekadashi-shift rule. The immediate rule fix is to avoid moving Nirjala because of repeated Purnima alone.
 
 Known validation issue: this rule layer still depends on the current approximate tithi/nakshatra astronomy. Some Nabadwip/SCS Math witness cases diverge because our sunrise/arunodaya tithi differs before the rule table is applied.
 

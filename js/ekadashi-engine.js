@@ -28,6 +28,10 @@ function isLessThanEkadashiInPaksha(number, ekadashiNumber) {
   return ekadashiNumber === 11 ? number >= 1 && number < 11 : number >= 16 && number < 26;
 }
 
+function isDvadashiTestCandidate(previousNumber, dvadashiNumber) {
+  return dvadashiNumber === 12 ? previousNumber === 10 || previousNumber === 11 : previousNumber === 25 || previousNumber === 26;
+}
+
 function tithiShortName(fullName) {
   if (fullName === "Purnima" || fullName === "Amavasya") return fullName;
   return fullName.replace("Gaura ", "").replace("Krishna ", "");
@@ -114,10 +118,11 @@ function findNakshatraEndAfter(start, targetNumber, maxHours = 48) {
   return null;
 }
 
-function hasVriddhiFullOrNewMoonAhead(days, index) {
+function hasPaksavardhiniVriddhiAhead(days, index, dvadashiNumber) {
+  const targetNumber = dvadashiNumber === 12 ? 16 : 30;
   for (let i = index + 1; i < days.length - 1; i += 1) {
     const current = days[i].lunar.tithi_at_sunrise.number;
-    if (current !== 15 && current !== 30) continue;
+    if (current !== targetNumber) continue;
     return days[i + 1]?.lunar.tithi_at_sunrise.number === current;
   }
   return false;
@@ -241,6 +246,8 @@ function classifyDvadashiMahadvadashi(days, index, location, rules) {
   const nextAtSunrise = nextDay.lunar.tithi_at_sunrise.number;
   const candidateDate = previousDay.date;
 
+  if (!isDvadashiTestCandidate(previousAtSunrise, todayNumber)) return null;
+
   if (todayNumber === 12) {
     const nakshatraType = nakshatraMahadvadashiType(day, nextDay);
     if (nakshatraType) {
@@ -275,7 +282,7 @@ function classifyDvadashiMahadvadashi(days, index, location, rules) {
     });
   }
 
-  if (hasVriddhiFullOrNewMoonAhead(days, index)) {
+  if (hasPaksavardhiniVriddhiAhead(days, index, todayNumber)) {
     return buildEkadashiEvent({
       day,
       location,
@@ -489,12 +496,12 @@ function noFastNoticeForEkadashiDay(day, ekadashiOrReason, targetNumber = null) 
       ru: "После чистой Экадаши Двадаши растягивается на два восхода подряд. По правилу Вьянджули Махадвадаши пост соблюдается в первый день Двадаши, а не в предшествующий день Экадаши."
     },
     next_full_or_new_moon_is_vriddhi: {
-      en: "By the Paksavardhini Mahadvadashi rule, when the Purnima or Amavasya at the end of the paksha extends across two solar days, the Ekadashi fast is observed on the following Dvadashi.",
-      ru: "По правилу Пакшавардхини Махадвадаши, если в конце этой пакши Пурнима или Амавасья растягивается на два солнечных дня, пост переносится с Экадаши на следующую Двадаши."
+      en: "By the Paksavardhini Mahadvadashi rule, when the next Pratipat after Gaura paksha or Amavasya after Krishna paksha extends across two solar days, the Ekadashi fast is observed on the following Dvadashi.",
+      ru: "По правилу Пакшавардхини Махадвадаши, если следующая Пратипад после Гаура-пакши или Амавасья после Кришна-пакши растягивается на два солнечных дня, пост переносится с Экадаши на следующую Двадаши."
     },
     paksavardhini_mahadvadashi: {
-      en: "Purnima or Amavasya at the end of this paksha extends across two solar days. By the Paksavardhini Mahadvadashi rule, the fast is observed on Dvadashi.",
-      ru: "Пурнима или Амавасья в конце этой пакши растягивается на два солнечных дня. По правилу Пакшавардхини Махадвадаши пост соблюдается на Двадаши."
+      en: "The next Pratipat after Gaura paksha or Amavasya after Krishna paksha extends across two solar days. By the Paksavardhini Mahadvadashi rule, the fast is observed on Dvadashi.",
+      ru: "Следующая Пратипад после Гаура-пакши или Амавасья после Кришна-пакши растягивается на два солнечных дня. По правилу Пакшавардхини Махадвадаши пост соблюдается на Двадаши."
     },
     vyanjuli_mahadvadashi: {
       en: "Dvadashi extends across two consecutive sunrises after a pure Ekadashi. By the Vyanjuli Mahadvadashi rule, the fast is observed on the first Dvadashi sunrise.",

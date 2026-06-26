@@ -1,5 +1,12 @@
 import { Body, Ecliptic, EclipticGeoMoon, Equator, GeoVector, MoonPhase, Observer, PairLongitude, SunPosition } from "../vendor/astronomy-engine.js";
-import { dayAstronomy, ephemerisTithiAngle, normalizeDegrees, tithiAngle, TITHI_NAMES } from "../js/astronomy-adapter.js";
+import {
+  dayAstronomy,
+  ephemerisTithiAngle,
+  normalizeDegrees,
+  suryaSiddhantaMeanTithiAngle,
+  tithiAngle,
+  TITHI_NAMES
+} from "../js/astronomy-adapter.js";
 import { formatDateTime, formatTime } from "../js/date-utils.js";
 import { LOCATIONS } from "../js/locations-data.js";
 import { RULES } from "../js/rules-data.js";
@@ -12,6 +19,7 @@ const DEFAULT_CASES = [
   { location: "mayapur", start: "2027-01-18", end: "2027-01-19", note: "Mayapur comparison: Putrada shifted Ekadashi" },
   { location: "kolkata", start: "2027-03-18", end: "2027-03-19", note: "SCS witness: Amalaki shifted Ekadashi" },
   { location: "mayapur", start: "2027-03-18", end: "2027-03-19", note: "Mayapur comparison: Amalaki shifted Ekadashi" },
+  { location: "nabadwip", start: "2026-06-24", end: "2026-06-26", note: "Nabadwip Nirjala witness: VC fast on 25, parana on 26" },
   { location: "maalot", start: "2026-05-26", end: "2026-05-28", note: "Maalot Padmini/Vyanjuli edge case" },
   { location: "vrindavan", start: "2026-05-26", end: "2026-05-28", note: "Vrindavan viddha comparison" },
   { location: "mayapur", start: "2026-01-23", end: "2026-01-23", note: "Navadvip/Mayapur Vasanta Panchami cluster" }
@@ -37,6 +45,11 @@ const STATIC_ENGINES = [
     id: "app_ephemeris_candidate",
     label: "candidate: AE apparent geocentric Moon/Sun",
     angle: ephemerisTithiAngle
+  },
+  {
+    id: "surya_siddhanta_mean",
+    label: "Surya Siddhanta mean elongation baseline",
+    angle: suryaSiddhantaMeanTithiAngle
   },
   {
     id: "astronomy_moonphase",

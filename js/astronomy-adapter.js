@@ -3,6 +3,10 @@ import { MS_PER_DAY, MS_PER_MINUTE, addDaysToLocalDate, localDateParts, zonedDat
 
 const DEG = Math.PI / 180;
 const J2000 = 2451545.0;
+const SURYA_SIDDHANTA_CIVIL_DAYS_PER_MAHAYUGA = 1577917800;
+const SURYA_SIDDHANTA_SUN_REVS_PER_MAHAYUGA = 4320000;
+const SURYA_SIDDHANTA_MOON_REVS_PER_MAHAYUGA = 57753336;
+const KALI_YUGA_EPOCH_JD = 588465.5;
 
 export const NAKSHATRA_NAMES = [
   "Ashvini",
@@ -158,6 +162,13 @@ export function ephemerisMoonLongitude(date) {
 
 export function ephemerisTithiAngle(date) {
   return normalizeDegrees(ephemerisMoonLongitude(date) - ephemerisSunLongitude(date));
+}
+
+export function suryaSiddhantaMeanTithiAngle(date) {
+  const ahargana = julianDay(date) - KALI_YUGA_EPOCH_JD;
+  const relativeRevolutions =
+    SURYA_SIDDHANTA_MOON_REVS_PER_MAHAYUGA - SURYA_SIDDHANTA_SUN_REVS_PER_MAHAYUGA;
+  return normalizeDegrees((ahargana * relativeRevolutions * 360) / SURYA_SIDDHANTA_CIVIL_DAYS_PER_MAHAYUGA);
 }
 
 export function sunSiderealLongitude(date) {
