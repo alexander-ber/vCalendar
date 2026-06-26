@@ -474,7 +474,7 @@ function currentIsoDate() {
 
 function eventClass(event) {
   if (event.type === "ekadashi") return "ekadashi";
-  if (event.type === "ekadashi_notice") return "ekadashi notice";
+  if (event.type === "ekadashi_notice") return "notice ekadashi-notice";
   if (event.type === "parana") return "parana";
   if (event.type === "purushottama_boundary") return "purushottama";
   if (event.type === "divine_appearance") return "festival";
