@@ -6,7 +6,7 @@
     <title>Шри Чайтанья Шридхар Сева Ашрам</title>
     <link rel="icon" href="assets/scsashram-logo.png?v=20260614-1" type="image/png">
     <link rel="apple-touch-icon" href="assets/scsashram-logo.png?v=20260614-1">
-    <link rel="stylesheet" href="styles.css?v=20260625-17">
+    <link rel="stylesheet" href="styles.css?v=20260626-3">
   </head>
   <body>
     <main class="app-shell">
@@ -54,12 +54,6 @@
                   <span class="collapse-icon" aria-hidden="true"></span>
                 </summary>
                 <div class="control-row primary-controls">
-                  <label class="location-control">
-                    <span data-i18n="location">Location</span>
-                    <select id="locationSelect">
-                      <option value="maalot">Maalot, Israel</option>
-                    </select>
-                  </label>
                   <div class="period-controls">
                     <label>
                       <span data-i18n="periodFrom">From</span>
@@ -132,6 +126,15 @@
         </div>
       </header>
 
+      <section class="location-panel" aria-label="Location">
+        <label class="location-control">
+          <span data-i18n="location">Location</span>
+          <select id="locationSelect">
+            <option value="nabadwip">Nabadwip, India</option>
+          </select>
+        </label>
+      </section>
+
       <section class="calendar-wrap" tabindex="-1">
         <div class="section-head">
           <button id="prevMonthTop" class="icon-button" type="button" aria-label="Previous month">‹</button>
@@ -161,6 +164,6 @@
       </section>
     </main>
 
-    <script type="module" src="js/app.js?v=20260625-5"></script>
+    <script type="module" src="js/app.js?v=20260626-6"></script>
   </body>
 </html>

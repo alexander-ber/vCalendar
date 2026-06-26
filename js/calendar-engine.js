@@ -20,6 +20,7 @@ function buildDay(isoDate, location, rules) {
   const arunodayaTithi = tithiInfo(astronomy.arunodaya);
   const sunriseNakshatra = nakshatraInfo(astronomy.sunrise);
   const sunriseYoga = yogaInfo(astronomy.sunrise);
+  const currentTithiBoundary = findTithiStartBefore(astronomy.sunrise, sunriseTithi.number);
   const nextTithiBoundary = findTithiEndAfter(astronomy.sunrise, sunriseTithi.number);
   const masa = masaForDate(astronomy.sunrise);
   return {
@@ -38,6 +39,7 @@ function buildDay(isoDate, location, rules) {
       tithi_angle_at_sunrise: sunriseTithi.angle,
       nakshatra_at_sunrise: sunriseNakshatra,
       yoga_at_sunrise: sunriseYoga,
+      current_tithi_boundary: currentTithiBoundary,
       next_tithi_boundary: nextTithiBoundary
     },
     events: [],
@@ -48,6 +50,25 @@ function buildDay(isoDate, location, rules) {
         "POC astronomy uses approximate browser formulas. External Panchang data is not used as runtime source."
     }
   };
+}
+
+function findTithiStartBefore(start, tithiNumber) {
+  let right = new Date(start);
+  let left = new Date(right.getTime() - 60 * 60 * 1000);
+  const min = start.getTime() - 48 * 60 * 60 * 1000;
+  while (left.getTime() >= min) {
+    if (tithiInfo(left).number !== tithiNumber && tithiInfo(right).number === tithiNumber) {
+      for (let i = 0; i < 42; i += 1) {
+        const mid = new Date((left.getTime() + right.getTime()) / 2);
+        if (tithiInfo(mid).number === tithiNumber) right = mid;
+        else left = mid;
+      }
+      return right;
+    }
+    right = left;
+    left = new Date(left.getTime() - 60 * 60 * 1000);
+  }
+  return null;
 }
 
 function findTithiEndAfter(start, tithiNumber) {
@@ -388,6 +409,7 @@ export function generateCalendarRange(startDate, endDate, location, rules, event
 }
 
 export function viewModelForDay(day) {
+  const tithiStart = day.lunar.current_tithi_boundary;
   const tithiEnd = day.lunar.next_tithi_boundary;
   return {
     date: day.date,
@@ -402,11 +424,16 @@ export function viewModelForDay(day) {
     sunset: formatTime(day.astronomy.sunset, day.location.timezone),
     moonrise: formatTime(day.astronomy.moonrise, day.location.timezone),
     moonset: formatTime(day.astronomy.moonset, day.location.timezone),
+    moonriseFull: formatDateTime(day.astronomy.moonrise, day.location.timezone),
+    moonsetFull: formatDateTime(day.astronomy.moonset, day.location.timezone),
     moonAngle: day.lunar.tithi_angle_at_sunrise.toFixed(2),
     arunodaya: formatTime(day.astronomy.arunodaya, day.location.timezone),
     masa: day.masa.display_name,
     tithi: day.lunar.tithi_at_sunrise.name,
+    tithiStart: tithiStart ? formatBoundary(tithiStart, day.date, day.location.timezone) : "not implemented",
+    tithiStartFull: tithiStart ? formatDateTime(tithiStart, day.location.timezone) : "not implemented",
     tithiEnd: tithiEnd ? formatBoundary(tithiEnd, day.date, day.location.timezone) : "not implemented",
+    tithiEndFull: tithiEnd ? formatDateTime(tithiEnd, day.location.timezone) : "not implemented",
     arunodayaTithi: day.lunar.tithi_at_arunodaya.name,
     paksha: day.lunar.paksha,
     angle: day.lunar.tithi_angle_at_sunrise.toFixed(2),
