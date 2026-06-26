@@ -132,6 +132,14 @@ export const LOCATIONS = [
     timezone: "Asia/Kolkata"
   },
   {
+    id: "nabadwip",
+    name: "Nabadwip, India",
+    group: "Индия",
+    lat: 23.4067,
+    lon: 88.3686,
+    timezone: "Asia/Kolkata"
+  },
+  {
     id: "kolkata",
     name: "Kolkata, India",
     group: "Индия",

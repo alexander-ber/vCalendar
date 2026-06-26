@@ -1,6 +1,6 @@
-import { generateCalendarRange, viewModelForDay } from "./calendar-engine.js?v=20260622-1";
+import { generateCalendarRange, viewModelForDay } from "./calendar-engine.js?v=20260626-1";
 import { EVENTS } from "./events-data.js?v=20260615-1";
-import { LOCATIONS } from "./locations-data.js?v=20260622-2";
+import { LOCATIONS } from "./locations-data.js?v=20260626-1";
 import { RULES } from "./rules-data.js?v=20260613-3";
 
 const locationSelect = document.querySelector("#locationSelect");
@@ -46,6 +46,7 @@ let pendingScrollTarget = null;
 let vaishnavaTypeaheadText = "";
 let vaishnavaTypeaheadTimer = null;
 const MAX_RENDER_DAYS = 400;
+const DEFAULT_LOCATION_ID = "nabadwip";
 
 const I18N = {
   en: {
@@ -92,6 +93,7 @@ const I18N = {
     isoDate: "ISO date",
     sunrise: "Sunrise",
     sunset: "Sunset",
+    moon: "Moon",
     moonrise: "Moonrise",
     moonset: "Moonset",
     moonAngle: "Moon-Sun angle",
@@ -99,6 +101,7 @@ const I18N = {
     masa: "Masa",
     paksha: "Paksha",
     tithiSunrise: "Tithi sunrise",
+    tithiStarts: "Tithi starts",
     tithiEnds: "Tithi ends",
     tithiAngle: "Tithi angle",
     ekadashiName: "Ekadashi name",
@@ -217,6 +220,7 @@ const I18N = {
     isoDate: "ISO дата",
     sunrise: "Восход",
     sunset: "Закат",
+    moon: "Луна",
     moonrise: "Восход Луны",
     moonset: "Заход Луны",
     moonAngle: "Угол Луна-Солнце",
@@ -224,6 +228,7 @@ const I18N = {
     masa: "Маса",
     paksha: "Пакша",
     tithiSunrise: "Титхи на восходе",
+    tithiStarts: "Начало титхи",
     tithiEnds: "Титхи до",
     tithiAngle: "Угол титхи",
     ekadashiName: "Название экадаши",
@@ -532,8 +537,10 @@ function renderDetails(day, options = {}) {
   model.events = visibleEventsForDay(day);
   const ekadashiEvents = model.events.filter((event) => event.type === "ekadashi");
   const paranaEvents = model.events.filter((event) => event.type === "parana");
+  const detailEvents = model.events.filter((event) => event.type !== "parana");
   dayDetails.innerHTML = `
-    ${model.events.length ? renderEventDetails(model.events) : `<div class="events-empty">${tr("noEvents")}</div>`}
+    ${renderParanaPanel(paranaEvents)}
+    ${detailEvents.length ? renderEventDetails(detailEvents) : paranaEvents.length ? "" : `<div class="events-empty">${tr("noEvents")}</div>`}
     ${renderSanskritTermsHelp()}
     <details id="selectedDayPanel" class="collapsible-panel selected-day-collapsible" ${options.scrollToDetails || options.scrollToEventDetails || options.openSelectedDay ? "open" : ""}>
       <summary>
@@ -553,8 +560,8 @@ function renderDetails(day, options = {}) {
             <small>${tr("arunodaya")}: ${model.arunodaya}</small>
           </div>
           <div class="compact-detail-card">
-            <span>${tr("moonrise")} / ${tr("moonset")}</span>
-            <strong>${model.moonrise}-${model.moonset}</strong>
+            <span>${tr("moon")}</span>
+            ${renderMoonEventList(day, model)}
             <small>${tr("moonAngle")}: ${model.moonAngle} deg</small>
           </div>
           <div class="compact-detail-card compact-detail-card-wide">
@@ -570,26 +577,6 @@ function renderDetails(day, options = {}) {
             <strong>${ekadashiEvents.map((event) => localizeEventName(event)).join(", ")}</strong>
             <p>${ekadashiEvents.map((event) => localizeEventShortDescription(event)).filter(Boolean).join(" ")}</p>
             <small>${ekadashiEvents.map((event) => ekadashiDetailLine(event)).join(" | ")}</small>
-          </div>`
-        : ""
-    }
-    ${
-      paranaEvents.length
-        ? `<div class="parana-panel">
-            <span>${tr("paranaTime")}</span>
-            ${paranaEvents
-              .map(
-                (event) => `
-                  <strong>${localizeEventName(event)}</strong>
-                  <dl>
-                    <div><dt>${tr("start")}</dt><dd>${event.parana.start}</dd></div>
-                    <div><dt>${tr("preferredEnd")}</dt><dd>${localizeAvailability(event.parana.preferred_end)}</dd></div>
-                    <div><dt>${tr("oneFifthEnd")}</dt><dd>${localizeAvailability(event.parana.one_fifth_end)}</dd></div>
-                  </dl>
-                  <small>${localizeEventDescription(event)}</small>
-                `
-              )
-              .join("")}
           </div>`
         : ""
     }
@@ -610,13 +597,73 @@ function renderDetails(day, options = {}) {
   }
 }
 
+function renderParanaPanel(paranaEvents) {
+  if (!paranaEvents.length) return "";
+  return `
+    <div class="parana-panel">
+      <span>${tr("paranaTime")}</span>
+      ${paranaEvents
+        .map(
+          (event) => `
+            <strong>${localizeEventName(event)}</strong>
+            <dl>
+              <div><dt>${tr("start")}</dt><dd>${event.parana.start}</dd></div>
+              <div><dt>${tr("preferredEnd")}</dt><dd>${localizeAvailability(event.parana.preferred_end)}</dd></div>
+              <div><dt>${tr("oneFifthEnd")}</dt><dd>${localizeAvailability(event.parana.one_fifth_end)}</dd></div>
+            </dl>
+            <small>${localizeEventDescription(event)}</small>
+          `
+        )
+        .join("")}
+    </div>
+  `;
+}
+
+function moonEventsForDay(day, model) {
+  return [
+    {
+      type: "moonrise",
+      date: day.astronomy.moonrise,
+      full: model?.moonriseFull,
+      time: calendarTimeOrDash(day.astronomy.moonrise, day.location.timezone),
+      label: tr("moonrise"),
+      icon: "↑"
+    },
+    {
+      type: "moonset",
+      date: day.astronomy.moonset,
+      full: model?.moonsetFull,
+      time: calendarTimeOrDash(day.astronomy.moonset, day.location.timezone),
+      label: tr("moonset"),
+      icon: "↓"
+    }
+  ];
+}
+
+function renderMoonEventList(day, model) {
+  return `
+    <strong class="moon-event-list">
+      ${moonEventsForDay(day, model)
+        .map((event) => `<span>${event.label}: ${event.full || event.time}</span>`)
+        .join("")}
+    </strong>
+  `;
+}
+
+function renderMoonTimesInline(day, location) {
+  return moonEventsForDay(day)
+    .map((event) => `${event.icon}${calendarTimeOrDash(event.date, location.timezone)}`)
+    .join(" · ");
+}
+
 function renderCalculationDetails(day, model, ekadashiEvents, paranaEvents) {
   const baseRows = [
     [tr("sunrise"), model.sunrise],
     [tr("arunodaya"), model.arunodaya],
     [tr("tithiSunrise"), localizeTithi(model.tithi)],
     [tr("tithiAtArunodaya"), localizeTithi(model.arunodayaTithi)],
-    [tr("tithiEnds"), model.tithiEnd],
+    [tr("tithiStarts"), model.tithiStartFull],
+    [tr("tithiEnds"), model.tithiEndFull],
     [tr("tithiAngle"), `${model.angle} deg`],
     [tr("calculationEngine"), tr("diagnostic")]
   ];
@@ -898,7 +945,7 @@ function renderDayButton(day, today, location) {
       <span class="lunar-tithi">${tithiDisplayLine(day)} ${tr("until")} ${tithiEndLabel(day)}</span>
     </div>
     <div class="times"><span class="time-icon" aria-label="${tr("sun")}">☀</span>${calendarTime(day.astronomy.sunrise, location.timezone)}-${calendarTime(day.astronomy.sunset, location.timezone)}</div>
-    <div class="times"><span class="time-icon" aria-label="${tr("moonrise")}">☾</span>${calendarTimeOrDash(day.astronomy.moonrise, location.timezone)}-${calendarTimeOrDash(day.astronomy.moonset, location.timezone)} · ${Math.round(day.lunar.tithi_angle_at_sunrise)}°</div>
+    <div class="times"><span class="time-icon" aria-label="${tr("moon")}">☾</span>${renderMoonTimesInline(day, location)} · ${Math.round(day.lunar.tithi_angle_at_sunrise)}°</div>
     ${renderDayEventBadges(events)}
   `;
   button.addEventListener("click", () => renderDetails(day, { scrollToEventDetails: true }));
@@ -1039,18 +1086,22 @@ function periodNotice(labelKey, days) {
   `;
 }
 
+function currentOrFuturePeriodDays(days) {
+  return days.length && days.at(-1).date >= currentIsoDate() ? days : [];
+}
+
 function renderMasaNotice(days) {
   const notices = [];
-  const adhikaDays = days.filter((day) => day.lunar.masa_type === "adhika");
+  const adhikaDays = currentOrFuturePeriodDays(days.filter((day) => day.lunar.masa_type === "adhika"));
   if (adhikaDays.length) notices.push(periodNotice("purushottamaNotice", adhikaDays));
 
-  const chaturmasyaDays = days.filter(isChaturmasyaDay);
+  const chaturmasyaDays = currentOrFuturePeriodDays(days.filter(isChaturmasyaDay));
   if (chaturmasyaDays.length) notices.push(periodNotice("chaturmasyaNotice", chaturmasyaDays));
 
-  const karttikDays = days.filter(isKarttikDay);
+  const karttikDays = currentOrFuturePeriodDays(days.filter(isKarttikDay));
   if (karttikDays.length) notices.push(periodNotice("karttikNotice", karttikDays));
 
-  const bhishmaPanchakaDays = days.filter(isBhishmaPanchakaDay);
+  const bhishmaPanchakaDays = currentOrFuturePeriodDays(days.filter(isBhishmaPanchakaDay));
   if (bhishmaPanchakaDays.length) notices.push(periodNotice("bhishmaPanchakaNotice", bhishmaPanchakaDays));
 
   if (!notices.length) {
@@ -1222,7 +1273,7 @@ function calendarTimeOrDash(date, timezone) {
 function init() {
   if (controlsPanel) controlsPanel.open = false;
   locationSelect.innerHTML = renderLocationOptions();
-  locationSelect.value = "maalot";
+  locationSelect.value = DEFAULT_LOCATION_ID;
   const period = currentPeriod();
   periodFromInput.value = period.start;
   periodToInput.value = period.end;
