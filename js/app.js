@@ -30,8 +30,7 @@ const brandTitleLink = document.querySelector("#brandTitleLink");
 const themeToggle = document.querySelector("#themeToggle");
 const fontSizeToggle = document.querySelector("#fontSizeToggle");
 const calendarTitle = document.querySelector("#calendarTitle");
-const calendarMonthSelect = document.querySelector("#calendarMonthSelect");
-const calendarYearSelect = document.querySelector("#calendarYearSelect");
+const calendarMonthPicker = document.querySelector("#calendarMonthPicker");
 const calendarStatus = document.querySelector("#calendarStatus");
 const masaNotice = document.querySelector("#masaNotice");
 const calendarHeader = document.querySelector("#calendarHeader");
@@ -1211,29 +1210,13 @@ function monthTitle(year, month) {
   );
 }
 
-function monthName(month) {
-  return new Intl.DateTimeFormat(dateLocale(), { month: "long", timeZone: "UTC" }).format(new Date(Date.UTC(2026, month - 1, 1)));
-}
-
 function syncCalendarPicker() {
   const [year, month] = periodFromInput.value.split("-").map(Number);
-  calendarMonthSelect.innerHTML = Array.from({ length: 12 }, (_, index) => {
-    const value = String(index + 1).padStart(2, "0");
-    return `<option value="${value}">${monthName(index + 1)}</option>`;
-  }).join("");
-  const startYear = Math.max(1800, year - 80);
-  const endYear = Math.min(2200, year + 80);
-  calendarYearSelect.innerHTML = Array.from({ length: endYear - startYear + 1 }, (_, index) => {
-    const value = String(startYear + index);
-    return `<option value="${value}">${value}</option>`;
-  }).join("");
-  calendarMonthSelect.value = String(month).padStart(2, "0");
-  calendarYearSelect.value = String(year);
+  calendarMonthPicker.value = `${year}-${String(month).padStart(2, "0")}`;
 }
 
 function setPeriodFromCalendarPicker() {
-  const year = Number(calendarYearSelect.value);
-  const month = Number(calendarMonthSelect.value);
+  const [year, month] = calendarMonthPicker.value.split("-").map(Number);
   if (!year || !month) return;
   const monthStart = `${year}-${String(month).padStart(2, "0")}-01`;
   const monthEndDate = new Date(Date.UTC(year, month, 0));
@@ -1308,8 +1291,7 @@ function init() {
     event.preventDefault();
     jumpToEventSearch();
   });
-  calendarMonthSelect.addEventListener("change", setPeriodFromCalendarPicker);
-  calendarYearSelect.addEventListener("change", setPeriodFromCalendarPicker);
+  calendarMonthPicker.addEventListener("change", setPeriodFromCalendarPicker);
   thisWeekButton.addEventListener("click", () => setCurrentWeekPeriod());
   thisMonthButton.addEventListener("click", () => setCurrentMonthPeriod());
   fullYearButton.addEventListener("click", () => setFullYearPeriod());
