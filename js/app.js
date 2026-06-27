@@ -30,8 +30,13 @@ const brandTitleLink = document.querySelector("#brandTitleLink");
 const themeToggle = document.querySelector("#themeToggle");
 const fontSizeToggle = document.querySelector("#fontSizeToggle");
 const calendarTitle = document.querySelector("#calendarTitle");
-const calendarMonthSelect = document.querySelector("#calendarMonthSelect");
-const calendarYearInput = document.querySelector("#calendarYearInput");
+const calendarMonthPicker = document.querySelector("#calendarMonthPicker");
+const calendarMonthPickerButton = document.querySelector("#calendarMonthPickerButton");
+const calendarMonthPickerPanel = document.querySelector("#calendarMonthPickerPanel");
+const calendarYearPrev = document.querySelector("#calendarYearPrev");
+const calendarYearNext = document.querySelector("#calendarYearNext");
+const calendarYearLabel = document.querySelector("#calendarYearLabel");
+const calendarMonthGrid = document.querySelector("#calendarMonthGrid");
 const calendarStatus = document.querySelector("#calendarStatus");
 const masaNotice = document.querySelector("#masaNotice");
 const calendarHeader = document.querySelector("#calendarHeader");
@@ -45,6 +50,7 @@ let preferredSelectedDate = null;
 let pendingScrollTarget = null;
 let vaishnavaTypeaheadText = "";
 let vaishnavaTypeaheadTimer = null;
+let calendarPickerYear = new Date().getFullYear();
 const MAX_RENDER_DAYS = 400;
 const DEFAULT_LOCATION_ID = "nabadwip";
 const COOKIE_MAX_AGE = 60 * 60 * 24 * 365;
@@ -1260,13 +1266,11 @@ function monthName(month) {
 
 function syncCalendarPicker() {
   const [year, month] = periodFromInput.value.split("-").map(Number);
-  calendarMonthSelect.value = String(month);
-  calendarYearInput.value = String(year);
+  calendarPickerYear = year;
+  renderCalendarMonthPicker(year, month);
 }
 
-function setPeriodFromCalendarPicker() {
-  const month = Number(calendarMonthSelect.value);
-  const year = Number(calendarYearInput.value);
+function setPeriodFromCalendarPicker(month, year = calendarPickerYear) {
   if (!year || !month) return;
   if (year < 1800 || year > 2200) return;
   const monthStart = `${year}-${String(month).padStart(2, "0")}-01`;
@@ -1274,6 +1278,7 @@ function setPeriodFromCalendarPicker() {
   periodFromInput.value = monthStart;
   periodToInput.value = isoDateFromDate(monthEndDate);
   pendingScrollTarget = ".calendar-wrap";
+  closeCalendarMonthPicker();
   renderCalendar();
 }
 
@@ -1340,8 +1345,10 @@ function init() {
     event.preventDefault();
     jumpToEventSearch();
   });
-  calendarMonthSelect.addEventListener("change", setPeriodFromCalendarPicker);
-  calendarYearInput.addEventListener("change", setPeriodFromCalendarPicker);
+  calendarMonthPickerButton.addEventListener("click", toggleCalendarMonthPicker);
+  calendarYearPrev.addEventListener("click", () => shiftCalendarPickerYear(-1));
+  calendarYearNext.addEventListener("click", () => shiftCalendarPickerYear(1));
+  document.addEventListener("click", closeCalendarMonthPickerOnOutsideClick);
   thisWeekButton.addEventListener("click", () => setCurrentWeekPeriod());
   thisMonthButton.addEventListener("click", () => setCurrentMonthPeriod());
   fullYearButton.addEventListener("click", () => setFullYearPeriod());
@@ -1490,8 +1497,7 @@ function setLanguage(language) {
   eventSearchInput.setAttribute("aria-label", tr("eventSearch"));
   eventSearchButton.setAttribute("aria-label", tr("eventSearch"));
   eventSearchButton.setAttribute("title", tr("eventSearch"));
-  calendarMonthSelect.setAttribute("aria-label", tr("monthPickerMonth"));
-  calendarYearInput.setAttribute("aria-label", tr("monthPickerYear"));
+  calendarMonthPickerButton.setAttribute("aria-label", `${tr("monthPickerMonth")} / ${tr("monthPickerYear")}`);
   document.querySelector(".eyebrow").textContent = tr("appSubtitle");
   brandTitleLink.textContent = tr("appTitle");
   document.title = tr("appTitle");
@@ -1503,7 +1509,6 @@ function setLanguage(language) {
     element.setAttribute("placeholder", tr(element.dataset.i18nPlaceholder));
   });
   renderEventFilterChips();
-  renderCalendarMonthOptions();
   locationSelect.innerHTML = renderLocationOptions();
   locationSelect.value = LOCATIONS.some((location) => location.id === selectedLocation) ? selectedLocation : DEFAULT_LOCATION_ID;
   renderEventJumpOptions();
@@ -1514,13 +1519,48 @@ function setLanguage(language) {
   updateThemeButtons();
 }
 
-function renderCalendarMonthOptions() {
-  const selectedMonth = calendarMonthSelect.value;
-  calendarMonthSelect.innerHTML = Array.from({ length: 12 }, (_, index) => {
+function renderCalendarMonthPicker(year = calendarPickerYear, selectedMonth = Number(periodFromInput.value.slice(5, 7))) {
+  calendarPickerYear = year;
+  calendarYearLabel.textContent = String(year);
+  calendarMonthPickerButton.textContent = capitalizeFirst(monthTitle(year, selectedMonth));
+  calendarMonthGrid.innerHTML = Array.from({ length: 12 }, (_, index) => {
     const month = index + 1;
-    return `<option value="${month}">${capitalizeFirst(monthName(month))}</option>`;
+    const selected = month === selectedMonth;
+    return `<button class="month-option${selected ? " is-selected" : ""}" type="button" data-month="${month}" aria-pressed="${String(selected)}">${capitalizeFirst(monthName(month))}</button>`;
   }).join("");
-  calendarMonthSelect.value = selectedMonth || String(new Date().getMonth() + 1);
+  calendarMonthGrid.querySelectorAll("[data-month]").forEach((button) => {
+    button.addEventListener("click", () => setPeriodFromCalendarPicker(Number(button.dataset.month), calendarPickerYear));
+  });
+}
+
+function toggleCalendarMonthPicker() {
+  const expanded = calendarMonthPickerButton.getAttribute("aria-expanded") === "true";
+  if (expanded) closeCalendarMonthPicker();
+  else openCalendarMonthPicker();
+}
+
+function openCalendarMonthPicker() {
+  const selectedMonth = Number(periodFromInput.value.slice(5, 7));
+  renderCalendarMonthPicker(calendarPickerYear, selectedMonth);
+  calendarMonthPickerPanel.hidden = false;
+  calendarMonthPickerButton.setAttribute("aria-expanded", "true");
+}
+
+function closeCalendarMonthPicker() {
+  calendarMonthPickerPanel.hidden = true;
+  calendarMonthPickerButton.setAttribute("aria-expanded", "false");
+}
+
+function closeCalendarMonthPickerOnOutsideClick(event) {
+  if (calendarMonthPickerPanel.hidden || calendarMonthPicker.contains(event.target)) return;
+  closeCalendarMonthPicker();
+}
+
+function shiftCalendarPickerYear(delta) {
+  calendarPickerYear = Math.min(2200, Math.max(1800, calendarPickerYear + delta));
+  const selectedYear = Number(periodFromInput.value.slice(0, 4));
+  const selectedMonth = calendarPickerYear === selectedYear ? Number(periodFromInput.value.slice(5, 7)) : 0;
+  renderCalendarMonthPicker(calendarPickerYear, selectedMonth);
 }
 
 function capitalizeFirst(value) {

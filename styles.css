@@ -604,7 +604,7 @@ input {
   accent-color: var(--accent);
 }
 
-button:not(.day):not(.compact-day):not(.theme-toggle):not(.language-toggle):not(.font-size-button):not(.icon-button):not(.nav-button):not(.filter-chip):not(.secondary-button) {
+button:not(.day):not(.compact-day):not(.theme-toggle):not(.language-toggle):not(.font-size-button):not(.icon-button):not(.nav-button):not(.filter-chip):not(.secondary-button):not(.month-year-button):not(.month-year-arrow):not(.month-option) {
   min-height: 42px;
   border: 1px solid transparent;
   border-radius: 8px;
@@ -615,7 +615,7 @@ button:not(.day):not(.compact-day):not(.theme-toggle):not(.language-toggle):not(
   cursor: pointer;
 }
 
-button:not(.day):not(.compact-day):not(.theme-toggle):not(.language-toggle):not(.font-size-button):not(.icon-button):not(.nav-button):not(.filter-chip):not(.secondary-button):hover {
+button:not(.day):not(.compact-day):not(.theme-toggle):not(.language-toggle):not(.font-size-button):not(.icon-button):not(.nav-button):not(.filter-chip):not(.secondary-button):not(.month-year-button):not(.month-year-arrow):not(.month-option):hover {
   background: var(--accent-strong);
 }
 
@@ -705,40 +705,99 @@ button:not(.day):not(.compact-day):not(.theme-toggle):not(.language-toggle):not(
 }
 
 .month-year-picker {
-  display: inline-flex;
-  flex-wrap: wrap;
-  justify-content: center;
-  gap: 12px;
-  align-items: center;
+  position: relative;
+  display: inline-grid;
+  justify-items: center;
 }
 
-.month-year-picker select,
-.month-year-picker input {
-  appearance: none;
-  -webkit-appearance: none;
-  min-height: 48px;
+.month-year-button {
+  position: relative;
+  min-width: min(290px, 58vw);
+  min-height: 50px;
+  border: 1px solid var(--line);
   border-radius: 999px;
-  padding: 8px 18px;
+  padding: 8px 54px 8px 24px;
+  color: var(--accent-strong);
+  background: var(--field);
   font-size: calc(15px * var(--font-scale));
   font-weight: 900;
-}
-
-.month-year-picker select {
-  min-width: 170px;
-  padding-right: 46px;
-  background-image: linear-gradient(45deg, transparent 50%, currentColor 50%), linear-gradient(135deg, currentColor 50%, transparent 50%);
-  background-position:
-    calc(100% - 26px) 50%,
-    calc(100% - 18px) 50%;
-  background-size:
-    8px 8px,
-    8px 8px;
-  background-repeat: no-repeat;
-}
-
-.month-year-picker input {
-  width: 116px;
   text-align: center;
+  box-shadow: none;
+}
+
+.month-year-button::after {
+  position: absolute;
+  top: 50%;
+  right: 22px;
+  width: 10px;
+  height: 10px;
+  border-right: 2px solid currentColor;
+  border-bottom: 2px solid currentColor;
+  content: "";
+  transform: translateY(-65%) rotate(45deg);
+}
+
+.month-year-panel {
+  position: absolute;
+  z-index: 30;
+  top: calc(100% + 10px);
+  left: 50%;
+  width: min(330px, calc(100vw - 28px));
+  border: 1px solid var(--line);
+  border-radius: 18px;
+  padding: 14px;
+  background: var(--panel-raised);
+  box-shadow: var(--shadow);
+  transform: translateX(-50%);
+}
+
+.month-year-panel-head {
+  display: grid;
+  grid-template-columns: 44px 1fr 44px;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 12px;
+}
+
+.month-year-panel-head strong {
+  text-align: center;
+  font-size: calc(18px * var(--font-scale));
+}
+
+.month-year-arrow {
+  min-height: 42px;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  padding: 0;
+  color: var(--accent-strong);
+  background: transparent;
+  font-size: calc(24px * var(--font-scale));
+  box-shadow: none;
+}
+
+.month-picker-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 8px;
+}
+
+.month-option {
+  min-height: 42px;
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  padding: 8px 6px;
+  color: var(--ink);
+  background: transparent;
+  font-size: calc(13px * var(--font-scale));
+  font-weight: 800;
+  box-shadow: none;
+}
+
+.month-option.is-selected {
+  border-color: var(--accent-strong);
+  color: var(--accent-strong);
+  background: transparent;
+  box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--accent) 42%, transparent);
 }
 
 #calendarStatus:empty {
@@ -1964,15 +2023,12 @@ button:not(.day):not(.compact-day):not(.theme-toggle):not(.language-toggle):not(
   }
 
   .month-year-picker {
-    width: min(100%, 320px);
+    width: min(100%, 290px);
   }
 
-  .month-year-picker select {
-    flex: 1 1 170px;
-  }
-
-  .month-year-picker input {
-    flex: 0 0 112px;
+  .month-year-button {
+    width: 100%;
+    min-width: 0;
   }
 
   .quick-range,
