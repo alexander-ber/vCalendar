@@ -6,7 +6,7 @@
     <title>Шри Чайтанья Шридхар Сева Ашрам</title>
     <link rel="icon" href="assets/scsashram-logo.png?v=20260614-1" type="image/png">
     <link rel="apple-touch-icon" href="assets/scsashram-logo.png?v=20260614-1">
-    <link rel="stylesheet" href="styles.css?v=20260627-3">
+    <link rel="stylesheet" href="styles.css?v=20260627-5">
   </head>
   <body>
     <main class="app-shell">
@@ -140,11 +140,16 @@
           <button id="prevMonthTop" class="icon-button" type="button" aria-label="Previous month">‹</button>
           <div class="calendar-title-control">
             <h2 id="calendarTitle" class="sr-only">April 2026</h2>
-            <div class="month-year-picker" aria-label="Month and year picker">
-              <label class="sr-only" for="calendarMonthSelect" data-i18n="monthPickerMonth">Month</label>
-              <select id="calendarMonthSelect" aria-label="Month"></select>
-              <label class="sr-only" for="calendarYearInput" data-i18n="monthPickerYear">Year</label>
-              <input id="calendarYearInput" type="number" min="1800" max="2200" step="1" inputmode="numeric" aria-label="Year">
+            <div id="calendarMonthPicker" class="month-year-picker" aria-label="Month and year picker">
+              <button id="calendarMonthPickerButton" class="month-year-button" type="button" aria-haspopup="dialog" aria-expanded="false"></button>
+              <div id="calendarMonthPickerPanel" class="month-year-panel" hidden>
+                <div class="month-year-panel-head">
+                  <button id="calendarYearPrev" class="month-year-arrow" type="button" aria-label="Previous year">‹</button>
+                  <strong id="calendarYearLabel"></strong>
+                  <button id="calendarYearNext" class="month-year-arrow" type="button" aria-label="Next year">›</button>
+                </div>
+                <div id="calendarMonthGrid" class="month-picker-grid"></div>
+              </div>
             </div>
           </div>
           <button id="nextMonthTop" class="icon-button" type="button" aria-label="Next month">›</button>
@@ -166,6 +171,6 @@
       </section>
     </main>
 
-    <script type="module" src="js/app.js?v=20260627-2"></script>
+    <script type="module" src="js/app.js?v=20260627-3"></script>
   </body>
 </html>
