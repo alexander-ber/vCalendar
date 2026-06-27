@@ -204,8 +204,8 @@ The final GCAL phase applies DST/time corrections to:
 - Day-level tithi status: normal, ksaya and second day of vriddhi.
 - Lunar-rule event matching by masa/paksha/tithi.
 - Generic tithi event matching using the GCAL vriddhi/ksaya decision table, so repeated tithis do not duplicate events on both days.
-- Dedicated first-pass rules for Govardhana Puja, Sri Krishna Janmashtami, Gaura Purnima and Rama Navami.
-- Event offsets through `observance_offset_days`.
+- Dedicated first-pass rules for Govardhana Puja, Sri Krishna Janmashtami, Ratha Yatra, Gaura Purnima and Rama Navami.
+- Anchor-based event offsets through `anchor_event_id` plus `observance_offset_days`.
 - Tithi-level period markers for Chaturmasya and Karttik/Damodara, with no Gregorian-date anchors.
 - Karttik / Damodara vrata begins on Padmanabha Gaura Purnima and ends on Damodara Gaura Purnima.
 - Karttik restrictions are represented as a separate event on the same opening Purnima.
@@ -298,7 +298,7 @@ GCAL gives special rules for:
 - Rama Navami
 - generic tithi events
 
-Our event matcher now handles generic lunar rules with the GCAL vriddhi/ksaya table and has dedicated first-pass rules for Govardhana Puja, Janmashtami, Gaura Purnima and Rama Navami. Ratha Yatra still needs a dedicated data event and anchor-based dependent events to be complete.
+Our event matcher now handles generic lunar rules with the GCAL vriddhi/ksaya table, including the `tithi-1 or less -> tithi -> tithi+1` branch used when an earlier tithi was skipped. It also has dedicated first-pass rules for Govardhana Puja, Janmashtami, Ratha Yatra, Gaura Purnima and Rama Navami. For Janmashtami double-Ashtami cases the matcher checks Rohini at midnight first, then Rohini at sunrise, then the weekday fallback.
 
 ### Dependent events
 
@@ -310,7 +310,13 @@ GCAL defines dependent events:
 - Return Ratha: 8 days after Ratha Yatra
 - Jagannatha Misra festival: 1 day after Gaura Purnima
 
-We support offsets in data, but dependent-event resolution is not yet centralized around the calculated anchor event. This can create differences when the anchor event needs special GCAL logic.
+Dependent events can now be tied to the calculated anchor event with `anchor_event_id` plus `observance_offset_days`. This is used for:
+
+- Gundicha Marjana: anchored to `ratha_yatra_begin`, offset -1.
+- Return Ratha / Punar Yatra: anchored to `ratha_yatra_begin`, offset +8.
+- Jagannatha Misra festival: anchored to `gaura_purnima`, offset +1.
+
+Srila Prabhupada appearance and Hera Panchami still need dedicated event records before the anchor resolver can place them.
 
 ### Fasting-day resolution
 

@@ -46,6 +46,7 @@ function eventFromContent(content) {
     fasting_rule: content.fasting_rule,
     priority: content.priority,
     source_status: content.source_status,
+    anchor_event_id: content.anchor_event_id,
     observance_offset_days: content.observance_offset_days,
     disabled: content.disabled,
     description: english.short_description || english.description || content.description || "",

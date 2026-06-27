@@ -1,4 +1,4 @@
-import { dayAstronomy, nakshatraInfo, tithiInfo, yogaInfo } from "./astronomy-adapter.js?v=20260613-2";
+import { dayAstronomy, nakshatraInfo, tithiInfo, yogaInfo } from "./astronomy-adapter.js?v=20260627-1";
 import {
   addDaysToLocalDate,
   daysInMonth,
@@ -12,7 +12,7 @@ import {
 } from "./date-utils.js?v=20260528-8";
 import { masaForDate } from "./masa-engine.js?v=20260528-18";
 import { buildEkadashiEvents } from "./ekadashi-engine.js?v=20260626-1";
-import { matchEventsForDay } from "./event-matcher.js?v=20260613-2";
+import { matchEventsForDay } from "./event-matcher.js?v=20260626-1";
 
 function buildDay(isoDate, location, rules) {
   const astronomy = dayAstronomy(isoDate, location, rules);
@@ -269,6 +269,31 @@ function addEventOnce(day, event) {
   day.events.push(event);
 }
 
+function cloneAnchoredEvent(event, anchorDay) {
+  return {
+    ...event,
+    calculated_from_event_id: event.anchor_event_id,
+    anchor_date: anchorDay.date
+  };
+}
+
+function addAnchorDependentEvents(days, events) {
+  const byDate = new Map(days.map((day) => [day.date, day]));
+  const dependentEvents = events.filter((event) => !event.disabled && event.anchor_event_id);
+  if (!dependentEvents.length) return;
+
+  for (const anchorDay of days) {
+    for (const anchorEvent of anchorDay.events) {
+      for (const dependent of dependentEvents) {
+        if (dependent.anchor_event_id !== anchorEvent.id) continue;
+        const offset = Number(dependent.observance_offset_days || 0);
+        const targetDay = byDate.get(addDaysToLocalDate(anchorDay.date, offset));
+        addEventOnce(targetDay, cloneAnchoredEvent(dependent, anchorDay));
+      }
+    }
+  }
+}
+
 function isBhishmaPanchakaDay(day) {
   const tithi = day.lunar.tithi_at_sunrise.number;
   return day.masa.normal_masa_name === "Damodara" && day.lunar.paksha === "Gaura" && tithi >= 11 && tithi <= 15;
@@ -352,6 +377,7 @@ function attachEvents(days, location, rules, events) {
     });
     day.events = [...vrataEvents, ...currentGeneratedEvents, ...currentShiftedEvents];
   }
+  addAnchorDependentEvents(days, events);
   addPurushottamaBoundaryEvents(days);
   addBhishmaPanchakaActiveEvents(days);
   addSankrantiEvents(days, location);
@@ -364,7 +390,7 @@ export function generateCalendar(year, month, location, rules, events) {
   const total = Math.ceil((startOffset + daysInMonth(year, month)) / 7) * 7;
   const days = [];
 
-  for (let i = -2; i < total + 3; i += 1) {
+  for (let i = -10; i < total + 10; i += 1) {
     days.push(buildDay(addDaysToLocalDate(visibleStart, i), location, rules));
   }
 
@@ -373,7 +399,7 @@ export function generateCalendar(year, month, location, rules, events) {
 
   return {
     title: monthLabel(year, month),
-    days: days.slice(2, total + 2),
+    days: days.slice(10, total + 10),
     location,
     meta: {
       year,
@@ -386,8 +412,8 @@ export function generateCalendar(year, month, location, rules, events) {
 
 export function generateCalendarRange(startDate, endDate, location, rules, events) {
   const days = [];
-  let cursor = addDaysToLocalDate(startDate, -2);
-  const last = addDaysToLocalDate(endDate, 2);
+  let cursor = addDaysToLocalDate(startDate, -10);
+  const last = addDaysToLocalDate(endDate, 10);
   while (cursor <= last) {
     days.push(buildDay(cursor, location, rules));
     cursor = addDaysToLocalDate(cursor, 1);
@@ -411,6 +437,7 @@ export function generateCalendarRange(startDate, endDate, location, rules, event
 export function viewModelForDay(day) {
   const tithiStart = day.lunar.current_tithi_boundary;
   const tithiEnd = day.lunar.next_tithi_boundary;
+  const moonset = day.astronomy.moonset_after_moonrise || day.astronomy.moonset;
   return {
     date: day.date,
     gregorian: new Intl.DateTimeFormat("en", {
@@ -423,9 +450,9 @@ export function viewModelForDay(day) {
     sunrise: formatTime(day.astronomy.sunrise, day.location.timezone),
     sunset: formatTime(day.astronomy.sunset, day.location.timezone),
     moonrise: formatTime(day.astronomy.moonrise, day.location.timezone),
-    moonset: formatTime(day.astronomy.moonset, day.location.timezone),
+    moonset: formatTime(moonset, day.location.timezone),
     moonriseFull: formatDateTime(day.astronomy.moonrise, day.location.timezone),
-    moonsetFull: formatDateTime(day.astronomy.moonset, day.location.timezone),
+    moonsetFull: formatDateTime(moonset, day.location.timezone),
     moonAngle: day.lunar.tithi_angle_at_sunrise.toFixed(2),
     arunodaya: formatTime(day.astronomy.arunodaya, day.location.timezone),
     masa: day.masa.display_name,

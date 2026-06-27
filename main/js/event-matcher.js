@@ -53,8 +53,11 @@ function nextTithiNumber(number) {
   return number === 30 ? 1 : number + 1;
 }
 
-function tithiDistance(fromNumber, toNumber) {
-  return (toNumber - fromNumber + 30) % 30;
+function isPreviousOrEarlierInPaksha(previous, target) {
+  if (target === 1) return previous === 30;
+  if (target === 16) return previous === 15;
+  if (target > 1 && target <= 15) return previous >= 1 && previous < target;
+  return previous >= 16 && previous < target;
 }
 
 function masaMatches(day, event) {
@@ -76,17 +79,15 @@ function midnightNakshatraNumber(day, timezone) {
 }
 
 function selectJanmashtamiDoubleAstami(day1, day2, timezone) {
+  const day1MidnightRohini = midnightNakshatraNumber(day1, timezone) === 4;
+  const day2MidnightRohini = midnightNakshatraNumber(day2, timezone) === 4;
+  if (day1MidnightRohini && !day2MidnightRohini) return day1;
+  if (!day1MidnightRohini && day2MidnightRohini) return day2;
+
   const day1Rohini = day1.lunar.nakshatra_at_sunrise.number === 4;
   const day2Rohini = day2.lunar.nakshatra_at_sunrise.number === 4;
   if (day1Rohini && !day2Rohini) return day1;
   if (!day1Rohini && day2Rohini) return day2;
-
-  if (day1Rohini && day2Rohini) {
-    const day1MidnightRohini = midnightNakshatraNumber(day1, timezone) === 4;
-    const day2MidnightRohini = midnightNakshatraNumber(day2, timezone) === 4;
-    if (day1MidnightRohini && !day2MidnightRohini) return day1;
-    if (!day1MidnightRohini && day2MidnightRohini) return day2;
-  }
 
   const weekday = localWeekday(day1.date);
   return weekday === 2 || weekday === 0 ? day2 : day1;
@@ -199,26 +200,14 @@ function matchGenericGcalTithiEvent(day, event, nextDay, previousDay) {
 
   if (today === target && tomorrow === target) return true;
   if (previous === beforeTarget && today === afterTarget) return true;
-  if (previous === beforeTarget && today === target && tithiDistance(target, tomorrow) > 0) return true;
-  return false;
-}
-
-function tithiAppearsBeforeNextSunrise(day, nextDay, event) {
-  if (!nextDay || event.timing_rule !== "sunrise_based") return false;
-  if (tithiMatches(nextDay.lunar.tithi_at_sunrise, event)) return false;
-
-  const step = 30 * 60 * 1000;
-  let cursor = new Date(day.astronomy.sunrise.getTime() + step);
-  while (cursor < nextDay.astronomy.sunrise) {
-    if (tithiMatches(tithiInfo(cursor), event)) return true;
-    cursor = new Date(cursor.getTime() + step);
-  }
+  if (isPreviousOrEarlierInPaksha(previous, target) && today === target && tomorrow === afterTarget) return true;
   return false;
 }
 
 export function matchEventsForDay(day, events, timezone, nextDay = null, previousDay = null, ekadashiByDate = null) {
   return events.filter((event) => {
     if (event.disabled) return false;
+    if (event.anchor_event_id) return false;
     if (event.source_status === "needs_exact_lunar_rule") return false;
     if (!event.masa && !event.gaudiya_masa) return false;
     if (!event.paksha || !event.tithi) return false;
@@ -229,6 +218,6 @@ export function matchEventsForDay(day, events, timezone, nextDay = null, previou
     const genericGcal = matchGenericGcalTithiEvent(day, event, nextDay, previousDay);
     if (genericGcal !== null) return genericGcal;
     const ruleTithi = tithiAtRuleTime(day, event, timezone);
-    return tithiMatches(ruleTithi, event) || tithiAppearsBeforeNextSunrise(day, nextDay, event);
+    return tithiMatches(ruleTithi, event);
   });
 }

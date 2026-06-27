@@ -13,7 +13,9 @@
     "allow_in_adhika": false
   },
   "priority": "medium",
-  "source_status": "matched_by_name_type_tithi",
+  "source_status": "dependent_on_gaura_purnima",
+  "anchor_event_id": "gaura_purnima",
+  "observance_offset_days": 1,
   "sources": [
     {
       "type": "description",
