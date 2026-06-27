@@ -948,6 +948,9 @@ button:not(.day):not(.compact-day):not(.theme-toggle):not(.language-toggle):not(
 }
 
 .month-section.is-compact .month-section-title {
+  margin: 10px 0 2px;
+  color: var(--accent-strong);
+  font-size: calc(18px * var(--font-scale));
   text-align: center;
 }
 

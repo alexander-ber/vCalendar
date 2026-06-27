@@ -814,11 +814,13 @@ function renderCalendar() {
     return;
   }
 
-  for (const [monthKey, days] of groupDaysByMonth(visibleDays)) {
+  const monthGroups = [...groupDaysByMonth(visibleDays)];
+  const showMonthSectionTitles = monthGroups.length > 1;
+  for (const [monthKey, days] of monthGroups) {
     const section = document.createElement("section");
     section.className = `month-section${eventsOnlyInput.checked && !compactViewInput.checked ? " is-event-list" : ""}${compactViewInput.checked ? " is-compact" : ""}`;
     section.innerHTML = `
-      ${compactViewInput.checked ? "" : `<h3 class="month-section-title">${monthTitle(Number(monthKey.slice(0, 4)), Number(monthKey.slice(5, 7)))}</h3>`}
+      ${showMonthSectionTitles ? `<h3 class="month-section-title">${capitalizeFirst(monthTitle(Number(monthKey.slice(0, 4)), Number(monthKey.slice(5, 7))))}</h3>` : ""}
       <div class="calendar-header">${orderedWeekdays(location).map((label) => `<span>${label}</span>`).join("")}</div>
       <div class="month-section-grid"></div>
     `;
