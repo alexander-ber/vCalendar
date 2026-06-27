@@ -1,6 +1,6 @@
-import { generateCalendarRange, viewModelForDay } from "./calendar-engine.js?v=20260626-2";
-import { EVENTS } from "./events-data.js?v=20260615-1";
-import { LOCATIONS } from "./locations-data.js?v=20260626-1";
+import { generateCalendarRange, viewModelForDay } from "./calendar-engine.js?v=20260627-1";
+import { EVENTS } from "./events-data.js?v=20260626-1";
+import { LOCATIONS } from "./locations-data.js?v=20260627-1";
 import { RULES } from "./rules-data.js?v=20260613-3";
 
 const locationSelect = document.querySelector("#locationSelect");
@@ -30,7 +30,8 @@ const brandTitleLink = document.querySelector("#brandTitleLink");
 const themeToggle = document.querySelector("#themeToggle");
 const fontSizeToggle = document.querySelector("#fontSizeToggle");
 const calendarTitle = document.querySelector("#calendarTitle");
-const calendarMonthPicker = document.querySelector("#calendarMonthPicker");
+const calendarMonthSelect = document.querySelector("#calendarMonthSelect");
+const calendarYearInput = document.querySelector("#calendarYearInput");
 const calendarStatus = document.querySelector("#calendarStatus");
 const masaNotice = document.querySelector("#masaNotice");
 const calendarHeader = document.querySelector("#calendarHeader");
@@ -46,6 +47,44 @@ let vaishnavaTypeaheadText = "";
 let vaishnavaTypeaheadTimer = null;
 const MAX_RENDER_DAYS = 400;
 const DEFAULT_LOCATION_ID = "nabadwip";
+const COOKIE_MAX_AGE = 60 * 60 * 24 * 365;
+
+const LOCATION_GROUP_LABELS = {
+  "Израиль": { en: "Israel", ru: "Израиль" },
+  "Украина": { en: "Ukraine", ru: "Украина" },
+  "Беларусь": { en: "Belarus", ru: "Беларусь" },
+  "Россия": { en: "Russia", ru: "Россия" },
+  "Европа": { en: "Europe", ru: "Европа" },
+  "Индия": { en: "India", ru: "Индия" },
+  "Непал": { en: "Nepal", ru: "Непал" },
+  Other: { en: "Other", ru: "Другое" }
+};
+
+const LOCATION_LABELS = {
+  maalot: { en: "Maalot, Israel", ru: "Маалот, Израиль" },
+  "tel-aviv": { en: "Tel Aviv, Israel", ru: "Тель-Авив, Израиль" },
+  "beer-sheva": { en: "Beer Sheva, Israel", ru: "Беэр-Шева, Израиль" },
+  eilat: { en: "Eilat, Israel", ru: "Эйлат, Израиль" },
+  kyiv: { en: "Kyiv, Ukraine", ru: "Киев, Украина" },
+  mariupol: { en: "Mariupol, Ukraine", ru: "Мариуполь, Украина" },
+  minsk: { en: "Minsk, Belarus", ru: "Минск, Беларусь" },
+  voronezh: { en: "Voronezh, Russia", ru: "Воронеж, Россия" },
+  orsk: { en: "Orsk, Russia", ru: "Орск, Россия" },
+  orenburg: { en: "Orenburg, Russia", ru: "Оренбург, Россия" },
+  barnaul: { en: "Barnaul, Russia", ru: "Барнаул, Россия" },
+  samara: { en: "Samara, Russia", ru: "Самара, Россия" },
+  paris: { en: "Paris, France", ru: "Париж, Франция" },
+  london: { en: "London, United Kingdom", ru: "Лондон, Великобритания" },
+  bern: { en: "Bern, Switzerland", ru: "Берн, Швейцария" },
+  budapest: { en: "Budapest, Hungary", ru: "Будапешт, Венгрия" },
+  mayapur: { en: "Mayapur, India", ru: "Маяпур, Индия" },
+  nabadwip: { en: "Nabadwip, India", ru: "Навадвип, Индия" },
+  kolkata: { en: "Kolkata, India", ru: "Калькутта, Индия" },
+  vrindavan: { en: "Vrindavan, India", ru: "Вриндаван, Индия" },
+  puri: { en: "Puri, India", ru: "Пури, Индия" },
+  kathmandu: { en: "Kathmandu, Nepal", ru: "Катманду, Непал" },
+  moscow: { en: "Moscow, Russia", ru: "Москва, Россия" }
+};
 
 const I18N = {
   en: {
@@ -93,8 +132,8 @@ const I18N = {
     sunrise: "Sunrise",
     sunset: "Sunset",
     moon: "Moon",
-    moonrise: "Moonrise",
-    moonset: "Moonset",
+    moonrise: "Rise",
+    moonset: "Set",
     moonAngle: "Moon-Sun angle",
     arunodaya: "Arunodaya",
     masa: "Masa",
@@ -173,7 +212,9 @@ const I18N = {
     fullYear: "Full year",
     previousMonth: "Previous period",
     nextMonth: "Next period",
-    noEventDays: "No event days match this filter."
+    noEventDays: "No event days match this filter.",
+    monthPickerMonth: "Month",
+    monthPickerYear: "Year"
   },
   ru: {
     appSubtitle: "Гаудия-вайшнавский панчанг POC",
@@ -220,8 +261,8 @@ const I18N = {
     sunrise: "Восход",
     sunset: "Закат",
     moon: "Луна",
-    moonrise: "Восход Луны",
-    moonset: "Заход Луны",
+    moonrise: "Восход",
+    moonset: "Заход",
     moonAngle: "Угол Луна-Солнце",
     arunodaya: "Арунодая",
     masa: "Маса",
@@ -300,7 +341,9 @@ const I18N = {
     fullYear: "Год",
     previousMonth: "Предыдущий период",
     nextMonth: "Следующий период",
-    noEventDays: "Нет дней с событиями для этого фильтра."
+    noEventDays: "Нет дней с событиями для этого фильтра.",
+    monthPickerMonth: "Месяц",
+    monthPickerYear: "Год"
   }
 };
 
@@ -476,7 +519,7 @@ function eventClass(event) {
   if (event.type === "ekadashi_notice") return "notice ekadashi-notice";
   if (event.type === "parana") return "parana";
   if (event.type === "purushottama_boundary") return "purushottama";
-  if (event.type === "divine_appearance") return "festival";
+  if (event.type === "festival" || event.type === "divine_appearance") return "festival";
   if (event.type === "vaishnava_appearance" || event.type === "vaishnava_disappearance") return "vaishnava";
   if (event.type === "deity_installation" || event.type === "temple_opening" || event.category === "deity_temple") return "deity";
   return "";
@@ -619,6 +662,7 @@ function renderParanaPanel(paranaEvents) {
 }
 
 function moonEventsForDay(day, model) {
+  const moonset = day.astronomy.moonset_after_moonrise || day.astronomy.moonset;
   return [
     {
       type: "moonrise",
@@ -630,9 +674,9 @@ function moonEventsForDay(day, model) {
     },
     {
       type: "moonset",
-      date: day.astronomy.moonset,
+      date: moonset,
       full: model?.moonsetFull,
-      time: calendarTimeOrDash(day.astronomy.moonset, day.location.timezone),
+      time: calendarTimeOrDash(moonset, day.location.timezone),
       label: tr("moonset"),
       icon: "↓"
     }
@@ -1210,14 +1254,21 @@ function monthTitle(year, month) {
   );
 }
 
+function monthName(month) {
+  return new Intl.DateTimeFormat(dateLocale(), { month: "long", timeZone: "UTC" }).format(new Date(Date.UTC(2026, month - 1, 1)));
+}
+
 function syncCalendarPicker() {
   const [year, month] = periodFromInput.value.split("-").map(Number);
-  calendarMonthPicker.value = `${year}-${String(month).padStart(2, "0")}`;
+  calendarMonthSelect.value = String(month);
+  calendarYearInput.value = String(year);
 }
 
 function setPeriodFromCalendarPicker() {
-  const [year, month] = calendarMonthPicker.value.split("-").map(Number);
+  const month = Number(calendarMonthSelect.value);
+  const year = Number(calendarYearInput.value);
   if (!year || !month) return;
+  if (year < 1800 || year > 2200) return;
   const monthStart = `${year}-${String(month).padStart(2, "0")}-01`;
   const monthEndDate = new Date(Date.UTC(year, month, 0));
   periodFromInput.value = monthStart;
@@ -1255,8 +1306,7 @@ function calendarTimeOrDash(date, timezone) {
 
 function init() {
   if (controlsPanel) controlsPanel.open = false;
-  locationSelect.innerHTML = renderLocationOptions();
-  locationSelect.value = DEFAULT_LOCATION_ID;
+  initLocationSelect();
   const period = currentPeriod();
   periodFromInput.value = period.start;
   periodToInput.value = period.end;
@@ -1276,7 +1326,6 @@ function init() {
     });
   });
   exportIcsButton.addEventListener("click", exportCurrentCalendarIcs);
-  locationSelect.addEventListener("change", renderCalendar);
   periodFromInput.addEventListener("change", markPeriodChanged);
   periodToInput.addEventListener("change", markPeriodChanged);
   eventsOnlyInput.addEventListener("change", renderCalendar);
@@ -1291,7 +1340,8 @@ function init() {
     event.preventDefault();
     jumpToEventSearch();
   });
-  calendarMonthPicker.addEventListener("change", setPeriodFromCalendarPicker);
+  calendarMonthSelect.addEventListener("change", setPeriodFromCalendarPicker);
+  calendarYearInput.addEventListener("change", setPeriodFromCalendarPicker);
   thisWeekButton.addEventListener("click", () => setCurrentWeekPeriod());
   thisMonthButton.addEventListener("click", () => setCurrentMonthPeriod());
   fullYearButton.addEventListener("click", () => setFullYearPeriod());
@@ -1429,6 +1479,7 @@ function initLanguage() {
 }
 
 function setLanguage(language) {
+  const selectedLocation = locationSelect.value;
   currentLanguage = language;
   localStorage.setItem("vcalendar-language", language);
   document.documentElement.lang = language;
@@ -1439,6 +1490,8 @@ function setLanguage(language) {
   eventSearchInput.setAttribute("aria-label", tr("eventSearch"));
   eventSearchButton.setAttribute("aria-label", tr("eventSearch"));
   eventSearchButton.setAttribute("title", tr("eventSearch"));
+  calendarMonthSelect.setAttribute("aria-label", tr("monthPickerMonth"));
+  calendarYearInput.setAttribute("aria-label", tr("monthPickerYear"));
   document.querySelector(".eyebrow").textContent = tr("appSubtitle");
   brandTitleLink.textContent = tr("appTitle");
   document.title = tr("appTitle");
@@ -1450,12 +1503,28 @@ function setLanguage(language) {
     element.setAttribute("placeholder", tr(element.dataset.i18nPlaceholder));
   });
   renderEventFilterChips();
+  renderCalendarMonthOptions();
+  locationSelect.innerHTML = renderLocationOptions();
+  locationSelect.value = LOCATIONS.some((location) => location.id === selectedLocation) ? selectedLocation : DEFAULT_LOCATION_ID;
   renderEventJumpOptions();
   renderVaishnavaJumpOptions();
   syncCalendarPicker();
   updateFontSizeButtons();
   if (!selectedDate) dayDetails.textContent = tr("selectDay");
   updateThemeButtons();
+}
+
+function renderCalendarMonthOptions() {
+  const selectedMonth = calendarMonthSelect.value;
+  calendarMonthSelect.innerHTML = Array.from({ length: 12 }, (_, index) => {
+    const month = index + 1;
+    return `<option value="${month}">${capitalizeFirst(monthName(month))}</option>`;
+  }).join("");
+  calendarMonthSelect.value = selectedMonth || String(new Date().getMonth() + 1);
+}
+
+function capitalizeFirst(value) {
+  return value ? value.charAt(0).toLocaleUpperCase(dateLocale()) + value.slice(1) : value;
 }
 
 function eventFilterLabels() {
@@ -1480,10 +1549,18 @@ function renderLocationOptions() {
   }
   return [...groups]
     .map(([label, locations]) => {
-      const options = locations.map((location) => `<option value="${location.id}">${location.name}</option>`).join("");
-      return `<optgroup label="${label}">${options}</optgroup>`;
+      const options = locations.map((location) => `<option value="${location.id}">${locationLabel(location)}</option>`).join("");
+      return `<optgroup label="${locationGroupLabel(label)}">${options}</optgroup>`;
     })
     .join("");
+}
+
+function locationLabel(location) {
+  return LOCATION_LABELS[location.id]?.[currentLanguage] || location.name;
+}
+
+function locationGroupLabel(group) {
+  return LOCATION_GROUP_LABELS[group]?.[currentLanguage] || group;
 }
 
 function renderEventJumpOptions() {
@@ -1739,8 +1816,45 @@ function renderEventFilterChips() {
   });
 }
 
+function initLocationSelect() {
+  locationSelect.innerHTML = renderLocationOptions();
+  const savedLocation = readPersistedSetting("vcalendar-location");
+  const locationId = LOCATIONS.some((location) => location.id === savedLocation) ? savedLocation : DEFAULT_LOCATION_ID;
+  locationSelect.value = locationId;
+  writePersistedSetting("vcalendar-location", locationId);
+  locationSelect.addEventListener("change", () => {
+    writePersistedSetting("vcalendar-location", locationSelect.value);
+    renderCalendar();
+  });
+}
+
+function readCookie(name) {
+  const prefix = `${encodeURIComponent(name)}=`;
+  return document.cookie
+    .split(";")
+    .map((part) => part.trim())
+    .find((part) => part.startsWith(prefix))
+    ?.slice(prefix.length);
+}
+
+function writeCookie(name, value) {
+  document.cookie = `${encodeURIComponent(name)}=${encodeURIComponent(value)}; path=/; max-age=${COOKIE_MAX_AGE}; SameSite=Lax`;
+}
+
+function readPersistedSetting(key) {
+  const localValue = localStorage.getItem(key);
+  if (localValue !== null) return localValue;
+  const cookieValue = readCookie(key);
+  return cookieValue ? decodeURIComponent(cookieValue) : null;
+}
+
+function writePersistedSetting(key, value) {
+  localStorage.setItem(key, value);
+  writeCookie(key, value);
+}
+
 function initTheme() {
-  const savedTheme = localStorage.getItem("vcalendar-theme");
+  const savedTheme = readPersistedSetting("vcalendar-theme");
   const userThemeSelected = localStorage.getItem("vcalendar-theme-user-set") === "true" || (savedTheme && savedTheme !== "sepia");
   const defaultVersion = localStorage.getItem("vcalendar-theme-default-version");
   const theme = userThemeSelected && savedTheme ? savedTheme : defaultVersion === "sepia-20260606" ? savedTheme || "sepia" : "sepia";
@@ -1754,7 +1868,7 @@ function initTheme() {
 function setTheme(theme, userSelected = false) {
   const nextTheme = ["day", "night", "sepia"].includes(theme) ? theme : "sepia";
   document.documentElement.dataset.theme = nextTheme;
-  localStorage.setItem("vcalendar-theme", nextTheme);
+  writePersistedSetting("vcalendar-theme", nextTheme);
   if (userSelected) localStorage.setItem("vcalendar-theme-user-set", "true");
   updateThemeButtons();
 }
@@ -1769,7 +1883,7 @@ function updateThemeButtons() {
 }
 
 function initFontSize() {
-  const savedFontSize = localStorage.getItem("vcalendar-font-size");
+  const savedFontSize = readPersistedSetting("vcalendar-font-size");
   const userFontSelected = localStorage.getItem("vcalendar-font-size-user-set") === "true" || (savedFontSize && savedFontSize !== "large");
   setFontSize(userFontSelected && savedFontSize ? savedFontSize : "normal", false);
   fontSizeToggle.querySelectorAll("[data-font-size-choice]").forEach((button) => {
@@ -1780,7 +1894,7 @@ function initFontSize() {
 function setFontSize(size, userSelected = false) {
   const nextSize = ["normal", "large", "xlarge"].includes(size) ? size : "normal";
   document.documentElement.dataset.fontSize = nextSize;
-  localStorage.setItem("vcalendar-font-size", nextSize);
+  writePersistedSetting("vcalendar-font-size", nextSize);
   if (userSelected) localStorage.setItem("vcalendar-font-size-user-set", "true");
   updateFontSizeButtons();
 }

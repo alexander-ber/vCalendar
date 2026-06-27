@@ -233,6 +233,15 @@ function localRiseSet(body, location, isoDate, direction) {
   return found && found >= start && found <= end ? found : null;
 }
 
+function nextRiseSetAfter(body, location, isoDate, direction, after) {
+  if (!after) return null;
+  for (let offset = 0; offset <= 2; offset += 1) {
+    const found = localRiseSet(body, location, addDaysToLocalDate(isoDate, offset), direction);
+    if (found && found > after) return found;
+  }
+  return null;
+}
+
 export function arunodayaForDay(isoDate, location, sunrise, rules) {
   if (!sunrise) return null;
   const ekadashiRules = rules?.ekadashi || {};
@@ -253,11 +262,15 @@ export function dayAstronomy(isoDate, location, rules) {
   const sunrise = localRiseSet(Body.Sun, location, isoDate, +1);
   const sunset = localRiseSet(Body.Sun, location, isoDate, -1);
   const arunodaya = arunodayaForDay(isoDate, location, sunrise, rules);
+  const moonrise = localRiseSet(Body.Moon, location, isoDate, +1);
+  const moonset = localRiseSet(Body.Moon, location, isoDate, -1);
+  const moonsetAfterMoonrise = moonrise ? nextRiseSetAfter(Body.Moon, location, isoDate, -1, moonrise) : moonset;
   return {
     sunrise,
     sunset,
     arunodaya,
-    moonrise: localRiseSet(Body.Moon, location, isoDate, +1),
-    moonset: localRiseSet(Body.Moon, location, isoDate, -1)
+    moonrise,
+    moonset,
+    moonset_after_moonrise: moonsetAfterMoonrise
   };
 }

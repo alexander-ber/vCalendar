@@ -92,6 +92,14 @@ export const LOCATIONS = [
     timezone: "Asia/Barnaul"
   },
   {
+    id: "samara",
+    name: "Samara, Russia",
+    group: "Россия",
+    lat: 53.1959,
+    lon: 50.1008,
+    timezone: "Europe/Samara"
+  },
+  {
     id: "paris",
     name: "Paris, France",
     group: "Европа",

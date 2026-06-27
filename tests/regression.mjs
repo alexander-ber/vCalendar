@@ -1,5 +1,6 @@
 import assert from "node:assert/strict";
 import { generateCalendar } from "../js/calendar-engine.js";
+import { matchEventsForDay } from "../js/event-matcher.js";
 import { EVENTS } from "../js/events-data.js";
 import { LOCATIONS } from "../js/locations-data.js";
 import { RULES } from "../js/rules-data.js";
@@ -88,11 +89,15 @@ const mayMayapur = eventsByDate(2026, 5, mayapur);
 assert(mayMayapur.get("2026-05-27").some((event) => event.name === "Padmini Ekadashi"));
 
 const julyMayapur = eventsByDate(2026, 7, mayapur);
+assert(julyMayapur.get("2026-07-15").some((event) => event.name === "Gundicha Mardzhana" && event.anchor_date === "2026-07-16"));
 assert(julyMayapur.get("2026-07-16").some((event) => event.name === "Beginning of Ratha Yatra"));
 assert(julyMayapur.get("2026-07-16").some((event) => event.name === "Disappearance of Srila Shivananda Sen"));
-assert(julyMayapur.get("2026-07-24").some((event) => event.name === "Punar Yatra of Sri Jagannathdev"));
+assert(julyMayapur.get("2026-07-24").some((event) => event.name === "Punar Yatra of Sri Jagannathdev" && event.anchor_date === "2026-07-16"));
 assert(julyMayapur.get("2026-07-29").some((event) => event.name === "Beginning of Chaturmasya"));
 assert(EVENTS.some((event) => event.id === "appearance_of_srila_shivananda_sen" && event.disabled === true));
+
+const marchMayapur = eventsByDate(2026, 3, mayapur);
+assert(marchMayapur.get("2026-03-04").some((event) => event.name === "Prazdnik Dzhagannatkhi Mishry" && event.anchor_date === "2026-03-03"));
 
 const octoberMayapur = eventsByDate(2026, 10, mayapur);
 assert(octoberMayapur.get("2026-10-26").some((event) => event.name === "Beginning of Karttik"));
@@ -143,5 +148,31 @@ const scsmathTithiEvents = EVENTS.filter((event) => event.source_status === "tit
 assert.equal(scsmathTithiEvents.filter((event) => event.observed_date).length, 0);
 assert(scsmathTithiEvents.every((event) => event.gaudiya_masa && event.paksha && event.tithi));
 assert(scsmathTithiEvents.some((event) => event.type === "deity_installation"));
+
+const syntheticGenericEvent = {
+  id: "synthetic_generic_tithi_event",
+  name: "Synthetic generic tithi event",
+  gaudiya_masa: "Synthetic",
+  paksha: "Gaura",
+  tithi: "Panchami"
+};
+const syntheticPreviousDay = {
+  lunar: { tithi_at_sunrise: { number: 3, name: "Gaura Tritiya", paksha: "Gaura" } },
+  masa: { normal_masa_name: "Synthetic" }
+};
+const syntheticDay = {
+  date: "2026-01-01",
+  lunar: {
+    paksha: "Gaura",
+    masa_type: "normal",
+    tithi_at_sunrise: { number: 5, name: "Gaura Panchami", paksha: "Gaura" }
+  },
+  masa: { normal_masa_name: "Synthetic" }
+};
+const syntheticNextDay = {
+  lunar: { tithi_at_sunrise: { number: 6, name: "Gaura Shashthi", paksha: "Gaura" } },
+  masa: { normal_masa_name: "Synthetic" }
+};
+assert.equal(matchEventsForDay(syntheticDay, [syntheticGenericEvent], "UTC", syntheticNextDay, syntheticPreviousDay).length, 1);
 
 console.log("Regression checks passed.");

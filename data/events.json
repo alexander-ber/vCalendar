@@ -1015,7 +1015,9 @@
     "timing_rule": "sunrise_based",
     "allow_in_adhika": false,
     "priority": "medium",
-    "source_status": "matched_by_name_type_tithi",
+    "source_status": "dependent_on_ratha_yatra",
+    "anchor_event_id": "ratha_yatra_begin",
+    "observance_offset_days": -1,
     "description": "Imported calendar reference for \"Гундича Марджана\". English summary still needs editorial translation; the Russian source summary is linked in source_url.",
     "source_url": "http://harekrishnazp.info/materialy/vajshnavskij-kalendar/1273-gundicha-mardzhana.html",
     "i18n": {
@@ -1359,7 +1361,9 @@
     "timing_rule": "sunrise_based",
     "allow_in_adhika": false,
     "priority": "medium",
-    "source_status": "matched_by_name_type_tithi",
+    "source_status": "dependent_on_gaura_purnima",
+    "anchor_event_id": "gaura_purnima",
+    "observance_offset_days": 1,
     "description": "Imported calendar reference for \"Праздник Джаганнатхи Мишры\". English summary still needs editorial translation; the Russian source summary is linked in source_url.",
     "source_url": "http://harekrishnazp.info/materialy/vajshnavskij-kalendar/1256-dzhagannatkha-mishra.html",
     "i18n": {
@@ -1388,7 +1392,9 @@
     "timing_rule": "sunrise_based",
     "allow_in_adhika": false,
     "priority": "high",
-    "source_status": "matched_by_name_type_tithi",
+    "source_status": "dependent_on_ratha_yatra",
+    "anchor_event_id": "ratha_yatra_begin",
+    "observance_offset_days": 8,
     "description": "Return car festival of Sri Jagannathdev after the stay at Gundicha temple.",
     "source_url": "http://harekrishnazp.info/materialy/vajshnavskij-kalendar/1274-ratkha-yatra.html",
     "i18n": {

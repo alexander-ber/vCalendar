@@ -12,7 +12,9 @@
     "allow_in_adhika": false
   },
   "priority": "high",
-  "source_status": "matched_by_name_type_tithi",
+  "source_status": "dependent_on_ratha_yatra",
+  "anchor_event_id": "ratha_yatra_begin",
+  "observance_offset_days": 8,
   "sources": [
     {
       "type": "description",
