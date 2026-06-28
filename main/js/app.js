@@ -2,6 +2,7 @@ import { generateCalendarRange, viewModelForDay } from "./calendar-engine.js?v=2
 import { EVENTS } from "./events-data.js?v=20260626-1";
 import { LOCATIONS } from "./locations-data.js?v=20260627-1";
 import { RULES } from "./rules-data.js?v=20260613-3";
+import { formatDateTime } from "./date-utils.js?v=20260528-8";
 
 const locationSelect = document.querySelector("#locationSelect");
 const periodFromInput = document.querySelector("#periodFromInput");
@@ -169,6 +170,11 @@ const I18N = {
     calculationEngine: "Calculation engine",
     ekadashiRule: "Ekadashi rule",
     shiftReason: "Shift reason",
+    shiftCalculation: "Shift calculation",
+    checkedTithi: "Checked tithi",
+    tithiInterval: "Tithi interval",
+    firstSunrise: "First sunrise",
+    secondSunrise: "Second sunrise",
     paranaFormula: "Parana formula",
     hariVasaraEnd: "Hari-vasara ends",
     dvadashiStart: "Dvadashi starts",
@@ -298,6 +304,11 @@ const I18N = {
     calculationEngine: "Движок расчёта",
     ekadashiRule: "Правило Экадаши",
     shiftReason: "Причина переноса",
+    shiftCalculation: "Расчёт переноса",
+    checkedTithi: "Проверяемая титхи",
+    tithiInterval: "Интервал титхи",
+    firstSunrise: "Первый восход",
+    secondSunrise: "Второй восход",
     paranaFormula: "Формула парана",
     hariVasaraEnd: "Окончание Хари-васары",
     dvadashiStart: "Начало Двадаши",
@@ -584,6 +595,7 @@ function renderDetails(day, options = {}) {
   const model = viewModelForDay(day);
   model.events = visibleEventsForDay(day);
   const ekadashiEvents = model.events.filter((event) => event.type === "ekadashi");
+  const ekadashiCalculationEvents = model.events.filter((event) => event.type === "ekadashi" || event.type === "ekadashi_notice");
   const paranaEvents = model.events.filter((event) => event.type === "parana");
   const detailEvents = model.events.filter((event) => event.type !== "parana");
   dayDetails.innerHTML = `
@@ -628,7 +640,7 @@ function renderDetails(day, options = {}) {
           </div>`
         : ""
     }
-        ${renderCalculationDetails(day, model, ekadashiEvents, paranaEvents)}
+        ${renderCalculationDetails(day, model, ekadashiCalculationEvents, paranaEvents)}
       </section>
     </details>
   `;
@@ -720,11 +732,12 @@ function renderCalculationDetails(day, model, ekadashiEvents, paranaEvents) {
     [tr("ekadashiName"), localizeEventName(event)],
     [tr("ekadashiRule"), localizeClassification(event.diagnostics?.rule_applied || event.classification || event.fast_day_type || "standard")],
     [tr("shiftReason"), ekadashiCalculationExplanation(event)],
-    [tr("fastDate"), event.fast_date || ""],
+    [tr("fastDate"), event.fast_date || event.diagnostics?.shifted_fast_date || ""],
     event.candidate_no_fast_reason
       ? [tr("noFast"), localizeClassification(event.candidate_no_fast_reason)]
       : null
   ]).filter(Boolean);
+  const shiftRows = ekadashiEvents.flatMap((event) => renderShiftDiagnosticRows(event, day.location.timezone));
   const ekadashiParanaRows = ekadashiEvents.flatMap((event) => {
     const diagnostics = event.parana?.diagnostics || {};
     return [
@@ -748,10 +761,29 @@ function renderCalculationDetails(day, model, ekadashiEvents, paranaEvents) {
     <details class="diagnostic diagnostic-panel">
       <summary>${tr("calculationDetails")}</summary>
       <dl class="diagnostic-grid">
-        ${renderDiagnosticRows([...baseRows, ...ekadashiRows, ...ekadashiParanaRows, ...paranaRows])}
+        ${renderDiagnosticRows([...baseRows, ...ekadashiRows, ...shiftRows, ...ekadashiParanaRows, ...paranaRows])}
       </dl>
     </details>
   `;
+}
+
+function renderShiftDiagnosticRows(event, timezone) {
+  const transfer = event.diagnostics?.transfer;
+  if (!transfer) return [];
+  if (transfer.type === "paksavardhini") {
+    const tithiName = localizeTithi(transfer.target_tithi_name || "");
+    const interval = [diagnosticDateTime(transfer.target_tithi_start, timezone), diagnosticDateTime(transfer.target_tithi_end, timezone)]
+      .filter(Boolean)
+      .join(" - ");
+    return [
+      [tr("shiftCalculation"), localizeClassification("paksavardhini_mahadvadashi")],
+      [tr("checkedTithi"), `${tithiName} (#${transfer.target_tithi_number})`],
+      [tr("tithiInterval"), interval],
+      [tr("firstSunrise"), `${transfer.first_sunrise_date}: ${diagnosticDateTime(transfer.first_sunrise, timezone)} · ${localizeTithi(transfer.first_sunrise_tithi)}`],
+      [tr("secondSunrise"), `${transfer.second_sunrise_date}: ${diagnosticDateTime(transfer.second_sunrise, timezone)} · ${localizeTithi(transfer.second_sunrise_tithi)}`]
+    ];
+  }
+  return [];
 }
 
 function renderDiagnosticRows(rows) {
@@ -764,6 +796,12 @@ function renderDiagnosticRows(rows) {
 function diagnosticTime(value, timezone) {
   if (!value) return "";
   if (value instanceof Date) return calendarTime(value, timezone);
+  return String(value);
+}
+
+function diagnosticDateTime(value, timezone) {
+  if (!value) return "";
+  if (value instanceof Date) return formatDateTime(value, timezone);
   return String(value);
 }
 
@@ -1968,7 +2006,8 @@ function initEventsOnly() {
 
 function initCompactView() {
   const saved = localStorage.getItem("vcalendar-compact-view");
-  compactViewInput.checked = saved === "true";
+  const mobileDefault = window.matchMedia("(max-width: 700px)").matches;
+  compactViewInput.checked = saved === null ? mobileDefault : saved === "true";
   syncCompactViewControls();
   compactViewInput.addEventListener("change", () => {
     localStorage.setItem("vcalendar-compact-view", String(compactViewInput.checked));
@@ -2044,6 +2083,7 @@ function localizeClassification(value) {
       no_sunrise: "no sunrise",
       dashami_viddha_at_arunodaya: "Dashami at arunodaya",
       dashami_viddha_at_sunrise: "Dashami at sunrise",
+      next_full_or_new_moon_is_vriddhi: "next Pratipat/Amavasya is vriddhi",
       vyanjuli_mahadvadashi: "Vyanjuli Mahadvadashi",
       paksavardhini_mahadvadashi: "Paksavardhini Mahadvadashi",
       dvadashi_suitable_for_ekadashi_fasting: "Dvadashi fasting day",
@@ -2061,6 +2101,7 @@ function localizeClassification(value) {
       no_sunrise: "без восхода",
       dashami_viddha_at_arunodaya: "Дашами на арунодае",
       dashami_viddha_at_sunrise: "Дашами на восходе",
+      next_full_or_new_moon_is_vriddhi: "следующая Пратипад/Амавасья - вриддхи",
       vyanjuli_mahadvadashi: "Вьянджули махадвадаши",
       paksavardhini_mahadvadashi: "Пакшавардхини махадвадаши",
       dvadashi_suitable_for_ekadashi_fasting: "пост на Двадаши",

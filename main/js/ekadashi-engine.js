@@ -118,14 +118,48 @@ function findNakshatraEndAfter(start, targetNumber, maxHours = 48) {
   return null;
 }
 
-function hasPaksavardhiniVriddhiAhead(days, index, dvadashiNumber) {
+function findTithiStartBefore(reference, targetNumber, maxHours = 72) {
+  let right = new Date(reference);
+  let left = new Date(right.getTime() - 60 * 60 * 1000);
+  const min = reference.getTime() - maxHours * 60 * 60 * 1000;
+  while (left.getTime() >= min) {
+    if (tithiInfo(right).number === targetNumber && tithiInfo(left).number !== targetNumber) {
+      for (let i = 0; i < 40; i += 1) {
+        const mid = new Date((left.getTime() + right.getTime()) / 2);
+        if (tithiInfo(mid).number === targetNumber) right = mid;
+        else left = mid;
+      }
+      return right;
+    }
+    right = left;
+    left = new Date(left.getTime() - 60 * 60 * 1000);
+  }
+  return null;
+}
+
+function paksavardhiniVriddhiAhead(days, index, dvadashiNumber) {
   const targetNumber = dvadashiNumber === 12 ? 16 : 30;
   for (let i = index + 1; i < days.length - 1; i += 1) {
     const current = days[i].lunar.tithi_at_sunrise.number;
     if (current !== targetNumber) continue;
-    return days[i + 1]?.lunar.tithi_at_sunrise.number === current;
+    if (days[i + 1]?.lunar.tithi_at_sunrise.number !== current) return null;
+    const firstDay = days[i];
+    const secondDay = days[i + 1];
+    return {
+      type: "paksavardhini",
+      target_tithi_number: targetNumber,
+      target_tithi_name: firstDay.lunar.tithi_at_sunrise.name,
+      target_tithi_start: findTithiStartBefore(firstDay.astronomy.sunrise, targetNumber),
+      target_tithi_end: findTithiEndAfter(firstDay.astronomy.sunrise, targetNumber, 72),
+      first_sunrise_date: firstDay.date,
+      first_sunrise: firstDay.astronomy.sunrise,
+      first_sunrise_tithi: firstDay.lunar.tithi_at_sunrise.name,
+      second_sunrise_date: secondDay.date,
+      second_sunrise: secondDay.astronomy.sunrise,
+      second_sunrise_tithi: secondDay.lunar.tithi_at_sunrise.name
+    };
   }
-  return false;
+  return null;
 }
 
 function nakshatraMahadvadashiType(day, nextDay) {
@@ -195,7 +229,8 @@ function buildEkadashiEvent({
   fastDayType,
   paranaType,
   noFastReason = null,
-  mahadvadashiType = null
+  mahadvadashiType = null,
+  transferDiagnostics = null
 }) {
   const paksha = targetNumber === 11 ? "Gaura" : "Krishna";
   const record = ekadashiRecord(day.masa, paksha);
@@ -228,7 +263,8 @@ function buildEkadashiEvent({
       arunodaya: formatTime(day.astronomy.arunodaya, location.timezone),
       tithi_at_arunodaya: day.lunar.tithi_at_arunodaya.name,
       tithi_at_sunrise: day.lunar.tithi_at_sunrise.name,
-      rule_applied: classification
+      rule_applied: classification,
+      transfer: transferDiagnostics
     }
   };
 }
@@ -282,7 +318,8 @@ function classifyDvadashiMahadvadashi(days, index, location, rules) {
     });
   }
 
-  if (hasPaksavardhiniVriddhiAhead(days, index, todayNumber)) {
+  const paksavardhiniDiagnostics = paksavardhiniVriddhiAhead(days, index, todayNumber);
+  if (paksavardhiniDiagnostics) {
     return buildEkadashiEvent({
       day,
       location,
@@ -293,7 +330,8 @@ function classifyDvadashiMahadvadashi(days, index, location, rules) {
       fastDate: day.date,
       fastDayType: "paksavardhini_mahadvadashi",
       paranaType: nextAtSunrise === nextTithiNumber(todayNumber) ? "viddha" : "vyanjuli_mahadvadashi",
-      noFastReason: "next_full_or_new_moon_is_vriddhi"
+      noFastReason: "next_full_or_new_moon_is_vriddhi",
+      transferDiagnostics: paksavardhiniDiagnostics
     });
   }
 
@@ -548,6 +586,15 @@ function noFastNoticeForEkadashiDay(day, ekadashiOrReason, targetNumber = null) 
     type: "ekadashi_notice",
     category: "vrata",
     candidate_no_fast_reason: reason,
+    diagnostics: ekadashi?.diagnostics
+      ? {
+          rule_applied: ekadashi.classification || reason,
+          no_fast_reason: reason,
+          transfer: ekadashi.diagnostics.transfer,
+          shifted_fast_date: fastDate,
+          candidate_date: ekadashi.candidate_date
+        }
+      : { rule_applied: reason },
     description: fastDate
       ? `${ekadashi?.name || "Ekadashi"} fast is observed on ${fastDate} because ${reasonLabel} applies.${reasonDetails ? ` ${reasonDetails.en}` : ""}`
       : `Ekadashi is not suitable for fast because ${reasonLabel} applies.${reasonDetails ? ` ${reasonDetails.en}` : ""}`,
