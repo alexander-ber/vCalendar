@@ -3,6 +3,8 @@ import { EVENTS } from "./events-data.js?v=20260626-1";
 import { LOCATIONS } from "./locations-data.js?v=20260627-1";
 import { RULES } from "./rules-data.js?v=20260613-3";
 import { formatDateTime } from "./date-utils.js?v=20260528-8";
+import { nakshatraJyotishForNumber } from "./nakshatra-data.js?v=20260628-1";
+import { tithiMuhurtaForNumber } from "./tithi-muhurta-data.js?v=20260628-1";
 
 const locationSelect = document.querySelector("#locationSelect");
 const periodFromInput = document.querySelector("#periodFromInput");
@@ -123,6 +125,16 @@ const I18N = {
     pakshaTermDescription: "Half of the lunar month: Gaura is waxing, Krishna is waning.",
     tithiTerm: "Tithi",
     tithiTermDescription: "Lunar day, calculated from the Moon-Sun angular distance.",
+    jyotishTerm: "Jyotish",
+    jyotishTermDescription: "Traditional Vedic astrology and calendrical timing system used here for muhurta notes.",
+    nakshatraTerm: "Nakshatra",
+    nakshatraTermDescription: "One of 27 lunar mansions. Each spans 13°20' of the sidereal zodiac.",
+    padaTerm: "Pada",
+    padaTermDescription: "Quarter of a nakshatra; each nakshatra has four padas of 3°20'.",
+    siderealLongitudeTerm: "Sidereal longitude",
+    siderealLongitudeTermDescription: "Moon position measured against the sidereal zodiac after ayanamsha correction.",
+    grahaRulerTerm: "Graha ruler",
+    grahaRulerTermDescription: "The planetary ruler traditionally associated with a nakshatra.",
     pratipatTerm: "Pratipat",
     pratipatTermDescription: "The first tithi of a paksha, immediately after New Moon or Full Moon.",
     amavasyaTerm: "Amavasya",
@@ -152,6 +164,25 @@ const I18N = {
     tithiSunrise: "Tithi sunrise",
     tithiStarts: "Tithi starts",
     tithiEnds: "Tithi ends",
+    jyotishPanel: "Jyotish",
+    tithiJyotisha: "Tithi",
+    nakshatraJyotisha: "Nakshatra",
+    nakshatraAtSunrise: "Nakshatra at sunrise",
+    nakshatraPada: "Pada",
+    nakshatraRuler: "Ruler",
+    nakshatraSymbol: "Symbol",
+    nakshatraDeity: "Deity",
+    nakshatraSector: "Sector",
+    tithiTiming: "Tithi timing",
+    favorableActions: "Favorable",
+    unfavorableActions: "Avoid",
+    muhurtaEvaluation: "Evaluation",
+    muhurtaGroup: "Group",
+    evaluationExcellent: "excellent",
+    evaluationGood: "good",
+    evaluationConditional: "conditional",
+    evaluationAvoid: "avoid",
+    evaluationSpiritualOnly: "spiritual only",
     tithiAngle: "Tithi angle",
     ekadashiName: "Ekadashi name",
     fastDate: "Fast date",
@@ -261,6 +292,16 @@ const I18N = {
     pakshaTermDescription: "Половина лунного месяца: Гаура - растущая Луна, Кришна - убывающая.",
     tithiTerm: "Титхи",
     tithiTermDescription: "Лунный день, рассчитывается по угловому расстоянию между Луной и Солнцем.",
+    jyotishTerm: "Джйотиш",
+    jyotishTermDescription: "Традиционная ведическая астрология и система выбора времени, здесь используется для заметок по мухурте.",
+    nakshatraTerm: "Накшатра",
+    nakshatraTermDescription: "Одно из 27 лунных созвездий. Каждая накшатра занимает 13°20' сидерического зодиака.",
+    padaTerm: "Пада",
+    padaTermDescription: "Четверть накшатры; в каждой накшатре четыре пады по 3°20'.",
+    siderealLongitudeTerm: "Сидерическая долгота",
+    siderealLongitudeTermDescription: "Положение Луны в сидерическом зодиаке после поправки айанамши.",
+    grahaRulerTerm: "Граха-управитель",
+    grahaRulerTermDescription: "Планетный управитель, традиционно связанный с накшатрой.",
     pratipatTerm: "Пратипад",
     pratipatTermDescription: "Первая титхи пакши, сразу после новолуния или полнолуния.",
     amavasyaTerm: "Амавасья",
@@ -290,6 +331,25 @@ const I18N = {
     tithiSunrise: "Титхи на восходе",
     tithiStarts: "Начало титхи",
     tithiEnds: "Титхи до",
+    jyotishPanel: "Джйотиш",
+    tithiJyotisha: "Титхи",
+    nakshatraJyotisha: "Накшатра",
+    nakshatraAtSunrise: "Накшатра на восходе",
+    nakshatraPada: "Пада",
+    nakshatraRuler: "Управитель",
+    nakshatraSymbol: "Символ",
+    nakshatraDeity: "Божество",
+    nakshatraSector: "Сектор",
+    tithiTiming: "Время титхи",
+    favorableActions: "Благоприятно",
+    unfavorableActions: "Нежелательно",
+    muhurtaEvaluation: "Оценка",
+    muhurtaGroup: "Группа",
+    evaluationExcellent: "отлично",
+    evaluationGood: "хорошо",
+    evaluationConditional: "условно",
+    evaluationAvoid: "избегать",
+    evaluationSpiritualOnly: "только духовное",
     tithiAngle: "Угол титхи",
     ekadashiName: "Название экадаши",
     fastDate: "День поста",
@@ -410,6 +470,36 @@ const TITHI_RU = {
   Amavasya: "Амавасья",
   Gaura: "Гаура",
   Krishna: "Кришна"
+};
+
+const NAKSHATRA_RU = {
+  Ashvini: "Ашвини",
+  Bharani: "Бхарани",
+  Krittika: "Криттика",
+  Rohini: "Рохини",
+  Mrigashirsha: "Мригаширша",
+  Ardra: "Ардра",
+  Punarvasu: "Пунарвасу",
+  Pushya: "Пушья",
+  Ashlesha: "Ашлеша",
+  Magha: "Магха",
+  "Purva Phalguni": "Пурва-пхалгуни",
+  "Uttara Phalguni": "Уттара-пхалгуни",
+  Hasta: "Хаста",
+  Chitra: "Читра",
+  Swati: "Свати",
+  Vishakha: "Вишакха",
+  Anuradha: "Анурадха",
+  Jyeshtha: "Джйештха",
+  Mula: "Мула",
+  "Purva Ashadha": "Пурва-ашадха",
+  "Uttara Ashadha": "Уттара-ашадха",
+  Shravana: "Шравана",
+  Dhanishtha: "Дхаништха",
+  Shatabhisha: "Сатабхиша",
+  "Purva Bhadrapada": "Пурва-бхадра",
+  "Uttara Bhadrapada": "Уттара-бхадра",
+  Revati: "Ревати"
 };
 
 const MASA_RU = {
@@ -638,6 +728,7 @@ function renderDetails(day, options = {}) {
             <small>${tr("tithiSunrise")}: ${localizeTithi(model.tithi)} · ${tr("tithiEnds")}: ${model.tithiEnd} · ${tr("tithiAngle")}: ${model.angle} deg</small>
           </div>
         </div>
+        ${renderTithiMuhurtaPanel(day, model)}
     ${
       ekadashiEvents.length
         ? `<div class="ekadashi-panel">
@@ -723,6 +814,114 @@ function renderMoonTimesInline(day, location) {
   return moonEventsForDay(day)
     .map((event) => `${event.icon}${calendarTimeOrDash(event.date, location.timezone)}`)
     .join(" · ");
+}
+
+function renderTithiMuhurtaPanel(day, model) {
+  const record = tithiMuhurtaForNumber(day.lunar.tithi_at_sunrise.number);
+  const nakshatra = nakshatraJyotishForNumber(day.lunar.nakshatra_at_sunrise.number);
+  if (!record && !nakshatra) return "";
+  return `
+    <section class="tithi-muhurta-panel">
+      <div class="tithi-muhurta-header">
+        <span>${tr("jyotishPanel")}</span>
+        <strong>${localizeTithi(model.tithi)} · ${localizeNakshatra(day.lunar.nakshatra_at_sunrise.name)}</strong>
+        <small>${tr("nakshatraAtSunrise")}: ${localizeNakshatra(day.lunar.nakshatra_at_sunrise.name)} · ${tr("nakshatraPada")}: ${day.lunar.nakshatra_at_sunrise.pada}</small>
+      </div>
+      ${record ? renderTithiJyotishSection(record, model) : ""}
+      ${nakshatra ? renderNakshatraJyotishSection(day, nakshatra) : ""}
+    </section>
+  `;
+}
+
+function renderTithiJyotishSection(record, model) {
+  const text = record.i18n?.[currentLanguage] || record.i18n.en;
+  return `
+    <div class="jyotish-section">
+      <h4>${tr("tithiJyotisha")}: ${localizeTithi(model.tithi)}</h4>
+      <div class="tithi-muhurta-timing">
+        <div><span>${tr("tithiStarts")}</span><strong>${model.tithiStartFull}</strong></div>
+        <div><span>${tr("tithiEnds")}</span><strong>${model.tithiEndFull}</strong></div>
+      </div>
+      <p>${text.summary}</p>
+      ${renderMuhurtaActionGrid(text.plus, text.minus)}
+    </div>
+  `;
+}
+
+function renderNakshatraJyotishSection(day, nakshatra) {
+  const groupText = nakshatra.groupInfo.i18n?.[currentLanguage] || nakshatra.groupInfo.i18n.en;
+  const nameText = nakshatra.i18n?.[currentLanguage] || nakshatra.i18n.en;
+  const technical = nakshatra.technical || {};
+  return `
+    <div class="jyotish-section">
+      <h4>${tr("nakshatraJyotisha")}: ${nameText.name}</h4>
+      <div class="tithi-muhurta-timing">
+        <div><span>${tr("muhurtaGroup")}</span><strong>${groupText.name}</strong></div>
+        <div><span>${tr("nakshatraPada")}</span><strong>${day.lunar.nakshatra_at_sunrise.pada}</strong></div>
+        <div><span>${tr("nakshatraSector")}</span><strong>${nakshatraSector(nakshatra.number)}</strong></div>
+        <div><span>${tr("nakshatraRuler")}</span><strong>${localizedTechnical(technical.ruler)}</strong></div>
+      </div>
+      <p>${groupText.summary}</p>
+      <div class="nakshatra-technical-line">
+        <span>${tr("nakshatraSymbol")}: ${localizedTechnical(technical.symbol)}</span>
+        <span>${tr("nakshatraDeity")}: ${localizedTechnical(technical.deity)}</span>
+      </div>
+      ${renderMuhurtaActionGrid(groupText.plus, groupText.minus)}
+    </div>
+  `;
+}
+
+function renderMuhurtaActionGrid(plus, minus) {
+  return `
+    <div class="tithi-muhurta-actions">
+      <div class="muhurta-plus">
+        <span aria-hidden="true">+</span>
+        <section>
+          <strong>${tr("favorableActions")}</strong>
+          <ul>${renderMuhurtaItems(plus)}</ul>
+        </section>
+      </div>
+      <div class="muhurta-minus">
+        <span aria-hidden="true">-</span>
+        <section>
+          <strong>${tr("unfavorableActions")}</strong>
+          <ul>${renderMuhurtaItems(minus)}</ul>
+        </section>
+      </div>
+    </div>
+  `;
+}
+
+function localizedTechnical(value) {
+  return value?.[currentLanguage] || value?.en || "";
+}
+
+function nakshatraSector(number) {
+  const start = (number - 1) * (360 / 27);
+  const end = number * (360 / 27);
+  return `${formatNakshatraDegree(start)}-${formatNakshatraDegree(end)}`;
+}
+
+function formatNakshatraDegree(value) {
+  const degrees = Math.floor(value);
+  const minutes = Math.round((value - degrees) * 60);
+  if (minutes === 60) return `${degrees + 1}°00'`;
+  return `${degrees}°${String(minutes).padStart(2, "0")}'`;
+}
+
+function renderMuhurtaItems(items = []) {
+  return items.map((item) => `<li>${item}</li>`).join("");
+}
+
+function localizeMuhurtaEvaluation(value) {
+  const map = {
+    excellent: tr("evaluationExcellent"),
+    good: tr("evaluationGood"),
+    conditional: tr("evaluationConditional"),
+    avoid: tr("evaluationAvoid"),
+    spiritual_only: tr("evaluationSpiritualOnly")
+  };
+  return map[value] || value;
 }
 
 function renderCalculationDetails(day, model, ekadashiEvents, paranaEvents) {
@@ -815,9 +1014,14 @@ function diagnosticDateTime(value, timezone) {
 
 function renderSanskritTermsHelp() {
   const terms = [
+    ["jyotishTerm", "jyotishTermDescription"],
     ["masaTerm", "masaTermDescription"],
     ["pakshaTerm", "pakshaTermDescription"],
     ["tithiTerm", "tithiTermDescription"],
+    ["nakshatraTerm", "nakshatraTermDescription"],
+    ["padaTerm", "padaTermDescription"],
+    ["siderealLongitudeTerm", "siderealLongitudeTermDescription"],
+    ["grahaRulerTerm", "grahaRulerTermDescription"],
     ["pratipatTerm", "pratipatTermDescription"],
     ["amavasyaTerm", "amavasyaTermDescription"],
     ["arunodayaTerm", "arunodayaTermDescription"],
@@ -2044,6 +2248,11 @@ function localizeTithi(value) {
 function localizePaksha(value) {
   if (currentLanguage !== "ru") return value;
   return TITHI_RU[value] || value;
+}
+
+function localizeNakshatra(value) {
+  if (currentLanguage !== "ru") return value;
+  return NAKSHATRA_RU[value] || value;
 }
 
 function localizeMasa(value) {

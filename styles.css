@@ -1438,6 +1438,152 @@ button:not(.day):not(.compact-day):not(.theme-toggle):not(.language-toggle):not(
   line-height: 1.35;
 }
 
+.tithi-muhurta-panel {
+  display: grid;
+  gap: 12px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  padding: 12px 14px;
+  background: var(--panel-raised);
+}
+
+.tithi-muhurta-header {
+  display: grid;
+  gap: 3px;
+}
+
+.tithi-muhurta-header span,
+.tithi-muhurta-timing span {
+  color: var(--muted);
+  font-size: calc(11px * var(--font-scale));
+  font-weight: 850;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.tithi-muhurta-header strong {
+  color: var(--ink);
+  font-size: calc(17px * var(--font-scale));
+  line-height: 1.25;
+}
+
+.jyotish-section {
+  display: grid;
+  gap: 9px;
+  border-top: 1px solid var(--soft-line);
+  padding-top: 10px;
+}
+
+.jyotish-section h4 {
+  margin: 0;
+  color: var(--ink);
+  font-size: calc(15px * var(--font-scale));
+  line-height: 1.25;
+}
+
+.tithi-muhurta-header small,
+.tithi-muhurta-panel p {
+  margin: 0;
+  color: var(--muted);
+  font-size: calc(13px * var(--font-scale));
+  font-weight: 750;
+  line-height: 1.45;
+}
+
+.tithi-muhurta-timing,
+.tithi-muhurta-actions {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 8px;
+}
+
+.tithi-muhurta-timing div {
+  display: grid;
+  gap: 3px;
+  border: 1px solid var(--soft-line);
+  border-radius: 8px;
+  padding: 8px 10px;
+  background: var(--panel);
+}
+
+.tithi-muhurta-timing strong {
+  color: var(--ink);
+  font-size: calc(14px * var(--font-scale));
+}
+
+.tithi-muhurta-actions > div {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 8px;
+  align-items: start;
+  border: 1px solid var(--soft-line);
+  border-radius: 8px;
+  padding: 10px;
+}
+
+.tithi-muhurta-actions > div > span {
+  display: grid;
+  width: 28px;
+  height: 28px;
+  place-items: center;
+  border-radius: 999px;
+  color: var(--panel-raised);
+  font-size: calc(18px * var(--font-scale));
+  font-weight: 950;
+  line-height: 1;
+}
+
+.muhurta-plus {
+  background: color-mix(in srgb, var(--parana-soft) 72%, transparent);
+}
+
+.muhurta-plus > span {
+  background: var(--parana);
+}
+
+.muhurta-minus {
+  background: color-mix(in srgb, var(--festival-soft) 62%, transparent);
+}
+
+.muhurta-minus > span {
+  background: var(--festival);
+}
+
+.tithi-muhurta-actions strong {
+  display: block;
+  color: var(--ink);
+  font-size: calc(13px * var(--font-scale));
+  line-height: 1.2;
+}
+
+.tithi-muhurta-actions ul {
+  display: grid;
+  gap: 2px;
+  margin: 5px 0 0 17px;
+  padding: 0;
+  color: var(--muted);
+  font-size: calc(12px * var(--font-scale));
+  font-weight: 750;
+  line-height: 1.35;
+}
+
+.nakshatra-technical-line {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  color: var(--muted);
+  font-size: calc(12px * var(--font-scale));
+  font-weight: 750;
+  line-height: 1.35;
+}
+
+.nakshatra-technical-line span {
+  border: 1px solid var(--soft-line);
+  border-radius: 999px;
+  padding: 4px 8px;
+  background: var(--panel);
+}
+
 .terms-help {
   justify-self: start;
 }
@@ -1948,6 +2094,11 @@ button:not(.day):not(.compact-day):not(.theme-toggle):not(.language-toggle):not(
   }
 
   .parana-panel dl {
+    grid-template-columns: 1fr;
+  }
+
+  .tithi-muhurta-timing,
+  .tithi-muhurta-actions {
     grid-template-columns: 1fr;
   }
 
