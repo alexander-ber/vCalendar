@@ -855,11 +855,11 @@ function renderNakshatraJyotishSection(day, nakshatra) {
   return `
     <div class="jyotish-section">
       <h4>${tr("nakshatraJyotisha")}: ${nameText.name}</h4>
-      <div class="tithi-muhurta-timing">
-        <div><span>${tr("muhurtaGroup")}</span><strong>${groupText.name}</strong></div>
-        <div><span>${tr("nakshatraPada")}</span><strong>${day.lunar.nakshatra_at_sunrise.pada}</strong></div>
-        <div><span>${tr("nakshatraSector")}</span><strong>${nakshatraSector(nakshatra.number)}</strong></div>
-        <div><span>${tr("nakshatraRuler")}</span><strong>${localizedTechnical(technical.ruler)}</strong></div>
+      <div class="nakshatra-meta-line">
+        <span>${tr("muhurtaGroup")}: <strong>${groupText.name}</strong></span>
+        <span>${tr("nakshatraPada")}: <strong>${day.lunar.nakshatra_at_sunrise.pada}</strong></span>
+        <span>${tr("nakshatraSector")}: <strong>${nakshatraSector(nakshatra.number)}</strong></span>
+        <span>${tr("nakshatraRuler")}: <strong>${localizedTechnical(technical.ruler)}</strong></span>
       </div>
       <p>${groupText.summary}</p>
       <div class="nakshatra-technical-line">
