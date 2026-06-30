@@ -1,0 +1,38 @@
+{
+  "id": "APPEARANCE_OF_SRILA_BHAKTI_PRAMOD_PURI_DEV_GOSWAMI_MAHARAJ",
+  "runtime_id": "bhakti_pramod_puri_appearance",
+  "type": "vaishnava_appearance",
+  "category": "vaishnava_appearance",
+  "scope": "extended_gaudiya",
+  "subject": "Srila Bhakti Pramod Puri Dev Goswami Maharaj",
+  "rules": {
+    "gaudiya_masa": "Padmanabha",
+    "paksha": "Gaura",
+    "tithi": "Chaturthi",
+    "timing_rule": "sunrise_based",
+    "allow_in_adhika": false
+  },
+  "priority": "medium",
+  "source_status": "tithi_rule_from_gopinath_gaudiya_math",
+  "sources": [
+    {
+      "type": "tithi_reference",
+      "url": "https://www.gopinathgaudiyamath.com/glories-of-srila-bhakti-pramode-puri-goswami-maharaj/",
+      "attribution_required": true
+    }
+  ],
+  "translations": [
+    {
+      "lang": "en",
+      "name": "Appearance of Srila Bhakti Pramod Puri Dev Goswami Maharaj",
+      "short_description": "Appearance day of Srila Bhakti Pramod Puri Dev Goswami Maharaj, observed on Gaura Chaturthi.",
+      "full_description": ""
+    },
+    {
+      "lang": "ru",
+      "name": "Явление Шрилы Бхакти Прамода Пури Дев Госвами Махараджа",
+      "short_description": "День явления Шрилы Бхакти Прамода Пури Дев Госвами Махараджа, отмечаемый на Гаура Чатуртхи.",
+      "full_description": ""
+    }
+  ]
+}

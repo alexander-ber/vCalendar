@@ -1,0 +1,43 @@
+{
+  "id": "APPEARANCE_OF_SRILA_BHAKTI_DAYITA_MADHAVA_GOSWAMI_MAHARAJ",
+  "runtime_id": "bhakti_dayita_madhava_appearance",
+  "type": "vaishnava_appearance",
+  "category": "vaishnava_appearance",
+  "scope": "extended_gaudiya",
+  "subject": "Srila Bhakti Dayita Madhava Goswami Maharaj",
+  "rules": {
+    "gaudiya_masa": "Damodara",
+    "paksha": "Gaura",
+    "tithi": "Ekadashi",
+    "timing_rule": "sunrise_based",
+    "allow_in_adhika": false
+  },
+  "priority": "medium",
+  "source_status": "tithi_rule_from_scsmath_and_biography_source",
+  "sources": [
+    {
+      "type": "tithi_reference",
+      "url": "https://scsmath.com/events/calendar/index.html",
+      "attribution_required": true
+    },
+    {
+      "type": "biography_reference",
+      "url": "https://tirthagoswami.blogspot.com/p/short-bio-of-srila-bhakti-dayita-madhav_8.html",
+      "attribution_required": true
+    }
+  ],
+  "translations": [
+    {
+      "lang": "en",
+      "name": "Appearance of Srila Bhakti Dayita Madhava Goswami Maharaj",
+      "short_description": "Appearance day of Srila Bhakti Dayita Madhava Goswami Maharaj, observed on Utthana Ekadashi.",
+      "full_description": ""
+    },
+    {
+      "lang": "ru",
+      "name": "Явление Шрилы Бхакти Даиты Мадхавы Госвами Махараджа",
+      "short_description": "День явления Шрилы Бхакти Даиты Мадхавы Госвами Махараджа, отмечаемый на Уттхана Экадаши.",
+      "full_description": ""
+    }
+  ]
+}

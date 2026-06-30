@@ -1,0 +1,38 @@
+{
+  "id": "DISAPPEARANCE_OF_SRILA_BHAKTI_VALLABHA_TIRTHA_GOSWAMI_MAHARAJ",
+  "runtime_id": "bhakti_vallabha_tirtha_disappearance",
+  "type": "vaishnava_disappearance",
+  "category": "vaishnava_disappearance",
+  "scope": "extended_gaudiya",
+  "subject": "Srila Bhakti Vallabha Tirtha Goswami Maharaj",
+  "rules": {
+    "gaudiya_masa": "Madhusudan",
+    "paksha": "Krishna",
+    "tithi": "Navami",
+    "timing_rule": "sunrise_based",
+    "allow_in_adhika": false
+  },
+  "priority": "medium",
+  "source_status": "tithi_rule_from_gopinath_gaudiya_math",
+  "sources": [
+    {
+      "type": "tithi_reference",
+      "url": "https://www.gopinathgaudiyamath.com/disappearance-of-his-divine-grace-srila-bhakti-ballabha-tirtha-goswami-maharaj/",
+      "attribution_required": true
+    }
+  ],
+  "translations": [
+    {
+      "lang": "en",
+      "name": "Disappearance of Srila Bhakti Vallabha Tirtha Goswami Maharaj",
+      "short_description": "Disappearance day of Srila Bhakti Vallabha Tirtha Goswami Maharaj, observed on Krishna Navami.",
+      "full_description": ""
+    },
+    {
+      "lang": "ru",
+      "name": "Уход Шрилы Бхакти Валлабхи Тиртхи Госвами Махараджа",
+      "short_description": "День ухода Шрилы Бхакти Валлабхи Тиртхи Госвами Махараджа, отмечаемый на Кришна Навами.",
+      "full_description": ""
+    }
+  ]
+}

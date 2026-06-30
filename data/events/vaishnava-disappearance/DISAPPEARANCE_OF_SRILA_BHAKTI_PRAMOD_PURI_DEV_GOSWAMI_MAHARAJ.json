@@ -1,0 +1,38 @@
+{
+  "id": "DISAPPEARANCE_OF_SRILA_BHAKTI_PRAMOD_PURI_DEV_GOSWAMI_MAHARAJ",
+  "runtime_id": "bhakti_pramod_puri_disappearance",
+  "type": "vaishnava_disappearance",
+  "category": "vaishnava_disappearance",
+  "scope": "extended_gaudiya",
+  "subject": "Srila Bhakti Pramod Puri Dev Goswami Maharaj",
+  "rules": {
+    "gaudiya_masa": "Damodara",
+    "paksha": "Gaura",
+    "tithi": "Chaturdashi",
+    "timing_rule": "sunrise_based",
+    "allow_in_adhika": false
+  },
+  "priority": "medium",
+  "source_status": "tithi_rule_from_gopinath_gaudiya_math",
+  "sources": [
+    {
+      "type": "tithi_reference",
+      "url": "https://www.gopinathgaudiyamath.com/glories-of-srila-bhakti-pramode-puri-goswami-maharaj/",
+      "attribution_required": true
+    }
+  ],
+  "translations": [
+    {
+      "lang": "en",
+      "name": "Disappearance of Srila Bhakti Pramod Puri Dev Goswami Maharaj",
+      "short_description": "Disappearance day of Srila Bhakti Pramod Puri Dev Goswami Maharaj, observed on Gaura Chaturdashi.",
+      "full_description": ""
+    },
+    {
+      "lang": "ru",
+      "name": "Уход Шрилы Бхакти Прамода Пури Дев Госвами Махараджа",
+      "short_description": "День ухода Шрилы Бхакти Прамода Пури Дев Госвами Махараджа, отмечаемый на Гаура Чатурдаши.",
+      "full_description": ""
+    }
+  ]
+}
