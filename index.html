@@ -6,7 +6,7 @@
     <title>Шри Чайтанья Шридхар Сева Ашрам</title>
     <link rel="icon" href="assets/scsashram-logo.png?v=20260614-1" type="image/png">
     <link rel="apple-touch-icon" href="assets/scsashram-logo.png?v=20260614-1">
-    <link rel="stylesheet" href="styles.css?v=20260627-5">
+    <link rel="stylesheet" href="styles.css?v=20260630-1">
   </head>
   <body>
     <main class="app-shell">
@@ -93,7 +93,15 @@
                     <button id="eventSearchButton" class="event-search-button" type="button" aria-label="Search event">⌕</button>
                   </div>
                   <select id="eventJumpSelect" class="event-jump-select" aria-label="Find event"></select>
-                  <select id="vaishnavaJumpSelect" class="event-jump-select" aria-label="Find Vaishnava"></select>
+                  <div class="vaishnava-search-row">
+                    <select id="vaishnavaJumpSelect" class="event-jump-select" aria-label="Find Vaishnava"></select>
+                    <select id="vaishnavaEventTypeSelect" class="event-jump-select vaishnava-type-select" aria-label="Vaishnava event type">
+                      <option value="all" data-i18n="vaishnavaTypeAll">All</option>
+                      <option value="appearance" data-i18n="vaishnavaTypeAppearance">Appearance</option>
+                      <option value="disappearance" data-i18n="vaishnavaTypeDisappearance">Disappearance</option>
+                    </select>
+                    <button id="vaishnavaSearchButton" class="event-search-button" type="button" data-i18n-title="vaishnavaSearch" aria-label="Find Vaishnava">⌕</button>
+                  </div>
                 </div>
               </details>
               <details class="collapsible-panel filter-collapsible">
@@ -171,6 +179,6 @@
       </section>
     </main>
 
-    <script type="module" src="js/app.js?v=20260627-5"></script>
+    <script type="module" src="js/app.js?v=20260630-1"></script>
   </body>
 </html>

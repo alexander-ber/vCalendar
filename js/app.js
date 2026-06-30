@@ -1,5 +1,5 @@
-import { generateCalendarRange, viewModelForDay } from "./calendar-engine.js?v=20260627-1";
-import { EVENTS } from "./events-data.js?v=20260626-1";
+import { generateCalendarRange, viewModelForDay } from "./calendar-engine.js?v=20260630-1";
+import { EVENTS } from "./events-data.js?v=20260630-1";
 import { LOCATIONS } from "./locations-data.js?v=20260627-1";
 import { RULES } from "./rules-data.js?v=20260613-3";
 import { formatDateTime } from "./date-utils.js?v=20260528-8";
@@ -17,6 +17,8 @@ const eventFilterSelect = document.querySelector("#eventFilterSelect");
 const eventFilterChips = document.querySelector("#eventFilterChips");
 const eventJumpSelect = document.querySelector("#eventJumpSelect");
 const vaishnavaJumpSelect = document.querySelector("#vaishnavaJumpSelect");
+const vaishnavaEventTypeSelect = document.querySelector("#vaishnavaEventTypeSelect");
+const vaishnavaSearchButton = document.querySelector("#vaishnavaSearchButton");
 const eventSearchInput = document.querySelector("#eventSearchInput");
 const eventSearchButton = document.querySelector("#eventSearchButton");
 const renderButton = document.querySelector("#renderButton");
@@ -250,6 +252,11 @@ const I18N = {
     chooseEvent: "Select event",
     chooseVaishnava: "Select Vaishnava",
     vaishnavaFinder: "Find Vaishnava",
+    vaishnavaSearch: "Find",
+    vaishnavaEventType: "Vaishnava event type",
+    vaishnavaTypeAll: "All",
+    vaishnavaTypeAppearance: "Appearance",
+    vaishnavaTypeDisappearance: "Disappearance",
     eventSearch: "Search event",
     eventSearchPlaceholder: "Search by event name",
     eventSearchFound: "Found matches",
@@ -417,6 +424,11 @@ const I18N = {
     chooseEvent: "Выберите событие",
     chooseVaishnava: "Выберите вайшнава",
     vaishnavaFinder: "Поиск вайшнава",
+    vaishnavaSearch: "Найти",
+    vaishnavaEventType: "Тип события вайшнава",
+    vaishnavaTypeAll: "Все",
+    vaishnavaTypeAppearance: "Явление",
+    vaishnavaTypeDisappearance: "Уход",
     eventSearch: "Поиск события",
     eventSearchPlaceholder: "Например: Нитьянанда",
     eventSearchFound: "Найдено совпадений",
@@ -1591,8 +1603,8 @@ function init() {
   compactViewInput.addEventListener("change", renderCalendar);
   eventFilterSelect.addEventListener("change", renderCalendar);
   eventJumpSelect.addEventListener("change", () => jumpToEventMonth(eventJumpSelect.value));
-  vaishnavaJumpSelect.addEventListener("change", () => jumpToVaishnava(vaishnavaJumpSelect.value));
   vaishnavaJumpSelect.addEventListener("keydown", handleVaishnavaSelectTypeahead);
+  vaishnavaSearchButton.addEventListener("click", () => jumpToVaishnava(vaishnavaJumpSelect.value));
   eventSearchButton.addEventListener("click", jumpToEventSearch);
   eventSearchInput.addEventListener("keydown", (event) => {
     if (event.key !== "Enter") return;
@@ -1748,6 +1760,9 @@ function setLanguage(language) {
   languageToggle.setAttribute("aria-pressed", String(language === "ru"));
   eventJumpSelect.setAttribute("aria-label", tr("eventFinder"));
   vaishnavaJumpSelect.setAttribute("aria-label", tr("vaishnavaFinder"));
+  vaishnavaEventTypeSelect.setAttribute("aria-label", tr("vaishnavaEventType"));
+  vaishnavaSearchButton.setAttribute("aria-label", tr("vaishnavaSearch"));
+  vaishnavaSearchButton.setAttribute("title", tr("vaishnavaSearch"));
   eventSearchInput.setAttribute("aria-label", tr("eventSearch"));
   eventSearchButton.setAttribute("aria-label", tr("eventSearch"));
   eventSearchButton.setAttribute("title", tr("eventSearch"));
@@ -1761,6 +1776,9 @@ function setLanguage(language) {
   });
   document.querySelectorAll("[data-i18n-placeholder]").forEach((element) => {
     element.setAttribute("placeholder", tr(element.dataset.i18nPlaceholder));
+  });
+  document.querySelectorAll("[data-i18n-title]").forEach((element) => {
+    element.setAttribute("title", tr(element.dataset.i18nTitle));
   });
   renderEventFilterChips();
   locationSelect.innerHTML = renderLocationOptions();
@@ -1900,10 +1918,29 @@ function jumpToVaishnava(targetId) {
   const year = Number(periodFromInput.value.slice(0, 4));
   const location = LOCATIONS.find((item) => item.id === locationSelect.value) || LOCATIONS[0];
   const calendar = generateCalendarRange(`${year}-01-01`, `${year}-12-31`, location, RULES, EVENTS);
-  const foundDays = calendar.days.filter((day) => day.events.some((event) => target.eventIds.has(event.id) || target.keys.has(vaishnavaPersonKey(event))));
+  const selectedType = vaishnavaEventTypeSelect.value;
+  const foundDays = calendar.days.filter((day) =>
+    day.events.some(
+      (event) =>
+        vaishnavaEventTypeMatches(event, selectedType) &&
+        (target.eventIds.has(event.id) || target.keys.has(vaishnavaPersonKey(event)))
+    )
+  );
   eventJumpSelect.value = "";
-  jumpToFoundDays(foundDays, `${target.label} ${year}`);
+  jumpToFoundDays(foundDays, `${target.label} ${vaishnavaTypeLabel(selectedType)} ${year}`);
   vaishnavaJumpSelect.value = targetId;
+}
+
+function vaishnavaEventTypeMatches(event, selectedType) {
+  if (selectedType === "appearance") return event.type === "vaishnava_appearance";
+  if (selectedType === "disappearance") return event.type === "vaishnava_disappearance";
+  return isVaishnavaEvent(event);
+}
+
+function vaishnavaTypeLabel(selectedType) {
+  if (selectedType === "appearance") return tr("vaishnavaTypeAppearance");
+  if (selectedType === "disappearance") return tr("vaishnavaTypeDisappearance");
+  return tr("vaishnavaTypeAll");
 }
 
 function jumpToEventSearch() {
@@ -2020,7 +2057,7 @@ function vaishnavaPersonKey(event) {
 }
 
 function vaishnavaPersonLabel(event) {
-  return cleanVaishnavaPersonLabel(localizeEventName(event) || event.subject || event.name || event.id);
+  return nominativeVaishnavaPersonLabel(cleanVaishnavaPersonLabel(localizeEventName(event) || event.subject || event.name || event.id));
 }
 
 function cleanVaishnavaPersonLabel(value) {
@@ -2035,6 +2072,34 @@ function cleanVaishnavaPersonLabel(value) {
     .replace(/^Disappearance day celebration of\s+/i, "")
     .replace(/^Appearance of\s+/i, "")
     .replace(/^Disappearance of\s+/i, "")
+    .replace(/\s+/g, " ")
+    .trim();
+}
+
+function nominativeVaishnavaPersonLabel(value) {
+  if (currentLanguage !== "ru") return value;
+  const exact = new Map([
+    [
+      "Шрилы Бхакти Прамода Пури Дев Госвами Махараджа",
+      "Шрила Бхакти Прамод Пури Дев Госвами Махарадж"
+    ],
+    [
+      "Шрилы Бхакти Даиты Мадхавы Госвами Махараджа",
+      "Шрила Бхакти Даита Мадхава Госвами Махарадж"
+    ],
+    [
+      "Шрилы Бхакти Валлабхи Тиртхи Госвами Махараджа",
+      "Шрила Бхакти Валлабха Тиртха Госвами Махарадж"
+    ]
+  ]);
+  if (exact.has(value)) return exact.get(value);
+  return value
+    .replace(/^Шрилы\b/, "Шрила")
+    .replace(/\bГосвами Махараджа\b/g, "Госвами Махарадж")
+    .replace(/\bМахараджа\b/g, "Махарадж")
+    .replace(/\bТхакура\b/g, "Тхакур")
+    .replace(/\bПандита\b/g, "Пандит")
+    .replace(/\bАчарьи\b/g, "Ачарья")
     .replace(/\s+/g, " ")
     .trim();
 }
