@@ -1,0 +1,38 @@
+{
+  "id": "APPEARANCE_OF_SRILA_BHAKTI_VALLABHA_TIRTHA_GOSWAMI_MAHARAJ",
+  "runtime_id": "bhakti_vallabha_tirtha_appearance",
+  "type": "vaishnava_appearance",
+  "category": "vaishnava_appearance",
+  "scope": "extended_gaudiya",
+  "subject": "Srila Bhakti Vallabha Tirtha Goswami Maharaj",
+  "rules": {
+    "masa": "Chaitra",
+    "paksha": "Gaura",
+    "tithi": "Navami",
+    "timing_rule": "sunrise_based",
+    "allow_in_adhika": false
+  },
+  "priority": "medium",
+  "source_status": "tithi_rule_from_gopinath_gaudiya_math",
+  "sources": [
+    {
+      "type": "tithi_reference",
+      "url": "https://www.gopinathgaudiyamath.com/disappearance-of-his-divine-grace-srila-bhakti-ballabha-tirtha-goswami-maharaj/",
+      "attribution_required": true
+    }
+  ],
+  "translations": [
+    {
+      "lang": "en",
+      "name": "Appearance of Srila Bhakti Vallabha Tirtha Goswami Maharaj",
+      "short_description": "Appearance day of Srila Bhakti Vallabha Tirtha Goswami Maharaj, observed on Rama Navami.",
+      "full_description": ""
+    },
+    {
+      "lang": "ru",
+      "name": "Явление Шрилы Бхакти Валлабхи Тиртхи Госвами Махараджа",
+      "short_description": "День явления Шрилы Бхакти Валлабхи Тиртхи Госвами Махараджа, отмечаемый на Рама Навами.",
+      "full_description": ""
+    }
+  ]
+}

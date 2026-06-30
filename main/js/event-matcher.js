@@ -198,6 +198,7 @@ function matchGenericGcalTithiEvent(day, event, nextDay, previousDay) {
   const beforeTarget = previousTithiNumber(target);
   const afterTarget = nextTithiNumber(target);
 
+  if (today === target && previous !== target) return true;
   if (today === target && tomorrow === target) return true;
   if (previous === beforeTarget && today === afterTarget) return true;
   if (isPreviousOrEarlierInPaksha(previous, target) && today === target && tomorrow === afterTarget) return true;
