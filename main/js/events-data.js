@@ -2219,11 +2219,13 @@ export const EVENTS = [
     "i18n": {
       "en": {
         "name": "Appearance of Srila Bhakti Dayita Madhava Goswami Maharaj",
-        "description": "Appearance day of Srila Bhakti Dayita Madhava Goswami Maharaj, observed on Utthana Ekadashi."
+        "description": "Appearance day of Srila Bhakti Dayita Madhava Goswami Maharaj, observed on Utthana Ekadashi.",
+        "full_description": "Srila Bhakti Dayita Madhava Goswami Maharaj was a prominent disciple of Srila Bhakti Siddhanta Saraswati Goswami Prabhupad and the founder-acharya of Sri Chaitanya Gaudiya Math. He appeared in Kanchanpara, East Bengal, on Utthana Ekadashi in 1904, in a respected brahmana family.\n\nHis childhood name was Heramba Kumar. After coming to the lotus feet of Srila Bhakti Siddhanta Saraswati Thakur, he received the name Hayagriva Das Brahmachari and became known for strong dedication, purity, and preaching spirit.\n\nSrila Prabhupad had great confidence in him and engaged him in responsible service. He later accepted tridanda-sannyas and became known as Srila Bhakti Dayita Madhava Goswami Maharaj. He preached widely, especially in Assam and Bengal, and established Sri Chaitanya Gaudiya Math in 1953.\n\nHe inspired many devotees through strict practice, compassionate preaching, and deep loyalty to the mission of Srila Bhakti Siddhanta Saraswati Thakur. His disappearance is remembered on Gaura Pratipad."
       },
       "ru": {
         "name": "Явление Шрилы Бхакти Даиты Мадхавы Госвами Махараджа",
-        "description": "День явления Шрилы Бхакти Даиты Мадхавы Госвами Махараджа, отмечаемый на Уттхана Экадаши."
+        "description": "День явления Шрилы Бхакти Даиты Мадхавы Госвами Махараджа, отмечаемый на Уттхана Экадаши.",
+        "full_description": "Шрила Бхакти Даита Мадхава Госвами Махарадж был выдающимся учеником Шрилы Бхакти Сиддханты Сарасвати Госвами Прабхупада и ачарьей-основателем Шри Чайтанья Гаудия Матха. Он явился в Канчнапаре, Восточная Бенгалия, на Уттхана Экадаши 1904 года в уважаемой брахманской семье.\n\nЕго детское имя было Херамба Кумар. Придя к лотосным стопам Шрилы Бхакти Сиддханты Сарасвати Тхакура, он получил имя Хаягрива Дас Брахмачари и стал известен крепкой преданностью, чистотой и проповедническим настроением.\n\nШрила Прабхупад очень доверял ему и поручал ответственное служение. Позднее он принял триданда-санньясу и стал известен как Шрила Бхакти Даита Мадхава Госвами Махарадж. Он широко проповедовал, особенно в Ассаме и Бенгалии, и в 1953 году основал Шри Чайтанья Гаудия Матх.\n\nОн вдохновлял многих преданных строгой практикой, сострадательной проповедью и глубокой верностью миссии Шрилы Бхакти Сиддханты Сарасвати Тхакура. День его ухода вспоминается на Гаура Пратипад."
       }
     }
   },
@@ -2246,11 +2248,13 @@ export const EVENTS = [
     "i18n": {
       "en": {
         "name": "Appearance of Srila Bhakti Pramod Puri Dev Goswami Maharaj",
-        "description": "Appearance day of Srila Bhakti Pramod Puri Dev Goswami Maharaj, observed on Gaura Chaturthi."
+        "description": "Appearance day of Srila Bhakti Pramod Puri Dev Goswami Maharaj, observed on Gaura Chaturthi.",
+        "full_description": "Srila Bhakti Pramod Puri Dev Goswami Maharaj was a senior disciple of Srila Bhakti Siddhanta Saraswati Goswami Prabhupad and the founder-acharya of Sri Gopinath Gaudiya Math. He appeared on Gaura Chaturthi as Pramod Bhushan Chakraborty in a pious Bengali brahmana family. From childhood he showed deep attachment to worship and devotional service, especially to Sri Madan Mohan.\n\nIn his youth he came to Sridham Mayapur and received the association and shelter of Srila Bhakti Siddhanta Saraswati Thakur. Under that divine guidance he dedicated his life to bhajan, preaching, writing, deity worship, and service to the Gaudiya Math mission.\n\nHe was known for humility, scriptural depth, careful standards of worship, and affectionate guidance to devotees. Many Gaudiya Vaishnava acharyas honored him as a guardian of Srila Prabhupad Saraswati Thakur's current.\n\nAfter many decades of service he established Sri Gopinath Gaudiya Math and continued to inspire devotees through hari-katha, publication, personal example, and worship of Sri Sri Radha-Gopinath. His disappearance is observed on Gaura Chaturdashi."
       },
       "ru": {
         "name": "Явление Шрилы Бхакти Прамода Пури Дев Госвами Махараджа",
-        "description": "День явления Шрилы Бхакти Прамода Пури Дев Госвами Махараджа, отмечаемый на Гаура Чатуртхи."
+        "description": "День явления Шрилы Бхакти Прамода Пури Дев Госвами Махараджа, отмечаемый на Гаура Чатуртхи.",
+        "full_description": "Шрила Бхакти Прамод Пури Дев Госвами Махарадж был старшим учеником Шрилы Бхакти Сиддханты Сарасвати Госвами Прабхупада и ачарьей-основателем Шри Гопинатх Гаудия Матха. Он явился на Гаура Чатуртхи как Прамод Бхушан Чакраварти в благочестивой бенгальской брахманской семье. С детства он проявлял глубокую склонность к поклонению и преданному служению, особенно Шри Мадан Мохану.\n\nВ юности он пришёл в Шридхам Маяпур и получил общение и прибежище Шрилы Бхакти Сиддханты Сарасвати Тхакура. Под этим божественным руководством он посвятил жизнь бхаджану, проповеди, писательскому служению, поклонению Божествам и служению миссии Гаудия Матха.\n\nЕго помнят за смирение, глубину шастрического понимания, внимательность к стандартам поклонения и мягкое руководство преданными. Многие ачарьи гаудия-вайшнавской линии почитали его как хранителя потока Шрилы Прабхупада Сарасвати Тхакура.\n\nПосле десятилетий служения он основал Шри Гопинатх Гаудия Матх и продолжал вдохновлять преданных харикатхой, публикациями, личным примером и поклонением Шри Шри Радха-Гопинатху. День его ухода отмечается на Гаура Чатурдаши."
       }
     }
   },
@@ -2329,11 +2333,13 @@ export const EVENTS = [
     "i18n": {
       "en": {
         "name": "Appearance of Srila Bhakti Vallabha Tirtha Goswami Maharaj",
-        "description": "Appearance day of Srila Bhakti Vallabha Tirtha Goswami Maharaj, observed on Rama Navami."
+        "description": "Appearance day of Srila Bhakti Vallabha Tirtha Goswami Maharaj, observed on Rama Navami.",
+        "full_description": "Srila Bhakti Vallabha Tirtha Goswami Maharaj was a disciple of Srila Bhakti Dayita Madhava Goswami Maharaj and later served as acharya of Sri Chaitanya Gaudiya Math. He appeared on Sri Rama Navami in 1924 and from early life showed intelligence, discipline, and devotion.\n\nHe came under the shelter of Srila Bhakti Dayita Madhava Goswami Maharaj and dedicated himself to guru-seva, study, preaching, and organizing the mission's service. He accepted sannyas and became widely known for deep scriptural command, powerful hari-katha, humility, and personal care for devotees.\n\nSrila Bhakti Vallabha Tirtha Maharaj travelled and preached throughout India and abroad, wrote and published Vaishnava literature, and guided many seekers in the line of Sri Chaitanya Mahaprabhu and Srila Bhakti Siddhanta Saraswati Thakur.\n\nHis appearance and disappearance are both connected with Navami tithi: his appearance is observed on Rama Navami and his disappearance on Krishna Navami."
       },
       "ru": {
         "name": "Явление Шрилы Бхакти Валлабхи Тиртхи Госвами Махараджа",
-        "description": "День явления Шрилы Бхакти Валлабхи Тиртхи Госвами Махараджа, отмечаемый на Рама Навами."
+        "description": "День явления Шрилы Бхакти Валлабхи Тиртхи Госвами Махараджа, отмечаемый на Рама Навами.",
+        "full_description": "Шрила Бхакти Валлабха Тиртха Госвами Махарадж был учеником Шрилы Бхакти Даиты Мадхавы Госвами Махараджа и позднее служил ачарьей Шри Чайтанья Гаудия Матха. Он явился на Шри Рама Навами в 1924 году и с ранних лет проявлял разум, дисциплину и преданность.\n\nОн принял прибежище у Шрилы Бхакти Даиты Мадхавы Госвами Махараджа и посвятил себя гуру-севе, изучению шастр, проповеди и организации служения миссии. Приняв санньясу, он стал широко известен глубиной шастрического понимания, сильной харикатхой, смирением и личной заботой о преданных.\n\nШрила Бхакти Валлабха Тиртха Махарадж путешествовал и проповедовал по всей Индии и за её пределами, писал и издавал вайшнавскую литературу, а также направлял многих искателей в линии Шри Чайтаньи Махапрабху и Шрилы Бхакти Сиддханты Сарасвати Тхакура.\n\nИ день его явления, и день ухода связаны с Навами-титхи: явление отмечается на Рама Навами, а уход — на Кришна Навами."
       }
     }
   },
@@ -3598,11 +3604,13 @@ export const EVENTS = [
     "i18n": {
       "en": {
         "name": "Disappearance of Srila Bhakti Dayita Madhava Goswami Maharaj",
-        "description": "Disappearance day of Srila Bhakti Dayita Madhava Goswami Maharaj, observed on Gaura Pratipad."
+        "description": "Disappearance day of Srila Bhakti Dayita Madhava Goswami Maharaj, observed on Gaura Pratipad.",
+        "full_description": "Srila Bhakti Dayita Madhava Goswami Maharaj was a prominent disciple of Srila Bhakti Siddhanta Saraswati Goswami Prabhupad and the founder-acharya of Sri Chaitanya Gaudiya Math. He appeared in Kanchanpara, East Bengal, on Utthana Ekadashi in 1904, in a respected brahmana family.\n\nHis childhood name was Heramba Kumar. After coming to the lotus feet of Srila Bhakti Siddhanta Saraswati Thakur, he received the name Hayagriva Das Brahmachari and became known for strong dedication, purity, and preaching spirit.\n\nSrila Prabhupad had great confidence in him and engaged him in responsible service. He later accepted tridanda-sannyas and became known as Srila Bhakti Dayita Madhava Goswami Maharaj. He preached widely, especially in Assam and Bengal, and established Sri Chaitanya Gaudiya Math in 1953.\n\nHe inspired many devotees through strict practice, compassionate preaching, and deep loyalty to the mission of Srila Bhakti Siddhanta Saraswati Thakur. His disappearance is remembered on Gaura Pratipad."
       },
       "ru": {
         "name": "Уход Шрилы Бхакти Даиты Мадхавы Госвами Махараджа",
-        "description": "День ухода Шрилы Бхакти Даиты Мадхавы Госвами Махараджа, отмечаемый на Гаура Пратипад."
+        "description": "День ухода Шрилы Бхакти Даиты Мадхавы Госвами Махараджа, отмечаемый на Гаура Пратипад.",
+        "full_description": "Шрила Бхакти Даита Мадхава Госвами Махарадж был выдающимся учеником Шрилы Бхакти Сиддханты Сарасвати Госвами Прабхупада и ачарьей-основателем Шри Чайтанья Гаудия Матха. Он явился в Канчнапаре, Восточная Бенгалия, на Уттхана Экадаши 1904 года в уважаемой брахманской семье.\n\nЕго детское имя было Херамба Кумар. Придя к лотосным стопам Шрилы Бхакти Сиддханты Сарасвати Тхакура, он получил имя Хаягрива Дас Брахмачари и стал известен крепкой преданностью, чистотой и проповедническим настроением.\n\nШрила Прабхупад очень доверял ему и поручал ответственное служение. Позднее он принял триданда-санньясу и стал известен как Шрила Бхакти Даита Мадхава Госвами Махарадж. Он широко проповедовал, особенно в Ассаме и Бенгалии, и в 1953 году основал Шри Чайтанья Гаудия Матх.\n\nОн вдохновлял многих преданных строгой практикой, сострадательной проповедью и глубокой верностью миссии Шрилы Бхакти Сиддханты Сарасвати Тхакура. День его ухода вспоминается на Гаура Пратипад."
       }
     }
   },
@@ -3625,11 +3633,13 @@ export const EVENTS = [
     "i18n": {
       "en": {
         "name": "Disappearance of Srila Bhakti Pramod Puri Dev Goswami Maharaj",
-        "description": "Disappearance day of Srila Bhakti Pramod Puri Dev Goswami Maharaj, observed on Gaura Chaturdashi."
+        "description": "Disappearance day of Srila Bhakti Pramod Puri Dev Goswami Maharaj, observed on Gaura Chaturdashi.",
+        "full_description": "Srila Bhakti Pramod Puri Dev Goswami Maharaj was a senior disciple of Srila Bhakti Siddhanta Saraswati Goswami Prabhupad and the founder-acharya of Sri Gopinath Gaudiya Math. He appeared on Gaura Chaturthi as Pramod Bhushan Chakraborty in a pious Bengali brahmana family. From childhood he showed deep attachment to worship and devotional service, especially to Sri Madan Mohan.\n\nIn his youth he came to Sridham Mayapur and received the association and shelter of Srila Bhakti Siddhanta Saraswati Thakur. Under that divine guidance he dedicated his life to bhajan, preaching, writing, deity worship, and service to the Gaudiya Math mission.\n\nHe was known for humility, scriptural depth, careful standards of worship, and affectionate guidance to devotees. Many Gaudiya Vaishnava acharyas honored him as a guardian of Srila Prabhupad Saraswati Thakur's current.\n\nAfter many decades of service he established Sri Gopinath Gaudiya Math and continued to inspire devotees through hari-katha, publication, personal example, and worship of Sri Sri Radha-Gopinath. His disappearance is observed on Gaura Chaturdashi."
       },
       "ru": {
         "name": "Уход Шрилы Бхакти Прамода Пури Дев Госвами Махараджа",
-        "description": "День ухода Шрилы Бхакти Прамода Пури Дев Госвами Махараджа, отмечаемый на Гаура Чатурдаши."
+        "description": "День ухода Шрилы Бхакти Прамода Пури Дев Госвами Махараджа, отмечаемый на Гаура Чатурдаши.",
+        "full_description": "Шрила Бхакти Прамод Пури Дев Госвами Махарадж был старшим учеником Шрилы Бхакти Сиддханты Сарасвати Госвами Прабхупада и ачарьей-основателем Шри Гопинатх Гаудия Матха. Он явился на Гаура Чатуртхи как Прамод Бхушан Чакраварти в благочестивой бенгальской брахманской семье. С детства он проявлял глубокую склонность к поклонению и преданному служению, особенно Шри Мадан Мохану.\n\nВ юности он пришёл в Шридхам Маяпур и получил общение и прибежище Шрилы Бхакти Сиддханты Сарасвати Тхакура. Под этим божественным руководством он посвятил жизнь бхаджану, проповеди, писательскому служению, поклонению Божествам и служению миссии Гаудия Матха.\n\nЕго помнят за смирение, глубину шастрического понимания, внимательность к стандартам поклонения и мягкое руководство преданными. Многие ачарьи гаудия-вайшнавской линии почитали его как хранителя потока Шрилы Прабхупада Сарасвати Тхакура.\n\nПосле десятилетий служения он основал Шри Гопинатх Гаудия Матх и продолжал вдохновлять преданных харикатхой, публикациями, личным примером и поклонением Шри Шри Радха-Гопинатху. День его ухода отмечается на Гаура Чатурдаши."
       }
     }
   },
@@ -3652,11 +3662,13 @@ export const EVENTS = [
     "i18n": {
       "en": {
         "name": "Disappearance of Srila Bhakti Vallabha Tirtha Goswami Maharaj",
-        "description": "Disappearance day of Srila Bhakti Vallabha Tirtha Goswami Maharaj, observed on Krishna Navami."
+        "description": "Disappearance day of Srila Bhakti Vallabha Tirtha Goswami Maharaj, observed on Krishna Navami.",
+        "full_description": "Srila Bhakti Vallabha Tirtha Goswami Maharaj was a disciple of Srila Bhakti Dayita Madhava Goswami Maharaj and later served as acharya of Sri Chaitanya Gaudiya Math. He appeared on Sri Rama Navami in 1924 and from early life showed intelligence, discipline, and devotion.\n\nHe came under the shelter of Srila Bhakti Dayita Madhava Goswami Maharaj and dedicated himself to guru-seva, study, preaching, and organizing the mission's service. He accepted sannyas and became widely known for deep scriptural command, powerful hari-katha, humility, and personal care for devotees.\n\nSrila Bhakti Vallabha Tirtha Maharaj travelled and preached throughout India and abroad, wrote and published Vaishnava literature, and guided many seekers in the line of Sri Chaitanya Mahaprabhu and Srila Bhakti Siddhanta Saraswati Thakur.\n\nHis appearance and disappearance are both connected with Navami tithi: his appearance is observed on Rama Navami and his disappearance on Krishna Navami."
       },
       "ru": {
         "name": "Уход Шрилы Бхакти Валлабхи Тиртхи Госвами Махараджа",
-        "description": "День ухода Шрилы Бхакти Валлабхи Тиртхи Госвами Махараджа, отмечаемый на Кришна Навами."
+        "description": "День ухода Шрилы Бхакти Валлабхи Тиртхи Госвами Махараджа, отмечаемый на Кришна Навами.",
+        "full_description": "Шрила Бхакти Валлабха Тиртха Госвами Махарадж был учеником Шрилы Бхакти Даиты Мадхавы Госвами Махараджа и позднее служил ачарьей Шри Чайтанья Гаудия Матха. Он явился на Шри Рама Навами в 1924 году и с ранних лет проявлял разум, дисциплину и преданность.\n\nОн принял прибежище у Шрилы Бхакти Даиты Мадхавы Госвами Махараджа и посвятил себя гуру-севе, изучению шастр, проповеди и организации служения миссии. Приняв санньясу, он стал широко известен глубиной шастрического понимания, сильной харикатхой, смирением и личной заботой о преданных.\n\nШрила Бхакти Валлабха Тиртха Махарадж путешествовал и проповедовал по всей Индии и за её пределами, писал и издавал вайшнавскую литературу, а также направлял многих искателей в линии Шри Чайтаньи Махапрабху и Шрилы Бхакти Сиддханты Сарасвати Тхакура.\n\nИ день его явления, и день ухода связаны с Навами-титхи: явление отмечается на Рама Навами, а уход — на Кришна Навами."
       }
     }
   },
