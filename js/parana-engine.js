@@ -1,5 +1,5 @@
 import { addDaysToLocalDate } from "./date-utils.js?v=20260528-8";
-import { dayAstronomy } from "./astronomy-adapter.js?v=20260613-2";
+import { dayAstronomy } from "./astronomy-adapter.js?v=20260701-1";
 
 function findTithiBoundaryAfter(start, targetNumber, maxHours, getTithiInfo) {
   let left = new Date(start);

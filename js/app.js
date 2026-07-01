@@ -1,4 +1,4 @@
-import { generateCalendarRange, viewModelForDay } from "./calendar-engine.js?v=20260630-1";
+import { generateCalendarRange, viewModelForDay } from "./calendar-engine.js?v=20260701-1";
 import { EVENTS } from "./events-data.js?v=20260630-2";
 import { LOCATIONS } from "./locations-data.js?v=20260627-1";
 import { RULES } from "./rules-data.js?v=20260613-3";
