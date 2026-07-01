@@ -1,8 +1,8 @@
 import { addDaysToLocalDate, formatDateTime, formatTime, toIsoDate } from "./date-utils.js?v=20260528-8";
-import { nakshatraInfo, tithiInfo } from "./astronomy-adapter.js?v=20260613-2";
-import { computeParana } from "./parana-engine.js?v=20260613-2";
+import { nakshatraInfo, tithiInfo } from "./astronomy-adapter.js?v=20260701-1";
+import { computeParana } from "./parana-engine.js?v=20260701-1";
 import { EKADASHI_DB } from "./ekadashi-data.js?v=20260615-1";
-import { MASA_NAMES } from "./masa-engine.js?v=20260528-8";
+import { MASA_NAMES } from "./masa-engine.js?v=20260701-1";
 
 function isEkadashi(number) {
   return number === 11 || number === 26;

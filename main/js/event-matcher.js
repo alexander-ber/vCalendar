@@ -1,4 +1,4 @@
-import { nakshatraInfo, tithiInfo } from "./astronomy-adapter.js?v=20260528-8";
+import { nakshatraInfo, tithiInfo } from "./astronomy-adapter.js?v=20260701-1";
 import { zonedDateToUtc } from "./date-utils.js?v=20260528-8";
 
 function tithiShortName(fullName) {

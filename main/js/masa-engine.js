@@ -1,5 +1,5 @@
 import { MS_PER_DAY } from "./date-utils.js?v=20260528-8";
-import { normalizeDegrees, sunSiderealLongitude, tithiAngle } from "./astronomy-adapter.js?v=20260528-8";
+import { normalizeDegrees, sunSiderealLongitude, tithiAngle } from "./astronomy-adapter.js?v=20260701-1";
 
 export const MASA_NAMES = [
   "Chaitra",

@@ -6,6 +6,12 @@ const J2000 = 2451545.0;
 const SURYA_SIDDHANTA_CIVIL_DAYS_PER_MAHAYUGA = 1577917800;
 const SURYA_SIDDHANTA_SUN_REVS_PER_MAHAYUGA = 4320000;
 const SURYA_SIDDHANTA_MOON_REVS_PER_MAHAYUGA = 57753336;
+// Experimental validation-only constants for a Surya Siddhanta manda/true-longitude candidate.
+// Keep this separate from production tithi assignment until matched against a trusted panjika.
+const SURYA_SIDDHANTA_MOON_APOGEE_REVS_PER_MAHAYUGA = 488219;
+const SURYA_SIDDHANTA_SUN_APOGEE_DEG = 77 + 17 / 60;
+const SURYA_SIDDHANTA_SUN_MANDA_PARIDHI_DEG = 14;
+const SURYA_SIDDHANTA_MOON_MANDA_PARIDHI_DEG = 32;
 const KALI_YUGA_EPOCH_JD = 588465.5;
 
 export const NAKSHATRA_NAMES = [
@@ -171,12 +177,43 @@ export function suryaSiddhantaMeanTithiAngle(date) {
   return normalizeDegrees((ahargana * relativeRevolutions * 360) / SURYA_SIDDHANTA_CIVIL_DAYS_PER_MAHAYUGA);
 }
 
+function suryaSiddhantaMeanLongitude(date, revolutionsPerMahayuga) {
+  const ahargana = julianDay(date) - KALI_YUGA_EPOCH_JD;
+  return normalizeDegrees((ahargana * revolutionsPerMahayuga * 360) / SURYA_SIDDHANTA_CIVIL_DAYS_PER_MAHAYUGA);
+}
+
+function suryaSiddhantaMandaEquation(kendraDeg, paridhiDeg) {
+  const epicycleRatio = paridhiDeg / 360;
+  return Math.asin(epicycleRatio * Math.sin(kendraDeg * DEG)) / DEG;
+}
+
+export function suryaSiddhantaTrueSunLongitudeCandidate(date, sign = -1) {
+  const mean = suryaSiddhantaMeanLongitude(date, SURYA_SIDDHANTA_SUN_REVS_PER_MAHAYUGA);
+  const kendra = normalizeDegrees(mean - SURYA_SIDDHANTA_SUN_APOGEE_DEG);
+  const equation = suryaSiddhantaMandaEquation(kendra, SURYA_SIDDHANTA_SUN_MANDA_PARIDHI_DEG);
+  return normalizeDegrees(mean + sign * equation);
+}
+
+export function suryaSiddhantaTrueMoonLongitudeCandidate(date, sign = -1) {
+  const mean = suryaSiddhantaMeanLongitude(date, SURYA_SIDDHANTA_MOON_REVS_PER_MAHAYUGA);
+  const apogee = suryaSiddhantaMeanLongitude(date, SURYA_SIDDHANTA_MOON_APOGEE_REVS_PER_MAHAYUGA);
+  const kendra = normalizeDegrees(mean - apogee);
+  const equation = suryaSiddhantaMandaEquation(kendra, SURYA_SIDDHANTA_MOON_MANDA_PARIDHI_DEG);
+  return normalizeDegrees(mean + sign * equation);
+}
+
+export function suryaSiddhantaTrueTithiAngleCandidate(date, sign = -1) {
+  return normalizeDegrees(
+    suryaSiddhantaTrueMoonLongitudeCandidate(date, sign) - suryaSiddhantaTrueSunLongitudeCandidate(date, sign)
+  );
+}
+
 export function sunSiderealLongitude(date) {
   return normalizeDegrees(sunLongitude(date) - ayanamsha(date));
 }
 
 export function tithiAngle(date) {
-  return normalizeDegrees(moonLongitude(date) - sunLongitude(date));
+  return ephemerisTithiAngle(date);
 }
 
 export function tithiInfo(date) {
