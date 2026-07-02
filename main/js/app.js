@@ -227,9 +227,13 @@ const I18N = {
     moonIllumination: "illumination",
     today: "Today",
     purushottamaNotice: "Purushottama Maas is active",
+    purushottamaUpcomingNotice: "Purushottama Maas starts in this period",
     chaturmasyaNotice: "Chaturmasya is active",
+    chaturmasyaUpcomingNotice: "Chaturmasya starts in this period",
     karttikNotice: "Karttik / Damodara month is active",
+    karttikUpcomingNotice: "Karttik / Damodara month starts in this period",
     bhishmaPanchakaNotice: "Bhishma Panchaka is active",
+    bhishmaPanchakaUpcomingNotice: "Bhishma Panchaka starts in this period",
     visibleInMonth: "Visible in this period from",
     to: "to",
     forLocation: "for the selected location",
@@ -399,9 +403,13 @@ const I18N = {
     moonIllumination: "освещённость",
     today: "Сегодня",
     purushottamaNotice: "Идёт Пурушоттама маса",
+    purushottamaUpcomingNotice: "Пурушоттама маса начнётся в этом периоде",
     chaturmasyaNotice: "Идёт Чатурмасья",
+    chaturmasyaUpcomingNotice: "Чатурмасья начнётся в этом периоде",
     karttikNotice: "Идёт Карттик / Дамодара маса",
+    karttikUpcomingNotice: "Карттик / Дамодара маса начнётся в этом периоде",
     bhishmaPanchakaNotice: "Идёт Бхишма Панчака",
+    bhishmaPanchakaUpcomingNotice: "Бхишма Панчака начнётся в этом периоде",
     visibleInMonth: "Видимо в этом периоде с",
     to: "по",
     forLocation: "для выбранного места",
@@ -1500,8 +1508,10 @@ function isChaturmasyaDay(day) {
   return day.masa.normal_masa_name === "Vamana" && day.lunar.paksha === "Gaura" && day.lunar.tithi_at_sunrise.number === 15;
 }
 
-function periodNotice(labelKey, days) {
+function periodNotice(activeLabelKey, upcomingLabelKey, days) {
   if (!days.length) return "";
+  const today = currentIsoDate();
+  const labelKey = today < days[0].date ? upcomingLabelKey : activeLabelKey;
   return `
     <div>
       ${tr(labelKey)}
@@ -1517,16 +1527,16 @@ function currentOrFuturePeriodDays(days) {
 function renderMasaNotice(days) {
   const notices = [];
   const adhikaDays = currentOrFuturePeriodDays(days.filter((day) => day.lunar.masa_type === "adhika"));
-  if (adhikaDays.length) notices.push(periodNotice("purushottamaNotice", adhikaDays));
+  if (adhikaDays.length) notices.push(periodNotice("purushottamaNotice", "purushottamaUpcomingNotice", adhikaDays));
 
   const chaturmasyaDays = currentOrFuturePeriodDays(days.filter(isChaturmasyaDay));
-  if (chaturmasyaDays.length) notices.push(periodNotice("chaturmasyaNotice", chaturmasyaDays));
+  if (chaturmasyaDays.length) notices.push(periodNotice("chaturmasyaNotice", "chaturmasyaUpcomingNotice", chaturmasyaDays));
 
   const karttikDays = currentOrFuturePeriodDays(days.filter(isKarttikDay));
-  if (karttikDays.length) notices.push(periodNotice("karttikNotice", karttikDays));
+  if (karttikDays.length) notices.push(periodNotice("karttikNotice", "karttikUpcomingNotice", karttikDays));
 
   const bhishmaPanchakaDays = currentOrFuturePeriodDays(days.filter(isBhishmaPanchakaDay));
-  if (bhishmaPanchakaDays.length) notices.push(periodNotice("bhishmaPanchakaNotice", bhishmaPanchakaDays));
+  if (bhishmaPanchakaDays.length) notices.push(periodNotice("bhishmaPanchakaNotice", "bhishmaPanchakaUpcomingNotice", bhishmaPanchakaDays));
 
   if (!notices.length) {
     masaNotice.hidden = true;
