@@ -59,6 +59,7 @@ let calendarPickerYear = new Date().getFullYear();
 const MAX_RENDER_DAYS = 400;
 const DEFAULT_LOCATION_ID = "nabadwip";
 const COOKIE_MAX_AGE = 60 * 60 * 24 * 365;
+const URL_PARAMS = new URLSearchParams(window.location.search);
 
 const LOCATION_GROUP_LABELS = {
   "Израиль": { en: "Israel", ru: "Израиль" },
@@ -634,6 +635,107 @@ function currentPeriod() {
   const endDate = new Date(Date.UTC(now.getFullYear(), now.getMonth() + 1, 0));
   const end = `${endDate.getUTCFullYear()}-${String(endDate.getUTCMonth() + 1).padStart(2, "0")}-${String(endDate.getUTCDate()).padStart(2, "0")}`;
   return { start, end };
+}
+
+function queryValue(...names) {
+  for (const name of names) {
+    if (!URL_PARAMS.has(name)) continue;
+    const value = URL_PARAMS.get(name)?.trim();
+    if (value) return value;
+  }
+  return null;
+}
+
+function queryBoolean(...names) {
+  const value = queryValue(...names);
+  if (value === null) return null;
+  if (["1", "true", "yes", "y", "on"].includes(value.toLowerCase())) return true;
+  if (["0", "false", "no", "n", "off"].includes(value.toLowerCase())) return false;
+  return null;
+}
+
+function queryIsoDate(...names) {
+  const value = queryValue(...names);
+  return value && isIsoDate(value) ? value : null;
+}
+
+function queryLocationId() {
+  const value = queryValue("location", "loc", "place", "city");
+  if (!value) return null;
+  const normalized = value.toLowerCase();
+  return LOCATIONS.find((location) => location.id.toLowerCase() === normalized)?.id || null;
+}
+
+function queryLanguage() {
+  const value = queryValue("lang", "language")?.toLowerCase();
+  return ["ru", "en"].includes(value) ? value : null;
+}
+
+function queryTheme() {
+  const value = queryValue("theme")?.toLowerCase();
+  if (value === "dark") return "night";
+  if (value === "serpia") return "sepia";
+  return ["day", "night", "sepia"].includes(value) ? value : null;
+}
+
+function queryFontSize() {
+  const value = queryValue("font", "fontSize", "font-size")?.toLowerCase();
+  return ["normal", "large", "xlarge"].includes(value) ? value : null;
+}
+
+function queryPeriodForLocation(location, fallback = currentPeriod()) {
+  const from = queryIsoDate("from", "start");
+  const to = queryIsoDate("to", "end");
+  if (from || to) return normalizePeriod({ start: from || fallback.start, end: to || from || fallback.end });
+
+  const date = queryIsoDate("date") || fallback.start;
+  const year = Number(queryValue("year") || date.slice(0, 4));
+  const monthValue = queryValue("month");
+  const period = queryValue("period", "range", "view")?.toLowerCase();
+
+  if (monthValue) {
+    const monthMatch = monthValue.match(/^(\d{4})-(\d{2})$/);
+    const month = monthMatch ? Number(monthMatch[2]) : Number(monthValue);
+    const monthYear = monthMatch ? Number(monthMatch[1]) : year;
+    if (monthYear >= 1800 && monthYear <= 2200 && month >= 1 && month <= 12) {
+      return monthPeriod(monthYear, month);
+    }
+  }
+
+  if (period === "year" && year >= 1800 && year <= 2200) {
+    return { start: `${year}-01-01`, end: `${year}-12-31` };
+  }
+
+  if (period === "week") {
+    const dayOfWeek = weekdayOfIsoDate(date);
+    const startDay = weekStartForLocation(location);
+    const startOffset = -((dayOfWeek - startDay + 7) % 7);
+    const start = shiftIsoDateByDays(date, startOffset);
+    return { start, end: shiftIsoDateByDays(start, 6) };
+  }
+
+  if (period === "month" || queryIsoDate("date")) {
+    const [dateYear, dateMonth] = date.split("-").map(Number);
+    return monthPeriod(dateYear, dateMonth);
+  }
+
+  if (queryValue("year") && year >= 1800 && year <= 2200) {
+    return { start: `${year}-01-01`, end: `${year}-12-31` };
+  }
+
+  return fallback;
+}
+
+function monthPeriod(year, month) {
+  const start = `${year}-${String(month).padStart(2, "0")}-01`;
+  const end = isoDateFromDate(new Date(Date.UTC(year, month, 0)));
+  return { start, end };
+}
+
+function normalizePeriod(period) {
+  const start = isIsoDate(period.start) ? period.start : currentPeriod().start;
+  const end = isIsoDate(period.end) ? period.end : start;
+  return start <= end ? { start, end } : { start: end, end: start };
 }
 
 function currentIsoDate() {
@@ -1578,11 +1680,13 @@ function calendarTimeOrDash(date, timezone) {
 function init() {
   if (controlsPanel) controlsPanel.open = false;
   initLocationSelect();
-  const period = currentPeriod();
+  const location = LOCATIONS.find((item) => item.id === locationSelect.value) || LOCATIONS[0];
+  const period = queryPeriodForLocation(location);
   periodFromInput.value = period.start;
   periodToInput.value = period.end;
   initEventsOnly();
   initCompactView();
+  initEventFiltersFromQuery();
   initLanguage();
   initTheme();
   initFontSize();
@@ -1742,8 +1846,9 @@ function isoDateFromDate(date) {
 }
 
 function initLanguage() {
+  const requestedLanguage = queryLanguage();
   const savedLanguage = localStorage.getItem("vcalendar-language");
-  currentLanguage = savedLanguage === "en" ? "en" : "ru";
+  currentLanguage = requestedLanguage || (savedLanguage === "en" ? "en" : "ru");
   languageToggle.addEventListener("click", () => {
     setLanguage(currentLanguage === "ru" ? "en" : "ru");
     renderCalendar();
@@ -2268,8 +2373,9 @@ function renderEventFilterChips() {
 
 function initLocationSelect() {
   locationSelect.innerHTML = renderLocationOptions();
+  const requestedLocation = queryLocationId();
   const savedLocation = readPersistedSetting("vcalendar-location");
-  const locationId = LOCATIONS.some((location) => location.id === savedLocation) ? savedLocation : DEFAULT_LOCATION_ID;
+  const locationId = requestedLocation || (LOCATIONS.some((location) => location.id === savedLocation) ? savedLocation : DEFAULT_LOCATION_ID);
   locationSelect.value = locationId;
   writePersistedSetting("vcalendar-location", locationId);
   locationSelect.addEventListener("change", () => {
@@ -2304,11 +2410,12 @@ function writePersistedSetting(key, value) {
 }
 
 function initTheme() {
+  const requestedTheme = queryTheme();
   const savedTheme = readPersistedSetting("vcalendar-theme");
   const userThemeSelected = localStorage.getItem("vcalendar-theme-user-set") === "true" || (savedTheme && savedTheme !== "sepia");
   const defaultVersion = localStorage.getItem("vcalendar-theme-default-version");
-  const theme = userThemeSelected && savedTheme ? savedTheme : defaultVersion === "sepia-20260606" ? savedTheme || "sepia" : "sepia";
-  setTheme(theme, false);
+  const theme = requestedTheme || (userThemeSelected && savedTheme ? savedTheme : defaultVersion === "sepia-20260606" ? savedTheme || "sepia" : "sepia");
+  setTheme(theme, Boolean(requestedTheme));
   localStorage.setItem("vcalendar-theme-default-version", "sepia-20260606");
   themeToggle.querySelectorAll("[data-theme-choice]").forEach((button) => {
     button.addEventListener("click", () => setTheme(button.dataset.themeChoice, true));
@@ -2333,9 +2440,10 @@ function updateThemeButtons() {
 }
 
 function initFontSize() {
+  const requestedFontSize = queryFontSize();
   const savedFontSize = readPersistedSetting("vcalendar-font-size");
   const userFontSelected = localStorage.getItem("vcalendar-font-size-user-set") === "true" || (savedFontSize && savedFontSize !== "large");
-  setFontSize(userFontSelected && savedFontSize ? savedFontSize : "normal", false);
+  setFontSize(requestedFontSize || (userFontSelected && savedFontSize ? savedFontSize : "normal"), Boolean(requestedFontSize));
   fontSizeToggle.querySelectorAll("[data-font-size-choice]").forEach((button) => {
     button.addEventListener("click", () => setFontSize(button.dataset.fontSizeChoice, true));
   });
@@ -2367,21 +2475,49 @@ function updateFontSizeButtons() {
 }
 
 function initEventsOnly() {
+  const requested = queryBoolean("eventsOnly", "events-only", "onlyEvents", "only-events");
   const saved = localStorage.getItem("vcalendar-events-only");
-  eventsOnlyInput.checked = saved === null ? true : saved === "true";
+  eventsOnlyInput.checked = requested === null ? saved === null ? true : saved === "true" : requested;
   eventsOnlyInput.addEventListener("change", () => {
     localStorage.setItem("vcalendar-events-only", String(eventsOnlyInput.checked));
   });
 }
 
 function initCompactView() {
+  const requested = queryBoolean("compact", "compactView", "compact-view");
   const saved = localStorage.getItem("vcalendar-compact-view");
   const mobileDefault = window.matchMedia("(max-width: 700px)").matches;
-  compactViewInput.checked = saved === null ? mobileDefault : saved === "true";
+  compactViewInput.checked = requested === null ? saved === null ? mobileDefault : saved === "true" : requested;
   syncCompactViewControls();
   compactViewInput.addEventListener("change", () => {
     localStorage.setItem("vcalendar-compact-view", String(compactViewInput.checked));
     syncCompactViewControls();
+  });
+}
+
+function initEventFiltersFromQuery() {
+  const value = queryValue("filters", "filter");
+  if (!value) return;
+  const requested = value
+    .split(",")
+    .map((item) => item.trim())
+    .filter(Boolean);
+  const options = [...eventFilterSelect.options];
+  if (requested.some((item) => item.toLowerCase() === "all")) {
+    options.forEach((option) => {
+      option.selected = true;
+    });
+    return;
+  }
+  if (requested.some((item) => ["none", "off"].includes(item.toLowerCase()))) {
+    options.forEach((option) => {
+      option.selected = false;
+    });
+    return;
+  }
+  const normalized = new Set(requested.map((item) => item.toLowerCase()));
+  options.forEach((option) => {
+    option.selected = normalized.has(option.value.toLowerCase());
   });
 }
 
