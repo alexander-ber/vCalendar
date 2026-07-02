@@ -683,6 +683,13 @@ function queryFontSize() {
   return ["normal", "large", "xlarge"].includes(value) ? value : null;
 }
 
+function queryDisplayMode() {
+  const value = queryValue("mode", "display", "layout")?.toLowerCase();
+  if (value === "compact") return true;
+  if (value === "full") return false;
+  return null;
+}
+
 function queryPeriodForLocation(location, fallback = currentPeriod()) {
   const from = queryIsoDate("from", "start");
   const to = queryIsoDate("to", "end");
@@ -2484,7 +2491,7 @@ function initEventsOnly() {
 }
 
 function initCompactView() {
-  const requested = queryBoolean("compact", "compactView", "compact-view");
+  const requested = queryDisplayMode() ?? queryBoolean("compact", "compactView", "compact-view");
   const saved = localStorage.getItem("vcalendar-compact-view");
   const mobileDefault = window.matchMedia("(max-width: 700px)").matches;
   compactViewInput.checked = requested === null ? saved === null ? mobileDefault : saved === "true" : requested;
