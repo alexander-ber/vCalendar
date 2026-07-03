@@ -1980,6 +1980,17 @@ button:not(.day):not(.compact-day):not(.theme-toggle):not(.language-toggle):not(
   line-height: 1.35;
 }
 
+.diagnostic-link {
+  color: var(--accent);
+  font-weight: 900;
+  text-decoration: none;
+}
+
+.diagnostic-link:hover,
+.diagnostic-link:focus-visible {
+  text-decoration: underline;
+}
+
 @media (max-width: 1120px) {
   .primary-controls {
     grid-template-columns: minmax(0, 1fr);
