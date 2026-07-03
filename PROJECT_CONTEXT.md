@@ -38,6 +38,31 @@ For now, the source of truth must be the local calculation engine and local JSON
 
 ## 1. Core Architecture
 
+### 1.0 Runtime Source-of-Truth Principle
+
+This project must remain a universal calendar, not a copy of a printed or online Panchang.
+
+The runtime engine may use only:
+
+- civil date/time and timezone
+- selected location coordinates
+- Sun/Moon astronomy derived from the local ephemeris layer
+- sunrise/sunset and moonrise/moonset derived from the selected location
+- local calendar formulas and rule definitions
+- local event definitions expressed as lunar rules, such as masa, paksha, tithi, nakshatra, offsets, or period rules
+
+External calendars and Panjikas are allowed only as validation fixtures and regression references. This includes Saraswat Math Panjika scans, SCS calendar pages, VaishnavaCalendar, DrikPanchang, GCAL output, and any other prepared Panchang source.
+
+Never use those sources as:
+
+- runtime data feeds
+- hidden correction tables
+- direct Gregorian date anchors for lunar events
+- one-off overrides for disputed dates
+- substitute calculations when the local engine disagrees
+
+If a discrepancy is found, resolve it by improving the astronomy layer, implementing the missing rule, documenting the mismatch in validation output, or marking the source comparison as unresolved. Do not patch the engine with a hardcoded external result.
+
 ### 1.1 Static POC
 
 ```text

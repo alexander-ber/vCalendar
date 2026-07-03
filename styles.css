@@ -1496,6 +1496,23 @@ button:not(.day):not(.compact-day):not(.theme-toggle):not(.language-toggle):not(
   line-height: 1.25;
 }
 
+.jyotish-research-note {
+  display: grid;
+  gap: 4px;
+  border: 1px dashed var(--line);
+  border-radius: 8px;
+  padding: 9px 11px;
+  color: var(--muted);
+  font-size: calc(12px * var(--font-scale));
+  font-weight: 700;
+  line-height: 1.4;
+}
+
+.jyotish-research-note strong {
+  color: var(--ink);
+  font-size: calc(13px * var(--font-scale));
+}
+
 .tithi-muhurta-header small,
 .tithi-muhurta-panel p {
   margin: 0;

@@ -130,6 +130,12 @@ const I18N = {
     tithiTermDescription: "Lunar day, calculated from the Moon-Sun angular distance.",
     jyotishTerm: "Jyotish",
     jyotishTermDescription: "Traditional Vedic astrology and calendrical timing system used here for muhurta notes.",
+    amritaYogaTerm: "Amrita-yoga",
+    amritaYogaTermDescription: "Auspicious day or night window used for travel and beginnings. It is derived from local sunrise/sunset divisions, not imported as fixed clock times.",
+    mahendraYogaTerm: "Mahendra-yoga",
+    mahendraYogaTermDescription: "A supportive muhurta window printed in the Panjika. Its formula is being verified from the month-weekday rule before it is shown as calculated time.",
+    yogaResearchNoteTitle: "Amrita / Mahendra-yoga",
+    yogaResearchNoteDescription: "These muhurta windows are under verification. The intended runtime model uses only local sunrise, sunset, next sunrise, and a traditional month-weekday formula.",
     nakshatraTerm: "Nakshatra",
     nakshatraTermDescription: "One of 27 lunar mansions. Each spans 13°20' of the sidereal zodiac.",
     padaTerm: "Pada",
@@ -308,6 +314,12 @@ const I18N = {
     tithiTermDescription: "Лунный день, рассчитывается по угловому расстоянию между Луной и Солнцем.",
     jyotishTerm: "Джйотиш",
     jyotishTermDescription: "Традиционная ведическая астрология и система выбора времени, здесь используется для заметок по мухурте.",
+    amritaYogaTerm: "Амрита-йога",
+    amritaYogaTermDescription: "Благоприятное окно дня или ночи для путешествий и начинаний. Должно рассчитываться от местного восхода/заката, а не браться как готовое время из панжики.",
+    mahendraYogaTerm: "Махендра-йога",
+    mahendraYogaTermDescription: "Поддерживающее мухурта-окно, которое печатается в панжике. Формула проверяется по правилу месяц-день недели перед выводом рассчитанного времени.",
+    yogaResearchNoteTitle: "Амрита / Махендра-йога",
+    yogaResearchNoteDescription: "Эти мухурта-окна сейчас проходят проверку. Целевая модель расчёта использует только местный восход, закат, следующий восход и традиционную формулу месяц-день недели.",
     nakshatraTerm: "Накшатра",
     nakshatraTermDescription: "Одно из 27 лунных созвездий. Каждая накшатра занимает 13°20' сидерического зодиака.",
     padaTerm: "Пада",
@@ -962,7 +974,17 @@ function renderTithiMuhurtaPanel(day, model) {
       </div>
       ${record ? renderTithiJyotishSection(record, model) : ""}
       ${nakshatra ? renderNakshatraJyotishSection(day, nakshatra) : ""}
+      ${renderYogaResearchNote()}
     </section>
+  `;
+}
+
+function renderYogaResearchNote() {
+  return `
+    <aside class="jyotish-research-note">
+      <strong>${tr("yogaResearchNoteTitle")}</strong>
+      <span>${tr("yogaResearchNoteDescription")}</span>
+    </aside>
   `;
 }
 
@@ -1162,6 +1184,8 @@ function renderSanskritTermsHelp() {
     ["tithiTerm", "tithiTermDescription"],
     ["nakshatraTerm", "nakshatraTermDescription"],
     ["padaTerm", "padaTermDescription"],
+    ["amritaYogaTerm", "amritaYogaTermDescription"],
+    ["mahendraYogaTerm", "mahendraYogaTermDescription"],
     ["siderealLongitudeTerm", "siderealLongitudeTermDescription"],
     ["grahaRulerTerm", "grahaRulerTermDescription"],
     ["pratipatTerm", "pratipatTermDescription"],
