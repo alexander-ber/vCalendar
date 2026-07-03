@@ -4,6 +4,26 @@ Static browser POC for a Gaudiya Vaishnava Panchang generator.
 
 The current app runs without a backend and without a database. It calculates locally in browser JavaScript and keeps external Panchang calendars out of the runtime path.
 
+## Runtime Calculation Principle
+
+The calendar must be universal and location-driven.
+
+Runtime data sources are limited to:
+
+- Gregorian date/time and timezone
+- selected location coordinates
+- astronomical Sun/Moon positions and rise/set calculations
+- local rule definitions expressed as formulas
+- local event definitions expressed as lunar rules
+
+External Panchangs, printed Panjikas, SCS pages, VaishnavaCalendar, DrikPanchang, and similar sources are **validation fixtures only**. They must not be used as runtime data, date overrides, hidden correction tables, or one-off hardcoded exceptions. If a difference appears, the fix belongs in one of these places:
+
+- a better astronomy/ephemeris model
+- a clearer local rule implementation
+- a documented validation mismatch
+
+Do not hardcode observed dates from an external calendar into the engine.
+
 ## Run
 
 ```bash
