@@ -5,10 +5,12 @@ export const RULES = {
     external_validation: false
   },
   ekadashi: {
-    arunodaya_mode: "previous_night_fraction",
+    arunodaya_mode: "fixed_offset",
     arunodaya_offset_minutes: 96,
-    arunodaya_night_fraction: 1 / 15,
     classification_priority: ["viddha", "double_sunrise", "no_sunrise", "standard"]
+  },
+  mahadvadashi: {
+    vijaya_prahar_day_fraction: 3 / 8
   },
   parana: {
     hari_vasara_fraction: 0.25,

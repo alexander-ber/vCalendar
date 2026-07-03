@@ -183,7 +183,7 @@ The final GCAL phase applies DST/time corrections to:
 
 - Range-based calculation in phases: `generateCalendarRange()` builds days, then attaches events.
 - Sunrise, sunset, moonrise, moonset, arunodaya. Rise/set is now calculated through the vendored Astronomy Engine library.
-- Arunodaya defaults to `1/15` of the previous night before sunrise (`previous_night_fraction`), with the old fixed 96-minute model retained as a comparison mode.
+- Arunodaya now defaults to the verified Panjika rule: fixed 96 minutes before sunrise. The earlier `1/15` previous-night model is retained only in comparison scripts.
 - Tithi and paksha from Moon-Sun angular separation, using the current local approximation layer.
 - Nakshatra and yoga at sunrise.
 - Tithi end by boundary search.
@@ -200,7 +200,7 @@ The final GCAL phase applies DST/time corrections to:
 - A first-pass GCAL Dvadashi/Mahadvadashi rule layer, including Dvadashi suitable for fasting, Vyanjuli, Paksavardhini and nakshatra Mahadvadashi.
 - Separate `candidate_no_fast_reason`, `fast_day_type` and `parana_type` for shifted Ekadashi cases.
 - Parana window from sunrise, Dvadashi, Hari-vasara and pratah-kala, including Viddha, Vyanjuli, Unmilani, Trisprsa and a first-pass nakshatra Mahadvadashi branch.
-- Parana display exposes both the primary `1/3` daylight pratah-kala end and an additional `1/5` daylight marker used by some calendars.
+- Parana display exposes both the practical `1/3` daylight marker and an additional `1/5` daylight marker. The verified Panjika rules confirm Hari-vasara as the first quarter of Dvadashi, but do not print a universal 1/3 or 1/5 upper-bound formula.
 - Day-level tithi status: normal, ksaya and second day of vriddhi.
 - Lunar-rule event matching by masa/paksha/tithi.
 - Generic tithi event matching using the GCAL vriddhi/ksaya decision table, so repeated tithis do not duplicate events on both days.
@@ -263,9 +263,9 @@ GCAL distinguishes:
 - Ekadashi not suitable because tomorrow is Unmilani
 - Ekadashi not suitable because some Mahadvadashi applies
 
-We currently implement Suddha, Viddha/no-fast, no-sunrise, Vyanjuli, Unmilani, Trisprsa, Unmilani Trisprsa, Paksavardhini and nakshatra Mahadvadashi branches.
+We currently implement Suddha, Viddha/no-fast, no-sunrise, Vyanjuli, Unmilani, Trisprsa, Unmilani Trisprsa, Paksavardhini and nakshatra Mahadvadashi branches. Nakshatra Mahadvadashi is restricted to Gaura Dvadashi and now also checks the Dvadashi-duration condition from the verified Panjika rules.
 
-Validation note: after switching arunodaya from fixed 96 minutes to `1/15` of the previous night and adding the `dashami_viddha_at_sunrise` candidate-day rule, the Nabadwip/SCS shifted Ekadashi witness set in `scripts/compare-scsmath-shifted-ekadashi.mjs` matches for Yogini 2026, Vyanjuli 2026, Putrada 2027, Vijaya 2027 and Amalaki 2027.
+Validation note: the earlier `1/15` previous-night arunodaya model matched several shifted Ekadashi witnesses, but the verified Panjika rules explicitly define arunodaya as 96 minutes before sunrise. Current production follows the verified rule; witness differences should be analyzed with the comparison harness instead of silently changing the rule.
 
 ### Parana
 
@@ -298,7 +298,7 @@ GCAL gives special rules for:
 - Rama Navami
 - generic tithi events
 
-Our event matcher now handles generic lunar rules with the GCAL vriddhi/ksaya table, including the `tithi-1 or less -> tithi -> tithi+1` branch used when an earlier tithi was skipped. It also has dedicated first-pass rules for Govardhana Puja, Janmashtami, Ratha Yatra, Gaura Purnima and Rama Navami. For Janmashtami double-Ashtami cases the matcher checks Rohini at midnight first, then Rohini at sunrise, then the weekday fallback.
+Our event matcher now handles generic lunar rules with the GCAL vriddhi/ksaya table, including the `tithi-1 or less -> tithi -> tithi+1` branch used when an earlier tithi was skipped. It also has dedicated first-pass rules for Govardhana Puja, Janmashtami, Ratha Yatra, Gaura Purnima and Rama Navami. For Janmashtami double-Ashtami cases the matcher checks Rohini at midnight first, then Rohini at sunrise; if both are still equivalent, the verified Panjika rule chooses the first day.
 
 ### Dependent events
 

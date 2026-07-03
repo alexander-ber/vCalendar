@@ -69,8 +69,14 @@ function tithiNumber(day) {
   return day.lunar.tithi_at_sunrise.number;
 }
 
-function localWeekday(isoDate) {
-  return new Date(`${isoDate}T12:00:00Z`).getUTCDay();
+function containsTithiBetween(start, end, targetNumber) {
+  const step = 30 * 60 * 1000;
+  let cursor = new Date(start);
+  while (cursor <= end) {
+    if (tithiInfo(cursor).number === targetNumber) return true;
+    cursor = new Date(cursor.getTime() + step);
+  }
+  return false;
 }
 
 function midnightNakshatraNumber(day, timezone) {
@@ -89,8 +95,7 @@ function selectJanmashtamiDoubleAstami(day1, day2, timezone) {
   if (day1Rohini && !day2Rohini) return day1;
   if (!day1Rohini && day2Rohini) return day2;
 
-  const weekday = localWeekday(day1.date);
-  return weekday === 2 || weekday === 0 ? day2 : day1;
+  return day1;
 }
 
 function matchJanmashtami(day, event, timezone, previousDay, nextDay) {
@@ -102,15 +107,15 @@ function matchJanmashtami(day, event, timezone, previousDay, nextDay) {
   const astami = 23;
   const navami = 24;
 
-  if (previous === saptami && today === astami && tomorrow === navami) return true;
-  if (previous === saptami && today === navami) return true;
-
   if (today === astami && tomorrow === astami && nextDay) {
     return selectJanmashtamiDoubleAstami(day, nextDay, timezone).date === day.date;
   }
   if (previous === astami && today === astami && previousDay) {
     return selectJanmashtamiDoubleAstami(previousDay, day, timezone).date === day.date;
   }
+
+  if (today === astami) return true;
+  if (previous === saptami && today === navami) return true;
 
   return false;
 }
@@ -124,10 +129,8 @@ function matchGovardhanaPuja(day, event, previousDay, nextDay) {
   const dvitiya = 2;
   const amavasya = 30;
 
-  if (previous === pratipat && today === pratipat) return false;
-  if (today === pratipat && tomorrow === pratipat && nextDay) {
-    return Boolean(day.astronomy.moonrise && day.astronomy.moonrise > day.astronomy.sunrise && day.astronomy.moonrise < nextDay.astronomy.sunrise);
-  }
+  if (previous === pratipat && today === pratipat) return true;
+  if (today === pratipat && tomorrow === pratipat && nextDay) return false;
   if (today === pratipat) return true;
   return previous === amavasya && today === dvitiya;
 }
@@ -151,15 +154,17 @@ function tomorrowHasEkadashiFast(nextDay, ekadashiByDate) {
 }
 
 function matchRamaNavami(day, event, previousDay, nextDay, ekadashiByDate) {
-  if (!previousDay || !masaMatches(day, event) || day.lunar.paksha !== "Gaura" || day.lunar.masa_type === "adhika") return false;
+  if (!previousDay || !nextDay || !masaMatches(day, event) || day.lunar.paksha !== "Gaura" || day.lunar.masa_type === "adhika") return false;
   const previous = tithiNumber(previousDay);
   const today = tithiNumber(day);
   const tomorrow = nextDay ? tithiNumber(nextDay) : null;
-  if (previous === 8 && today === 9 && tomorrow === 10) return true;
-  if (previous === 8 && today === 9 && tomorrow === 9) return true;
-  if (previous === 8 && today === 10 && tomorrow === 10) return true;
-  if (previous === 8 && today === 10 && !tomorrowHasEkadashiFast(nextDay, ekadashiByDate)) return true;
-  if (previous === 8 && today === 10 && tomorrowHasEkadashiFast(nextDay, ekadashiByDate)) return false;
+  if (today === 9 && previous !== 9) return true;
+
+  const hasNavami = containsTithiBetween(day.astronomy.sunrise, nextDay.astronomy.sunrise, 9);
+  const hasDashami = containsTithiBetween(day.astronomy.sunrise, nextDay.astronomy.sunrise, 10);
+  const nextHasEkadashiFast = tomorrowHasEkadashiFast(nextDay, ekadashiByDate);
+  if (today === 8 && hasNavami && hasDashami && tomorrow === 11 && nextHasEkadashiFast) return true;
+
   return false;
 }
 

@@ -1,7 +1,7 @@
-import { generateCalendarRange, viewModelForDay } from "./calendar-engine.js?v=20260701-1";
+import { generateCalendarRange, viewModelForDay } from "./calendar-engine.js?v=20260703-1";
 import { EVENTS } from "./events-data.js?v=20260630-2";
 import { LOCATIONS } from "./locations-data.js?v=20260627-1";
-import { RULES } from "./rules-data.js?v=20260613-3";
+import { RULES } from "./rules-data.js?v=20260703-1";
 import { formatDateTime } from "./date-utils.js?v=20260528-8";
 import { nakshatraJyotishForNumber } from "./nakshatra-data.js?v=20260628-1";
 import { tithiMuhurtaForNumber } from "./tithi-muhurta-data.js?v=20260628-1";
@@ -143,7 +143,7 @@ const I18N = {
     amavasyaTerm: "Amavasya",
     amavasyaTermDescription: "New Moon tithi, the last tithi of Krishna paksha.",
     arunodayaTerm: "Arunodaya",
-    arunodayaTermDescription: "Pre-dawn period used for Ekadashi purity rules; here it is 1/15 of the previous night before sunrise.",
+    arunodayaTermDescription: "Pre-dawn period used for Ekadashi purity rules; in the verified Panjika rules it is 96 minutes before sunrise.",
     paranaTerm: "Parana",
     paranaTermDescription: "The proper window for breaking an Ekadashi fast.",
     timezone: "Timezone",
@@ -319,7 +319,7 @@ const I18N = {
     amavasyaTerm: "Амавасья",
     amavasyaTermDescription: "Титхи новолуния, последняя титхи Кришна-пакши.",
     arunodayaTerm: "Арунодая",
-    arunodayaTermDescription: "Предрассветный период для правил чистоты Экадаши; сейчас считается как 1/15 предыдущей ночи до восхода.",
+    arunodayaTermDescription: "Предрассветный период для правил чистоты Экадаши; по проверенным правилам панжики считается как 96 минут до восхода.",
     paranaTerm: "Паран",
     paranaTermDescription: "Правильное окно для выхода из поста Экадаши.",
     timezone: "Часовой пояс",
