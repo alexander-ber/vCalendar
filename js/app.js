@@ -206,6 +206,8 @@ const I18N = {
     diagnostic: "This POC calculates locally in browser JS and does not use external Panchang calendars as runtime data.",
     calculationDetails: "Calculation details",
     calculationEngine: "Calculation engine",
+    panjikaSource: "Panjika source",
+    openPanjikaDocx: "Open Panjika DOCX",
     ekadashiRule: "Ekadashi rule",
     shiftReason: "Shift reason",
     shiftCalculation: "Shift calculation",
@@ -382,6 +384,8 @@ const I18N = {
     diagnostic: "Этот POC считает локально в браузере и не использует внешние панчанги как источник данных.",
     calculationDetails: "Детали расчёта",
     calculationEngine: "Движок расчёта",
+    panjikaSource: "Источник панжики",
+    openPanjikaDocx: "Открыть DOCX панжики",
     ekadashiRule: "Правило Экадаши",
     shiftReason: "Причина переноса",
     shiftCalculation: "Расчёт переноса",
@@ -1062,7 +1066,8 @@ function renderCalculationDetails(day, model, ekadashiEvents, paranaEvents) {
     [tr("tithiStarts"), model.tithiStartFull],
     [tr("tithiEnds"), model.tithiEndFull],
     [tr("tithiAngle"), `${model.angle} deg`],
-    [tr("calculationEngine"), tr("diagnostic")]
+    [tr("calculationEngine"), tr("diagnostic")],
+    [tr("panjikaSource"), renderPanjikaDocLink()]
   ];
   const ekadashiRows = ekadashiEvents.flatMap((event) => [
     [tr("ekadashiName"), localizeEventName(event)],
@@ -1127,6 +1132,14 @@ function renderDiagnosticRows(rows) {
     .filter(([, value]) => value !== undefined && value !== null && value !== "")
     .map(([label, value]) => `<div><dt>${label}</dt><dd>${value}</dd></div>`)
     .join("");
+}
+
+function renderPanjikaDocLink() {
+  const href =
+    currentLanguage === "ru"
+      ? "docs/panjika/Sri_Navadvipa_Panjika_Gaurabda_540_RU_v2.docx"
+      : "docs/panjika/Sri_Navadvipa_Panjika_Gaurabda_540_EN_v2.docx";
+  return `<a class="diagnostic-link" href="${href}" target="_blank" rel="noopener">${tr("openPanjikaDocx")}</a>`;
 }
 
 function diagnosticTime(value, timezone) {

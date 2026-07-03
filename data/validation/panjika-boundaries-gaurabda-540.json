@@ -1,0 +1,90 @@
+{
+  "id": "sri-navadvipa-panjika-gaurabda-540-verified-boundaries",
+  "timezone": "Asia/Kolkata",
+  "location": "nabadwip",
+  "source": {
+    "ru_md": "docs/panjika/Ponjika_Sri_Gourabda_540_RU_full.md",
+    "en_md": "docs/panjika/Ponjika_Sri_Gourabda_540_EN_full.md",
+    "ru_docx": "docs/panjika/Sri_Navadvipa_Panjika_Gaurabda_540_RU_v2.docx",
+    "en_docx": "docs/panjika/Sri_Navadvipa_Panjika_Gaurabda_540_EN_v2.docx"
+  },
+  "notes": [
+    "This table intentionally contains only dates marked as rechecked against the original Bengali scan in revision 2.",
+    "Times are local Panjika times for Sri Navadvipa/Mayapur context. Do not mix with OCR-only rows until they are manually verified.",
+    "The goal is model comparison, not a runtime override table."
+  ],
+  "boundaries": [
+    {
+      "id": "2026-06-15-amavasya-to-gaura-pratipat",
+      "printed_boundary": "2026-06-15 09:15",
+      "before_tithi_number": 30,
+      "before_tithi_name": "Amavasya",
+      "after_tithi_number": 1,
+      "after_tithi_name": "Gaura Pratipat",
+      "source_date": "2026-06-15",
+      "source_page": 43,
+      "source_text": "Amavasya until 09:15 daytime; after this Gaura Pratipat begins.",
+      "confidence": "verified_scan"
+    },
+    {
+      "id": "2026-06-16-gaura-pratipat-to-gaura-dvitiya",
+      "printed_boundary": "2026-06-16 06:37",
+      "before_tithi_number": 1,
+      "before_tithi_name": "Gaura Pratipat",
+      "after_tithi_number": 2,
+      "after_tithi_name": "Gaura Dvitiya",
+      "source_date": "2026-06-16",
+      "source_page": 43,
+      "source_text": "Gaura Pratipat until 06:37 daytime; then Gaura Dvitiya until 04:13 the following night.",
+      "confidence": "verified_scan"
+    },
+    {
+      "id": "2026-06-17-gaura-dvitiya-to-gaura-tritiya",
+      "printed_boundary": "2026-06-17 04:13",
+      "before_tithi_number": 2,
+      "before_tithi_name": "Gaura Dvitiya",
+      "after_tithi_number": 3,
+      "after_tithi_name": "Gaura Tritiya",
+      "source_date": "2026-06-16",
+      "source_page": 43,
+      "source_text": "Gaura Dvitiya continues until 04:13 the following night.",
+      "confidence": "verified_scan"
+    },
+    {
+      "id": "2026-06-18-gaura-tritiya-to-gaura-chaturthi",
+      "printed_boundary": "2026-06-18 02:00",
+      "before_tithi_number": 3,
+      "before_tithi_name": "Gaura Tritiya",
+      "after_tithi_number": 4,
+      "after_tithi_name": "Gaura Chaturthi",
+      "source_date": "2026-06-17",
+      "source_page": 43,
+      "source_text": "Gaura Tritiya until 02:00 night.",
+      "confidence": "verified_scan"
+    },
+    {
+      "id": "2026-06-19-gaura-chaturthi-to-gaura-panchami",
+      "printed_boundary": "2026-06-19 00:10",
+      "before_tithi_number": 4,
+      "before_tithi_name": "Gaura Chaturthi",
+      "after_tithi_number": 5,
+      "after_tithi_name": "Gaura Panchami",
+      "source_date": "2026-06-18",
+      "source_page": 44,
+      "source_text": "Gaura Chaturthi until 12:10 night.",
+      "confidence": "verified_scan"
+    },
+    {
+      "id": "2026-06-30-purnima-to-krishna-pratipad",
+      "printed_boundary": "2026-06-30 04:48",
+      "before_tithi_number": 15,
+      "before_tithi_name": "Purnima",
+      "after_tithi_number": 16,
+      "after_tithi_name": "Krishna Pratipad",
+      "source_date": "2026-06-29",
+      "source_page": 46,
+      "source_text": "Purnima until approximately 04:48 at the end of night.",
+      "confidence": "verified_scan"
+    }
+  ]
+}
