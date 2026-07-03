@@ -5,6 +5,7 @@
     "external_validation": false
   },
   "ekadashi": {
+    "arunodaya_mode": "fixed_offset",
     "arunodaya_offset_minutes": 96,
     "classification_priority": [
       "viddha",
@@ -13,9 +14,13 @@
       "standard"
     ]
   },
+  "mahadvadashi": {
+    "vijaya_prahar_day_fraction": 0.375
+  },
   "parana": {
     "hari_vasara_fraction": 0.25,
-    "pratah_fraction_of_daylight": 0.3333333333333333
+    "pratah_fraction_of_daylight": 0.3333333333333333,
+    "one_fifth_fraction_of_daylight": 0.2
   },
   "masa": {
     "boundary": "amavasya_to_amavasya",

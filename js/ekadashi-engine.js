@@ -118,6 +118,25 @@ function findNakshatraEndAfter(start, targetNumber, maxHours = 48) {
   return null;
 }
 
+function findNakshatraStartBefore(reference, targetNumber, maxHours = 48) {
+  let right = new Date(reference);
+  let left = new Date(right.getTime() - 60 * 60 * 1000);
+  const min = reference.getTime() - maxHours * 60 * 60 * 1000;
+  while (left.getTime() >= min) {
+    if (nakshatraInfo(right).number === targetNumber && nakshatraInfo(left).number !== targetNumber) {
+      for (let i = 0; i < 40; i += 1) {
+        const mid = new Date((left.getTime() + right.getTime()) / 2);
+        if (nakshatraInfo(mid).number === targetNumber) right = mid;
+        else left = mid;
+      }
+      return right;
+    }
+    right = left;
+    left = new Date(left.getTime() - 60 * 60 * 1000);
+  }
+  return null;
+}
+
 function findTithiStartBefore(reference, targetNumber, maxHours = 72) {
   let right = new Date(reference);
   let left = new Date(right.getTime() - 60 * 60 * 1000);
@@ -135,6 +154,31 @@ function findTithiStartBefore(reference, targetNumber, maxHours = 72) {
     left = new Date(left.getTime() - 60 * 60 * 1000);
   }
   return null;
+}
+
+function oneAndHalfPraharAfterDayStart(day, rules) {
+  const fraction = Number(rules?.mahadvadashi?.vijaya_prahar_day_fraction || 3 / 8);
+  return new Date(day.astronomy.sunrise.getTime() + fraction * (day.astronomy.sunset.getTime() - day.astronomy.sunrise.getTime()));
+}
+
+function dvadashiDurationQualifiesForNakshatra(day, candidate, rules) {
+  const dvadashiEnd = findTithiEndAfter(day.astronomy.sunrise, 12);
+  if (!dvadashiEnd) return false;
+  if (candidate.number === 22) return dvadashiEnd.getTime() >= oneAndHalfPraharAfterDayStart(day, rules).getTime();
+  return dvadashiEnd.getTime() >= day.astronomy.sunset.getTime();
+}
+
+function nakshatraPresenceQualifies(day, nextDay, candidate) {
+  const todayNakshatra = day.lunar.nakshatra_at_sunrise;
+  if (todayNakshatra.number !== candidate.number) return false;
+
+  const start = findNakshatraStartBefore(day.astronomy.sunrise, candidate.number);
+  if (!start) return true;
+
+  const startsAtSunrise = Math.abs(start.getTime() - day.astronomy.sunrise.getTime()) <= 60 * 1000;
+  if (startsAtSunrise) return true;
+
+  return nextDay?.lunar.nakshatra_at_sunrise.number === candidate.number;
 }
 
 function paksavardhiniVriddhiAhead(days, index, dvadashiNumber) {
@@ -162,17 +206,19 @@ function paksavardhiniVriddhiAhead(days, index, dvadashiNumber) {
   return null;
 }
 
-function nakshatraMahadvadashiType(day, nextDay) {
+function nakshatraMahadvadashiType(day, nextDay, rules) {
   if (day.lunar.tithi_at_sunrise.number !== 12) return null;
-  const todayNakshatra = day.lunar.nakshatra_at_sunrise;
-  const nextNakshatra = nextDay?.lunar.nakshatra_at_sunrise;
   const candidates = [
     { number: 22, classification: "vijaya_mahadvadashi", paranaType: "jayanti_vijaya" },
     { number: 7, classification: "jaya_mahadvadashi", paranaType: "jaya_papanasini" },
     { number: 4, classification: "jayanti_mahadvadashi", paranaType: "jayanti_vijaya" },
     { number: 8, classification: "papanasini_mahadvadashi", paranaType: "jaya_papanasini" }
   ];
-  return candidates.find((candidate) => todayNakshatra.number === candidate.number && nextNakshatra?.number === candidate.number) || null;
+  return (
+    candidates.find(
+      (candidate) => nakshatraPresenceQualifies(day, nextDay, candidate) && dvadashiDurationQualifiesForNakshatra(day, candidate, rules)
+    ) || null
+  );
 }
 
 function paranaForNakshatraMahadvadashi(fastDate, ekadashiNumber, location, rules, day, mahadvadashiType) {
@@ -285,7 +331,7 @@ function classifyDvadashiMahadvadashi(days, index, location, rules) {
   if (!isDvadashiTestCandidate(previousAtSunrise, todayNumber)) return null;
 
   if (todayNumber === 12) {
-    const nakshatraType = nakshatraMahadvadashiType(day, nextDay);
+    const nakshatraType = nakshatraMahadvadashiType(day, nextDay, rules);
     if (nakshatraType) {
       return buildEkadashiEvent({
         day,
