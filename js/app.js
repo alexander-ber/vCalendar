@@ -1,6 +1,6 @@
-import { generateCalendarRange, viewModelForDay } from "./calendar-engine.js?v=20260704-1";
+import { generateCalendarRange, viewModelForDay } from "./calendar-engine.js?v=20260704-2";
 import { EVENTS } from "./events-data.js?v=20260630-2";
-import { LOCATIONS } from "./locations-data.js?v=20260627-1";
+import { LOCATIONS } from "./locations-data.js?v=20260704-1";
 import { RULES } from "./rules-data.js?v=20260703-1";
 import { formatDateTime } from "./date-utils.js?v=20260528-8";
 import { nakshatraJyotishForNumber } from "./nakshatra-data.js?v=20260628-1";
@@ -162,6 +162,8 @@ const I18N = {
     shownDays: "shown days",
     updated: "updated",
     gregorianDate: "Gregorian date",
+    panchangDate: "Panchang date",
+    gaurabdaYear: "Gaurabda",
     vedicWeekday: "Panchang weekday",
     isoDate: "ISO date",
     sunrise: "Sunrise",
@@ -350,6 +352,8 @@ const I18N = {
     shownDays: "показано дней",
     updated: "обновлено",
     gregorianDate: "Григорианская дата",
+    panchangDate: "Панчанг дата",
+    gaurabdaYear: "Гаурабда",
     vedicWeekday: "День недели панчанги",
     isoDate: "ISO дата",
     sunrise: "Восход",
@@ -503,6 +507,25 @@ function weekdayOffsetForLocation(isoDate, location) {
 
 function vedicWeekdayForIsoDate(isoDate) {
   return VEDIC_WEEKDAYS[currentLanguage][weekdayOfIsoDate(isoDate)];
+}
+
+const gaurabdaStartCache = new Map();
+
+function gauraPurnimaDateForYear(year, location) {
+  const cacheKey = `${location.id}:${year}`;
+  if (gaurabdaStartCache.has(cacheKey)) return gaurabdaStartCache.get(cacheKey);
+  const { days } = generateCalendarRange(`${year}-02-01`, `${year}-04-30`, location, RULES, EVENTS);
+  const gauraPurnima = days.find((day) => day.events.some((event) => event.id === "gaura_purnima"));
+  const date = gauraPurnima?.date || null;
+  gaurabdaStartCache.set(cacheKey, date);
+  return date;
+}
+
+function gaurabdaYearForDay(day) {
+  const year = Number(day.date.slice(0, 4));
+  const start = gauraPurnimaDateForYear(year, day.location);
+  if (!start) return year - 1486;
+  return day.date >= start ? year - 1486 : year - 1487;
 }
 
 const TITHI_RU = {
@@ -873,7 +896,12 @@ function renderDetails(day, options = {}) {
           <div class="compact-detail-card compact-detail-card-wide">
             <span>${tr("gregorianDate")}</span>
             <strong>${gregorianLong(model.date)}</strong>
-            <small>${tr("vedicWeekday")}: ${vedicWeekdayForIsoDate(model.date)} · ${tr("isoDate")}: ${model.date}</small>
+            <small>${tr("isoDate")}: ${model.date}</small>
+          </div>
+          <div class="compact-detail-card compact-detail-card-wide">
+            <span>${tr("panchangDate")}</span>
+            <strong>${tr("gaurabdaYear")} ${gaurabdaYearForDay(day)} · ${localizeMasa(model.masa)}</strong>
+            <small>${localizePaksha(model.paksha)} ${localizeTithi(model.tithi)} · ${tr("vedicWeekday")}: ${vedicWeekdayForIsoDate(model.date)} · ${tr("tithiEnds")}: ${model.tithiEnd} · ${tr("tithiAngle")}: ${model.angle} deg</small>
           </div>
           <div class="compact-detail-card">
             <span>${tr("sun")}</span>
@@ -884,11 +912,6 @@ function renderDetails(day, options = {}) {
             <span>${tr("moon")}</span>
             ${renderMoonEventList(day, model)}
             <small>${tr("moonAngle")}: ${model.moonAngle} deg</small>
-          </div>
-          <div class="compact-detail-card compact-detail-card-wide">
-            <span>${tr("masa")} / ${tr("paksha")}</span>
-            <strong>${localizeMasa(model.masa)} · ${localizePaksha(model.paksha)}</strong>
-            <small>${tr("bengaliSolarMonth")}: ${localizeMasa(model.bengaliSolarMonth)} · ${tr("tithiSunrise")}: ${localizeTithi(model.tithi)} · ${tr("tithiEnds")}: ${model.tithiEnd} · ${tr("tithiAngle")}: ${model.angle} deg</small>
           </div>
         </div>
         ${renderTithiMuhurtaPanel(day, model)}
