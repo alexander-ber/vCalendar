@@ -11,8 +11,8 @@ const mayapur = LOCATIONS.find((location) => location.id === "mayapur");
 const nabadwip = LOCATIONS.find((location) => location.id === "nabadwip");
 const kathmandu = LOCATIONS.find((location) => location.id === "kathmandu");
 
-assert(LOCATIONS.filter((location) => location.group === "Израиль").every((location) => location.week_start === 0));
-assert(LOCATIONS.filter((location) => location.group !== "Израиль").every((location) => (location.week_start ?? 1) === 1));
+assert(LOCATIONS.filter((location) => ["Израиль", "Индия"].includes(location.group)).every((location) => location.week_start === 0));
+assert(LOCATIONS.filter((location) => !["Израиль", "Индия"].includes(location.group)).every((location) => (location.week_start ?? 1) === 1));
 
 function eventsByDate(year, month, location) {
   const calendar = generateCalendar(year, month, location, RULES, EVENTS);
