@@ -10,9 +10,10 @@ import {
   weekdayOfIsoDate,
   zonedDateToUtc
 } from "./date-utils.js?v=20260528-8";
-import { masaForDate } from "./masa-engine.js?v=20260701-1";
+import { masaForDate } from "./masa-engine.js?v=20260704-1";
 import { buildEkadashiEvents } from "./ekadashi-engine.js?v=20260703-1";
 import { matchEventsForDay } from "./event-matcher.js?v=20260703-1";
+import { calculateAmritaMahendra } from "./amrita-mahendra-engine.js?v=20260704-1";
 
 function buildDay(isoDate, location, rules) {
   const astronomy = dayAstronomy(isoDate, location, rules);
@@ -32,6 +33,7 @@ function buildDay(isoDate, location, rules) {
       masa: masa.name,
       masa_display: masa.display_name,
       masa_type: masa.type,
+      bengali_solar_month: masa.bengali_solar_month,
       is_purushottama: masa.is_purushottama,
       paksha: sunriseTithi.paksha,
       tithi_at_sunrise: sunriseTithi,
@@ -148,6 +150,23 @@ function annotateTithiStatuses(days) {
       is_ksaya: false,
       missing_tithi_numbers: [],
       missing_tithi_intervals: []
+    };
+  }
+}
+
+function annotateAmritaMahendraBoundaries(days) {
+  for (let i = 0; i < days.length - 1; i += 1) {
+    const current = days[i];
+    const next = days[i + 1];
+    current.jyotish = {
+      ...(current.jyotish || {}),
+      amrita_mahendra: calculateAmritaMahendra(current.astronomy.sunrise, current.astronomy.sunset, next.astronomy.sunrise)
+    };
+  }
+  if (days.at(-1)) {
+    days.at(-1).jyotish = {
+      ...(days.at(-1).jyotish || {}),
+      amrita_mahendra: null
     };
   }
 }
@@ -395,6 +414,7 @@ export function generateCalendar(year, month, location, rules, events) {
   }
 
   annotateTithiStatuses(days);
+  annotateAmritaMahendraBoundaries(days);
   attachEvents(days, location, rules, events);
 
   return {
@@ -420,6 +440,7 @@ export function generateCalendarRange(startDate, endDate, location, rules, event
   }
 
   annotateTithiStatuses(days);
+  annotateAmritaMahendraBoundaries(days);
   attachEvents(days, location, rules, events);
   const visibleDays = days.filter((day) => day.date >= startDate && day.date <= endDate);
   return {
@@ -456,6 +477,7 @@ export function viewModelForDay(day) {
     moonAngle: day.lunar.tithi_angle_at_sunrise.toFixed(2),
     arunodaya: formatTime(day.astronomy.arunodaya, day.location.timezone),
     masa: day.masa.display_name,
+    bengaliSolarMonth: day.masa.bengali_solar_month?.name || "not implemented",
     tithi: day.lunar.tithi_at_sunrise.name,
     tithiStart: tithiStart ? formatBoundary(tithiStart, day.date, day.location.timezone) : "not implemented",
     tithiStartFull: tithiStart ? formatDateTime(tithiStart, day.location.timezone) : "not implemented",

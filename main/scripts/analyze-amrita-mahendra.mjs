@@ -5,9 +5,24 @@ const REPORT_FILE = new URL("../reports/amrita-mahendra-month-weekday-analysis.m
 const MATCHES_FILE = new URL("../work/amrita-mahendra-index-matches.jsonl", import.meta.url);
 
 const WEEKDAYS = ["понедельник", "вторник", "среда", "четверг", "пятница", "суббота", "воскресенье"];
+const EXPECTED_SOLAR_MONTHS = [
+  "Чайтра",
+  "Вайшакха",
+  "Джйештха",
+  "Ашадха",
+  "Шравана",
+  "Бхадра",
+  "Ашвина",
+  "Картика",
+  "Аграхаяна",
+  "Пауша",
+  "Магха",
+  "Пхалгуна"
+];
 const DAY_PERIOD_RE = /(?:дн[ёе]м|время):\s*([^н]*(?:(?!ночью:).)*)/iu;
 const NIGHT_PERIOD_RE = /ночью:\s*(.*)$/iu;
 const RANGE_RE = /(\d{1,2}):(\d{2})\s*[–-]\s*(\d{1,2}):(\d{2})/gu;
+const TIME_RE = /\b\d{1,2}:\d{2}\b/gu;
 
 function field(body, label) {
   return body.match(new RegExp(`\\*\\*${label}:\\*\\*\\s*([^\\n]+)`))?.[1]?.trim() || "";
@@ -59,6 +74,23 @@ function extractRanges(value, period) {
     start: `${match[1]}:${match[2]}`,
     end: `${match[3]}:${match[4]}`
   }));
+}
+
+function periodSource(value, period) {
+  if (!value || isAmbiguous(value)) return "";
+  return period === "day"
+    ? value.match(DAY_PERIOD_RE)?.[1]?.split(/ночью:/iu)[0] || (!value.includes("ночью:") ? value : "")
+    : value.match(NIGHT_PERIOD_RE)?.[1] || "";
+}
+
+function extractSingleTimes(value, period) {
+  const source = periodSource(value, period);
+  if (!source) return [];
+  return source
+    .split(";")
+    .map((item) => item.trim())
+    .filter((item) => item && !/[–-]/.test(item))
+    .flatMap((item) => [...item.matchAll(TIME_RE)].map((match) => match[0]));
 }
 
 function timeCandidates(value) {
@@ -165,6 +197,31 @@ function buildMatches(days) {
   return rows;
 }
 
+function singleTimeRows(days) {
+  const rows = [];
+  for (const day of days) {
+    if (day.solarMonth === "UNKNOWN") continue;
+    for (const [kind, value] of [
+      ["amrita", day.amrita],
+      ["mahendra", day.mahendra]
+    ]) {
+      for (const period of ["day", "night"]) {
+        const times = extractSingleTimes(value, period);
+        if (!times.length) continue;
+        rows.push({
+          date: day.date,
+          solarMonth: day.solarMonth,
+          weekday: day.weekday,
+          kind,
+          period,
+          times
+        });
+      }
+    }
+  }
+  return rows;
+}
+
 function groupMatches(matches) {
   const groups = new Map();
   for (const row of matches) {
@@ -186,6 +243,89 @@ function renderCoverage(rows) {
     );
   }
   return lines.join("\n");
+}
+
+function readinessAudit(coverage, groups) {
+  const observed = new Map(coverage.map((row) => [`${row.solarMonth}|${row.weekday}`, row]));
+  const missingKeys = [];
+  const weakSunKeys = [];
+  const noCleanAmritaKeys = [];
+  const noMahendraWitnessKeys = [];
+  for (const month of EXPECTED_SOLAR_MONTHS) {
+    for (const weekday of WEEKDAYS) {
+      const key = `${month}|${weekday}`;
+      const row = observed.get(key);
+      if (!row) {
+        missingKeys.push(key);
+        continue;
+      }
+      if (row.cleanSun < 2) weakSunKeys.push(`${key} (${row.cleanSun}/${row.days})`);
+      if (row.cleanAmrita === 0) noCleanAmritaKeys.push(`${key} (${row.cleanAmrita}/${row.amrita})`);
+      if (row.mahendra === 0 || row.cleanMahendra === 0) noMahendraWitnessKeys.push(`${key} (${row.cleanMahendra}/${row.mahendra})`);
+    }
+  }
+  const repeatedGroups = groups.filter((group) => group.rows.length >= 2);
+  const stableGroups = repeatedGroups.filter((group) => group.indexes.size === 1);
+  const lowErrorGroups = stableGroups.filter((group) => group.maxAbsErrorSeconds <= 90);
+  return {
+    expectedKeys: EXPECTED_SOLAR_MONTHS.length * WEEKDAYS.length,
+    observedKeys: observed.size,
+    missingKeys,
+    weakSunKeys,
+    noCleanAmritaKeys,
+    noMahendraWitnessKeys,
+    repeatedGroups: repeatedGroups.length,
+    stableGroups: stableGroups.length,
+    lowErrorGroups: lowErrorGroups.length
+  };
+}
+
+function renderList(items, emptyText) {
+  if (!items.length) return `- ${emptyText}`;
+  return items.map((item) => `- ${item}`).join("\n");
+}
+
+function renderReadinessAudit(audit) {
+  return [
+    "## Implementation Readiness Audit",
+    "",
+    "This section answers what is still missing before Amrita/Mahendra-yoga can be enabled as a calculated UI feature.",
+    "",
+    `- expected month-weekday keys: ${audit.expectedKeys}`,
+    `- observed month-weekday keys in translated MD: ${audit.observedKeys}`,
+    `- missing month-weekday keys: ${audit.missingKeys.length}`,
+    `- keys with fewer than two clean sunrise/sunset rows: ${audit.weakSunKeys.length}`,
+    `- keys with no clean Amrita-yoga witness: ${audit.noCleanAmritaKeys.length}`,
+    `- keys with no clean Mahendra-yoga witness: ${audit.noMahendraWitnessKeys.length}`,
+    `- repeated candidate groups: ${audit.repeatedGroups}`,
+    `- repeated groups with one stable boundary index: ${audit.stableGroups}`,
+    `- repeated groups with one stable boundary index and <=90s boundary error: ${audit.lowErrorGroups}`,
+    "",
+    "### Runtime Blockers",
+    "",
+    "1. The Bengali solar month calculation is now implemented locally from sidereal solar rashi; boundary dates around Sankranti still need regression checks.",
+    "2. The full `12 x 7` month-weekday selection matrix must be recovered as boundary indexes, not printed clock times.",
+    "3. OCR-derived yoga rows need manual verification against the Bengali scan before becoming tests or matrix values.",
+    "4. Rows where Mahendra-yoga is absent must be confirmed as truly empty, not OCR omission.",
+    "5. Regression tests must compare calculated boundary-index times against verified Panjika rows.",
+    "",
+    "### Missing Month-Weekday Keys",
+    "",
+    renderList(audit.missingKeys, "None. Every expected month-weekday key appears at least once."),
+    "",
+    "### Weak Sunrise/Sunset Coverage",
+    "",
+    renderList(audit.weakSunKeys, "None."),
+    "",
+    "### No Clean Amrita Witness",
+    "",
+    renderList(audit.noCleanAmritaKeys, "None."),
+    "",
+    "### No Clean Mahendra Witness",
+    "",
+    renderList(audit.noMahendraWitnessKeys, "None."),
+    ""
+  ].join("\n");
 }
 
 function renderGroups(groups) {
@@ -223,7 +363,26 @@ function renderGroups(groups) {
   return lines.join("\n");
 }
 
-function renderReport(days, coverage, groups) {
+function renderSingleTimeAudit(rows) {
+  const total = rows.reduce((sum, row) => sum + row.times.length, 0);
+  const lines = [
+    "## Single-Time Tokens Requiring Source Review",
+    "",
+    "Some translated rows contain standalone times such as `7:14` next to explicit ranges. These are not safe to interpret automatically as full intervals until the Bengali scan is checked.",
+    "",
+    `- rows with standalone times: ${rows.length}`,
+    `- standalone time tokens: ${total}`,
+    "",
+    "| Date | Key | Standalone times |",
+    "|---|---|---|"
+  ];
+  for (const row of rows.slice(0, 80)) {
+    lines.push(`| ${row.date} | ${row.solarMonth} ${row.weekday} ${row.kind} ${row.period} | ${row.times.join(", ")} |`);
+  }
+  return lines.join("\n");
+}
+
+function renderReport(days, coverage, groups, audit, singles) {
   return [
     "# Amrita/Mahendra Yoga Month-Weekday Analysis",
     "",
@@ -233,7 +392,11 @@ function renderReport(days, coverage, groups) {
     "",
     `Calendar rows parsed: ${days.length}`,
     "",
+    renderReadinessAudit(audit),
+    "",
     renderCoverage(coverage),
+    "",
+    renderSingleTimeAudit(singles),
     "",
     renderGroups(groups),
     ""
@@ -245,9 +408,11 @@ const days = parseBlocks(text);
 const coverage = coverageRows(days);
 const matches = buildMatches(days);
 const groups = groupMatches(matches);
+const audit = readinessAudit(coverage, groups);
+const singles = singleTimeRows(days);
 
 await fs.writeFile(MATCHES_FILE, matches.map((row) => JSON.stringify(row)).join("\n") + "\n");
-await fs.writeFile(REPORT_FILE, renderReport(days, coverage, groups));
+await fs.writeFile(REPORT_FILE, renderReport(days, coverage, groups, audit, singles));
 
 console.log(`Parsed ${days.length} calendar rows.`);
 console.log(`Wrote ${matches.length} candidate interval matches to ${MATCHES_FILE.pathname}`);
