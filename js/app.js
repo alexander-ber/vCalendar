@@ -1,4 +1,4 @@
-import { generateCalendarRange, viewModelForDay } from "./calendar-engine.js?v=20260703-1";
+import { generateCalendarRange, viewModelForDay } from "./calendar-engine.js?v=20260704-1";
 import { EVENTS } from "./events-data.js?v=20260630-2";
 import { LOCATIONS } from "./locations-data.js?v=20260627-1";
 import { RULES } from "./rules-data.js?v=20260703-1";
@@ -135,7 +135,7 @@ const I18N = {
     mahendraYogaTerm: "Mahendra-yoga",
     mahendraYogaTermDescription: "A supportive muhurta window printed in the Panjika. Its formula is being verified from the month-weekday rule before it is shown as calculated time.",
     yogaResearchNoteTitle: "Amrita / Mahendra-yoga",
-    yogaResearchNoteDescription: "These muhurta windows are under verification. The intended runtime model uses only local sunrise, sunset, next sunrise, and a traditional month-weekday formula.",
+    yogaResearchNoteDescription: "These muhurta windows are under verification. The day/night 1/15 boundary calculation is implemented from local sunrise, sunset, and next sunrise; the traditional month-weekday selection table is still being reconstructed.",
     nakshatraTerm: "Nakshatra",
     nakshatraTermDescription: "One of 27 lunar mansions. Each spans 13°20' of the sidereal zodiac.",
     padaTerm: "Pada",
@@ -169,6 +169,7 @@ const I18N = {
     moonAngle: "Moon-Sun angle",
     arunodaya: "Arunodaya",
     masa: "Masa",
+    bengaliSolarMonth: "Bengali solar month",
     paksha: "Paksha",
     tithiSunrise: "Tithi sunrise",
     tithiStarts: "Tithi starts",
@@ -319,7 +320,7 @@ const I18N = {
     mahendraYogaTerm: "Махендра-йога",
     mahendraYogaTermDescription: "Поддерживающее мухурта-окно, которое печатается в панжике. Формула проверяется по правилу месяц-день недели перед выводом рассчитанного времени.",
     yogaResearchNoteTitle: "Амрита / Махендра-йога",
-    yogaResearchNoteDescription: "Эти мухурта-окна сейчас проходят проверку. Целевая модель расчёта использует только местный восход, закат, следующий восход и традиционную формулу месяц-день недели.",
+    yogaResearchNoteDescription: "Эти мухурта-окна сейчас проходят проверку. Деление дня/ночи на 1/15 уже рассчитывается от местного восхода, заката и следующего восхода; традиционная таблица выбора по месяцу и дню недели ещё восстанавливается.",
     nakshatraTerm: "Накшатра",
     nakshatraTermDescription: "Одно из 27 лунных созвездий. Каждая накшатра занимает 13°20' сидерического зодиака.",
     padaTerm: "Пада",
@@ -353,6 +354,7 @@ const I18N = {
     moonAngle: "Угол Луна-Солнце",
     arunodaya: "Арунодая",
     masa: "Маса",
+    bengaliSolarMonth: "Бенгальский солнечный месяц",
     paksha: "Пакша",
     tithiSunrise: "Титхи на восходе",
     tithiStarts: "Начало титхи",
@@ -545,6 +547,7 @@ const MASA_RU = {
   Jyeshtha: "Джйештха",
   Ashadha: "Ашадха",
   Shravana: "Шравана",
+  Bhadra: "Бхадра",
   Bhadrapada: "Бхадрапада",
   Ashvina: "Ашвина",
   Kartika: "Картика",
@@ -870,7 +873,7 @@ function renderDetails(day, options = {}) {
           <div class="compact-detail-card compact-detail-card-wide">
             <span>${tr("masa")} / ${tr("paksha")}</span>
             <strong>${localizeMasa(model.masa)} · ${localizePaksha(model.paksha)}</strong>
-            <small>${tr("tithiSunrise")}: ${localizeTithi(model.tithi)} · ${tr("tithiEnds")}: ${model.tithiEnd} · ${tr("tithiAngle")}: ${model.angle} deg</small>
+            <small>${tr("bengaliSolarMonth")}: ${localizeMasa(model.bengaliSolarMonth)} · ${tr("tithiSunrise")}: ${localizeTithi(model.tithi)} · ${tr("tithiEnds")}: ${model.tithiEnd} · ${tr("tithiAngle")}: ${model.angle} deg</small>
           </div>
         </div>
         ${renderTithiMuhurtaPanel(day, model)}

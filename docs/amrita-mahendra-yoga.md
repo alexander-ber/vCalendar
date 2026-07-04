@@ -46,6 +46,8 @@ k = 0..15
 
 Calculate boundaries from the full interval each time. Do not round one part and repeatedly add it.
 
+This boundary layer is implemented in `js/amrita-mahendra-engine.js`. It is safe to use because it depends only on local sunrise, local sunset, and the next local sunrise. The unverified part is not the boundary formula, but the traditional selection matrix that chooses which boundary ranges are Amrita or Mahendra for a given Bengali solar month and weekday.
+
 ## Working Selection Hypothesis
 
 The printed intervals appear to be selected by:
@@ -55,6 +57,25 @@ Bengali solar month x weekday
 ```
 
 The key month is the Bengali solar month, such as `Ashadha`, not the Gaudiya lunar month such as `Vamana`.
+
+The browser engine now calculates this key locally from the sidereal solar rashi at sunrise:
+
+| Sidereal solar rashi | Bengali solar month |
+|---|---|
+| Mesha / Aries | Vaishakha |
+| Vrishabha / Taurus | Jyeshtha |
+| Mithuna / Gemini | Ashadha |
+| Karka / Cancer | Shravana |
+| Simha / Leo | Bhadra |
+| Kanya / Virgo | Ashvina |
+| Tula / Libra | Kartika |
+| Vrischika / Scorpio | Agrahayana |
+| Dhanu / Sagittarius | Pausha |
+| Makara / Capricorn | Magha |
+| Kumbha / Aquarius | Phalguna |
+| Mina / Pisces | Chaitra |
+
+This matches the Panjika-style solar month layer, not the lunar Gaudiya masa. Dates near Sankranti boundaries still need regression checks against verified rows.
 
 Each key should resolve to four lists of boundary ranges:
 
@@ -116,12 +137,24 @@ The report contains:
 - low-error repeated groups
 - groups requiring manual review
 
+Check the Bengali solar month key against verified Panjika rows:
+
+```bash
+node scripts/check-bengali-solar-month.mjs
+```
+
+Check the 15-part boundary arithmetic against the verified `Ashadha + Saturday` pilot witness:
+
+```bash
+node scripts/check-amrita-mahendra-boundaries.mjs
+```
+
 ## Required Before Runtime Use
 
 Before exposing Amrita/Mahendra-yoga in the calendar UI:
 
 1. verify candidate rows against the original Bengali scan;
-2. document Bengali solar month assignment;
+2. add Sankranti-boundary regression checks for Bengali solar month assignment;
 3. recover the full `12 x 7` template matrix or explicitly mark missing keys;
 4. keep provenance for every populated template;
 5. add source-derived tests;

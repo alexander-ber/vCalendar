@@ -6,6 +6,71 @@ The source here is the translated MD panjika. Because many yoga/travel rows cont
 
 Calendar rows parsed: 385
 
+## Implementation Readiness Audit
+
+This section answers what is still missing before Amrita/Mahendra-yoga can be enabled as a calculated UI feature.
+
+- expected month-weekday keys: 84
+- observed month-weekday keys in translated MD: 84
+- missing month-weekday keys: 0
+- keys with fewer than two clean sunrise/sunset rows: 3
+- keys with no clean Amrita-yoga witness: 0
+- keys with no clean Mahendra-yoga witness: 25
+- repeated candidate groups: 140
+- repeated groups with one stable boundary index: 44
+- repeated groups with one stable boundary index and <=90s boundary error: 0
+
+### Runtime Blockers
+
+1. The Bengali solar month calculation is now implemented locally from sidereal solar rashi; boundary dates around Sankranti still need regression checks.
+2. The full `12 x 7` month-weekday selection matrix must be recovered as boundary indexes, not printed clock times.
+3. OCR-derived yoga rows need manual verification against the Bengali scan before becoming tests or matrix values.
+4. Rows where Mahendra-yoga is absent must be confirmed as truly empty, not OCR omission.
+5. Regression tests must compare calculated boundary-index times against verified Panjika rows.
+
+### Missing Month-Weekday Keys
+
+- None. Every expected month-weekday key appears at least once.
+
+### Weak Sunrise/Sunset Coverage
+
+- Чайтра|пятница (1/5)
+- Картика|четверг (1/4)
+- Магха|среда (1/4)
+
+### No Clean Amrita Witness
+
+- None.
+
+### No Clean Mahendra Witness
+
+- Чайтра|вторник (0/0)
+- Чайтра|суббота (0/0)
+- Вайшакха|вторник (0/0)
+- Вайшакха|суббота (0/0)
+- Джйештха|среда (0/0)
+- Ашадха|среда (0/0)
+- Шравана|вторник (0/0)
+- Шравана|суббота (0/0)
+- Бхадра|вторник (0/0)
+- Бхадра|суббота (0/0)
+- Ашвина|понедельник (0/0)
+- Ашвина|четверг (0/0)
+- Ашвина|пятница (0/0)
+- Картика|понедельник (0/0)
+- Картика|четверг (0/0)
+- Картика|пятница (0/0)
+- Аграхаяна|понедельник (0/0)
+- Аграхаяна|четверг (0/0)
+- Аграхаяна|пятница (0/0)
+- Пауша|понедельник (0/0)
+- Пауша|четверг (0/0)
+- Магха|вторник (0/0)
+- Магха|суббота (0/0)
+- Пхалгуна|вторник (0/0)
+- Пхалгуна|суббота (0/0)
+
+
 ## Month x Weekday Coverage
 
 | Solar month | Weekday | Days | Clean sun | Amrita | Mahendra | Span |
@@ -94,6 +159,96 @@ Calendar rows parsed: 385
 | Шравана | пятница | 4 | 3/4 | 3/3 | 4/4 | 24 июля 2026 - 14 августа 2026 |
 | Шравана | суббота | 5 | 4/5 | 5/5 | 0/0 | 18 июля 2026 - 15 августа 2026 |
 | Шравана | воскресенье | 5 | 3/5 | 4/4 | 4/5 | 19 июля 2026 - 16 августа 2026 |
+
+## Single-Time Tokens Requiring Source Review
+
+Some translated rows contain standalone times such as `7:14` next to explicit ranges. These are not safe to interpret automatically as full intervals until the Bengali scan is checked.
+
+- rows with standalone times: 424
+- standalone time tokens: 560
+
+| Date | Key | Standalone times |
+|---|---|---|
+| 4 марта 2026 года | Пхалгуна среда amrita day | 7:14 |
+| 4 марта 2026 года | Пхалгуна среда mahendra night | 9:54 |
+| 5 марта 2026 года | Пхалгуна четверг mahendra day | 7:12 |
+| 6 марта 2026 года | Пхалгуна пятница amrita day | 7:13 |
+| 7 марта 2026 года | Пхалгуна суббота amrita day | 9:38 |
+| 7 марта 2026 года | Пхалгуна суббота amrita night | 10:19 |
+| 8 марта 2026 года | Пхалгуна воскресенье mahendra day | 6:22 |
+| 9 марта 2026 года | Пхалгуна понедельник amrita day | 7:09 |
+| 9 марта 2026 года | Пхалгуна понедельник amrita night | 6:35, 8:55 |
+| 10 марта 2026 года | Пхалгуна вторник amrita night | 6:34, 8:56, 11:16 |
+| 11 марта 2026 года | Пхалгуна среда amrita day | 7:08, 9:34 |
+| 12 марта 2026 года | Пхалгуна четверг mahendra day | 7:08, 10:25, 12:53 |
+| 13 марта 2026 года | Пхалгуна пятница amrita day | 7:06 |
+| 13 марта 2026 года | Пхалгуна пятница mahendra night | 11:15 |
+| 15 марта 2026 года | Пхалгуна воскресенье mahendra day | 6:15 |
+| 16 марта 2026 года | Чайтра понедельник amrita day | 10:24, 12:53 |
+| 16 марта 2026 года | Чайтра понедельник amrita night | 6:37, 8:56 |
+| 16 марта 2026 года | Чайтра понедельник mahendra day | 7:59 |
+| 17 марта 2026 года | Чайтра вторник amrita night | 6:37 |
+| 18 марта 2026 года | Чайтра среда amrita day | 7:12, 11:12, 5:01 |
+| 19 марта 2026 года | Чайтра четверг mahendra day | 7:03 |
+| 20 марта 2026 года | Чайтра пятница amrita day | 7:05, 4:11 |
+| 22 марта 2026 года | Чайтра воскресенье mahendra day | 6:15 |
+| 23 марта 2026 года | Чайтра понедельник amrita day | 7:05, 10:24 |
+| 23 марта 2026 года | Чайтра понедельник amrita night | 2:20, 5:01 |
+| 24 марта 2026 года | Чайтра вторник amrita day | 7:05, 10:23, 12:53, 2:32 |
+| 24 марта 2026 года | Чайтра вторник amrita night | 11:15 |
+| 25 марта 2026 года | Чайтра среда amrita day | 7:12 |
+| 26 марта 2026 года | Чайтра четверг mahendra day | 7:03 |
+| 27 марта 2026 года | Чайтра пятница amrita day | 7:05 |
+| 29 марта 2026 года | Чайтра воскресенье mahendra day | 6:15 |
+| 30 марта 2026 года | Чайтра понедельник amrita day | 2:05 |
+| 30 марта 2026 года | Чайтра понедельник mahendra day | 8:56, 7:38 |
+| 31 марта 2026 года | Чайтра вторник amrita night | 6:37 |
+| 1 апреля 2026 года | Чайтра среда amrita day | 7:12 |
+| 1 апреля 2026 года | Чайтра среда mahendra night | 10:27 |
+| 2 апреля 2026 года | Чайтра четверг amrita night | 12:46 |
+| 2 апреля 2026 года | Чайтра четверг mahendra day | 7:03 |
+| 5 апреля 2026 года | Чайтра воскресенье amrita day | 9:30 |
+| 5 апреля 2026 года | Чайтра воскресенье mahendra day | 6:15 |
+| 5 апреля 2026 года | Чайтра воскресенье mahendra night | 12:01 |
+| 6 апреля 2026 года | Чайтра понедельник amrita day | 7:05 |
+| 6 апреля 2026 года | Чайтра понедельник amrita night | 2:20 |
+| 7 апреля 2026 года | Чайтра вторник amrita night | 6:37 |
+| 8 апреля 2026 года | Чайтра среда amrita day | 7:12 |
+| 10 апреля 2026 года | Чайтра пятница amrita day | 7:05 |
+| 12 апреля 2026 года | Чайтра воскресенье amrita night | 1:00 |
+| 12 апреля 2026 года | Чайтра воскресенье mahendra day | 5:53 |
+| 13 апреля 2026 года | Чайтра понедельник amrita day | 7:05 |
+| 14 апреля 2026 года | Чайтра вторник amrita night | 6:37, 9:33 |
+| 15 апреля 2026 года | Вайшакха среда amrita day | 6:47, 9:23, 1:07 |
+| 16 апреля 2026 года | Вайшакха четверг mahendra day | 6:46 |
+| 17 апреля 2026 года | Вайшакха пятница amrita day | 6:46 |
+| 20 апреля 2026 года | Вайшакха понедельник amrita day | 6:45 |
+| 22 апреля 2026 года | Вайшакха среда amrita day | 6:47 |
+| 23 апреля 2026 года | Вайшакха четверг amrita day | 6:46 |
+| 23 апреля 2026 года | Вайшакха четверг amrita night | 6:46 |
+| 24 апреля 2026 года | Вайшакха пятница amrita day | 6:46 |
+| 25 апреля 2026 года | Вайшакха суббота amrita night | 3:33 |
+| 26 апреля 2026 года | Вайшакха воскресенье mahendra day | 5:52 |
+| 28 апреля 2026 года | Вайшакха вторник amrita night | 6:49, 9:27 |
+| 29 апреля 2026 года | Вайшакха среда amrita day | 6:44 |
+| 29 апреля 2026 года | Вайшакха среда amrita night | 6:49, 1:21, 5:10, 9:44, 3:28 |
+| 30 апреля 2026 года | Вайшакха четверг mahendra day | 6:46 |
+| 1 мая 2026 года | Вайшакха пятница amrita day | 6:46, 10:15 |
+| 2 мая 2026 года | Вайшакха суббота amrita night | 1:52, 6:59 |
+| 4 мая 2026 года | Вайшакха понедельник amrita day | 6:46 |
+| 6 мая 2026 года | Вайшакха среда amrita day | 5:20 |
+| 6 мая 2026 года | Вайшакха среда amrita night | 9:47 |
+| 7 мая 2026 года | Вайшакха четверг mahendra day | 6:46 |
+| 8 мая 2026 года | Вайшакха пятница amrita day | 6:43 |
+| 10 мая 2026 года | Вайшакха воскресенье mahendra day | 5:54 |
+| 11 мая 2026 года | Вайшакха понедельник amrita day | 9:47, 10:16, 12:51 |
+| 11 мая 2026 года | Вайшакха понедельник amrita night | 6:52, 9:02 |
+| 12 мая 2026 года | Вайшакха вторник amrita night | 6:49 |
+| 13 мая 2026 года | Вайшакха среда amrita night | 9:50 |
+| 14 мая 2026 года | Вайшакха четверг amrita night | 12:40 |
+| 14 мая 2026 года | Вайшакха четверг mahendra day | 6:46, 7:45 |
+| 15 мая 2026 года | Вайшакха пятница amrita day | 3:40, 6:07 |
+| 15 мая 2026 года | Вайшакха пятница amrita night | 2:56 |
 
 ## Boundary Index Candidates
 

@@ -31,6 +31,21 @@ export const GAUDIYA_MASA_NAMES = [
   "Govinda"
 ];
 
+export const BENGALI_SOLAR_MONTH_NAMES = [
+  "Vaishakha",
+  "Jyeshtha",
+  "Ashadha",
+  "Shravana",
+  "Bhadra",
+  "Ashvina",
+  "Kartika",
+  "Agrahayana",
+  "Pausha",
+  "Magha",
+  "Phalguna",
+  "Chaitra"
+];
+
 function signedDistanceToNewMoon(date) {
   const angle = tithiAngle(date);
   return angle > 180 ? angle - 360 : angle;
@@ -87,6 +102,16 @@ export function findNewMoonAfter(date) {
 
 function rashiIndex(date) {
   return Math.floor(sunSiderealLongitude(date) / 30);
+}
+
+export function bengaliSolarMonthForDate(date) {
+  const index = rashiIndex(date);
+  return {
+    name: BENGALI_SOLAR_MONTH_NAMES[index],
+    rashi_index: index,
+    solar_longitude: sunSiderealLongitude(date),
+    calculation_model: "sidereal_solar_rashi"
+  };
 }
 
 function sankrantisBetween(start, end) {
@@ -191,6 +216,7 @@ export function masaForDate(date) {
     name,
     type,
     calculation_model: "amavasya_to_amavasya_sankranti_count",
+    bengali_solar_month: bengaliSolarMonthForDate(date),
     display_model: display.display_model,
     display_name: display.display_name,
     display_part: display.display_part,
