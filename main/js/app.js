@@ -901,7 +901,7 @@ function renderDetails(day, options = {}) {
           <div class="compact-detail-card compact-detail-card-wide">
             <span>${tr("panchangDate")}</span>
             <strong>${tr("gaurabdaYear")} ${gaurabdaYearForDay(day)} · ${localizeMasa(model.masa)}</strong>
-            <small>${localizePaksha(model.paksha)} ${localizeTithi(model.tithi)} · ${tr("vedicWeekday")}: ${vedicWeekdayForIsoDate(model.date)} · ${tr("tithiEnds")}: ${model.tithiEnd} · ${tr("tithiAngle")}: ${model.angle} deg</small>
+            <small>${localizeTithi(model.tithi)} · ${tr("vedicWeekday")}: ${vedicWeekdayForIsoDate(model.date)} · ${tr("tithiEnds")}: ${model.tithiEnd} · ${tr("tithiAngle")}: ${model.angle} deg</small>
           </div>
           <div class="compact-detail-card">
             <span>${tr("sun")}</span>
