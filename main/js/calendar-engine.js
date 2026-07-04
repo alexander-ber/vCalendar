@@ -54,6 +54,10 @@ function buildDay(isoDate, location, rules) {
   };
 }
 
+function weekStartForLocation(location) {
+  return location.week_start ?? 1;
+}
+
 function findTithiStartBefore(start, tithiNumber) {
   let right = new Date(start);
   let left = new Date(right.getTime() - 60 * 60 * 1000);
@@ -404,7 +408,7 @@ function attachEvents(days, location, rules, events) {
 
 export function generateCalendar(year, month, location, rules, events) {
   const first = `${year}-${String(month).padStart(2, "0")}-01`;
-  const startOffset = weekdayOfIsoDate(first);
+  const startOffset = (weekdayOfIsoDate(first) - weekStartForLocation(location) + 7) % 7;
   const visibleStart = addDaysToLocalDate(first, -startOffset);
   const total = Math.ceil((startOffset + daysInMonth(year, month)) / 7) * 7;
   const days = [];

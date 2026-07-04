@@ -135,6 +135,7 @@ export const LOCATIONS = [
     id: "mayapur",
     name: "Mayapur, India",
     group: "Индия",
+    week_start: 0,
     lat: 23.4241,
     lon: 88.3883,
     timezone: "Asia/Kolkata"
@@ -143,6 +144,7 @@ export const LOCATIONS = [
     id: "nabadwip",
     name: "Nabadwip, India",
     group: "Индия",
+    week_start: 0,
     lat: 23.4067,
     lon: 88.3686,
     timezone: "Asia/Kolkata"
@@ -151,6 +153,7 @@ export const LOCATIONS = [
     id: "kolkata",
     name: "Kolkata, India",
     group: "Индия",
+    week_start: 0,
     lat: 22.5726,
     lon: 88.3639,
     timezone: "Asia/Kolkata"
@@ -159,6 +162,7 @@ export const LOCATIONS = [
     id: "vrindavan",
     name: "Vrindavan, India",
     group: "Индия",
+    week_start: 0,
     lat: 27.565,
     lon: 77.6593,
     timezone: "Asia/Kolkata"
@@ -167,6 +171,7 @@ export const LOCATIONS = [
     id: "puri",
     name: "Puri, India",
     group: "Индия",
+    week_start: 0,
     lat: 19.8135,
     lon: 85.8312,
     timezone: "Asia/Kolkata"

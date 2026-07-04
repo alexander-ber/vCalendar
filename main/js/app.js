@@ -128,6 +128,8 @@ const I18N = {
     pakshaTermDescription: "Half of the lunar month: Gaura is waxing, Krishna is waning.",
     tithiTerm: "Tithi",
     tithiTermDescription: "Lunar day, calculated from the Moon-Sun angular distance.",
+    varaTerm: "Vara",
+    varaTermDescription: "Traditional weekday name in the Panchang order: Ravivara, Somavara, Mangalavara, Budhavara, Guruvara or Brihaspativara, Shukravara, Shanivara.",
     jyotishTerm: "Jyotish",
     jyotishTermDescription: "Traditional Vedic astrology and calendrical timing system used here for muhurta notes.",
     amritaYogaTerm: "Amrita-yoga",
@@ -160,6 +162,7 @@ const I18N = {
     shownDays: "shown days",
     updated: "updated",
     gregorianDate: "Gregorian date",
+    vedicWeekday: "Panchang weekday",
     isoDate: "ISO date",
     sunrise: "Sunrise",
     sunset: "Sunset",
@@ -313,6 +316,8 @@ const I18N = {
     pakshaTermDescription: "Половина лунного месяца: Гаура - растущая Луна, Кришна - убывающая.",
     tithiTerm: "Титхи",
     tithiTermDescription: "Лунный день, рассчитывается по угловому расстоянию между Луной и Солнцем.",
+    varaTerm: "Вара",
+    varaTermDescription: "Традиционное название дня недели в порядке панчанги: Равивара, Сомавара, Мангалавара, Будхавара, Гурувара или Брихаспативара, Шукравара, Шанивара.",
     jyotishTerm: "Джйотиш",
     jyotishTermDescription: "Традиционная ведическая астрология и система выбора времени, здесь используется для заметок по мухурте.",
     amritaYogaTerm: "Амрита-йога",
@@ -345,6 +350,7 @@ const I18N = {
     shownDays: "показано дней",
     updated: "обновлено",
     gregorianDate: "Григорианская дата",
+    vedicWeekday: "День недели панчанги",
     isoDate: "ISO дата",
     sunrise: "Восход",
     sunset: "Закат",
@@ -476,6 +482,11 @@ const WEEKDAYS = {
   ru: ["Вс", "Пн", "Вт", "Ср", "Чт", "Пт", "Сб"]
 };
 
+const VEDIC_WEEKDAYS = {
+  en: ["Ravivara", "Somavara", "Mangalavara", "Budhavara", "Guruvara / Brihaspativara", "Shukravara", "Shanivara"],
+  ru: ["Равивара", "Сомавара", "Мангалавара", "Будхавара", "Гурувара / Брихаспативара", "Шукравара", "Шанивара"]
+};
+
 function weekStartForLocation(location) {
   return location.week_start ?? 1;
 }
@@ -488,6 +499,10 @@ function orderedWeekdays(location) {
 
 function weekdayOffsetForLocation(isoDate, location) {
   return (weekdayOfIsoDate(isoDate) - weekStartForLocation(location) + 7) % 7;
+}
+
+function vedicWeekdayForIsoDate(isoDate) {
+  return VEDIC_WEEKDAYS[currentLanguage][weekdayOfIsoDate(isoDate)];
 }
 
 const TITHI_RU = {
@@ -858,7 +873,7 @@ function renderDetails(day, options = {}) {
           <div class="compact-detail-card compact-detail-card-wide">
             <span>${tr("gregorianDate")}</span>
             <strong>${gregorianLong(model.date)}</strong>
-            <small>${tr("isoDate")}: ${model.date}</small>
+            <small>${tr("vedicWeekday")}: ${vedicWeekdayForIsoDate(model.date)} · ${tr("isoDate")}: ${model.date}</small>
           </div>
           <div class="compact-detail-card">
             <span>${tr("sun")}</span>
@@ -1182,6 +1197,7 @@ function diagnosticDateTime(value, timezone) {
 function renderSanskritTermsHelp() {
   const terms = [
     ["jyotishTerm", "jyotishTermDescription"],
+    ["varaTerm", "varaTermDescription"],
     ["masaTerm", "masaTermDescription"],
     ["pakshaTerm", "pakshaTermDescription"],
     ["tithiTerm", "tithiTermDescription"],
