@@ -1513,6 +1513,46 @@ button:not(.day):not(.compact-day):not(.theme-toggle):not(.language-toggle):not(
   font-size: calc(13px * var(--font-scale));
 }
 
+.amrita-mahendra-section {
+  gap: 10px;
+}
+
+.amrita-mahendra-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 8px;
+}
+
+.yoga-window-card {
+  display: grid;
+  gap: 4px;
+  border: 1px solid var(--soft-line);
+  border-radius: 8px;
+  padding: 8px 10px;
+  background: var(--panel);
+}
+
+.yoga-window-card span {
+  color: var(--muted);
+  font-size: calc(11px * var(--font-scale));
+  font-weight: 850;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.yoga-window-card strong {
+  color: var(--ink);
+  font-size: calc(13px * var(--font-scale));
+  line-height: 1.35;
+}
+
+.jyotish-research-note small {
+  color: var(--muted);
+  font-size: calc(11px * var(--font-scale));
+  font-weight: 800;
+  line-height: 1.35;
+}
+
 .tithi-muhurta-header small,
 .tithi-muhurta-panel p {
   margin: 0;
@@ -2163,7 +2203,8 @@ button:not(.day):not(.compact-day):not(.theme-toggle):not(.language-toggle):not(
   }
 
   .tithi-muhurta-timing,
-  .tithi-muhurta-actions {
+  .tithi-muhurta-actions,
+  .amrita-mahendra-grid {
     grid-template-columns: 1fr;
   }
 

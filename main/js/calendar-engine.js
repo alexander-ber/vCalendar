@@ -14,6 +14,7 @@ import { masaForDate } from "./masa-engine.js?v=20260704-1";
 import { buildEkadashiEvents } from "./ekadashi-engine.js?v=20260703-1";
 import { matchEventsForDay } from "./event-matcher.js?v=20260703-1";
 import { calculateAmritaMahendra } from "./amrita-mahendra-engine.js?v=20260704-1";
+import { amritaMahendraTemplateForDay } from "./amrita-mahendra-data.js?v=20260706-1";
 
 function buildDay(isoDate, location, rules) {
   const astronomy = dayAstronomy(isoDate, location, rules);
@@ -164,7 +165,12 @@ function annotateAmritaMahendraBoundaries(days) {
     const next = days[i + 1];
     current.jyotish = {
       ...(current.jyotish || {}),
-      amrita_mahendra: calculateAmritaMahendra(current.astronomy.sunrise, current.astronomy.sunset, next.astronomy.sunrise)
+      amrita_mahendra: calculateAmritaMahendra(
+        current.astronomy.sunrise,
+        current.astronomy.sunset,
+        next.astronomy.sunrise,
+        amritaMahendraTemplateForDay(current)
+      )
     };
   }
   if (days.at(-1)) {
