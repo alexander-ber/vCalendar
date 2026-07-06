@@ -104,7 +104,7 @@ Example shape:
 }
 ```
 
-## Current Verification Status
+## Current Runtime Status
 
 The `Ashadha + Saturday` sample is a strong pilot witness:
 
@@ -114,6 +114,13 @@ The `Ashadha + Saturday` sample is a strong pilot witness:
 - Mahendra night: no printed interval
 
 The translated MD Panjika contains enough repeated dates to test most `month x weekday` pairs. However, OCR issues are common in yoga and travel rows, so the MD-derived analysis is exploratory.
+
+The UI now exposes Amrita/Mahendra-yoga as a candidate formula layer:
+
+- localized explanation is taken from the Russian and English translated Panjika MD files;
+- runtime times are still calculated only from local sunrise, sunset, and next sunrise;
+- the enabled selection templates are stored as boundary indexes, not as printed clock times;
+- the layer remains marked as a candidate until the matrix is checked against the Bengali scan.
 
 ## Harness
 
