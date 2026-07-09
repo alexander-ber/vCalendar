@@ -4053,6 +4053,35 @@ export const EVENTS = [
     }
   },
   {
+    "id": "scsmath_541_srivasa_pandit_disappearance",
+    "name": "Disappearance of Srivasa Pandit",
+    "type": "vaishnava_disappearance",
+    "category": "vaishnava_disappearance",
+    "scope": "matched_harekrishnazp_panjika_tithi",
+    "subject": "Srivasa Pandit",
+    "gaudiya_masa": "Vamana",
+    "paksha": "Krishna",
+    "tithi": "Ekadashi",
+    "timing_rule": "sunrise_based",
+    "allow_in_adhika": false,
+    "priority": "medium",
+    "source_status": "matched_by_name_type_tithi",
+    "description": "Disappearance day of Srivasa Pandit, the dear associate of Sri Gauranga and one of the principal participants in Mahaprabhu's sankirtan pastimes.",
+    "source_url": "http://harekrishnazp.info/materialy/vajshnavskij-kalendar/1177-shrivas-pandit.html",
+    "i18n": {
+      "en": {
+        "name": "Disappearance of Srivasa Pandit",
+        "description": "Disappearance day of Srivasa Pandit, the dear associate of Sri Gauranga and one of the principal participants in Mahaprabhu's sankirtan pastimes.",
+        "full_description": "Srivasa Pandit is one of the eternal associates of Sri Chaitanya Mahaprabhu and is honored as the representative of pure devotional service among the Pancha-tattva. His home in Navadvipa, Srivasa Angan, became the sacred place of Mahaprabhu's nightly kirtans and many confidential sankirtan pastimes.\n\nSrivasa Pandit lived with his brothers Sri Rama, Sri Nidhi and Sripati, worshiping Krishna and bathing daily in the Ganga. His wife, Malini Devi, was closely connected with Mother Sachi and cared for young Nimai with deep affection. In Gaura-lila, Srivasa Pandit offered his home, family, heart and life completely to the service of Sri Gauranga.\n\nThe disappearance day of Srivasa Pandit is observed on Vamana masa, Krishna Ekadashi."
+      },
+      "ru": {
+        "name": "День ухода Шриваса Пандита",
+        "description": "День ухода Шриваса Пандита, дорогого спутника Шри Гауранги и одного из главных участников санкиртана-лил Махапрабху.",
+        "full_description": "Шривас Пандит - один из вечных спутников Шри Чайтаньи Махапрабху и почитается как представитель чистого преданного служения среди Панча-таттвы. Его дом в Навадвипе, Шривас-Анган, стал священным местом ночных киртанов Махапрабху и многих сокровенных санкиртана-лил.\n\nШривас Пандит жил вместе со своими братьями Шри Рамой, Шри Нидхи и Шрипати, поклоняясь Кришне и ежедневно принимая омовение в Ганге. Его супруга Малини Деви была близко связана с Матерью Шачи и с глубокой любовью заботилась о маленьком Нимае. В Гаура-лиле Шривас Пандит полностью посвятил свой дом, семью, сердце и жизнь служению Шри Гауранге.\n\nДень ухода Шриваса Пандита отмечается в Вамана-масу, на Кришна Экадаши."
+      }
+    }
+  },
+  {
     "id": "hkzp_541_день_ухода_сварупы_дамодары_госвами",
     "name": "Disappearance of Svarupy Damodary Gosvami",
     "type": "vaishnava_disappearance",
