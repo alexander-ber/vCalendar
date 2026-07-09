@@ -49,25 +49,15 @@ export const AMRITA_MAHENDRA_SOURCE = {
   i18n: {
     en: {
       title: "Amrita / Mahendra-yoga",
-      source: "Formula layer reconstructed from the Russian and English Sri Navadvipa Panjika MD files.",
-      note:
-        "The runtime calculation uses only local sunrise, sunset and the next sunrise. The printed Panjika rows are used to infer which 1/15 day or night segments are selected; printed clock times are not used as hidden date overrides.",
-      amrita:
-        "The Panjika states that Amrita-yoga dispels the inauspiciousness of bisti, vyatipata, papa-yogas, vara-bela and kala-bela, just as sunlight removes darkness. A journey begun in Amrita-yoga brings the desired auspicious result.",
-      mahendra:
-        "Mahendra-yoga is another auspicious muhurta window printed by the Panjika. In this POC it is resolved through the same local 1/15 day and night division model.",
-      status: "Candidate matrix inferred from Panjika rows; keep verifying against the Bengali scan."
+      summary:
+        "Auspicious windows for travel and new undertakings, calculated for the selected location.",
+      status: "the time formula is local; the selection table is still being verified."
     },
     ru: {
       title: "Амрита / Махендра-йога",
-      source: "Формульный слой восстановлен по русскому и английскому MD-файлам Шри Навадвипа Панжики.",
-      note:
-        "Расчёт в приложении использует только местный восход, закат и следующий восход. Строки печатной панжики используются для восстановления того, какие 1/15 части дня или ночи выбираются; готовые часы из панжики не используются как скрытые переопределения дат.",
-      amrita:
-        "Панжика говорит, что Амрита-йога рассеивает неблагоприятность бишти, вьятипаты, папа-йог, вара-белы и кала-белы, подобно тому как солнечный свет уничтожает тьму. Путешествие, начатое в Амрита-йогу, приносит желаемый благоприятный плод.",
-      mahendra:
-        "Махендра-йога - ещё одно благоприятное мухурта-окно, печатаемое в панжике. В этом POC оно разворачивается через ту же локальную модель деления дня и ночи на 15 частей.",
-      status: "Кандидатная матрица восстановлена по строкам панжики; продолжаем сверку с бенгальским сканом."
+      summary:
+        "Благоприятные окна для поездок и новых начинаний, рассчитанные для выбранного места.",
+      status: "время считается локально, таблица выбора ещё сверяется."
     }
   }
 };

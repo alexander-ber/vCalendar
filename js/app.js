@@ -1,11 +1,11 @@
-import { generateCalendarRange, viewModelForDay } from "./calendar-engine.js?v=20260706-1";
+import { generateCalendarRange, viewModelForDay } from "./calendar-engine.js?v=20260707-1";
 import { EVENTS } from "./events-data.js?v=20260630-2";
 import { LOCATIONS } from "./locations-data.js?v=20260704-1";
 import { RULES } from "./rules-data.js?v=20260703-1";
 import { formatDateTime } from "./date-utils.js?v=20260528-8";
 import { nakshatraJyotishForNumber } from "./nakshatra-data.js?v=20260628-1";
 import { tithiMuhurtaForNumber } from "./tithi-muhurta-data.js?v=20260628-1";
-import { AMRITA_MAHENDRA_SOURCE } from "./amrita-mahendra-data.js?v=20260706-1";
+import { AMRITA_MAHENDRA_SOURCE } from "./amrita-mahendra-data.js?v=20260707-1";
 
 const locationSelect = document.querySelector("#locationSelect");
 const periodFromInput = document.querySelector("#periodFromInput");
@@ -138,12 +138,11 @@ const I18N = {
     mahendraYogaTerm: "Mahendra-yoga",
     mahendraYogaTermDescription: "A supportive muhurta window printed in the Panjika. Its formula is being verified from the month-weekday rule before it is shown as calculated time.",
     yogaResearchNoteTitle: "Amrita / Mahendra-yoga",
-    yogaResearchNoteDescription: "Calculated from local sunrise, sunset, and next sunrise by dividing day and night into 15 parts. The selection matrix is reconstructed from the Russian and English Panjika MD files and remains marked as a candidate layer.",
+    yogaResearchNoteDescription: "Auspicious windows for travel and beginnings, calculated for the selected location.",
     yogaDaytime: "Day",
     yogaNighttime: "Night",
     noYogaWindows: "No calculated windows for this category.",
-    yogaCandidateStatus: "Candidate formula",
-    yogaSource: "Source model",
+    yogaCandidateStatus: "Experimental",
     nakshatraTerm: "Nakshatra",
     nakshatraTermDescription: "One of 27 lunar mansions. Each spans 13°20' of the sidereal zodiac.",
     padaTerm: "Pada",
@@ -333,12 +332,11 @@ const I18N = {
     mahendraYogaTerm: "Махендра-йога",
     mahendraYogaTermDescription: "Поддерживающее мухурта-окно, которое печатается в панжике. Формула проверяется по правилу месяц-день недели перед выводом рассчитанного времени.",
     yogaResearchNoteTitle: "Амрита / Махендра-йога",
-    yogaResearchNoteDescription: "Рассчитывается от местного восхода, заката и следующего восхода через деление дня и ночи на 15 частей. Матрица выбора восстановлена по русскому и английскому MD-файлам панжики и пока помечена как кандидатная.",
+    yogaResearchNoteDescription: "Благоприятные окна для поездок и начинаний, рассчитанные для выбранного места.",
     yogaDaytime: "День",
     yogaNighttime: "Ночь",
     noYogaWindows: "Для этой категории нет рассчитанных окон.",
-    yogaCandidateStatus: "Кандидатная формула",
-    yogaSource: "Модель источника",
+    yogaCandidateStatus: "Экспериментально",
     nakshatraTerm: "Накшатра",
     nakshatraTermDescription: "Одно из 27 лунных созвездий. Каждая накшатра занимает 13°20' сидерического зодиака.",
     padaTerm: "Пада",
@@ -1045,11 +1043,8 @@ function renderAmritaMahendraSection(day) {
         ${renderYogaWindowGroup(tr("mahendraYogaTerm"), tr("yogaNighttime"), data.mahendraNight, day.location.timezone)}
       </div>
       <aside class="jyotish-research-note">
-        <strong>${tr("yogaCandidateStatus")}</strong>
-        <span>${source.note}</span>
-        <span>${source.amrita}</span>
-        <span>${source.mahendra}</span>
-        <small>${tr("yogaSource")}: ${source.source}</small>
+        <strong>${source.summary}</strong>
+        <small>${tr("yogaCandidateStatus")}: ${source.status}</small>
       </aside>
     </div>
   `;
