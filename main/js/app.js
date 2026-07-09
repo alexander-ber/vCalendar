@@ -5,7 +5,7 @@ import { RULES } from "./rules-data.js?v=20260703-1";
 import { formatDateTime } from "./date-utils.js?v=20260528-8";
 import { nakshatraJyotishForNumber } from "./nakshatra-data.js?v=20260628-1";
 import { tithiMuhurtaForNumber } from "./tithi-muhurta-data.js?v=20260628-1";
-import { AMRITA_MAHENDRA_SOURCE } from "./amrita-mahendra-data.js?v=20260707-1";
+import { AMRITA_MAHENDRA_SOURCE } from "./amrita-mahendra-data.js?v=20260709-2";
 
 const locationSelect = document.querySelector("#locationSelect");
 const periodFromInput = document.querySelector("#periodFromInput");
@@ -138,7 +138,7 @@ const I18N = {
     mahendraYogaTerm: "Mahendra-yoga",
     mahendraYogaTermDescription: "A supportive muhurta window printed in the Panjika. Its formula is being verified from the month-weekday rule before it is shown as calculated time.",
     yogaResearchNoteTitle: "Amrita / Mahendra-yoga",
-    yogaResearchNoteDescription: "Auspicious windows for travel and beginnings, calculated for the selected location.",
+    yogaResearchNoteDescription: "Favorable muhurta windows for travel and beginnings. Times are recalculated for the selected city from local sunrise, sunset, and next sunrise.",
     yogaDaytime: "Day",
     yogaNighttime: "Night",
     noYogaWindows: "No calculated windows for this category.",
@@ -332,7 +332,7 @@ const I18N = {
     mahendraYogaTerm: "Махендра-йога",
     mahendraYogaTermDescription: "Поддерживающее мухурта-окно, которое печатается в панжике. Формула проверяется по правилу месяц-день недели перед выводом рассчитанного времени.",
     yogaResearchNoteTitle: "Амрита / Махендра-йога",
-    yogaResearchNoteDescription: "Благоприятные окна для поездок и начинаний, рассчитанные для выбранного места.",
+    yogaResearchNoteDescription: "Благоприятные мухурта-окна для поездок и начинаний. Время пересчитывается для выбранного города от местного восхода, заката и следующего восхода.",
     yogaDaytime: "День",
     yogaNighttime: "Ночь",
     noYogaWindows: "Для этой категории нет рассчитанных окон.",

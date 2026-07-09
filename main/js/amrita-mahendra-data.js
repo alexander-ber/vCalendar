@@ -50,14 +50,14 @@ export const AMRITA_MAHENDRA_SOURCE = {
     en: {
       title: "Amrita / Mahendra-yoga",
       summary:
-        "Auspicious windows for travel and new undertakings, calculated for the selected location.",
-      status: "the time formula is local; the selection table is still being verified."
+        "Favorable muhurta windows for travel and new undertakings. Times are recalculated for the selected city: the local day and night are divided into 15 parts, then traditional segments are selected.",
+      status: "use as a practical guide; the traditional selection table is still being checked against the Panjika."
     },
     ru: {
       title: "Амрита / Махендра-йога",
       summary:
-        "Благоприятные окна для поездок и новых начинаний, рассчитанные для выбранного места.",
-      status: "время считается локально, таблица выбора ещё сверяется."
+        "Благоприятные мухурта-окна для поездок и новых начинаний. Время пересчитывается для выбранного города: местные день и ночь делятся на 15 частей, затем выбираются традиционные отрезки.",
+      status: "можно использовать как практический ориентир; таблица выбора ещё сверяется с панжикой."
     }
   }
 };
