@@ -159,6 +159,8 @@ const I18N = {
     arunodayaTermDescription: "Pre-dawn period used for Ekadashi purity rules; in the verified Panjika rules it is 96 minutes before sunrise.",
     paranaTerm: "Parana",
     paranaTermDescription: "The proper window for breaking an Ekadashi fast.",
+    paranaTomorrow: "Parana tomorrow",
+    paranaTomorrowStart: "Parana tomorrow: start",
     timezone: "Timezone",
     loading: "Loading calendar...",
     selectedDay: "Selected Day",
@@ -353,6 +355,8 @@ const I18N = {
     arunodayaTermDescription: "Предрассветный период для правил чистоты Экадаши; по проверенным правилам панжики считается как 96 минут до восхода.",
     paranaTerm: "Паран",
     paranaTermDescription: "Правильное окно для выхода из поста Экадаши.",
+    paranaTomorrow: "Паран завтра",
+    paranaTomorrowStart: "Паран завтра: начало",
     timezone: "Часовой пояс",
     loading: "Загрузка календаря...",
     selectedDay: "Выбранный день",
@@ -880,6 +884,16 @@ function eventLabel(event) {
   return localizeEventName(event);
 }
 
+function ekadashiParanaPreview(event, timezone) {
+  if (event.type !== "ekadashi" || !event.parana) return "";
+  const start = event.parana.start ? calendarTime(event.parana.start, timezone) : "";
+  const preferredEnd = event.parana.preferred_end ? calendarTime(event.parana.preferred_end, timezone) : "";
+  const oneFifthEnd = event.parana.one_fifth_end ? calendarTime(event.parana.one_fifth_end, timezone) : "";
+  if (start && preferredEnd) return `${tr("paranaTomorrow")}: ${start}-${preferredEnd}`;
+  if (start && oneFifthEnd) return `${tr("paranaTomorrowStart")} ${start}; ${tr("oneFifthEnd").toLowerCase()} ${oneFifthEnd}`;
+  return "";
+}
+
 function renderDetails(day, options = {}) {
   selectedDate = day.date;
   document.querySelectorAll(".day, .compact-day").forEach((element) => {
@@ -931,6 +945,7 @@ function renderDetails(day, options = {}) {
             <strong>${ekadashiEvents.map((event) => localizeEventName(event)).join(", ")}</strong>
             <p>${ekadashiEvents.map((event) => localizeEventShortDescription(event)).filter(Boolean).join(" ")}</p>
             <small>${ekadashiEvents.map((event) => ekadashiDetailLine(event)).join(" | ")}</small>
+            ${ekadashiEvents.map((event) => ekadashiParanaPreview(event, day.location.timezone)).filter(Boolean).map((line) => `<small>${line}</small>`).join("")}
           </div>`
         : ""
     }
@@ -1501,7 +1516,7 @@ function renderDayButton(day, today, location) {
     </div>
     <div class="times"><span class="time-icon" aria-label="${tr("sun")}">☀</span>${calendarTime(day.astronomy.sunrise, location.timezone)}-${calendarTime(day.astronomy.sunset, location.timezone)}</div>
     <div class="times"><span class="time-icon" aria-label="${tr("moon")}">☾</span>${renderMoonTimesInline(day, location)} · ${Math.round(day.lunar.tithi_angle_at_sunrise)}°</div>
-    ${renderDayEventBadges(events)}
+    ${renderDayEventBadges(events, location.timezone)}
   `;
   button.addEventListener("click", () => renderDetails(day, { scrollToEventDetails: true }));
   return button;
@@ -1539,13 +1554,18 @@ function eventTones(events) {
   return priority.filter((tone) => tones.has(tone));
 }
 
-function renderDayEventBadges(events) {
+function renderDayEventBadges(events, timezone) {
   const maxVisibleEvents = 2;
   const visible = events.slice(0, maxVisibleEvents);
   const hiddenCount = events.length - visible.length;
   return `
     <div class="events">
-      ${visible.map((event) => `<div class="event ${eventClass(event)}">${eventLabel(event)}</div>`).join("")}
+      ${visible
+        .map((event) => {
+          const paranaPreview = ekadashiParanaPreview(event, timezone);
+          return `<div class="event ${eventClass(event)}"><span class="event-main">${eventLabel(event)}</span>${paranaPreview ? `<span class="event-subline">${paranaPreview}</span>` : ""}</div>`;
+        })
+        .join("")}
       ${hiddenCount > 0 ? `<div class="event-more">+${hiddenCount}</div>` : ""}
     </div>
   `;

@@ -1342,6 +1342,19 @@ button:not(.day):not(.compact-day):not(.theme-toggle):not(.language-toggle):not(
   background: var(--ekadashi-soft);
 }
 
+.event-main,
+.event-subline {
+  display: block;
+}
+
+.event-subline {
+  margin-top: 3px;
+  color: color-mix(in srgb, currentColor 72%, var(--text));
+  font-size: calc(11px * var(--font-scale));
+  font-weight: 700;
+  line-height: 1.2;
+}
+
 .event.notice {
   border-style: dashed;
   color: var(--muted);
