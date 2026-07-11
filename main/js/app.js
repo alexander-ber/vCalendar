@@ -5,7 +5,7 @@ import { RULES } from "./rules-data.js?v=20260703-1";
 import { formatDateTime } from "./date-utils.js?v=20260528-8";
 import { nakshatraJyotishForNumber } from "./nakshatra-data.js?v=20260628-1";
 import { tithiMuhurtaForNumber } from "./tithi-muhurta-data.js?v=20260628-1";
-import { AMRITA_MAHENDRA_SOURCE } from "./amrita-mahendra-data.js?v=20260709-2";
+import { AMRITA_MAHENDRA_SOURCE } from "./amrita-mahendra-data.js?v=20260711-1";
 
 const locationSelect = document.querySelector("#locationSelect");
 const periodFromInput = document.querySelector("#periodFromInput");
@@ -133,16 +133,20 @@ const I18N = {
     varaTermDescription: "Traditional weekday name in the Panchang order: Ravivara, Somavara, Mangalavara, Budhavara, Guruvara or Brihaspativara, Shukravara, Shanivara.",
     jyotishTerm: "Jyotish",
     jyotishTermDescription: "Traditional Vedic astrology and calendrical timing system used here for muhurta notes.",
-    amritaYogaTerm: "Amrita-yoga",
-    amritaYogaTermDescription: "Auspicious day or night window used for travel and beginnings. It is derived from local sunrise/sunset divisions, not imported as fixed clock times.",
-    mahendraYogaTerm: "Mahendra-yoga",
-    mahendraYogaTermDescription: "A supportive muhurta window printed in the Panjika. Its formula is being verified from the month-weekday rule before it is shown as calculated time.",
+    amritaYogaTerm: "AMRITA",
+    amritaYogaTermDescription: "A highly favorable Panjika muhurta slot for journeys, worship, and auspicious beginnings. It is treated as capable of neutralizing several travel blemishes.",
+    mahendraYogaTerm: "MAHENDRA",
+    mahendraYogaTermDescription: "A favorable and supportive Panjika muhurta slot for undertakings and travel, selected from the same month-group and weekday table as AMRITA.",
+    vakraYogaTerm: "VAKRA",
+    vakraYogaTermDescription: "A crooked or obstructive Panjika slot. It is generally avoided for important beginnings and journeys unless a stronger rule gives permission.",
+    shunyaYogaTerm: "SHUNYA",
+    shunyaYogaTermDescription: "An empty or void Panjika slot. Traditionally it is not chosen for important beginnings, travel, or auspicious work.",
     yogaResearchNoteTitle: "Amrita / Mahendra-yoga",
     yogaResearchNoteDescription: "Favorable muhurta windows for travel and beginnings. Times are recalculated for the selected city from local sunrise, sunset, and next sunrise.",
     yogaDaytime: "Day",
     yogaNighttime: "Night",
     noYogaWindows: "No calculated windows for this category.",
-    yogaCandidateStatus: "Experimental",
+    yogaCandidateStatus: "Model",
     nakshatraTerm: "Nakshatra",
     nakshatraTermDescription: "One of 27 lunar mansions. Each spans 13°20' of the sidereal zodiac.",
     padaTerm: "Pada",
@@ -329,16 +333,20 @@ const I18N = {
     varaTermDescription: "Традиционное название дня недели в порядке панчанги: Равивара, Сомавара, Мангалавара, Будхавара, Гурувара или Брихаспативара, Шукравара, Шанивара.",
     jyotishTerm: "Джйотиш",
     jyotishTermDescription: "Традиционная ведическая астрология и система выбора времени, здесь используется для заметок по мухурте.",
-    amritaYogaTerm: "Амрита-йога",
-    amritaYogaTermDescription: "Благоприятное окно дня или ночи для путешествий и начинаний. Должно рассчитываться от местного восхода/заката, а не браться как готовое время из панжики.",
-    mahendraYogaTerm: "Махендра-йога",
-    mahendraYogaTermDescription: "Поддерживающее мухурта-окно, которое печатается в панжике. Формула проверяется по правилу месяц-день недели перед выводом рассчитанного времени.",
+    amritaYogaTerm: "AMRITA",
+    amritaYogaTermDescription: "Очень благоприятное мухурта-окно панжики для поездок, поклонения и добрых начинаний. В традиции считается, что оно может нейтрализовать ряд неблагоприятных факторов для путешествия.",
+    mahendraYogaTerm: "MAHENDRA",
+    mahendraYogaTermDescription: "Благоприятное поддерживающее мухурта-окно панжики для дел и поездок; выбирается по той же таблице группы месяца и дня недели, что и AMRITA.",
+    vakraYogaTerm: "VAKRA",
+    vakraYogaTermDescription: "«Кривой», затрудняющий отрезок панжики. Обычно его избегают для важных начинаний и поездок, если нет более сильного разрешающего правила.",
+    shunyaYogaTerm: "SHUNYA",
+    shunyaYogaTermDescription: "«Пустой» отрезок панжики. Традиционно не выбирается для важных начинаний, поездок и благоприятных дел.",
     yogaResearchNoteTitle: "Амрита / Махендра-йога",
     yogaResearchNoteDescription: "Благоприятные мухурта-окна для поездок и начинаний. Время пересчитывается для выбранного города от местного восхода, заката и следующего восхода.",
     yogaDaytime: "День",
     yogaNighttime: "Ночь",
     noYogaWindows: "Для этой категории нет рассчитанных окон.",
-    yogaCandidateStatus: "Экспериментально",
+    yogaCandidateStatus: "Модель",
     nakshatraTerm: "Накшатра",
     nakshatraTermDescription: "Одно из 27 лунных созвездий. Каждая накшатра занимает 13°20' сидерического зодиака.",
     padaTerm: "Пада",
@@ -1069,10 +1077,23 @@ function renderAmritaMahendraSection(day) {
       </div>
       <aside class="jyotish-research-note">
         <strong>${source.summary}</strong>
+        ${renderYogaBasis(data.basis)}
         <small>${tr("yogaCandidateStatus")}: ${source.status}</small>
       </aside>
     </div>
   `;
+}
+
+function renderYogaBasis(basis) {
+  if (!basis) return "";
+  const items = [
+    basis.bengaliSolarMonth,
+    basis.monthGroup,
+    basis.weekday,
+    basis.dayPattern ? `${tr("yogaDaytime")}: ${basis.dayPattern}` : null,
+    basis.nightPattern ? `${tr("yogaNighttime")}: ${basis.nightPattern}` : null
+  ].filter(Boolean);
+  return items.length ? `<small>${items.join(" · ")}</small>` : "";
 }
 
 function renderYogaWindowGroup(title, period, ranges, timezone) {
@@ -1297,6 +1318,8 @@ function renderSanskritTermsHelp() {
     ["padaTerm", "padaTermDescription"],
     ["amritaYogaTerm", "amritaYogaTermDescription"],
     ["mahendraYogaTerm", "mahendraYogaTermDescription"],
+    ["vakraYogaTerm", "vakraYogaTermDescription"],
+    ["shunyaYogaTerm", "shunyaYogaTermDescription"],
     ["siderealLongitudeTerm", "siderealLongitudeTermDescription"],
     ["grahaRulerTerm", "grahaRulerTermDescription"],
     ["pratipatTerm", "pratipatTermDescription"],

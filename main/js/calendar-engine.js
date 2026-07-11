@@ -14,7 +14,7 @@ import { masaForDate } from "./masa-engine.js?v=20260704-1";
 import { buildEkadashiEvents } from "./ekadashi-engine.js?v=20260703-1";
 import { matchEventsForDay } from "./event-matcher.js?v=20260703-1";
 import { calculateAmritaMahendra } from "./amrita-mahendra-engine.js?v=20260704-1";
-import { amritaMahendraTemplateForDay } from "./amrita-mahendra-data.js?v=20260709-2";
+import { amritaMahendraTemplateForDay } from "./amrita-mahendra-data.js?v=20260711-1";
 
 function buildDay(isoDate, location, rules) {
   const astronomy = dayAstronomy(isoDate, location, rules);
