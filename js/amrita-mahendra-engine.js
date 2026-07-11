@@ -41,7 +41,8 @@ export function calculateAmritaMahendra(sunrise, sunset, nextSunrise, template =
     mahendraNight: resolveBoundaryRanges(nightBoundaries, template.mahendraNight),
     dayBoundaries,
     nightBoundaries,
-    templateStatus: template.status || "matrix_pending"
+    templateStatus: template.status || "matrix_pending",
+    basis: template.basis || null
   };
 }
 
