@@ -1848,6 +1848,24 @@ button:not(.day):not(.compact-day):not(.theme-toggle):not(.language-toggle):not(
   font-weight: 750;
 }
 
+.ekadashi-parana-preview {
+  display: flex;
+  align-items: center;
+  min-height: 42px;
+  border: 1px solid color-mix(in srgb, var(--parana) 40%, var(--line));
+  border-left: 5px solid var(--parana);
+  border-radius: 8px;
+  padding: 9px 13px;
+  color: var(--parana);
+  background: var(--parana-soft);
+}
+
+.ekadashi-parana-preview strong {
+  font-size: calc(15px * var(--font-scale));
+  font-weight: 850;
+  line-height: 1.25;
+}
+
 .event-details-panel {
   display: grid;
   gap: 8px;

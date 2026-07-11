@@ -185,7 +185,7 @@ const I18N = {
     paksha: "Paksha",
     tithiSunrise: "Tithi sunrise",
     tithiStarts: "Tithi starts",
-    tithiEnds: "Tithi ends",
+    tithiEnds: "Tithi ending",
     jyotishPanel: "Jyotish",
     tithiJyotisha: "Tithi",
     nakshatraJyotisha: "Nakshatra",
@@ -381,7 +381,7 @@ const I18N = {
     paksha: "Пакша",
     tithiSunrise: "Титхи на восходе",
     tithiStarts: "Начало титхи",
-    tithiEnds: "Титхи до",
+    tithiEnds: "Окончание титхи",
     jyotishPanel: "Джйотиш",
     tithiJyotisha: "Титхи",
     nakshatraJyotisha: "Накшатра",
@@ -894,6 +894,16 @@ function ekadashiParanaPreview(event, timezone) {
   return "";
 }
 
+function renderEkadashiParanaPreview(events, timezone) {
+  const previews = events.map((event) => ekadashiParanaPreview(event, timezone)).filter(Boolean);
+  if (!previews.length) return "";
+  return `
+    <div class="ekadashi-parana-preview">
+      ${previews.map((line) => `<strong>${line}</strong>`).join("")}
+    </div>
+  `;
+}
+
 function renderDetails(day, options = {}) {
   selectedDate = day.date;
   document.querySelectorAll(".day, .compact-day").forEach((element) => {
@@ -908,6 +918,7 @@ function renderDetails(day, options = {}) {
   dayDetails.innerHTML = `
     ${renderParanaPanel(paranaEvents)}
     ${detailEvents.length ? renderEventDetails(detailEvents) : paranaEvents.length ? "" : `<div class="events-empty">${tr("noEvents")}</div>`}
+    ${renderEkadashiParanaPreview(ekadashiEvents, day.location.timezone)}
     ${renderSanskritTermsHelp()}
     <details id="selectedDayPanel" class="collapsible-panel selected-day-collapsible" ${options.scrollToDetails || options.scrollToEventDetails || options.openSelectedDay ? "open" : ""}>
       <summary>
@@ -945,7 +956,6 @@ function renderDetails(day, options = {}) {
             <strong>${ekadashiEvents.map((event) => localizeEventName(event)).join(", ")}</strong>
             <p>${ekadashiEvents.map((event) => localizeEventShortDescription(event)).filter(Boolean).join(" ")}</p>
             <small>${ekadashiEvents.map((event) => ekadashiDetailLine(event)).join(" | ")}</small>
-            ${ekadashiEvents.map((event) => ekadashiParanaPreview(event, day.location.timezone)).filter(Boolean).map((line) => `<small>${line}</small>`).join("")}
           </div>`
         : ""
     }
