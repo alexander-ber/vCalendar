@@ -1,0 +1,25 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" role="img" aria-labelledby="title desc">
+  <title id="title">vCalendar Panchang</title>
+  <desc id="desc">A calendar mark with moon, sun, and tithi grid.</desc>
+  <defs>
+    <linearGradient id="sky" x1="56" y1="32" x2="204" y2="224" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#2E6FB7"/>
+      <stop offset="1" stop-color="#142756"/>
+    </linearGradient>
+    <linearGradient id="paper" x1="68" y1="72" x2="190" y2="196" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#FFF7E4"/>
+      <stop offset="1" stop-color="#F3E1B7"/>
+    </linearGradient>
+  </defs>
+  <circle cx="128" cy="128" r="116" fill="url(#sky)"/>
+  <circle cx="128" cy="128" r="105" fill="none" stroke="#D4A017" stroke-width="8"/>
+  <rect x="58" y="70" width="140" height="122" rx="18" fill="url(#paper)" stroke="#F8D36A" stroke-width="6"/>
+  <path d="M58 96h140" stroke="#D4A017" stroke-width="10" stroke-linecap="round"/>
+  <path d="M91 58v34M165 58v34" stroke="#FFF7E4" stroke-width="12" stroke-linecap="round"/>
+  <path d="M92 124h72M92 150h72" stroke="#2E5FA2" stroke-width="9" stroke-linecap="round" opacity=".72"/>
+  <path d="M96 176h40" stroke="#2E5FA2" stroke-width="9" stroke-linecap="round" opacity=".72"/>
+  <circle cx="184" cy="172" r="27" fill="#D4A017"/>
+  <path d="M191 147a27 27 0 1 0 0 50 35 35 0 1 1 0-50z" fill="#FFF7E4"/>
+  <circle cx="72" cy="54" r="14" fill="#F8D36A"/>
+  <path d="M72 30v10M72 68v10M48 54h10M86 54h10M55 37l7 7M82 64l7 7M89 37l-7 7M62 64l-7 7" stroke="#F8D36A" stroke-width="5" stroke-linecap="round"/>
+</svg>
