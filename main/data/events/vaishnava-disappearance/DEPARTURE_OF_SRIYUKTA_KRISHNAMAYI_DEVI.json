@@ -1,0 +1,38 @@
+{
+  "id": "DEPARTURE_OF_SRIYUKTA_KRISHNAMAYI_DEVI",
+  "runtime_id": "sriyukta_krishnamayi_devi_departure",
+  "type": "vaishnava_disappearance",
+  "category": "vaishnava_disappearance",
+  "scope": "saraswat_math_panjika_tithi",
+  "subject": "Sriyukta Krishnamayi Devi",
+  "rules": {
+    "gaudiya_masa": "Vamana",
+    "paksha": "Gaura",
+    "tithi": "Dashami",
+    "timing_rule": "sunrise_based",
+    "allow_in_adhika": false
+  },
+  "priority": "medium",
+  "source_status": "scsmath_calendar_tithi_reference",
+  "sources": [
+    {
+      "type": "panjika_reference",
+      "url": "https://scsmath.com/events/calendar/index.html",
+      "attribution_required": true
+    }
+  ],
+  "translations": [
+    {
+      "lang": "en",
+      "name": "Departure of Sriyukta Krishnamayi Devi",
+      "short_description": "Departure day of Sriyukta Krishnamayi Devi, observed on Vamana Gaura Dashami.",
+      "full_description": "Sriyukta Krishnamayi Devi is remembered in the Saraswat Math calendar on Vamana Gaura Dashami. This entry records the tithi observance so devotees can remember and honour her departure day in the local Vaishnava calendar."
+    },
+    {
+      "lang": "ru",
+      "name": "День ухода Шриюкты Кришнамайи Деви",
+      "short_description": "День ухода Шриюкты Кришнамайи Деви, отмечаемый на Вамана Гаура Дашами.",
+      "full_description": "Шриюкта Кришнамайи Деви вспоминается в календаре Сарасват Матха на Вамана Гаура Дашами. Эта запись фиксирует тити события, чтобы преданные могли помнить и почтить день её ухода в локальном вайшнавском календаре."
+    }
+  ]
+}
