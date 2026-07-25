@@ -1,0 +1,38 @@
+{
+  "id": "DISAPPEARANCE_OF_TRIDANDI_SWAMI_BHAKTI_KAMAL_MADHUSUDAN_MAHARAJ",
+  "runtime_id": "bhakti_kamal_madhusudan_maharaj_disappearance",
+  "type": "vaishnava_disappearance",
+  "category": "vaishnava_disappearance",
+  "scope": "saraswat_math_panjika_tithi",
+  "subject": "Tridandi-swami Srimad Bhakti Kamal Madhusudan Maharaj",
+  "rules": {
+    "gaudiya_masa": "Vamana",
+    "paksha": "Gaura",
+    "tithi": "Dashami",
+    "timing_rule": "sunrise_based",
+    "allow_in_adhika": false
+  },
+  "priority": "medium",
+  "source_status": "scsmath_calendar_tithi_reference",
+  "sources": [
+    {
+      "type": "panjika_reference",
+      "url": "https://scsmath.com/events/calendar/index.html",
+      "attribution_required": true
+    }
+  ],
+  "translations": [
+    {
+      "lang": "en",
+      "name": "Disappearance of Tridandi-swami Srimad Bhakti Kamal Madhusudan Maharaj",
+      "short_description": "Disappearance day of Tridandi-swami Srimad Bhakti Kamal Madhusudan Maharaj, observed on Vamana Gaura Dashami.",
+      "full_description": "Disappearance of Tridandi-swami Srimad Bhakti Kamal Madhusudan Maharaj\n\nSrimad Madhusudan Maharaj received the title Bhakti Kamal, “the lotus of devotion”, from Srila Bhakti Siddhanta Saraswati Thakur while he was a brahmachari. When Srila Bhakti Raksak Sridhar Dev-Goswami Maharaj gave him sannyas, he named him Bhakti Kamal Madhusudan.\n\nMadhusudan is commonly understood as a name of the Lord connected with His killing of the demon Madhu. Srila Bhakti Sundar Govinda Dev-Goswami Maharaj, however, explained that madhu in the name Madhusudan may also mean “nectar”, “honey”, or, in a deeper sense, rasa. Thus Madhusudan may be understood as “one who relishes and absorbs rasa”. This meaning is sweetly expressed in the name Bhakti Kamal Madhusudan: “one who enjoys the nectar of the lotus of devotion”.\n\nFor a very long time Srimad Madhusudan Maharaj was a friend and affectionate well-wisher of Srila Bhakti Raksak Sridhar Dev-Goswami Maharaj and Srila Bhakti Sundar Govinda Dev-Goswami Maharaj."
+    },
+    {
+      "lang": "ru",
+      "name": "День ухода Триданди Свами Бхакти Камала Мадхусудана Махараджа",
+      "short_description": "День ухода Триданди Свами Бхакти Камала Мадхусудана Махараджа, отмечаемый на Вамана Гаура Дашами.",
+      "full_description": "Уход Триданди Свами Бхакти Камала Мадхусудана Махараджа\n\nШримад Мадхусудан Махарадж получил свой титул Бхакти Камал («лотос преданности») от Шрилы Бхакти Сиддханты Сарасвати Тхакура, будучи брахмачари. Когда Шрила Бхакти Ракшак Шридхар Дев-Госвами Махарадж дал ему санньяс, то он назвал его «Бхакти Камал Мадхусудан».\n\nХотя обычно считается, что Мадхусудан - это имя Господа, относящееся к убийству Им демона по имени Мадху, Шрила Бхакти Сундар Говинда Дев-Госвами Махарадж объяснил, что «мадху» в имени Мадхусудан также может означать «нектар», «мёд» или, в более глубоком смысле, расу. Поэтому Мадхусудан можно понимать как «тот, кто поглощает, наслаждаясь, расу». Этот смысл сладостно выражен в имени «Бхакти Камал Мадхусудан»: «тот, кто наслаждается нектаром лотоса преданности».\n\nШримад Мадхусудан Махарадж на протяжении очень долгого времени был другом и любящим доброжелателем Шрилы Бхакти Ракшака Шридхара Дева-Госвами Махараджа и Шрилы Бхакти Сундара Говинды Дева-Госвами Махараджа."
+    }
+  ]
+}

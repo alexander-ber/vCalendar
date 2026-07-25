@@ -1,0 +1,38 @@
+{
+  "id": "APPEARANCE_OF_SRILA_BHAKTI_VIGYAN_BHARATI_GOSVAMI_MAHARAJ",
+  "runtime_id": "bhakti_vigyan_bharati_appearance",
+  "type": "vaishnava_appearance",
+  "category": "vaishnava_appearance",
+  "scope": "extended_gaudiya",
+  "subject": "Sri Srimad Bhakti Vigyan Bharati Gosvami Maharaj",
+  "rules": {
+    "gaudiya_masa": "Vamana",
+    "paksha": "Gaura",
+    "tithi": "Ekadashi",
+    "timing_rule": "sunrise_based",
+    "allow_in_adhika": false
+  },
+  "priority": "medium",
+  "source_status": "tithi_rule_from_official_biography",
+  "sources": [
+    {
+      "type": "biography_and_tithi_reference",
+      "url": "https://www.visuddhacaitanyavani.com/biography",
+      "attribution_required": true
+    }
+  ],
+  "translations": [
+    {
+      "lang": "en",
+      "name": "Appearance of Srila Bhakti Vigyan Bharati Gosvami Maharaj",
+      "short_description": "Appearance tithi of Sri Srimad Bhakti Vigyan Bharati Gosvami Maharaj. In 2026 it is observed as his 100th Avirbhav Tithi Mahotsav.",
+      "full_description": "Sri Srimad Bhakti Vigyan Bharati Gosvami Maharaj, affectionately addressed by many devotees as Srila Maharaj, appeared on Sayana Ekadashi in Sita-Ramapura, Bankura district, West Bengal, in a Cakravarti brahmana family of the Bharadvaja gotra. His life became a shining example of steady service to Sri Hari, Sri Guru, and the Vaishnavas.\n\nIn his youth he began visiting Sri Syamananda Gaudiya Math, where he heard Srimad-Bhagavatam and received the association of devotees. There he met Srila Bhakti Dayita Madhava Gosvami Maharaj, one of the foremost disciples of Srila Bhaktisiddhanta Sarasvati Thakur, who later became his Gurudev. In 1955 he left home and joined the newly established Sri Caitanya Gaudiya Math in Kolkata, receiving harinama and diksha on Sayana Ekadashi and the name Sri Narottama dasa brahmachari.\n\nSrila Bhakti Dayita Madhava Gosvami Maharaj saw his dedication and entrusted him with many important services: managing Vraja-mandala and Navadvipa-dhama parikramas, arranging pilgrimages, exhibitions, preaching programs, and helping oversee the development of Sri Caitanya Gaudiya Math branches. In 1969 he received sannyasa and the name Sri Bhakti Vigyan Bharati Maharaj.\n\nAfter the disappearance of his Gurudev he served for many years as secretary of Sri Caitanya Gaudiya Math. He was especially honored for his deep knowledge of Gaudiya Math history, his careful service to the Sarasvata line, his translations and publications, and his strong emphasis on Vaishnava-seva and glorification of the devotees.\n\nLater he accepted the responsibility of initiating acharya as a service to his guru-varga and founded Visuddha Caitanya-vani Pracara Kendra. He continued to nourish devotees through hari-katha, remembrance of the acharyas, and affectionate guidance. He entered the eternal service of Sri Sri Radha-Krishna on September 5, 2017, on Ananta Chaturdashi, the disappearance day of Srila Haridas Thakur."
+    },
+    {
+      "lang": "ru",
+      "name": "Явление Шрилы Бхакти Вигьяна Бхарати Госвами Махараджа",
+      "short_description": "День явления Шри Шримад Бхакти Вигьяна Бхарати Госвами Махараджа. В 2026 году отмечается его 100-й Авирбхав Титхи Махотсав.",
+      "full_description": "Шри Шримад Бхакти Вигьян Бхарати Госвами Махарадж, которого многие преданные с любовью называли Шрила Махарадж, явился на Шаяна Экадаши в деревне Сита-Рамапура округа Банкура, Западная Бенгалия, в брахманской семье Чакраварти, принадлежащей к Бхарадваджа-готре. Его жизнь стала ярким примером устойчивого служения Шри Хари, Шри Гуру и вайшнавам.\n\nВ юности он начал посещать Шри Шьямананда Гаудия Матх, где слушал Шримад-Бхагаватам и получил общение преданных. Там он встретил Шрилу Бхакти Даиту Мадхаву Госвами Махараджа, одного из выдающихся учеников Шрилы Бхактисиддханты Сарасвати Тхакура, который позднее стал его Гурудевом. В 1955 году он оставил дом и поселился в недавно основанном Шри Чайтанья Гаудия Матхе в Калькутте, где на Шаяна Экадаши получил харинам, дикшу и имя Шри Нароттама дас Брахмачари.\n\nШрила Бхакти Даита Мадхава Госвами Махарадж видел его преданность и поручил ему множество ответственных служений: организацию Враджа-мандала и Навадвипа-дхама парикрам, сопровождение паломников, устройство выставок, проповеднические программы и участие в развитии филиалов Шри Чайтанья Гаудия Матха. В 1969 году он принял санньясу и имя Шри Бхакти Вигьян Бхарати Махарадж.\n\nПосле ухода своего Гурудева он многие годы служил секретарём Шри Чайтанья Гаудия Матха. Его особенно почитали за глубокое знание истории Гаудия Матха, внимательное служение Сарасвата-линии, переводы и публикации, а также за сильный акцент на вайшнава-севе и прославлении преданных.\n\nПозднее, как служение своему гуру-варге, он принял ответственность инициирующего ачарьи и основал Вишуддха Чайтанья-вани Прачара Кендру. Он продолжал питать преданных харикатхой, памятью об ачарьях и мягким, сердечным руководством. 5 сентября 2017 года, на Ананта Чатурдаши, в день ухода Шрилы Харидаса Тхакура, он вошёл в вечное служение Шри Шри Радха-Кришне."
+    }
+  ]
+}
