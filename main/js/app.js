@@ -1517,6 +1517,59 @@ function stripHtml(value) {
   return String(value || "").replace(/<[^>]*>/g, " ").replace(/\s+/g, " ").trim();
 }
 
+function escapeHtml(value) {
+  return String(value || "")
+    .replaceAll("&", "&amp;")
+    .replaceAll("<", "&lt;")
+    .replaceAll(">", "&gt;")
+    .replaceAll('"', "&quot;")
+    .replaceAll("'", "&#039;");
+}
+
+function renderInlineMarkdown(value) {
+  return escapeHtml(value).replace(/\*\*([^*]+)\*\*/g, "<strong>$1</strong>");
+}
+
+function renderDescriptionMarkdown(value) {
+  const lines = String(value || "").replaceAll("\r\n", "\n").split("\n");
+  const blocks = [];
+  let paragraph = [];
+  let list = [];
+
+  const flushParagraph = () => {
+    if (!paragraph.length) return;
+    blocks.push(`<p>${paragraph.map(renderInlineMarkdown).join("<br>")}</p>`);
+    paragraph = [];
+  };
+
+  const flushList = () => {
+    if (!list.length) return;
+    blocks.push(`<ul>${list.map((item) => `<li>${renderInlineMarkdown(item)}</li>`).join("")}</ul>`);
+    list = [];
+  };
+
+  for (const line of lines) {
+    const trimmed = line.trim();
+    if (!trimmed) {
+      flushParagraph();
+      flushList();
+      continue;
+    }
+    const listMatch = trimmed.match(/^-\s+(.+)$/);
+    if (listMatch) {
+      flushParagraph();
+      list.push(listMatch[1]);
+      continue;
+    }
+    flushList();
+    paragraph.push(trimmed);
+  }
+
+  flushParagraph();
+  flushList();
+  return blocks.join("");
+}
+
 function downloadTextFile(fileName, contents, type) {
   const blob = new Blob([contents], { type });
   const url = URL.createObjectURL(blob);
@@ -2884,7 +2937,8 @@ function renderEventDetails(events) {
 function renderEventDetail(event) {
   const isBioEvent = event.type === "vaishnava_appearance" || event.type === "vaishnava_disappearance";
   const shortDescription = localizeEventShortDescription(event) || eventNarrativeFallback(event, isBioEvent);
-  const fullDescription = localizeEventFullDescription(event);
+  const rawFullDescription = localizeEventFullDescription(event);
+  const fullDescription = rawFullDescription ? renderDescriptionMarkdown(rawFullDescription) : "";
   const structuredNotes = renderEventStructuredNotes(event);
   return `
     <details class="event-detail-card ${eventClass(event)}">
@@ -2907,7 +2961,7 @@ function renderFullDescription(description) {
       <summary aria-label="${tr("showFullDescription")}" title="${tr("showFullDescription")}">
         <span class="full-description-icon" aria-hidden="true"></span>
       </summary>
-      <div class="full-description-body">${description}</div>
+      <div class="full-description-body">${renderDescriptionMarkdown(description)}</div>
     </details>
   `;
 }
