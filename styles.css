@@ -2001,7 +2001,28 @@ button:not(.day):not(.compact-day):not(.theme-toggle):not(.language-toggle):not(
   background: var(--panel);
   font-size: calc(15px * var(--font-scale));
   line-height: 1.55;
-  white-space: pre-wrap;
+}
+
+.full-description-body p {
+  margin: 0 0 12px;
+}
+
+.full-description-body p:last-child,
+.full-description-body ul:last-child {
+  margin-bottom: 0;
+}
+
+.full-description-body ul {
+  margin: 0 0 12px;
+  padding-left: 22px;
+}
+
+.full-description-body li {
+  margin: 4px 0;
+}
+
+.full-description-body strong {
+  font-weight: 850;
 }
 
 .event-detail-card.ekadashi {
