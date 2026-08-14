@@ -230,6 +230,7 @@ const I18N = {
     calculationDetails: "Calculation details",
     calculationEngine: "Calculation engine",
     panjikaSource: "Panjika source",
+    openPanjikaHtml: "Open Panjika HTML",
     openPanjikaDocx: "Open Panjika DOCX",
     ekadashiRule: "Ekadashi rule",
     shiftReason: "Shift reason",
@@ -430,6 +431,7 @@ const I18N = {
     calculationDetails: "Детали расчёта",
     calculationEngine: "Движок расчёта",
     panjikaSource: "Источник панжики",
+    openPanjikaHtml: "Открыть HTML панжики",
     openPanjikaDocx: "Открыть DOCX панжики",
     ekadashiRule: "Правило Экадаши",
     shiftReason: "Причина переноса",
@@ -1288,11 +1290,22 @@ function renderDiagnosticRows(rows) {
 }
 
 function renderPanjikaDocLink() {
-  const href =
+  const paths =
     currentLanguage === "ru"
-      ? "docs/panjika/Sri_Navadvipa_Panjika_Gaurabda_540_RU_v2.docx"
-      : "docs/panjika/Sri_Navadvipa_Panjika_Gaurabda_540_EN_v2.docx";
-  return `<a class="diagnostic-link" href="${href}" target="_blank" rel="noopener">${tr("openPanjikaDocx")}</a>`;
+      ? {
+          html: "docs/panjika/Ponjika_Sri_Gourabda_540_RU_full.html",
+          docx: "docs/panjika/Sri_Navadvipa_Panjika_Gaurabda_540_RU_v2.docx"
+        }
+      : {
+          html: "docs/panjika/Ponjika_Sri_Gourabda_540_EN_full.html",
+          docx: "docs/panjika/Sri_Navadvipa_Panjika_Gaurabda_540_EN_v2.docx"
+        };
+  return `
+    <span class="diagnostic-links">
+      <a class="diagnostic-link" href="${paths.html}" target="_blank" rel="noopener">${tr("openPanjikaHtml")}</a>
+      <a class="diagnostic-link" href="${paths.docx}" target="_blank" rel="noopener">${tr("openPanjikaDocx")}</a>
+    </span>
+  `;
 }
 
 function diagnosticTime(value, timezone) {
