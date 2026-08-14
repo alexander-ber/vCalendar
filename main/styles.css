@@ -2095,6 +2095,12 @@ button:not(.day):not(.compact-day):not(.theme-toggle):not(.language-toggle):not(
   text-decoration: none;
 }
 
+.diagnostic-links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px 12px;
+}
+
 .diagnostic-link:hover,
 .diagnostic-link:focus-visible {
   text-decoration: underline;
