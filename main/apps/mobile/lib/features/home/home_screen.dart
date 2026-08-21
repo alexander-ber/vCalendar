@@ -1083,6 +1083,38 @@ class _SettingsSheetState extends State<_SettingsSheet> {
             _SettingsGroup(
               title: _isRu ? 'Обновления' : 'Updates',
               children: [
+                FutureBuilder<PackageInfo>(
+                  future: _packageInfoFuture,
+                  builder: (context, snapshot) {
+                    final packageInfo = snapshot.data;
+                    final version = packageInfo == null
+                        ? '0.1.0+1'
+                        : '${packageInfo.version}+${packageInfo.buildNumber}';
+                    return Container(
+                      width: double.infinity,
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 14,
+                        vertical: 12,
+                      ),
+                      decoration: BoxDecoration(
+                        color: Theme.of(
+                          context,
+                        ).colorScheme.surfaceContainerHighest,
+                        borderRadius: BorderRadius.circular(16),
+                        border: Border.all(
+                          color: Theme.of(context).colorScheme.outline,
+                        ),
+                      ),
+                      child: Text(
+                        _isRu
+                            ? 'Версия приложения: $version'
+                            : 'App version: $version',
+                        style: const TextStyle(fontWeight: FontWeight.w900),
+                      ),
+                    );
+                  },
+                ),
+                const SizedBox(height: 12),
                 SwitchListTile.adaptive(
                   value: _settings.contentAutoUpdate,
                   onChanged: (value) {
@@ -1150,25 +1182,6 @@ class _SettingsSheetState extends State<_SettingsSheet> {
                   ),
                 ],
               ],
-            ),
-            const SizedBox(height: 12),
-            FutureBuilder<PackageInfo>(
-              future: _packageInfoFuture,
-              builder: (context, snapshot) {
-                final packageInfo = snapshot.data;
-                final version = packageInfo == null
-                    ? '0.1.0+1'
-                    : '${packageInfo.version}+${packageInfo.buildNumber}';
-                return Text(
-                  _isRu ? 'Версия APK: $version' : 'APK version: $version',
-                  style: TextStyle(
-                    color: Theme.of(
-                      context,
-                    ).extension<VCalendarColors>()!.mutedText,
-                    fontWeight: FontWeight.w800,
-                  ),
-                );
-              },
             ),
           ],
         ),
