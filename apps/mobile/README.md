@@ -60,10 +60,23 @@ If no device is provided, the script prints available Flutter devices.
 From the repository root:
 
 ```sh
-apps/mobile/scripts/build-apk.sh debug
+apps/mobile/scripts/build-apk.sh
 ```
 
-The APK is copied to `~/Downloads`.
+The script increments the Flutter build number in `pubspec.yaml`, builds a
+release APK, and copies it to `~/Downloads`.
+
+To set a specific version:
+
+```sh
+apps/mobile/scripts/build-apk.sh 0.1.1+1
+```
+
+To build another mode:
+
+```sh
+apps/mobile/scripts/build-apk.sh debug
+```
 
 ## Architecture Direction
 

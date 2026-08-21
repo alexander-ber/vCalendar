@@ -205,16 +205,29 @@ apps/mobile/scripts/build-seed-db.sh
 Для сборки APK и копирования в Downloads:
 
 ```bash
-apps/mobile/scripts/build-apk.sh debug
+apps/mobile/scripts/build-apk.sh
 ```
 
 APK появится в:
 
 ```text
-~/Downloads/vCalendar-debug-<git-hash>.apk
+~/Downloads/vcalendar-<version>-release.apk
 ```
 
-Если есть незакоммиченные изменения, в имени будет `dirty`.
+Если версия не передана параметром, скрипт сам увеличит номер билда после `+`
+в `apps/mobile/pubspec.yaml`: например `0.1.0+1` станет `0.1.0+2`.
+
+Чтобы указать версию явно:
+
+```bash
+apps/mobile/scripts/build-apk.sh 0.1.1+1
+```
+
+Чтобы собрать debug APK:
+
+```bash
+apps/mobile/scripts/build-apk.sh debug
+```
 
 ## 7. Как закоммитить и пушнуть через CLI
 
@@ -263,13 +276,12 @@ apps/mobile/scripts/build-seed-db.sh
 cd apps/mobile
 flutter analyze
 flutter test
-flutter build apk --debug
 cd ../..
 git status --short
 git add data/events data/events.json js/events-data.js apps/mobile/assets/db/vcalendar_seed.sqlite apps/mobile/lib apps/mobile/pubspec.yaml apps/mobile/pubspec.lock i18n docs
 git commit -m "Update calendar content"
 git push origin main
-apps/mobile/scripts/build-apk.sh debug
+apps/mobile/scripts/build-apk.sh
 ```
 
 Перед `git add` всегда проверь `git status --short`, чтобы случайно не добавить временные файлы.
