@@ -261,6 +261,7 @@ const I18N = {
     bhishmaPanchakaNotice: "Bhishma Panchaka is active",
     bhishmaPanchakaUpcomingNotice: "Bhishma Panchaka starts in this period",
     visibleInMonth: "Visible in this period from",
+    from: "from",
     to: "to",
     forLocation: "for the selected location",
     noFast: "no fast",
@@ -462,6 +463,7 @@ const I18N = {
     bhishmaPanchakaNotice: "Идёт Бхишма Панчака",
     bhishmaPanchakaUpcomingNotice: "Бхишма Панчака начнётся в этом периоде",
     visibleInMonth: "Видимо в этом периоде с",
+    from: "с",
     to: "по",
     forLocation: "для выбранного места",
     noFast: "без поста",
@@ -1750,43 +1752,77 @@ function isChaturmasyaDay(day) {
   return day.masa.normal_masa_name === "Vamana" && day.lunar.paksha === "Gaura" && day.lunar.tithi_at_sunrise.number === 15;
 }
 
-function periodNotice(activeLabelKey, upcomingLabelKey, days) {
+function selectedCalendarLocation() {
+  return LOCATIONS.find((item) => item.id === locationSelect.value) || LOCATIONS[0];
+}
+
+function calculateSingleDay(isoDate, location) {
+  return generateCalendarRange(isoDate, isoDate, location, RULES, EVENTS).days[0];
+}
+
+function expandPeriodDays(visibleDays, predicate) {
+  if (!visibleDays.length) return [];
+  const location = selectedCalendarLocation();
+  let first = visibleDays[0];
+  let last = visibleDays.at(-1);
+
+  for (let i = 0; i < 370; i += 1) {
+    const previousDate = shiftIsoDateByDays(first.date, -1);
+    const previous = calculateSingleDay(previousDate, location);
+    if (!predicate(previous)) break;
+    first = previous;
+  }
+
+  for (let i = 0; i < 370; i += 1) {
+    const nextDate = shiftIsoDateByDays(last.date, 1);
+    const next = calculateSingleDay(nextDate, location);
+    if (!predicate(next)) break;
+    last = next;
+  }
+
+  return [first, last];
+}
+
+function periodNotice(activeLabelKey, upcomingLabelKey, days, predicate) {
   if (!days.length) return "";
+  const [firstDay, lastDay] = expandPeriodDays(days, predicate);
   const today = currentIsoDate();
-  const labelKey = today < days[0].date ? upcomingLabelKey : activeLabelKey;
+  if (lastDay.date < today) return "";
+  const labelKey = today < firstDay.date ? upcomingLabelKey : activeLabelKey;
   return `
     <div>
-      ${tr(labelKey)}
-      <small>${tr("visibleInMonth")} ${gregorianShort(days[0].date)} ${tr("to")} ${gregorianShort(days.at(-1).date)} ${tr("forLocation")}.</small>
+      ${tr(labelKey)} ${tr("from")} ${gregorianShort(firstDay.date)} ${tr("to")} ${gregorianShort(lastDay.date)}
     </div>
   `;
 }
 
-function currentOrFuturePeriodDays(days) {
-  return days.length && days.at(-1).date >= currentIsoDate() ? days : [];
-}
-
 function renderMasaNotice(days) {
   const notices = [];
-  const adhikaDays = currentOrFuturePeriodDays(days.filter((day) => day.lunar.masa_type === "adhika"));
-  if (adhikaDays.length) notices.push(periodNotice("purushottamaNotice", "purushottamaUpcomingNotice", adhikaDays));
+  const adhikaDays = days.filter((day) => day.lunar.masa_type === "adhika");
+  if (adhikaDays.length) notices.push(periodNotice(
+    "purushottamaNotice",
+    "purushottamaUpcomingNotice",
+    adhikaDays,
+    (day) => day.lunar.masa_type === "adhika"
+  ));
 
-  const chaturmasyaDays = currentOrFuturePeriodDays(days.filter(isChaturmasyaDay));
-  if (chaturmasyaDays.length) notices.push(periodNotice("chaturmasyaNotice", "chaturmasyaUpcomingNotice", chaturmasyaDays));
+  const chaturmasyaDays = days.filter(isChaturmasyaDay);
+  if (chaturmasyaDays.length) notices.push(periodNotice("chaturmasyaNotice", "chaturmasyaUpcomingNotice", chaturmasyaDays, isChaturmasyaDay));
 
-  const karttikDays = currentOrFuturePeriodDays(days.filter(isKarttikDay));
-  if (karttikDays.length) notices.push(periodNotice("karttikNotice", "karttikUpcomingNotice", karttikDays));
+  const karttikDays = days.filter(isKarttikDay);
+  if (karttikDays.length) notices.push(periodNotice("karttikNotice", "karttikUpcomingNotice", karttikDays, isKarttikDay));
 
-  const bhishmaPanchakaDays = currentOrFuturePeriodDays(days.filter(isBhishmaPanchakaDay));
-  if (bhishmaPanchakaDays.length) notices.push(periodNotice("bhishmaPanchakaNotice", "bhishmaPanchakaUpcomingNotice", bhishmaPanchakaDays));
+  const bhishmaPanchakaDays = days.filter(isBhishmaPanchakaDay);
+  if (bhishmaPanchakaDays.length) notices.push(periodNotice("bhishmaPanchakaNotice", "bhishmaPanchakaUpcomingNotice", bhishmaPanchakaDays, isBhishmaPanchakaDay));
 
-  if (!notices.length) {
+  const visibleNotices = notices.filter(Boolean);
+  if (!visibleNotices.length) {
     masaNotice.hidden = true;
     masaNotice.innerHTML = "";
     return;
   }
   masaNotice.hidden = false;
-  masaNotice.innerHTML = notices.join("");
+  masaNotice.innerHTML = visibleNotices.join("");
 }
 
 function gregorianShort(isoDate) {
