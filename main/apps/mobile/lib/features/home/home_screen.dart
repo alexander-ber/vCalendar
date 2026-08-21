@@ -130,11 +130,13 @@ class _HomeScreenState extends State<HomeScreen> {
     );
     final events = await _repository.loadRuleEvents(lang: widget.settings.lang);
     final languages = await _repository.loadAvailableLanguages();
+    final glossary = await _repository.loadGlossary(lang: widget.settings.lang);
     return _HomeState(
       summary: summary,
       locations: locations,
       events: events,
       languages: languages,
+      glossary: glossary,
     );
   }
 
@@ -215,6 +217,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     padding: EdgeInsets.all(isTablet ? 28 : 16),
                     child: _Header(
                       isRu: _isRu,
+                      onInfoTap: () => _openGlossarySheet(state.glossary),
                       onSearchTap: () => _openSearchSheet(
                         selectedLocation: selectedLocation,
                         events: state.events,
@@ -291,6 +294,9 @@ class _HomeScreenState extends State<HomeScreen> {
                       if (panchangaMonthDays.isNotEmpty) ...[
                         _MasaPeriodNoticeCard(
                           days: panchangaMonthDays,
+                          location: selectedLocation,
+                          calculateDay: (date, location) =>
+                              _calculateDay(date: date, location: location),
                           isRu: _isRu,
                         ),
                         const SizedBox(height: 16),
@@ -415,6 +421,15 @@ class _HomeScreenState extends State<HomeScreen> {
               : (event) => _jumpToEvent(event, selectedLocation),
         );
       },
+    );
+  }
+
+  Future<void> _openGlossarySheet(List<GlossaryTerm> terms) {
+    return showModalBottomSheet<void>(
+      context: context,
+      isScrollControlled: true,
+      showDragHandle: true,
+      builder: (context) => _GlossarySheet(terms: terms, isRu: _isRu),
     );
   }
 
@@ -663,11 +678,13 @@ class _HomeScreenState extends State<HomeScreen> {
 class _Header extends StatelessWidget {
   const _Header({
     required this.isRu,
+    required this.onInfoTap,
     required this.onSearchTap,
     required this.onSettingsTap,
   });
 
   final bool isRu;
+  final VoidCallback onInfoTap;
   final VoidCallback onSearchTap;
   final VoidCallback onSettingsTap;
 
@@ -699,6 +716,13 @@ class _Header extends StatelessWidget {
               ),
             ),
             const SizedBox(width: 8),
+            _AnimatedHeaderIconButton(
+              tooltip: isRu ? 'Термины' : 'Terms',
+              onPressed: onInfoTap,
+              icon: const Icon(Icons.info_outline),
+              spin: false,
+            ),
+            const SizedBox(width: 6),
             _AnimatedHeaderIconButton(
               tooltip: isRu ? 'Поиск' : 'Search',
               onPressed: onSearchTap,
@@ -798,6 +822,106 @@ class _HeaderTitleLine extends StatelessWidget {
             ),
         ],
       ),
+    );
+  }
+}
+
+class _GlossarySheet extends StatelessWidget {
+  const _GlossarySheet({required this.terms, required this.isRu});
+
+  final List<GlossaryTerm> terms;
+  final bool isRu;
+
+  @override
+  Widget build(BuildContext context) {
+    final bottomPadding = MediaQuery.viewInsetsOf(context).bottom;
+    final colors = Theme.of(context).extension<VCalendarColors>()!;
+    return SafeArea(
+      child: SingleChildScrollView(
+        padding: EdgeInsets.fromLTRB(20, 4, 20, bottomPadding + 20),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(
+              children: [
+                Expanded(
+                  child: Text(
+                    isRu ? 'Термины' : 'Terms',
+                    style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                      fontSize: 18,
+                      fontWeight: FontWeight.w900,
+                    ),
+                  ),
+                ),
+                IconButton(
+                  tooltip: isRu ? 'Закрыть' : 'Close',
+                  onPressed: () => Navigator.of(context).pop(),
+                  icon: const Icon(Icons.close),
+                ),
+              ],
+            ),
+            const SizedBox(height: 12),
+            if (terms.isEmpty)
+              Text(
+                isRu
+                    ? 'Справочник терминов пока пуст.'
+                    : 'The glossary is empty for now.',
+                style: TextStyle(color: colors.mutedText),
+              )
+            else
+              for (final term in terms) ...[
+                _GlossaryTermTile(term: term),
+                const SizedBox(height: 8),
+              ],
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class _GlossaryTermTile extends StatelessWidget {
+  const _GlossaryTermTile({required this.term});
+
+  final GlossaryTerm term;
+
+  @override
+  Widget build(BuildContext context) {
+    final full = term.fullDescription?.trim();
+    final hasFull = full != null && full.isNotEmpty;
+    return DecoratedBox(
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(14),
+        border: Border.all(color: Theme.of(context).colorScheme.outline),
+      ),
+      child: hasFull
+          ? ExpansionTile(
+              tilePadding: const EdgeInsets.symmetric(horizontal: 14),
+              childrenPadding: const EdgeInsets.fromLTRB(14, 0, 14, 14),
+              title: Text(
+                term.title,
+                style: const TextStyle(fontWeight: FontWeight.w900),
+              ),
+              subtitle: Text(term.shortDescription),
+              children: [
+                Align(alignment: Alignment.centerLeft, child: Text(full)),
+              ],
+            )
+          : Padding(
+              padding: const EdgeInsets.all(14),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    term.title,
+                    style: const TextStyle(fontWeight: FontWeight.w900),
+                  ),
+                  const SizedBox(height: 4),
+                  Text(term.shortDescription),
+                ],
+              ),
+            ),
     );
   }
 }
@@ -1809,9 +1933,17 @@ class _LocationPromptCard extends StatelessWidget {
 }
 
 class _MasaPeriodNoticeCard extends StatelessWidget {
-  const _MasaPeriodNoticeCard({required this.days, required this.isRu});
+  const _MasaPeriodNoticeCard({
+    required this.days,
+    required this.location,
+    required this.calculateDay,
+    required this.isRu,
+  });
 
   final List<PanchangaDay> days;
+  final CalendarLocation? location;
+  final PanchangaDay Function(DateTime date, CalendarLocation location)
+  calculateDay;
   final bool isRu;
 
   @override
@@ -1837,14 +1969,16 @@ class _MasaPeriodNoticeCard extends StatelessWidget {
                   color: scheme.onSecondaryContainer,
                 ),
               ),
-              const SizedBox(height: 3),
-              Text(
-                notices[index].subtitle,
-                style: TextStyle(
-                  color: scheme.onSecondaryContainer.withValues(alpha: 0.76),
-                  fontWeight: FontWeight.w700,
+              if (notices[index].subtitle.isNotEmpty) ...[
+                const SizedBox(height: 3),
+                Text(
+                  notices[index].subtitle,
+                  style: TextStyle(
+                    color: scheme.onSecondaryContainer.withValues(alpha: 0.76),
+                    fontWeight: FontWeight.w700,
+                  ),
                 ),
-              ),
+              ],
             ],
           ],
         ),
@@ -1856,57 +1990,85 @@ class _MasaPeriodNoticeCard extends StatelessWidget {
     return [
       _notice(
         days.where((day) => day.masaType == 'adhika').toList(growable: false),
+        predicate: (day) => day.masaType == 'adhika',
         activeTitle: isRu
             ? 'Идёт Пурушоттама маса'
             : 'Purushottama Maas is active',
         upcomingTitle: isRu
-            ? 'Пурушоттама маса начнётся в этом периоде'
-            : 'Purushottama Maas starts in this period',
+            ? 'Пурушоттама маса начнётся'
+            : 'Purushottama Maas starts',
       ),
       _notice(
         days.where(_isChaturmasyaDay).toList(growable: false),
+        predicate: _isChaturmasyaDay,
         activeTitle: isRu ? 'Идёт Чатурмасья' : 'Chaturmasya is active',
-        upcomingTitle: isRu
-            ? 'Чатурмасья начнётся в этом периоде'
-            : 'Chaturmasya starts in this period',
+        upcomingTitle: isRu ? 'Чатурмасья начнётся' : 'Chaturmasya starts',
       ),
       _notice(
         days.where(_isKarttikDay).toList(growable: false),
+        predicate: _isKarttikDay,
         activeTitle: isRu
             ? 'Идёт Карттик / Дамодара маса'
             : 'Karttik / Damodara month is active',
         upcomingTitle: isRu
-            ? 'Карттик / Дамодара маса начнётся в этом периоде'
-            : 'Karttik / Damodara month starts in this period',
+            ? 'Карттик / Дамодара маса начнётся'
+            : 'Karttik / Damodara month starts',
       ),
       _notice(
         days.where(_isBhishmaPanchakaDay).toList(growable: false),
+        predicate: _isBhishmaPanchakaDay,
         activeTitle: isRu
             ? 'Идёт Бхишма-панчака'
             : 'Bhishma Panchaka is active',
         upcomingTitle: isRu
-            ? 'Бхишма-панчака начнётся в этом периоде'
-            : 'Bhishma Panchaka starts in this period',
+            ? 'Бхишма-панчака начнётся'
+            : 'Bhishma Panchaka starts',
       ),
     ].whereType<_PeriodNotice>().toList(growable: false);
   }
 
   _PeriodNotice? _notice(
     List<PanchangaDay> periodDays, {
+    required bool Function(PanchangaDay day) predicate,
     required String activeTitle,
     required String upcomingTitle,
   }) {
     if (periodDays.isEmpty) return null;
+    final expanded = _expandPeriod(periodDays, predicate);
     final today = _dateOnly(DateTime.now());
-    final first = _dateOnly(periodDays.first.date);
-    final last = _dateOnly(periodDays.last.date);
+    final first = _dateOnly(expanded.first.date);
+    final last = _dateOnly(expanded.last.date);
     if (last.isBefore(today)) return null;
 
-    final title = today.isBefore(first) ? upcomingTitle : activeTitle;
-    final subtitle = isRu
-        ? 'Видимо в этом периоде с ${_shortDate(periodDays.first.date)} по ${_shortDate(periodDays.last.date)} для выбранного места.'
-        : 'Visible in this period from ${_shortDate(periodDays.first.date)} to ${_shortDate(periodDays.last.date)} for the selected location.';
-    return _PeriodNotice(title: title, subtitle: subtitle);
+    final baseTitle = today.isBefore(first) ? upcomingTitle : activeTitle;
+    final range = isRu
+        ? 'с ${_shortDate(first)} по ${_shortDate(last)}'
+        : 'from ${_shortDate(first)} to ${_shortDate(last)}';
+    return _PeriodNotice(title: '$baseTitle $range', subtitle: '');
+  }
+
+  List<PanchangaDay> _expandPeriod(
+    List<PanchangaDay> visibleDays,
+    bool Function(PanchangaDay day) predicate,
+  ) {
+    final currentLocation = location;
+    if (currentLocation == null) return visibleDays;
+    var first = visibleDays.first;
+    var last = visibleDays.last;
+
+    for (var i = 0; i < 370; i += 1) {
+      final previousDate = first.date.subtract(const Duration(days: 1));
+      final previous = calculateDay(previousDate, currentLocation);
+      if (!predicate(previous)) break;
+      first = previous;
+    }
+    for (var i = 0; i < 370; i += 1) {
+      final nextDate = last.date.add(const Duration(days: 1));
+      final next = calculateDay(nextDate, currentLocation);
+      if (!predicate(next)) break;
+      last = next;
+    }
+    return [first, last];
   }
 
   bool _isChaturmasyaDay(PanchangaDay day) {
@@ -1972,7 +2134,9 @@ class _MasaPeriodNoticeCard extends StatelessWidget {
       'Dec',
     ];
     final month = isRu ? monthsRu[date.month - 1] : monthsEn[date.month - 1];
-    return isRu ? '${date.day} $month' : '$month ${date.day}';
+    return isRu
+        ? '${date.day} $month ${date.year}'
+        : '$month ${date.day}, ${date.year}';
   }
 }
 
@@ -2998,12 +3162,17 @@ class _JyotishDaySection extends StatelessWidget {
         _JyotishInfoCard(
           title: isRu ? 'Титхи' : 'Tithi',
           headline: tithi.name,
-          meta: '${tithi.groupLabel} · ${tithi.quality} · ${tithi.evaluation}',
+          meta: '${tithi.groupLabel} · ${tithi.quality}',
           isRu: isRu,
           lines: [
+            _JyotishLine(isRu ? 'Оценка' : 'Evaluation', tithi.evaluation),
             _JyotishLine(
-              isRu ? 'Период' : 'Period',
-              '${formatter.dateTime(panchanga.tithiStart, timezone)} - ${formatter.dateTime(panchanga.tithiEnd, timezone)}',
+              isRu ? 'Начало' : 'Start',
+              formatter.dateTime(panchanga.tithiStart, timezone),
+            ),
+            _JyotishLine(
+              isRu ? 'Окончание' : 'End',
+              formatter.dateTime(panchanga.tithiEnd, timezone),
             ),
             _JyotishLine(isRu ? 'Смысл' : 'Meaning', tithi.summary),
           ],
@@ -3018,6 +3187,11 @@ class _JyotishDaySection extends StatelessWidget {
               '${nakshatra.group} · ${isRu ? 'пада' : 'pada'} ${nakshatra.pada} · ${nakshatra.sector}',
           isRu: isRu,
           lines: [
+            _JyotishLine(isRu ? 'Группа' : 'Group', nakshatra.group),
+            _JyotishLine(
+              isRu ? 'Пада / сектор' : 'Pada / sector',
+              '${nakshatra.pada} · ${nakshatra.sector}',
+            ),
             _JyotishLine(isRu ? 'Управитель' : 'Ruler', nakshatra.ruler),
             _JyotishLine(isRu ? 'Символ' : 'Symbol', nakshatra.symbol),
             _JyotishLine(isRu ? 'Божество' : 'Deity', nakshatra.deity),
@@ -3281,13 +3455,30 @@ class _JyotishAdviceBlock extends StatelessWidget {
                 for (final value in values)
                   Padding(
                     padding: const EdgeInsets.only(bottom: 3),
-                    child: Text(
-                      value,
-                      style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                        color: onSurface,
-                        fontWeight: FontWeight.w700,
-                        height: 1.22,
-                      ),
+                    child: Row(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          '• ',
+                          style: Theme.of(context).textTheme.bodyMedium
+                              ?.copyWith(
+                                color: baseColor,
+                                fontWeight: FontWeight.w900,
+                                height: 1.22,
+                              ),
+                        ),
+                        Expanded(
+                          child: Text(
+                            value,
+                            style: Theme.of(context).textTheme.bodyMedium
+                                ?.copyWith(
+                                  color: onSurface,
+                                  fontWeight: FontWeight.w700,
+                                  height: 1.22,
+                                ),
+                          ),
+                        ),
+                      ],
                     ),
                   ),
               ],
@@ -3542,12 +3733,14 @@ class _HomeState {
     required this.locations,
     required this.events,
     required this.languages,
+    required this.glossary,
   });
 
   final MobileSeedSummary summary;
   final List<CalendarLocation> locations;
   final List<MobileEvent> events;
   final List<String> languages;
+  final List<GlossaryTerm> glossary;
 }
 
 class _EventFilterDefinition {
