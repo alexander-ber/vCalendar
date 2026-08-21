@@ -1,0 +1,12 @@
+{
+  "schema_version": 1,
+  "updated_at": "2026-08-21T08:29:28.792Z",
+  "strings": {
+    "app_title": "Sree Caitanya Sridhar Seva Ashram",
+    "settings": "Settings",
+    "language": "Language",
+    "location": "Location",
+    "compact_view": "Compact view",
+    "seed_ready": "Offline database is ready"
+  }
+}

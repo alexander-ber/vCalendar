@@ -76,7 +76,8 @@ class MobileCalendarRepository {
     final db = await _database.open();
     final rows = await db.rawQuery(
       '''
-      select e.id, e.category, e.event_type, e.masa, e.paksha, e.tithi,
+      select e.id, e.category, e.event_type, e.masa, null as masa_type,
+             e.paksha, e.tithi,
              e.allow_in_adhika, e.priority,
              coalesce(i.name, fallback.name, e.id) as name,
              coalesce(i.short_description, fallback.short_description) as short_description,
@@ -92,7 +93,8 @@ class MobileCalendarRepository {
          and e.source_status != 'needs_exact_lunar_rule'
       union all
       select k.id, 'ekadashi' as category, 'ekadashi' as event_type,
-             coalesce(k.masa, '*') as masa, k.paksha, 'Ekadashi' as tithi,
+             coalesce(k.masa, '*') as masa, k.masa_type,
+             k.paksha, 'Ekadashi' as tithi,
              case when k.masa_type = 'adhika' then 1 else 0 end as allow_in_adhika,
              10 as priority,
              coalesce(ki.name, kfallback.name, k.id) as name,

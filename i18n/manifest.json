@@ -1,10 +1,10 @@
 {
   "schema_version": 1,
-  "updated_at": "2026-08-14T00:00:00Z",
+  "updated_at": "2026-08-21T08:29:28.792Z",
   "languages": [
     {
       "lang": "ru",
-      "version": 1,
+      "version": 2,
       "required_app_schema": 1,
       "files": {
         "ui": "i18n/ru/ui.json",
@@ -16,7 +16,7 @@
     },
     {
       "lang": "en",
-      "version": 1,
+      "version": 2,
       "required_app_schema": 1,
       "files": {
         "ui": "i18n/en/ui.json",

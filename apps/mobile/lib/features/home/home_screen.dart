@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:package_info_plus/package_info_plus.dart';
 import 'package:path_provider/path_provider.dart';
 
 import '../../app/app_settings.dart';
@@ -31,11 +32,7 @@ const _eventFilterDefinitions = [
     ruLabel: 'Праздники',
     enLabel: 'Festivals',
   ),
-  _EventFilterDefinition(
-    id: 'avatar',
-    ruLabel: 'Аватары',
-    enLabel: 'Avatars',
-  ),
+  _EventFilterDefinition(id: 'avatar', ruLabel: 'Аватары', enLabel: 'Avatars'),
   _EventFilterDefinition(
     id: 'divine_appearance',
     ruLabel: 'Явления Господа',
@@ -66,11 +63,7 @@ const _eventFilterDefinitions = [
     ruLabel: 'Божества / храмы',
     enLabel: 'Deities / temples',
   ),
-  _EventFilterDefinition(
-    id: 'other',
-    ruLabel: 'Другое',
-    enLabel: 'Other',
-  ),
+  _EventFilterDefinition(id: 'other', ruLabel: 'Другое', enLabel: 'Other'),
 ];
 
 class HomeScreen extends StatefulWidget {
@@ -101,6 +94,7 @@ class _HomeScreenState extends State<HomeScreen> {
   late DateTime _selectedDate;
   late DateTime _periodFrom;
   late DateTime _periodTo;
+  final Map<String, PanchangaDay> _panchangaCache = {};
 
   bool get _isRu => widget.settings.lang == 'ru';
 
@@ -115,10 +109,7 @@ class _HomeScreenState extends State<HomeScreen> {
     _database = AppDatabase();
     _repository = MobileCalendarRepository(_database);
     _contentUpdateService = ContentUpdateService(_database);
-    _state = _load();
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      _runAutoContentUpdateIfDue();
-    });
+    _state = _load(checkContentUpdates: true);
   }
 
   @override
@@ -129,7 +120,10 @@ class _HomeScreenState extends State<HomeScreen> {
     }
   }
 
-  Future<_HomeState> _load() async {
+  Future<_HomeState> _load({bool checkContentUpdates = false}) async {
+    if (checkContentUpdates && widget.settings.contentAutoUpdate) {
+      await _checkStartupContentUpdates();
+    }
     final summary = await _repository.loadSummary(lang: widget.settings.lang);
     final locations = await _repository.loadLocations(
       lang: widget.settings.lang,
@@ -151,6 +145,9 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   void _changeSettings(AppSettings settings) {
+    if (settings.locationId != widget.settings.locationId) {
+      _panchangaCache.clear();
+    }
     widget.onSettingsChanged(settings);
   }
 
@@ -192,11 +189,23 @@ class _HomeScreenState extends State<HomeScreen> {
                 : [
                     for (final day in monthDays)
                       if (day.inCurrentMonth)
-                        _panchangaCalculator.calculateDay(
+                        _calculateDay(
                           date: day.date,
                           location: selectedLocation,
                         ),
                   ];
+            final selectedPanchanga = selectedLocation == null
+                ? null
+                : _calculateDay(
+                    date: _selectedDate,
+                    location: selectedLocation,
+                  );
+            final nextSelectedPanchanga = selectedLocation == null
+                ? null
+                : _calculateDay(
+                    date: _selectedDate.add(const Duration(days: 1)),
+                    location: selectedLocation,
+                  );
             final selectedEvents = eventMap[_dateKey(_selectedDate)] ?? [];
 
             return CustomScrollView(
@@ -310,7 +319,13 @@ class _HomeScreenState extends State<HomeScreen> {
                           date: _selectedDate,
                           location: selectedLocation,
                           events: selectedEvents,
-                          panchangaCalculator: _panchangaCalculator,
+                          panchanga: selectedPanchanga,
+                          nextPanchanga: nextSelectedPanchanga,
+                          bengaliSolarMonth: selectedPanchanga == null
+                              ? null
+                              : _panchangaCalculator.bengaliSolarMonth(
+                                  selectedPanchanga.sunrise,
+                                ),
                           isRu: _isRu,
                         ),
                       ),
@@ -371,19 +386,13 @@ class _HomeScreenState extends State<HomeScreen> {
     return result;
   }
 
-  Future<void> _runAutoContentUpdateIfDue() async {
-    if (!widget.settings.contentAutoUpdate) return;
-    final due = await _preferences.isContentUpdateDue(
-      widget.settings.contentUpdateIntervalHours,
-    );
-    if (!due) return;
+  Future<void> _checkStartupContentUpdates() async {
     try {
       final result = await _contentUpdateService.checkAndInstall();
       await _preferences.markContentUpdateChecked(result.checkedAt);
-      if (result.installedFiles > 0 && mounted) _reload();
     } catch (error) {
       await _preferences.markContentUpdateChecked(DateTime.now().toUtc());
-      debugPrint('Content auto-update skipped: $error');
+      debugPrint('Startup content update skipped: $error');
     }
   }
 
@@ -449,10 +458,7 @@ class _HomeScreenState extends State<HomeScreen> {
       !date.isAfter(to);
       date = date.add(const Duration(days: 1))
     ) {
-      final panchanga = _panchangaCalculator.calculateDay(
-        date: date,
-        location: location,
-      );
+      final panchanga = _calculateDay(date: date, location: location);
       final matched = _matchEventsForDay(panchanga, events);
       for (final event in matched) {
         final stamp = DateTime.now().toUtc();
@@ -503,10 +509,7 @@ class _HomeScreenState extends State<HomeScreen> {
       date.year == year;
       date = date.add(const Duration(days: 1))
     ) {
-      final panchanga = _panchangaCalculator.calculateDay(
-        date: date,
-        location: location,
-      );
+      final panchanga = _calculateDay(date: date, location: location);
       if (_matchEventsForDay(panchanga, [event], applyFilters: false).isEmpty) {
         continue;
       }
@@ -545,10 +548,7 @@ class _HomeScreenState extends State<HomeScreen> {
   }) {
     final result = <String, List<MobileEvent>>{};
     for (final day in days.where((item) => item.inCurrentMonth)) {
-      final panchanga = _panchangaCalculator.calculateDay(
-        date: day.date,
-        location: location,
-      );
+      final panchanga = _calculateDay(date: day.date, location: location);
       final matched = _matchEventsForDay(panchanga, events);
       if (matched.isNotEmpty) {
         result[_dateKey(day.date)] = matched;
@@ -566,6 +566,9 @@ class _HomeScreenState extends State<HomeScreen> {
     return events
         .where((event) {
           if (applyFilters && !_eventAllowedBySettings(event)) return false;
+          if (event.masaType == 'adhika' && panchanga.masaType != 'adhika') {
+            return false;
+          }
           if (event.masa != '*' &&
               event.masa != panchanga.masa &&
               event.masa != panchanga.normalMasaName) {
@@ -640,6 +643,21 @@ class _HomeScreenState extends State<HomeScreen> {
 
   String _dateKey(DateTime date) =>
       '${date.year.toString().padLeft(4, '0')}-${date.month.toString().padLeft(2, '0')}-${date.day.toString().padLeft(2, '0')}';
+
+  PanchangaDay _calculateDay({
+    required DateTime date,
+    required CalendarLocation location,
+  }) {
+    final key = '${location.id}:${_dateKey(date)}';
+    final cached = _panchangaCache[key];
+    if (cached != null) return cached;
+    final calculated = _panchangaCalculator.calculateDay(
+      date: date,
+      location: location,
+    );
+    _panchangaCache[key] = calculated;
+    return calculated;
+  }
 }
 
 class _Header extends StatelessWidget {
@@ -825,6 +843,7 @@ class _SettingsSheetState extends State<_SettingsSheet> {
   bool _checkingUpdates = false;
   String? _locationStatus;
   String? _updateStatus;
+  late final Future<PackageInfo> _packageInfoFuture;
   bool get _isRu => _settings.lang == 'ru';
 
   @override
@@ -833,6 +852,7 @@ class _SettingsSheetState extends State<_SettingsSheet> {
     _settings = widget.settings;
     _periodFrom = widget.periodFrom;
     _periodTo = widget.periodTo;
+    _packageInfoFuture = PackageInfo.fromPlatform();
   }
 
   void _change(AppSettings settings) {
@@ -1130,6 +1150,25 @@ class _SettingsSheetState extends State<_SettingsSheet> {
                   ),
                 ],
               ],
+            ),
+            const SizedBox(height: 12),
+            FutureBuilder<PackageInfo>(
+              future: _packageInfoFuture,
+              builder: (context, snapshot) {
+                final packageInfo = snapshot.data;
+                final version = packageInfo == null
+                    ? '0.1.0+1'
+                    : '${packageInfo.version}+${packageInfo.buildNumber}';
+                return Text(
+                  _isRu ? 'Версия APK: $version' : 'APK version: $version',
+                  style: TextStyle(
+                    color: Theme.of(
+                      context,
+                    ).extension<VCalendarColors>()!.mutedText,
+                    fontWeight: FontWeight.w800,
+                  ),
+                );
+              },
             ),
           ],
         ),
@@ -2469,31 +2508,31 @@ class _SelectedDayCard extends StatelessWidget {
     required this.date,
     required this.location,
     required this.events,
-    required this.panchangaCalculator,
+    required this.panchanga,
+    required this.nextPanchanga,
+    required this.bengaliSolarMonth,
     required this.isRu,
   });
 
   final DateTime date;
   final CalendarLocation? location;
   final List<MobileEvent> events;
-  final PanchangaCalculator panchangaCalculator;
+  final PanchangaDay? panchanga;
+  final PanchangaDay? nextPanchanga;
+  final String? bengaliSolarMonth;
   final bool isRu;
 
   @override
   Widget build(BuildContext context) {
     final colors = Theme.of(context).extension<VCalendarColors>()!;
     final currentLocation = location;
-    final panchanga = currentLocation == null
+    final currentPanchanga = panchanga;
+    final paranaTomorrow = currentLocation == null
         ? null
-        : panchangaCalculator.calculateDay(
-            date: date,
-            location: currentLocation,
-          );
-    final nextPanchanga = currentLocation == null
-        ? null
-        : panchangaCalculator.calculateDay(
-            date: date.add(const Duration(days: 1)),
-            location: currentLocation,
+        : _paranaTomorrowLabel(
+            events: events,
+            nextPanchanga: nextPanchanga,
+            timezone: currentLocation.timezone,
           );
     return Card(
       child: Padding(
@@ -2524,25 +2563,30 @@ class _SelectedDayCard extends StatelessWidget {
               style: TextStyle(color: colors.mutedText),
             ),
             const SizedBox(height: 12),
-            if (currentLocation == null || panchanga == null)
+            if (currentLocation == null || currentPanchanga == null)
               Text(isRu ? 'Выберите место.' : 'Select a location.')
             else ...[
+              if (paranaTomorrow != null) ...[
+                _ParanaTomorrowNotice(label: paranaTomorrow),
+                const SizedBox(height: 12),
+              ],
               _EventsSection(events: events, isRu: isRu),
               const SizedBox(height: 14),
               _PanchangaSummaryGrid(
-                panchanga: panchanga,
+                panchanga: currentPanchanga,
                 timezone: currentLocation.timezone,
                 isRu: isRu,
-                masaLabel: _masaLabel(panchanga, isRu),
-                tithiLabel: _tithiLabel(panchanga.tithiAtSunrise.number, isRu),
+                masaLabel: _masaLabel(currentPanchanga, isRu),
+                tithiLabel: _tithiLabel(
+                  currentPanchanga.tithiAtSunrise.number,
+                  isRu,
+                ),
               ),
               const SizedBox(height: 14),
               _JyotishDaySection(
-                panchanga: panchanga,
+                panchanga: currentPanchanga,
                 nextSunrise: nextPanchanga?.sunrise,
-                bengaliSolarMonth: panchangaCalculator.bengaliSolarMonth(
-                  panchanga.sunrise,
-                ),
+                bengaliSolarMonth: bengaliSolarMonth ?? '-',
                 timezone: currentLocation.timezone,
                 isRu: isRu,
               ),
@@ -2702,6 +2746,62 @@ class _SelectedDayCard extends StatelessWidget {
             'Amavasya',
           ];
     return names[number - 1];
+  }
+
+  String? _paranaTomorrowLabel({
+    required List<MobileEvent> events,
+    required PanchangaDay? nextPanchanga,
+    required String timezone,
+  }) {
+    if (!events.any((event) => event.category == 'ekadashi')) return null;
+    final next = nextPanchanga;
+    if (next == null || next.tithiAtSunrise.shortName != 'Dvadashi') {
+      return null;
+    }
+
+    final daylight = next.sunset.difference(next.sunrise);
+    final oneThirdEnd = next.sunrise.add(
+      Duration(milliseconds: (daylight.inMilliseconds / 3).round()),
+    );
+    var end = oneThirdEnd;
+    final tithiEnd = next.tithiEnd;
+    if (tithiEnd != null &&
+        tithiEnd.isAfter(next.sunrise) &&
+        tithiEnd.isBefore(oneThirdEnd)) {
+      end = tithiEnd;
+    }
+    final formatter = const PanchangaFormatter();
+    return isRu
+        ? 'Паран завтра: ${formatter.time(next.sunrise, timezone)}-${formatter.time(end, timezone)}'
+        : 'Parana tomorrow: ${formatter.time(next.sunrise, timezone)}-${formatter.time(end, timezone)}';
+  }
+}
+
+class _ParanaTomorrowNotice extends StatelessWidget {
+  const _ParanaTomorrowNotice({required this.label});
+
+  final String label;
+
+  @override
+  Widget build(BuildContext context) {
+    final colors = Theme.of(context).extension<VCalendarColors>()!;
+    return DecoratedBox(
+      decoration: BoxDecoration(
+        color: colors.parana.withValues(alpha: 0.35),
+        borderRadius: BorderRadius.circular(14),
+        border: Border.all(color: colors.parana),
+      ),
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+        child: Text(
+          label,
+          style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+            fontWeight: FontWeight.w900,
+            color: Theme.of(context).colorScheme.onSurface,
+          ),
+        ),
+      ),
+    );
   }
 }
 
