@@ -118,6 +118,21 @@ class MobileCalendarRepository {
     return rows.map(MobileEvent.fromMap).toList(growable: false);
   }
 
+  Future<List<GlossaryTerm>> loadGlossary({required String lang}) async {
+    final db = await _database.open();
+    final rows = await db.rawQuery(
+      '''
+      select g.term_id, g.title, g.short_description, g.full_description
+        from glossary_i18n g
+        join glossary_terms t on t.id = g.term_id
+       where g.lang = ?
+       order by t.sort_order, g.title
+      ''',
+      [lang],
+    );
+    return rows.map(GlossaryTerm.fromMap).toList(growable: false);
+  }
+
   Future<String?> _metaValue(Database db, String key) async {
     final rows = await db.query(
       'app_meta',
@@ -129,6 +144,29 @@ class MobileCalendarRepository {
     if (rows.isEmpty) return null;
     return rows.first['value'] as String?;
   }
+}
+
+class GlossaryTerm {
+  const GlossaryTerm({
+    required this.id,
+    required this.title,
+    required this.shortDescription,
+    required this.fullDescription,
+  });
+
+  factory GlossaryTerm.fromMap(Map<String, Object?> map) {
+    return GlossaryTerm(
+      id: map['term_id']! as String,
+      title: map['title']! as String,
+      shortDescription: map['short_description'] as String? ?? '',
+      fullDescription: map['full_description'] as String?,
+    );
+  }
+
+  final String id;
+  final String title;
+  final String shortDescription;
+  final String? fullDescription;
 }
 
 class MobileSeedSummary {
