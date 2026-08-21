@@ -5,7 +5,8 @@
     "external_validation": false
   },
   "ekadashi": {
-    "arunodaya_mode": "fixed_offset",
+    "arunodaya_mode": "previous_night_fraction",
+    "arunodaya_night_fraction": 0.06666666666666667,
     "arunodaya_offset_minutes": 96,
     "classification_priority": [
       "viddha",

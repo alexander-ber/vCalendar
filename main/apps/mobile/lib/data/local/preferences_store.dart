@@ -12,6 +12,9 @@ class PreferencesStore {
   static const _onlyDaysWithEvents = 'only_days_with_events';
   static const _enabledEventCategories = 'enabled_event_categories';
   static const _vaishnavaEventKind = 'vaishnava_event_kind';
+  static const _contentAutoUpdate = 'content_auto_update';
+  static const _contentUpdateIntervalHours = 'content_update_interval_hours';
+  static const _lastContentUpdateCheck = 'last_content_update_check';
 
   Future<AppSettings> load() async {
     final prefs = await SharedPreferences.getInstance();
@@ -32,6 +35,12 @@ class PreferencesStore {
       vaishnavaEventKind:
           prefs.getString(_vaishnavaEventKind) ??
           AppSettings.defaults.vaishnavaEventKind,
+      contentAutoUpdate:
+          prefs.getBool(_contentAutoUpdate) ??
+          AppSettings.defaults.contentAutoUpdate,
+      contentUpdateIntervalHours:
+          prefs.getInt(_contentUpdateIntervalHours) ??
+          AppSettings.defaults.contentUpdateIntervalHours,
     );
   }
 
@@ -48,6 +57,29 @@ class PreferencesStore {
       settings.enabledEventCategories.toList()..sort(),
     );
     await prefs.setString(_vaishnavaEventKind, settings.vaishnavaEventKind);
+    await prefs.setBool(_contentAutoUpdate, settings.contentAutoUpdate);
+    await prefs.setInt(
+      _contentUpdateIntervalHours,
+      settings.contentUpdateIntervalHours,
+    );
+  }
+
+  Future<bool> isContentUpdateDue(int intervalHours) async {
+    final prefs = await SharedPreferences.getInstance();
+    final rawValue = prefs.getString(_lastContentUpdateCheck);
+    if (rawValue == null) return true;
+    final lastCheck = DateTime.tryParse(rawValue);
+    if (lastCheck == null) return true;
+    final interval = Duration(hours: intervalHours.clamp(1, 24 * 30));
+    return DateTime.now().toUtc().difference(lastCheck.toUtc()) >= interval;
+  }
+
+  Future<void> markContentUpdateChecked(DateTime checkedAt) async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setString(
+      _lastContentUpdateCheck,
+      checkedAt.toUtc().toIso8601String(),
+    );
   }
 
   AppThemeMode _themeModeFromString(String? value) {

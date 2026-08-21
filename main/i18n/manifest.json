@@ -1,0 +1,30 @@
+{
+  "schema_version": 1,
+  "updated_at": "2026-08-14T00:00:00Z",
+  "languages": [
+    {
+      "lang": "ru",
+      "version": 1,
+      "required_app_schema": 1,
+      "files": {
+        "ui": "i18n/ru/ui.json",
+        "events": "i18n/ru/events.json",
+        "ekadashi": "i18n/ru/ekadashi.json",
+        "glossary": "i18n/ru/glossary.json",
+        "locations": "i18n/ru/locations.json"
+      }
+    },
+    {
+      "lang": "en",
+      "version": 1,
+      "required_app_schema": 1,
+      "files": {
+        "ui": "i18n/en/ui.json",
+        "events": "i18n/en/events.json",
+        "ekadashi": "i18n/en/ekadashi.json",
+        "glossary": "i18n/en/glossary.json",
+        "locations": "i18n/en/locations.json"
+      }
+    }
+  ]
+}

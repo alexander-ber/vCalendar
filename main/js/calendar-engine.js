@@ -48,9 +48,9 @@ function buildDay(isoDate, location, rules) {
     events: [],
     diagnostics: {
       rules_version: rules.rules_version,
-      engine_version: "poc-approximate-local-js",
+      engine_version: "browser-astronomy-engine-ephemeris",
       calculation_note:
-        "POC astronomy uses approximate browser formulas. External Panchang data is not used as runtime source."
+        "Runtime astronomy uses local browser calculations with Astronomy Engine apparent geocentric Moon/Sun positions. External Panchang data is not used as runtime source."
     }
   };
 }

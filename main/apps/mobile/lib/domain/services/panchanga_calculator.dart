@@ -1,5 +1,7 @@
 import 'dart:math' as math;
 
+import 'package:geoengine/geoengine.dart' as astronomy;
+
 import '../models/calendar_location.dart';
 import '../models/panchanga_day.dart';
 
@@ -183,7 +185,7 @@ class PanchangaCalculator {
       masaType: masa.type,
       normalMasaName: masa.normalMasaName,
       engineNote:
-          'Dart POC: local sunrise/sunset + approximate Moon/Sun longitude. Replaceable service layer.',
+          'Dart mobile engine: local sunrise/sunset + Astronomy Engine apparent geocentric Moon/Sun longitude.',
     );
   }
 
@@ -481,35 +483,11 @@ class PanchangaCalculator {
   }
 
   double _sunLongitude(DateTime date) {
-    final d = _daysSinceJ2000(date);
-    final g = _normalizeDegrees(357.529 + 0.98560028 * d);
-    final q = _normalizeDegrees(280.459 + 0.98564736 * d);
-    return _normalizeDegrees(
-      q + 1.915 * math.sin(g * _deg) + 0.020 * math.sin(2 * g * _deg),
-    );
+    return _normalizeDegrees(astronomy.sunPosition(date.toUtc()).eLon);
   }
 
   double _moonLongitude(DateTime date) {
-    final d = _daysSinceJ2000(date);
-    final l0 = _normalizeDegrees(218.316 + 13.176396 * d);
-    final mMoon = _normalizeDegrees(134.963 + 13.064993 * d);
-    final mSun = _normalizeDegrees(357.529 + 0.98560028 * d);
-    final dMoon = _normalizeDegrees(297.850 + 12.190749 * d);
-    final f = _normalizeDegrees(93.272 + 13.229350 * d);
-
-    return _normalizeDegrees(
-      l0 +
-          6.289 * math.sin(mMoon * _deg) +
-          1.274 * math.sin((2 * dMoon - mMoon) * _deg) +
-          0.658 * math.sin(2 * dMoon * _deg) +
-          0.214 * math.sin(2 * mMoon * _deg) -
-          0.186 * math.sin(mSun * _deg) -
-          0.114 * math.sin(2 * f * _deg),
-    );
-  }
-
-  double _daysSinceJ2000(DateTime date) {
-    return _julianDay(date) - _j2000;
+    return _normalizeDegrees(astronomy.eclipticGeoMoon(date.toUtc()).lon);
   }
 
   double _julianDay(DateTime date) {
