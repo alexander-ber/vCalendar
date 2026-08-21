@@ -2397,9 +2397,12 @@ class _DayCell extends StatelessWidget {
     final textColor = day.inCurrentMonth
         ? theme.colorScheme.onSurface
         : colors.mutedText.withValues(alpha: 0.45);
-    final eventColor = _eventColor(colors);
+    final eventFillColor = _eventFillColor(theme, colors);
+    final borderColor = _borderColor(theme, colors);
     final eventMarkerColor = _eventMarkerColor();
     final markerCount = eventCount > 3 ? 3 : eventCount;
+    final cellSize = compactMode ? 46.0 : 56.0;
+    final dayTextColor = _dayTextColor(theme, textColor);
 
     return InkWell(
       borderRadius: BorderRadius.circular(999),
@@ -2407,16 +2410,14 @@ class _DayCell extends StatelessWidget {
       child: Center(
         child: AnimatedContainer(
           duration: const Duration(milliseconds: 160),
-          width: compactMode ? 46 : 56,
-          height: compactMode ? 46 : 56,
+          width: cellSize,
+          height: cellSize,
           decoration: BoxDecoration(
             shape: BoxShape.circle,
-            color: day.inCurrentMonth
-                ? eventColor?.withValues(alpha: 0.68)
-                : null,
+            color: day.inCurrentMonth ? eventFillColor : null,
             border: Border.all(
-              color: selected ? theme.colorScheme.primary : Colors.transparent,
-              width: selected ? 2 : 0,
+              color: borderColor ?? Colors.transparent,
+              width: borderColor == null ? 0 : 2,
             ),
           ),
           child: Stack(
@@ -2429,20 +2430,21 @@ class _DayCell extends StatelessWidget {
                   fontWeight: FontWeight.w900,
                   color: dimEmptyEventDay
                       ? textColor.withValues(alpha: 0.32)
-                      : selected
-                      ? theme.colorScheme.primary
-                      : textColor,
+                      : dayTextColor,
                 ),
               ),
               if (day.isToday)
-                Positioned(
-                  bottom: compactMode ? 5 : 6,
-                  child: DecoratedBox(
-                    decoration: BoxDecoration(
-                      color: colors.todayMarker,
-                      borderRadius: BorderRadius.circular(8),
+                Align(
+                  alignment: Alignment.bottomCenter,
+                  child: Padding(
+                    padding: EdgeInsets.only(bottom: compactMode ? 3 : 4),
+                    child: DecoratedBox(
+                      decoration: BoxDecoration(
+                        color: colors.todayMarker,
+                        borderRadius: BorderRadius.circular(8),
+                      ),
+                      child: const SizedBox(width: 18, height: 4),
                     ),
-                    child: const SizedBox(width: 22, height: 4),
                   ),
                 ),
               if (eventCount > 0)
@@ -2478,10 +2480,13 @@ class _DayCell extends StatelessWidget {
     );
   }
 
-  Color? _eventColor(VCalendarColors colors) {
+  Color? _eventFillColor(ThemeData theme, VCalendarColors colors) {
     final category = eventCategory;
     if (category == null) return null;
-    if (category == 'ekadashi') return colors.ekadashiBorder;
+    if (category == 'ekadashi') {
+      final alpha = theme.brightness == Brightness.dark ? 0.30 : 0.13;
+      return const Color(0xFF3949AB).withValues(alpha: alpha);
+    }
     if (category.contains('appearance')) return colors.vaishnavaAppearance;
     if (category.contains('disappearance')) {
       return colors.vaishnavaDisappearance;
@@ -2495,6 +2500,23 @@ class _DayCell extends StatelessWidget {
     }
     if (category == 'deity_temple') return colors.parana;
     return colors.ekadashiBorder;
+  }
+
+  Color? _borderColor(ThemeData theme, VCalendarColors colors) {
+    final category = eventCategory;
+    if (category == 'ekadashi') return const Color(0xFFD4A017);
+    if (selected) return theme.colorScheme.primary;
+    return null;
+  }
+
+  Color _dayTextColor(ThemeData theme, Color defaultColor) {
+    if (eventCategory == 'ekadashi') {
+      return theme.brightness == Brightness.dark
+          ? const Color(0xFFBFC8FF)
+          : const Color(0xFF3949AB);
+    }
+    if (selected) return theme.colorScheme.primary;
+    return defaultColor;
   }
 
   Color _eventMarkerColor() {
