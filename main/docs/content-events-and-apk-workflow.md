@@ -140,6 +140,20 @@ apps/mobile/scripts/build-seed-db.sh
 apps/mobile/assets/db/vcalendar_seed.sqlite
 ```
 
+Если нужно, чтобы изменения могли прийти в уже установленную мобильную аппку через кнопку "Проверить обновления", пересобери remote language packs:
+
+```bash
+node scripts/build-i18n-packs.mjs
+```
+
+Если `node` не установлен в обычном терминале, запусти этот же скрипт через доступный Node.js runtime. Скрипт обновляет:
+
+```text
+i18n/manifest.json
+i18n/ru/*.json
+i18n/en/*.json
+```
+
 ## 5. Удалённые языковые обновления
 
 Мобильная аппка может проверять обновления языков и контента через GitHub raw-файлы.
@@ -167,7 +181,7 @@ i18n/manifest.json
 }
 ```
 
-Если меняешь язык, события, экадаши, глоссарий или города, увеличь `version` соответствующего языка. Иначе приложение решит, что обновлений нет.
+Если меняешь язык, события, экадаши, глоссарий или города, увеличь `version` соответствующего языка. Иначе приложение решит, что обновлений нет. Скрипт `scripts/build-i18n-packs.mjs` сейчас выставляет remote version `2`; при следующих изменениях нужно поднять версию дальше.
 
 Важно: файлы из `manifest.json` должны реально существовать в репозитории и быть запушены в `main`.
 
@@ -244,6 +258,7 @@ git push origin main
 
 ```bash
 node scripts/build-events-db.mjs
+node scripts/build-i18n-packs.mjs
 apps/mobile/scripts/build-seed-db.sh
 cd apps/mobile
 flutter analyze

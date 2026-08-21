@@ -4,6 +4,7 @@ class MobileEvent {
     required this.category,
     required this.eventType,
     required this.masa,
+    required this.masaType,
     required this.paksha,
     required this.tithi,
     required this.allowInAdhika,
@@ -17,6 +18,7 @@ class MobileEvent {
   final String category;
   final String eventType;
   final String masa;
+  final String? masaType;
   final String paksha;
   final String tithi;
   final bool allowInAdhika;
@@ -31,6 +33,7 @@ class MobileEvent {
       category: map['category']! as String,
       eventType: map['event_type']! as String,
       masa: map['masa']! as String,
+      masaType: map['masa_type'] as String?,
       paksha: map['paksha']! as String,
       tithi: map['tithi']! as String,
       allowInAdhika: (map['allow_in_adhika']! as num).toInt() == 1,

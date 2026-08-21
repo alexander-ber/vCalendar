@@ -1,0 +1,167 @@
+{
+  "schema_version": 1,
+  "updated_at": "2026-08-21T08:29:28.792Z",
+  "locations": [
+    {
+      "id": "maalot",
+      "lang": "ru",
+      "name": "Маалот, Израиль",
+      "country_name": "Израиль",
+      "region_name": "Израиль"
+    },
+    {
+      "id": "tel-aviv",
+      "lang": "ru",
+      "name": "Тель-Авив, Израиль",
+      "country_name": "Израиль",
+      "region_name": "Израиль"
+    },
+    {
+      "id": "beer-sheva",
+      "lang": "ru",
+      "name": "Беэр-Шева, Израиль",
+      "country_name": "Израиль",
+      "region_name": "Израиль"
+    },
+    {
+      "id": "eilat",
+      "lang": "ru",
+      "name": "Эйлат, Израиль",
+      "country_name": "Израиль",
+      "region_name": "Израиль"
+    },
+    {
+      "id": "kyiv",
+      "lang": "ru",
+      "name": "Киев, Украина",
+      "country_name": "Украина",
+      "region_name": "Украина"
+    },
+    {
+      "id": "mariupol",
+      "lang": "ru",
+      "name": "Мариуполь, Украина",
+      "country_name": "Украина",
+      "region_name": "Украина"
+    },
+    {
+      "id": "minsk",
+      "lang": "ru",
+      "name": "Минск, Беларусь",
+      "country_name": "Беларусь",
+      "region_name": "Беларусь"
+    },
+    {
+      "id": "voronezh",
+      "lang": "ru",
+      "name": "Воронеж, Россия",
+      "country_name": "Россия",
+      "region_name": "Россия"
+    },
+    {
+      "id": "orsk",
+      "lang": "ru",
+      "name": "Орск, Россия",
+      "country_name": "Россия",
+      "region_name": "Россия"
+    },
+    {
+      "id": "orenburg",
+      "lang": "ru",
+      "name": "Оренбург, Россия",
+      "country_name": "Россия",
+      "region_name": "Россия"
+    },
+    {
+      "id": "barnaul",
+      "lang": "ru",
+      "name": "Барнаул, Россия",
+      "country_name": "Россия",
+      "region_name": "Россия"
+    },
+    {
+      "id": "samara",
+      "lang": "ru",
+      "name": "Самара, Россия",
+      "country_name": "Россия",
+      "region_name": "Россия"
+    },
+    {
+      "id": "paris",
+      "lang": "ru",
+      "name": "Париж, Европа",
+      "country_name": "Европа",
+      "region_name": "Европа"
+    },
+    {
+      "id": "london",
+      "lang": "ru",
+      "name": "Лондон, Европа",
+      "country_name": "Европа",
+      "region_name": "Европа"
+    },
+    {
+      "id": "bern",
+      "lang": "ru",
+      "name": "Берн, Европа",
+      "country_name": "Европа",
+      "region_name": "Европа"
+    },
+    {
+      "id": "budapest",
+      "lang": "ru",
+      "name": "Будапешт, Европа",
+      "country_name": "Европа",
+      "region_name": "Европа"
+    },
+    {
+      "id": "mayapur",
+      "lang": "ru",
+      "name": "Маяпур, Индия",
+      "country_name": "Индия",
+      "region_name": "Индия"
+    },
+    {
+      "id": "nabadwip",
+      "lang": "ru",
+      "name": "Навадвип, Индия",
+      "country_name": "Индия",
+      "region_name": "Индия"
+    },
+    {
+      "id": "kolkata",
+      "lang": "ru",
+      "name": "Калькутта, Индия",
+      "country_name": "Индия",
+      "region_name": "Индия"
+    },
+    {
+      "id": "vrindavan",
+      "lang": "ru",
+      "name": "Вриндаван, Индия",
+      "country_name": "Индия",
+      "region_name": "Индия"
+    },
+    {
+      "id": "puri",
+      "lang": "ru",
+      "name": "Пури, Индия",
+      "country_name": "Индия",
+      "region_name": "Индия"
+    },
+    {
+      "id": "kathmandu",
+      "lang": "ru",
+      "name": "Катманду, Непал",
+      "country_name": "Непал",
+      "region_name": "Непал"
+    },
+    {
+      "id": "moscow",
+      "lang": "ru",
+      "name": "Москва, Россия",
+      "country_name": "Россия",
+      "region_name": "Россия"
+    }
+  ]
+}

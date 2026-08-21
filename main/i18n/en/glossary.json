@@ -1,0 +1,54 @@
+{
+  "schema_version": 1,
+  "updated_at": "2026-08-21T08:29:28.792Z",
+  "terms": [
+    {
+      "id": "tithi",
+      "lang": "en",
+      "title": "Tithi",
+      "short_description": "Lunar day measured by the angular distance between the Moon and the Sun."
+    },
+    {
+      "id": "paksha",
+      "lang": "en",
+      "title": "Paksha",
+      "short_description": "The bright or dark half of a lunar month."
+    },
+    {
+      "id": "masa",
+      "lang": "en",
+      "title": "Masa",
+      "short_description": "A lunar month in the Vaishnava calendar."
+    },
+    {
+      "id": "naksatra",
+      "lang": "en",
+      "title": "Nakshatra",
+      "short_description": "One of the 27 lunar mansions used in Jyotish."
+    },
+    {
+      "id": "amrita_yoga",
+      "lang": "en",
+      "title": "Amrita-yoga",
+      "short_description": "A favorable muhurta window used for journeys and new beginnings."
+    },
+    {
+      "id": "mahendra_yoga",
+      "lang": "en",
+      "title": "Mahendra-yoga",
+      "short_description": "A favorable muhurta window printed in the Panjika."
+    },
+    {
+      "id": "vakra_yoga",
+      "lang": "en",
+      "title": "Vakra-yoga",
+      "short_description": "An unfavorable or cautious time window in the yoga table."
+    },
+    {
+      "id": "shunya_yoga",
+      "lang": "en",
+      "title": "Shunya-yoga",
+      "short_description": "A void or unfavorable time window in the yoga table."
+    }
+  ]
+}
