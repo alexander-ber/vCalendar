@@ -10,6 +10,8 @@ class AppSettings {
     required this.onlyDaysWithEvents,
     required this.enabledEventCategories,
     required this.vaishnavaEventKind,
+    required this.contentAutoUpdate,
+    required this.contentUpdateIntervalHours,
   });
 
   static const defaults = AppSettings(
@@ -21,6 +23,8 @@ class AppSettings {
     onlyDaysWithEvents: false,
     enabledEventCategories: {},
     vaishnavaEventKind: 'any',
+    contentAutoUpdate: true,
+    contentUpdateIntervalHours: 24,
   );
 
   final String lang;
@@ -31,6 +35,8 @@ class AppSettings {
   final bool onlyDaysWithEvents;
   final Set<String> enabledEventCategories;
   final String vaishnavaEventKind;
+  final bool contentAutoUpdate;
+  final int contentUpdateIntervalHours;
 
   AppSettings copyWith({
     String? lang,
@@ -41,6 +47,8 @@ class AppSettings {
     bool? onlyDaysWithEvents,
     Set<String>? enabledEventCategories,
     String? vaishnavaEventKind,
+    bool? contentAutoUpdate,
+    int? contentUpdateIntervalHours,
   }) {
     return AppSettings(
       lang: lang ?? this.lang,
@@ -52,6 +60,9 @@ class AppSettings {
       enabledEventCategories:
           enabledEventCategories ?? this.enabledEventCategories,
       vaishnavaEventKind: vaishnavaEventKind ?? this.vaishnavaEventKind,
+      contentAutoUpdate: contentAutoUpdate ?? this.contentAutoUpdate,
+      contentUpdateIntervalHours:
+          contentUpdateIntervalHours ?? this.contentUpdateIntervalHours,
     );
   }
 }

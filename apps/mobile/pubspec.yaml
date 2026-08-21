@@ -41,6 +41,7 @@ dependencies:
   geolocator: ^14.0.3
   path: ^1.9.1
   timezone: ^0.11.1
+  geoengine: 1.0.9
 
 dev_dependencies:
   flutter_test:

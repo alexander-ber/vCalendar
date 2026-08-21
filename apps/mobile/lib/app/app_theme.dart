@@ -90,20 +90,24 @@ class AppTheme {
         parana: const Color(0xFFD7EEDB),
       ),
       AppThemeMode.icon => _Palette(
-        background: const Color(0xFF08254B),
-        surface: const Color(0xFFF8FCFF),
-        primary: const Color(0xFFD49A17),
-        onPrimary: const Color(0xFF08254B),
-        text: const Color(0xFF092C5C),
-        muted: const Color(0xFF6680A1),
-        outline: const Color(0xFF9BC9F4),
-        eventText: const Color(0xFF08254B),
-        vaishnavaAppearance: const Color(0xFFD8E8FF),
-        vaishnavaDisappearance: const Color(0xFFE6DAFF),
-        festival: const Color(0xFFFFD695),
-        parana: const Color(0xFFCDF1EA),
+        background: const Color(0xFFE6F1FF),
+        surface: Colors.white,
+        primary: const Color(0xFF073E8E),
+        onPrimary: Colors.white,
+        text: const Color(0xFF082B5E),
+        muted: const Color(0xFF607B9E),
+        outline: const Color(0xFFAECFF3),
+        eventText: const Color(0xFF082B5E),
+        vaishnavaAppearance: const Color(0xFFCFE2FF),
+        vaishnavaDisappearance: const Color(0xFFE1D7FF),
+        festival: const Color(0xFFFFBE73),
+        parana: const Color(0xFFC7F0E9),
       ),
     };
+    final isIconTheme = mode == AppThemeMode.icon;
+    const iconGold = Color(0xFFA3620A);
+    const iconGoldSoft = Color(0xFFF2B562);
+    const iconBlueSoft = Color(0xFFDDEBFF);
 
     final scheme =
         ColorScheme.fromSeed(
@@ -117,6 +121,12 @@ class AppTheme {
           surface: palette.surface,
           onSurface: palette.text,
           outline: palette.outline,
+          secondary: isIconTheme ? iconGold : null,
+          onSecondary: isIconTheme ? const Color(0xFF082B5E) : null,
+          primaryContainer: isIconTheme ? iconBlueSoft : null,
+          onPrimaryContainer: isIconTheme ? palette.primary : null,
+          secondaryContainer: isIconTheme ? iconGoldSoft : null,
+          onSecondaryContainer: isIconTheme ? const Color(0xFF2D2100) : null,
         );
 
     return ThemeData(
@@ -152,16 +162,65 @@ class AppTheme {
       segmentedButtonTheme: SegmentedButtonThemeData(
         style: ButtonStyle(
           visualDensity: VisualDensity.comfortable,
+          backgroundColor: isIconTheme
+              ? WidgetStateProperty.resolveWith((states) {
+                  if (states.contains(WidgetState.selected)) {
+                    return iconGoldSoft;
+                  }
+                  return palette.surface;
+                })
+              : null,
+          foregroundColor: isIconTheme
+              ? WidgetStateProperty.resolveWith((states) {
+                  if (states.contains(WidgetState.selected)) {
+                    return palette.primary;
+                  }
+                  return palette.text;
+                })
+              : null,
+          side: isIconTheme
+              ? WidgetStatePropertyAll(BorderSide(color: palette.outline))
+              : null,
           shape: WidgetStatePropertyAll(
             RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
           ),
         ),
       ),
+      iconButtonTheme: isIconTheme
+          ? IconButtonThemeData(
+              style: ButtonStyle(
+                backgroundColor: const WidgetStatePropertyAll(iconGoldSoft),
+                foregroundColor: WidgetStatePropertyAll(palette.primary),
+                overlayColor: WidgetStatePropertyAll(
+                  palette.primary.withValues(alpha: 0.08),
+                ),
+              ),
+            )
+          : null,
+      chipTheme: isIconTheme
+          ? ChipThemeData(
+              backgroundColor: palette.surface,
+              selectedColor: iconGoldSoft,
+              checkmarkColor: palette.primary,
+              labelStyle: TextStyle(
+                color: palette.text,
+                fontWeight: FontWeight.w700,
+              ),
+              secondaryLabelStyle: TextStyle(
+                color: palette.primary,
+                fontWeight: FontWeight.w900,
+              ),
+              side: BorderSide(color: palette.outline),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(14),
+              ),
+            )
+          : null,
       extensions: [
         VCalendarColors(
           mutedText: palette.muted,
           eventText: palette.eventText,
-          ekadashiBorder: const Color(0xFFD4A017),
+          ekadashiBorder: iconGold,
           todayMarker: const Color(0xFFE13D35),
           vaishnavaAppearance: palette.vaishnavaAppearance,
           vaishnavaDisappearance: palette.vaishnavaDisappearance,

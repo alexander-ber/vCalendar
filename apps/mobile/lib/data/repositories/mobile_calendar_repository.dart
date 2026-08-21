@@ -56,6 +56,22 @@ class MobileCalendarRepository {
     return rows.map(CalendarLocation.fromMap).toList(growable: false);
   }
 
+  Future<List<String>> loadAvailableLanguages() async {
+    final db = await _database.open();
+    final rows = await db.rawQuery('''
+      select distinct lang
+        from content_packs
+       where is_active = 1
+       order by case lang when 'ru' then 0 when 'en' then 1 else 2 end, lang
+      ''');
+    final langs = rows
+        .map((row) => row['lang'] as String)
+        .where((lang) => lang.trim().isNotEmpty)
+        .toList(growable: false);
+    if (langs.isEmpty) return const ['ru', 'en'];
+    return langs;
+  }
+
   Future<List<MobileEvent>> loadRuleEvents({required String lang}) async {
     final db = await _database.open();
     final rows = await db.rawQuery(
@@ -74,9 +90,28 @@ class MobileCalendarRepository {
          and e.paksha is not null
          and e.tithi is not null
          and e.source_status != 'needs_exact_lunar_rule'
-       order by e.priority, name
+      union all
+      select k.id, 'ekadashi' as category, 'ekadashi' as event_type,
+             coalesce(k.masa, '*') as masa, k.paksha, 'Ekadashi' as tithi,
+             case when k.masa_type = 'adhika' then 1 else 0 end as allow_in_adhika,
+             10 as priority,
+             coalesce(ki.name, kfallback.name, k.id) as name,
+             nullif(trim(
+               coalesce(ki.benefits, kfallback.benefits, '') ||
+               case
+                 when coalesce(ki.story, kfallback.story, '') = '' then ''
+                 else ' ' || coalesce(ki.story, kfallback.story, '')
+               end
+             ), '') as short_description,
+             coalesce(ki.full_description, kfallback.full_description) as full_description
+        from ekadashi k
+        left join ekadashi_i18n ki
+          on ki.ekadashi_id = k.id and ki.lang = ?
+        left join ekadashi_i18n kfallback
+          on kfallback.ekadashi_id = k.id and kfallback.lang = 'en'
+       order by priority, name
       ''',
-      [lang],
+      [lang, lang],
     );
     return rows.map(MobileEvent.fromMap).toList(growable: false);
   }

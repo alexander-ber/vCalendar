@@ -6,16 +6,72 @@ import 'package:path_provider/path_provider.dart';
 import '../../app/app_settings.dart';
 import '../../app/app_theme.dart';
 import '../../data/local/app_database.dart';
+import '../../data/local/preferences_store.dart';
+import '../../data/remote/content_update_service.dart';
 import '../../data/repositories/mobile_calendar_repository.dart';
 import '../../domain/models/calendar_location.dart';
 import '../../domain/models/mobile_event.dart';
 import '../../domain/models/month_day.dart';
 import '../../domain/models/panchanga_day.dart';
+import '../../domain/services/location_matcher_service.dart';
 import '../../domain/services/month_grid_service.dart';
 import '../../domain/services/jyotish_info_service.dart';
 import '../../domain/services/panjika_yoga_service.dart';
 import '../../domain/services/panchanga_calculator.dart';
 import '../../domain/services/panchanga_formatter.dart';
+
+const _eventFilterDefinitions = [
+  _EventFilterDefinition(
+    id: 'ekadashi',
+    ruLabel: 'Экадаши',
+    enLabel: 'Ekadashi',
+  ),
+  _EventFilterDefinition(
+    id: 'festival',
+    ruLabel: 'Праздники',
+    enLabel: 'Festivals',
+  ),
+  _EventFilterDefinition(
+    id: 'avatar',
+    ruLabel: 'Аватары',
+    enLabel: 'Avatars',
+  ),
+  _EventFilterDefinition(
+    id: 'divine_appearance',
+    ruLabel: 'Явления Господа',
+    enLabel: 'Divine appearances',
+  ),
+  _EventFilterDefinition(
+    id: 'avatar_associate',
+    ruLabel: 'Спутники Господа',
+    enLabel: 'Lord’s associates',
+  ),
+  _EventFilterDefinition(
+    id: 'mahaprabhu_parsada',
+    ruLabel: 'Паршады Махапрабху',
+    enLabel: 'Mahaprabhu parsadas',
+  ),
+  _EventFilterDefinition(
+    id: 'vaishnava_appearance',
+    ruLabel: 'Явления вайшнавов',
+    enLabel: 'Vaishnava appearances',
+  ),
+  _EventFilterDefinition(
+    id: 'vaishnava_disappearance',
+    ruLabel: 'Уходы вайшнавов',
+    enLabel: 'Vaishnava disappearances',
+  ),
+  _EventFilterDefinition(
+    id: 'deity_temple',
+    ruLabel: 'Божества / храмы',
+    enLabel: 'Deities / temples',
+  ),
+  _EventFilterDefinition(
+    id: 'other',
+    ruLabel: 'Другое',
+    enLabel: 'Other',
+  ),
+];
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({
@@ -34,7 +90,12 @@ class HomeScreen extends StatefulWidget {
 class _HomeScreenState extends State<HomeScreen> {
   final MonthGridService _monthGridService = const MonthGridService();
   final PanchangaCalculator _panchangaCalculator = const PanchangaCalculator();
+  final LocationMatcherService _locationMatcherService =
+      const LocationMatcherService();
+  final PreferencesStore _preferences = PreferencesStore();
+  late final AppDatabase _database;
   late final MobileCalendarRepository _repository;
+  late final ContentUpdateService _contentUpdateService;
   late Future<_HomeState> _state;
   late DateTime _visibleMonth;
   late DateTime _selectedDate;
@@ -51,8 +112,13 @@ class _HomeScreenState extends State<HomeScreen> {
     _selectedDate = DateTime(today.year, today.month, today.day);
     _periodFrom = DateTime(today.year, today.month);
     _periodTo = DateTime(today.year, today.month + 1, 0);
-    _repository = MobileCalendarRepository(AppDatabase());
+    _database = AppDatabase();
+    _repository = MobileCalendarRepository(_database);
+    _contentUpdateService = ContentUpdateService(_database);
     _state = _load();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _runAutoContentUpdateIfDue();
+    });
   }
 
   @override
@@ -69,7 +135,13 @@ class _HomeScreenState extends State<HomeScreen> {
       lang: widget.settings.lang,
     );
     final events = await _repository.loadRuleEvents(lang: widget.settings.lang);
-    return _HomeState(summary: summary, locations: locations, events: events);
+    final languages = await _repository.loadAvailableLanguages();
+    return _HomeState(
+      summary: summary,
+      locations: locations,
+      events: events,
+      languages: languages,
+    );
   }
 
   void _reload() {
@@ -142,6 +214,7 @@ class _HomeScreenState extends State<HomeScreen> {
                         locations: state.locations,
                         selectedLocation: selectedLocation,
                         events: state.events,
+                        languages: state.languages,
                       ),
                     ),
                   ),
@@ -161,6 +234,7 @@ class _HomeScreenState extends State<HomeScreen> {
                             locations: state.locations,
                             selectedLocation: selectedLocation,
                             events: state.events,
+                            languages: state.languages,
                           ),
                           isRu: _isRu,
                         ),
@@ -257,6 +331,7 @@ class _HomeScreenState extends State<HomeScreen> {
     required List<CalendarLocation> locations,
     required CalendarLocation? selectedLocation,
     required List<MobileEvent> events,
+    required List<String> languages,
   }) {
     return showModalBottomSheet<void>(
       context: context,
@@ -266,12 +341,16 @@ class _HomeScreenState extends State<HomeScreen> {
         return _SettingsSheet(
           settings: widget.settings,
           locations: locations,
+          languages: languages,
           selectedLocation: selectedLocation,
           periodFrom: _periodFrom,
           periodTo: _periodTo,
           isRu: _isRu,
           onSettingsChanged: _changeSettings,
           onPeriodChanged: _setPeriod,
+          onDetectLocation: () =>
+              _locationMatcherService.detectNearest(locations),
+          onCheckUpdates: _checkContentUpdates,
           onExportRequested: selectedLocation == null
               ? null
               : (from, to) => _exportCalendar(
@@ -283,6 +362,29 @@ class _HomeScreenState extends State<HomeScreen> {
         );
       },
     );
+  }
+
+  Future<ContentUpdateResult> _checkContentUpdates() async {
+    final result = await _contentUpdateService.checkAndInstall();
+    await _preferences.markContentUpdateChecked(result.checkedAt);
+    if (mounted) _reload();
+    return result;
+  }
+
+  Future<void> _runAutoContentUpdateIfDue() async {
+    if (!widget.settings.contentAutoUpdate) return;
+    final due = await _preferences.isContentUpdateDue(
+      widget.settings.contentUpdateIntervalHours,
+    );
+    if (!due) return;
+    try {
+      final result = await _contentUpdateService.checkAndInstall();
+      await _preferences.markContentUpdateChecked(result.checkedAt);
+      if (result.installedFiles > 0 && mounted) _reload();
+    } catch (error) {
+      await _preferences.markContentUpdateChecked(DateTime.now().toUtc());
+      debugPrint('Content auto-update skipped: $error');
+    }
   }
 
   Future<void> _openSearchSheet({
@@ -464,7 +566,8 @@ class _HomeScreenState extends State<HomeScreen> {
     return events
         .where((event) {
           if (applyFilters && !_eventAllowedBySettings(event)) return false;
-          if (event.masa != panchanga.masa &&
+          if (event.masa != '*' &&
+              event.masa != panchanga.masa &&
               event.masa != panchanga.normalMasaName) {
             return false;
           }
@@ -481,13 +584,20 @@ class _HomeScreenState extends State<HomeScreen> {
   bool _eventAllowedBySettings(MobileEvent event) {
     final filters = widget.settings.enabledEventCategories;
     if (filters.isEmpty) return true;
-    return filters.contains(_eventCategoryGroup(event.category));
+    return filters.contains(event.category) ||
+        filters.contains(_eventCategoryGroup(event.category));
   }
 
   String _eventCategoryGroup(String category) {
+    if (category == 'ekadashi') return 'ekadashi';
     if (category.contains('appearance')) return 'appearance';
     if (category.contains('disappearance')) return 'disappearance';
-    if (category == 'avatar' || category == 'festival') return 'festival';
+    if (category == 'avatar' ||
+        category == 'avatar_associate' ||
+        category == 'festival' ||
+        category == 'mahaprabhu_parsada') {
+      return 'festival';
+    }
     if (category == 'deity_temple') return 'deity_temple';
     return 'other';
   }
@@ -678,23 +788,29 @@ class _SettingsSheet extends StatefulWidget {
   const _SettingsSheet({
     required this.settings,
     required this.locations,
+    required this.languages,
     required this.selectedLocation,
     required this.periodFrom,
     required this.periodTo,
     required this.isRu,
     required this.onSettingsChanged,
     required this.onPeriodChanged,
+    required this.onDetectLocation,
+    required this.onCheckUpdates,
     required this.onExportRequested,
   });
 
   final AppSettings settings;
   final List<CalendarLocation> locations;
+  final List<String> languages;
   final CalendarLocation? selectedLocation;
   final DateTime periodFrom;
   final DateTime periodTo;
   final bool isRu;
   final ValueChanged<AppSettings> onSettingsChanged;
   final void Function(DateTime from, DateTime to) onPeriodChanged;
+  final Future<LocationMatchResult> Function() onDetectLocation;
+  final Future<ContentUpdateResult> Function() onCheckUpdates;
   final Future<String?> Function(DateTime from, DateTime to)? onExportRequested;
 
   @override
@@ -705,6 +821,10 @@ class _SettingsSheetState extends State<_SettingsSheet> {
   late AppSettings _settings;
   late DateTime _periodFrom;
   late DateTime _periodTo;
+  bool _detectingLocation = false;
+  bool _checkingUpdates = false;
+  String? _locationStatus;
+  String? _updateStatus;
   bool get _isRu => _settings.lang == 'ru';
 
   @override
@@ -730,6 +850,15 @@ class _SettingsSheetState extends State<_SettingsSheet> {
       AppThemeMode.lotus => _isRu ? 'Лотос' : 'Lotus',
       AppThemeMode.icon => _isRu ? 'Иконка' : 'Icon',
     };
+  }
+
+  String _intervalLabel(int hours) {
+    if (!_isRu) {
+      if (hours < 24) return '${hours}h';
+      return '${hours ~/ 24}d';
+    }
+    if (hours < 24) return '$hours ч';
+    return '${hours ~/ 24} д';
   }
 
   @override
@@ -769,11 +898,18 @@ class _SettingsSheetState extends State<_SettingsSheet> {
                 const SizedBox(height: 8),
                 SegmentedButton<String>(
                   showSelectedIcon: false,
-                  segments: const [
-                    ButtonSegment(value: 'ru', label: Text('RU')),
-                    ButtonSegment(value: 'en', label: Text('EN')),
+                  segments: [
+                    for (final lang in widget.languages)
+                      ButtonSegment(
+                        value: lang,
+                        label: Text(lang.toUpperCase()),
+                      ),
                   ],
-                  selected: {_settings.lang},
+                  selected: {
+                    widget.languages.contains(_settings.lang)
+                        ? _settings.lang
+                        : widget.languages.first,
+                  },
                   onSelectionChanged: (value) {
                     _change(_settings.copyWith(lang: value.first));
                   },
@@ -846,6 +982,34 @@ class _SettingsSheetState extends State<_SettingsSheet> {
                     _change(_settings.copyWith(locationId: value));
                   },
                 ),
+                const SizedBox(height: 10),
+                FilledButton.tonalIcon(
+                  onPressed: _detectingLocation ? null : _detectLocation,
+                  icon: _detectingLocation
+                      ? const SizedBox(
+                          width: 18,
+                          height: 18,
+                          child: CircularProgressIndicator(strokeWidth: 2),
+                        )
+                      : const Icon(Icons.my_location),
+                  label: Text(
+                    _isRu
+                        ? 'Определить ближайший город по GPS'
+                        : 'Find nearest city by GPS',
+                  ),
+                ),
+                if (_locationStatus != null) ...[
+                  const SizedBox(height: 8),
+                  Text(
+                    _locationStatus!,
+                    style: TextStyle(
+                      color: Theme.of(
+                        context,
+                      ).extension<VCalendarColors>()!.mutedText,
+                      fontWeight: FontWeight.w700,
+                    ),
+                  ),
+                ],
                 const SizedBox(height: 14),
                 Row(
                   children: [
@@ -895,10 +1059,131 @@ class _SettingsSheetState extends State<_SettingsSheet> {
                 ),
               ],
             ),
+            const SizedBox(height: 12),
+            _SettingsGroup(
+              title: _isRu ? 'Обновления' : 'Updates',
+              children: [
+                SwitchListTile.adaptive(
+                  value: _settings.contentAutoUpdate,
+                  onChanged: (value) {
+                    _change(_settings.copyWith(contentAutoUpdate: value));
+                  },
+                  title: Text(
+                    _isRu ? 'Проверять автоматически' : 'Check automatically',
+                  ),
+                  contentPadding: EdgeInsets.zero,
+                ),
+                const SizedBox(height: 8),
+                Text(_isRu ? 'Интервал проверки' : 'Check interval'),
+                const SizedBox(height: 8),
+                Wrap(
+                  spacing: 8,
+                  runSpacing: 8,
+                  children: [
+                    for (final hours in const [6, 12, 24, 72])
+                      ChoiceChip(
+                        label: Text(_intervalLabel(hours)),
+                        selected: _settings.contentUpdateIntervalHours == hours,
+                        onSelected: (_) {
+                          _change(
+                            _settings.copyWith(
+                              contentUpdateIntervalHours: hours,
+                            ),
+                          );
+                        },
+                      ),
+                  ],
+                ),
+                const SizedBox(height: 14),
+                Text(
+                  _isRu
+                      ? 'Языки, события и биографии можно обновлять из удалённой папки без пересборки приложения.'
+                      : 'Languages, events, and biographies can be updated from a remote folder without rebuilding the app.',
+                  style: TextStyle(
+                    color: Theme.of(
+                      context,
+                    ).extension<VCalendarColors>()!.mutedText,
+                  ),
+                ),
+                const SizedBox(height: 10),
+                FilledButton.icon(
+                  onPressed: _checkingUpdates ? null : _checkUpdates,
+                  icon: _checkingUpdates
+                      ? const SizedBox(
+                          width: 18,
+                          height: 18,
+                          child: CircularProgressIndicator(strokeWidth: 2),
+                        )
+                      : const Icon(Icons.sync),
+                  label: Text(_isRu ? 'Проверить обновления' : 'Check updates'),
+                ),
+                if (_updateStatus != null) ...[
+                  const SizedBox(height: 8),
+                  Text(
+                    _updateStatus!,
+                    style: TextStyle(
+                      color: Theme.of(
+                        context,
+                      ).extension<VCalendarColors>()!.mutedText,
+                      fontWeight: FontWeight.w700,
+                    ),
+                  ),
+                ],
+              ],
+            ),
           ],
         ),
       ),
     );
+  }
+
+  Future<void> _detectLocation() async {
+    setState(() {
+      _detectingLocation = true;
+      _locationStatus = null;
+    });
+    try {
+      final result = await widget.onDetectLocation();
+      _change(_settings.copyWith(locationId: result.location.id));
+      setState(() {
+        _locationStatus = _isRu
+            ? 'Выбран ближайший город: ${result.location.name}, ${result.location.countryName} (${result.distanceKm.toStringAsFixed(1)} км).'
+            : 'Nearest city selected: ${result.location.name}, ${result.location.countryName} (${result.distanceKm.toStringAsFixed(1)} km).';
+      });
+    } catch (error) {
+      setState(() {
+        _locationStatus = _isRu
+            ? 'GPS не сработал: $error'
+            : 'GPS did not work: $error';
+      });
+    } finally {
+      if (mounted) setState(() => _detectingLocation = false);
+    }
+  }
+
+  Future<void> _checkUpdates() async {
+    setState(() {
+      _checkingUpdates = true;
+      _updateStatus = null;
+    });
+    try {
+      final result = await widget.onCheckUpdates();
+      setState(() {
+        _updateStatus = result.installedFiles == 0
+            ? (_isRu ? 'Новых обновлений нет.' : 'No new updates.')
+            : (_isRu
+                  ? 'Обновлено файлов пакетов: ${result.installedFiles}.'
+                  : 'Updated package files: ${result.installedFiles}.');
+      });
+    } catch (error) {
+      setState(() {
+        _updateStatus = _isRu
+            ? 'Не удалось проверить обновления: $error'
+            : 'Could not check updates: $error';
+      });
+    } finally {
+      if (mounted) setState(() => _checkingUpdates = false);
+    }
   }
 
   Future<void> _pickPeriodDate({required bool isFrom}) async {
@@ -1126,30 +1411,13 @@ class _EventSearchSheetState extends State<_EventSearchSheet> {
                   spacing: 8,
                   runSpacing: 8,
                   children: [
-                    _FilterChipButton(
-                      id: 'festival',
-                      label: _isRu ? 'Праздники' : 'Festivals',
-                      settings: _settings,
-                      onChanged: _toggleCategory,
-                    ),
-                    _FilterChipButton(
-                      id: 'appearance',
-                      label: _isRu ? 'Явления' : 'Appearances',
-                      settings: _settings,
-                      onChanged: _toggleCategory,
-                    ),
-                    _FilterChipButton(
-                      id: 'disappearance',
-                      label: _isRu ? 'Уходы' : 'Disappearances',
-                      settings: _settings,
-                      onChanged: _toggleCategory,
-                    ),
-                    _FilterChipButton(
-                      id: 'deity_temple',
-                      label: _isRu ? 'Божества / храмы' : 'Deities / temples',
-                      settings: _settings,
-                      onChanged: _toggleCategory,
-                    ),
+                    for (final filter in _availableEventFilters())
+                      _FilterChipButton(
+                        id: filter.id,
+                        label: filter.label(isRu: _isRu),
+                        settings: _settings,
+                        onChanged: _toggleCategory,
+                      ),
                   ],
                 ),
               ],
@@ -1179,6 +1447,25 @@ class _EventSearchSheetState extends State<_EventSearchSheet> {
           return true;
         })
         .toList(growable: false);
+  }
+
+  List<_EventFilterDefinition> _availableEventFilters() {
+    final categories = widget.events.map((event) => event.category).toSet();
+    final known = _eventFilterDefinitions
+        .where((filter) => categories.contains(filter.id))
+        .toList();
+    final knownIds = known.map((filter) => filter.id).toSet();
+    for (final category in categories) {
+      if (knownIds.contains(category)) continue;
+      known.add(
+        _EventFilterDefinition(
+          id: category,
+          ruLabel: category,
+          enLabel: category,
+        ),
+      );
+    }
+    return known;
   }
 
   void _toggleCategory(String id) {
@@ -2142,11 +2429,18 @@ class _DayCell extends StatelessWidget {
   Color? _eventColor(VCalendarColors colors) {
     final category = eventCategory;
     if (category == null) return null;
+    if (category == 'ekadashi') return colors.ekadashiBorder;
     if (category.contains('appearance')) return colors.vaishnavaAppearance;
     if (category.contains('disappearance')) {
       return colors.vaishnavaDisappearance;
     }
-    if (category == 'avatar' || category == 'festival') return colors.festival;
+    if (category == 'avatar' ||
+        category == 'avatar_associate' ||
+        category == 'divine_appearance' ||
+        category == 'festival' ||
+        category == 'mahaprabhu_parsada') {
+      return colors.festival;
+    }
     if (category == 'deity_temple') return colors.parana;
     return colors.ekadashiBorder;
   }
@@ -2154,9 +2448,14 @@ class _DayCell extends StatelessWidget {
   Color _eventMarkerColor() {
     final category = eventCategory;
     if (category == null) return const Color(0xFFD4A017);
+    if (category == 'ekadashi') return const Color(0xFFD4A017);
     if (category.contains('appearance')) return const Color(0xFF6D4DD6);
     if (category.contains('disappearance')) return const Color(0xFF7B3BB8);
-    if (category == 'avatar' || category == 'festival') {
+    if (category == 'avatar' ||
+        category == 'avatar_associate' ||
+        category == 'divine_appearance' ||
+        category == 'festival' ||
+        category == 'mahaprabhu_parsada') {
       return const Color(0xFFB45A09);
     }
     if (category == 'deity_temple') return const Color(0xFF087A5B);
@@ -2958,13 +3257,20 @@ class _EventTile extends StatelessWidget {
   }
 
   Color _eventColor(VCalendarColors colors) {
+    if (event.category == 'ekadashi') {
+      return colors.ekadashiBorder.withValues(alpha: 0.28);
+    }
     if (event.category.contains('appearance')) {
       return colors.vaishnavaAppearance;
     }
     if (event.category.contains('disappearance')) {
       return colors.vaishnavaDisappearance;
     }
-    if (event.category == 'avatar' || event.category == 'festival') {
+    if (event.category == 'avatar' ||
+        event.category == 'avatar_associate' ||
+        event.category == 'divine_appearance' ||
+        event.category == 'festival' ||
+        event.category == 'mahaprabhu_parsada') {
       return colors.festival;
     }
     return colors.parana;
@@ -3100,9 +3406,25 @@ class _HomeState {
     required this.summary,
     required this.locations,
     required this.events,
+    required this.languages,
   });
 
   final MobileSeedSummary summary;
   final List<CalendarLocation> locations;
   final List<MobileEvent> events;
+  final List<String> languages;
+}
+
+class _EventFilterDefinition {
+  const _EventFilterDefinition({
+    required this.id,
+    required this.ruLabel,
+    required this.enLabel,
+  });
+
+  final String id;
+  final String ruLabel;
+  final String enLabel;
+
+  String label({required bool isRu}) => isRu ? ruLabel : enLabel;
 }
