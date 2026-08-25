@@ -67,6 +67,36 @@ const _eventFilterDefinitions = [
   _EventFilterDefinition(id: 'other', ruLabel: 'Другое', enLabel: 'Other'),
 ];
 
+const _webEventTonePriority = [
+  'ekadashi',
+  'parana',
+  'vaishnava',
+  'festival',
+  'deity',
+  'purushottama',
+  'notice',
+];
+
+String? _webEventTone(MobileEvent event) {
+  if (event.eventType == 'ekadashi') return 'ekadashi';
+  if (event.eventType == 'ekadashi_notice') return 'notice';
+  if (event.eventType == 'parana') return 'parana';
+  if (event.eventType == 'purushottama_boundary') return 'purushottama';
+  if (event.eventType == 'festival' || event.eventType == 'divine_appearance') {
+    return 'festival';
+  }
+  if (event.eventType == 'vaishnava_appearance' ||
+      event.eventType == 'vaishnava_disappearance') {
+    return 'vaishnava';
+  }
+  if (event.eventType == 'deity_installation' ||
+      event.eventType == 'temple_opening' ||
+      event.category == 'deity_temple') {
+    return 'deity';
+  }
+  return null;
+}
+
 class HomeScreen extends StatefulWidget {
   const HomeScreen({
     super.key,
@@ -85,7 +115,7 @@ class _HomeScreenState extends State<HomeScreen> {
   final MonthGridService _monthGridService = const MonthGridService();
   final PanchangaCalculator _panchangaCalculator = const PanchangaCalculator();
   final LocationMatcherService _locationMatcherService =
-      const LocationMatcherService();
+      LocationMatcherService();
   final PreferencesStore _preferences = PreferencesStore();
   late final AppDatabase _database;
   late final MobileCalendarRepository _repository;
@@ -215,7 +245,7 @@ class _HomeScreenState extends State<HomeScreen> {
                           state: state,
                         ),
                   ];
-            final calendarDayCategories = _calendarDayCategories(
+            final calendarDayTones = _calendarDayTones(
               panchangaDays: panchangaMonthDays,
               eventMap: eventMap,
             );
@@ -242,7 +272,6 @@ class _HomeScreenState extends State<HomeScreen> {
                     padding: EdgeInsets.all(isTablet ? 28 : 16),
                     child: _Header(
                       isRu: _isRu,
-                      onInfoTap: () => _openGlossarySheet(state.glossary),
                       onSearchTap: () => _openSearchSheet(
                         selectedLocation: selectedLocation,
                         events: state.events,
@@ -287,10 +316,13 @@ class _HomeScreenState extends State<HomeScreen> {
                         isRu: _isRu,
                         days: monthDays,
                         eventCounts: {
-                          for (final entry in eventMap.entries)
+                          for (final entry in calendarDayTones.entries)
                             entry.key: entry.value.length,
                         },
-                        eventCategories: calendarDayCategories,
+                        eventCategories: {
+                          for (final entry in calendarDayTones.entries)
+                            entry.key: entry.value.first,
+                        },
                         onlyDaysWithEvents: widget.settings.onlyDaysWithEvents,
                         onMonthPickerRequested: () =>
                             _openMonthPicker(initialMonth: _visibleMonth),
@@ -451,15 +483,6 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
-  Future<void> _openGlossarySheet(List<GlossaryTerm> terms) {
-    return showModalBottomSheet<void>(
-      context: context,
-      isScrollControlled: true,
-      showDragHandle: true,
-      builder: (context) => _GlossarySheet(terms: terms, isRu: _isRu),
-    );
-  }
-
   Future<void> _openMonthPicker({required DateTime initialMonth}) async {
     final picked = await showModalBottomSheet<DateTime>(
       context: context,
@@ -583,7 +606,7 @@ class _HomeScreenState extends State<HomeScreen> {
       id: 'gps-${result.latitude.toStringAsFixed(5)}-${result.longitude.toStringAsFixed(5)}-${result.location.id}',
       name: _isRu ? 'Текущая GPS-позиция' : 'Current GPS position',
       countryName: '${result.location.name}, ${result.location.countryName}',
-      timezone: result.location.timezone,
+      timezone: result.timezone,
       latitude: result.latitude,
       longitude: result.longitude,
       weekStart: result.location.weekStart,
@@ -703,46 +726,56 @@ class _HomeScreenState extends State<HomeScreen> {
   bool _eventAllowedBySettings(MobileEvent event) {
     final filters = widget.settings.enabledEventCategories;
     if (filters.isEmpty) return true;
-    return filters.contains(event.category) ||
+    return filters.contains(_eventFilterType(event)) ||
+        filters.contains(event.category) ||
         filters.contains(_eventCategoryGroup(event.category));
   }
 
-  String _calendarDayCategory(List<MobileEvent> events) {
-    if (events.any(_isEkadashiFastEvent)) {
-      return 'ekadashi';
-    }
-    final visualEvent = events.firstWhere(
-      (event) => event.eventType != 'ekadashi_notice',
-      orElse: () => events.first,
-    );
-    return _visualCategory(visualEvent);
-  }
-
-  Map<String, String> _calendarDayCategories({
+  Map<String, List<String>> _calendarDayTones({
     required List<PanchangaDay> panchangaDays,
     required Map<String, List<MobileEvent>> eventMap,
   }) {
-    final categories = <String, String>{};
+    final tonesByDate = <String, List<String>>{};
     for (final panchanga in panchangaDays) {
       final key = _dateKey(panchanga.date);
       final events = eventMap[key];
       if (events != null && events.isNotEmpty) {
-        categories[key] = _calendarDayCategory(events);
+        final tones = _eventTones(events);
+        if (tones.isNotEmpty) {
+          tonesByDate[key] = tones;
+        }
       }
     }
-    return categories;
+    return tonesByDate;
   }
 
-  bool _isEkadashiFastEvent(MobileEvent event) {
-    return event.category == 'ekadashi' && event.eventType == 'ekadashi';
+  List<String> _eventTones(List<MobileEvent> events) {
+    final tones = events.map(_webEventTone).whereType<String>().toSet();
+    return [
+      for (final tone in _webEventTonePriority)
+        if (tones.contains(tone)) tone,
+    ];
   }
 
-  String _visualCategory(MobileEvent event) {
-    if (event.category != 'ekadashi') return event.category;
-    if (event.eventType == 'ekadashi') return 'ekadashi';
+  String _eventFilterType(MobileEvent event) {
+    if (event.eventType == 'ekadashi' || event.eventType == 'ekadashi_notice') {
+      return 'ekadashi';
+    }
     if (event.eventType == 'parana') return 'parana';
-    if (event.eventType == 'ekadashi_notice') return 'notice';
-    return event.category;
+    if (event.eventType == 'purushottama_boundary') return 'purushottama';
+    if (event.eventType == 'divine_appearance') return 'divineAppearance';
+    if (event.eventType == 'vaishnava_appearance') {
+      return 'vaishnavaAppearance';
+    }
+    if (event.eventType == 'vaishnava_disappearance') {
+      return 'vaishnavaDisappearance';
+    }
+    if (event.eventType == 'deity_installation' ||
+        event.eventType == 'temple_opening' ||
+        event.category == 'deity_temple') {
+      return 'deityTemple';
+    }
+    return 'festival';
   }
 
   String _eventCategoryGroup(String category) {
@@ -829,13 +862,11 @@ class _HomeScreenState extends State<HomeScreen> {
 class _Header extends StatelessWidget {
   const _Header({
     required this.isRu,
-    required this.onInfoTap,
     required this.onSearchTap,
     required this.onSettingsTap,
   });
 
   final bool isRu;
-  final VoidCallback onInfoTap;
   final VoidCallback onSearchTap;
   final VoidCallback onSettingsTap;
 
@@ -867,13 +898,6 @@ class _Header extends StatelessWidget {
               ),
             ),
             const SizedBox(width: 8),
-            _AnimatedHeaderIconButton(
-              tooltip: isRu ? 'Термины' : 'Terms',
-              onPressed: onInfoTap,
-              icon: const Icon(Icons.info_outline),
-              spin: false,
-            ),
-            const SizedBox(width: 6),
             _AnimatedHeaderIconButton(
               tooltip: isRu ? 'Поиск' : 'Search',
               onPressed: onSearchTap,
@@ -977,106 +1001,6 @@ class _HeaderTitleLine extends StatelessWidget {
   }
 }
 
-class _GlossarySheet extends StatelessWidget {
-  const _GlossarySheet({required this.terms, required this.isRu});
-
-  final List<GlossaryTerm> terms;
-  final bool isRu;
-
-  @override
-  Widget build(BuildContext context) {
-    final bottomPadding = MediaQuery.viewInsetsOf(context).bottom;
-    final colors = Theme.of(context).extension<VCalendarColors>()!;
-    return SafeArea(
-      child: SingleChildScrollView(
-        padding: EdgeInsets.fromLTRB(20, 4, 20, bottomPadding + 20),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Row(
-              children: [
-                Expanded(
-                  child: Text(
-                    isRu ? 'Термины' : 'Terms',
-                    style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                      fontSize: 18,
-                      fontWeight: FontWeight.w900,
-                    ),
-                  ),
-                ),
-                IconButton(
-                  tooltip: isRu ? 'Закрыть' : 'Close',
-                  onPressed: () => Navigator.of(context).pop(),
-                  icon: const Icon(Icons.close),
-                ),
-              ],
-            ),
-            const SizedBox(height: 12),
-            if (terms.isEmpty)
-              Text(
-                isRu
-                    ? 'Справочник терминов пока пуст.'
-                    : 'The glossary is empty for now.',
-                style: TextStyle(color: colors.mutedText),
-              )
-            else
-              for (final term in terms) ...[
-                _GlossaryTermTile(term: term),
-                const SizedBox(height: 8),
-              ],
-          ],
-        ),
-      ),
-    );
-  }
-}
-
-class _GlossaryTermTile extends StatelessWidget {
-  const _GlossaryTermTile({required this.term});
-
-  final GlossaryTerm term;
-
-  @override
-  Widget build(BuildContext context) {
-    final full = term.fullDescription?.trim();
-    final hasFull = full != null && full.isNotEmpty;
-    return DecoratedBox(
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(14),
-        border: Border.all(color: Theme.of(context).colorScheme.outline),
-      ),
-      child: hasFull
-          ? ExpansionTile(
-              tilePadding: const EdgeInsets.symmetric(horizontal: 14),
-              childrenPadding: const EdgeInsets.fromLTRB(14, 0, 14, 14),
-              title: Text(
-                term.title,
-                style: const TextStyle(fontWeight: FontWeight.w900),
-              ),
-              subtitle: Text(term.shortDescription),
-              children: [
-                Align(alignment: Alignment.centerLeft, child: Text(full)),
-              ],
-            )
-          : Padding(
-              padding: const EdgeInsets.all(14),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    term.title,
-                    style: const TextStyle(fontWeight: FontWeight.w900),
-                  ),
-                  const SizedBox(height: 4),
-                  Text(term.shortDescription),
-                ],
-              ),
-            ),
-    );
-  }
-}
-
 class _SettingsSheet extends StatefulWidget {
   const _SettingsSheet({
     required this.settings,
@@ -1156,9 +1080,44 @@ class _SettingsSheetState extends State<_SettingsSheet> {
     return '${hours ~/ 24} д';
   }
 
+  List<_LocationOption> _groupedLocationOptions() {
+    final options = <_LocationOption>[];
+    String? currentGroup;
+    for (final location in widget.locations) {
+      final group = location.countryName.trim().isEmpty
+          ? (_isRu ? 'Другие' : 'Other')
+          : location.countryName.trim();
+      if (group != currentGroup) {
+        currentGroup = group;
+        options.add(_LocationOption.header(group));
+      }
+      options.add(_LocationOption.location(location));
+    }
+    return options;
+  }
+
+  String _locationCityLabel(CalendarLocation location) {
+    final name = location.name.trim();
+    final country = location.countryName.trim();
+    if (country.isEmpty) return name;
+    final suffix = ', $country';
+    if (name.endsWith(suffix)) {
+      return name.substring(0, name.length - suffix.length).trim();
+    }
+    return name;
+  }
+
+  String _locationFullLabel(CalendarLocation location) {
+    final city = _locationCityLabel(location);
+    final country = location.countryName.trim();
+    if (country.isEmpty) return city;
+    return '$city, $country';
+  }
+
   @override
   Widget build(BuildContext context) {
     final bottomPadding = MediaQuery.viewInsetsOf(context).bottom;
+    final locationOptions = _groupedLocationOptions();
 
     return SafeArea(
       child: SingleChildScrollView(
@@ -1261,19 +1220,53 @@ class _SettingsSheetState extends State<_SettingsSheet> {
                   isExpanded: true,
                   initialValue:
                       widget.selectedLocation?.id ?? widget.settings.locationId,
-                  items: [
-                    for (final location in widget.locations)
-                      DropdownMenuItem(
-                        value: location.id,
-                        child: Text(
-                          '${location.name}, ${location.countryName}',
-                          maxLines: 1,
-                          overflow: TextOverflow.ellipsis,
-                        ),
+                  selectedItemBuilder: (context) => [
+                    for (final option in locationOptions)
+                      Align(
+                        alignment: AlignmentDirectional.centerStart,
+                        child: option.location == null
+                            ? const SizedBox.shrink()
+                            : Text(
+                                _locationFullLabel(option.location!),
+                                maxLines: 1,
+                                overflow: TextOverflow.ellipsis,
+                              ),
                       ),
                   ],
+                  items: [
+                    for (final option in locationOptions)
+                      if (option.location == null)
+                        DropdownMenuItem<String>(
+                          value: option.headerValue,
+                          enabled: false,
+                          child: Text(
+                            option.label,
+                            style: Theme.of(context).textTheme.labelLarge
+                                ?.copyWith(
+                                  fontWeight: FontWeight.w900,
+                                  color: Theme.of(
+                                    context,
+                                  ).extension<VCalendarColors>()!.mutedText,
+                                ),
+                          ),
+                        )
+                      else
+                        DropdownMenuItem<String>(
+                          value: option.location!.id,
+                          child: Padding(
+                            padding: const EdgeInsetsDirectional.only(
+                              start: 14,
+                            ),
+                            child: Text(
+                              _locationCityLabel(option.location!),
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
+                            ),
+                          ),
+                        ),
+                  ],
                   onChanged: (value) {
-                    if (value == null) return;
+                    if (value == null || value.startsWith('__group_')) return;
                     _change(_settings.copyWith(locationId: value));
                   },
                 ),
@@ -1289,8 +1282,8 @@ class _SettingsSheetState extends State<_SettingsSheet> {
                       : const Icon(Icons.my_location),
                   label: Text(
                     _isRu
-                        ? 'Определить ближайший город по GPS'
-                        : 'Find nearest city by GPS',
+                        ? 'Рассчитать по текущей GPS-позиции'
+                        : 'Calculate by current GPS position',
                   ),
                 ),
                 if (_locationStatus != null) ...[
@@ -1473,9 +1466,16 @@ class _SettingsSheetState extends State<_SettingsSheet> {
       final result = await widget.onDetectLocation();
       _change(_settings.copyWith(locationId: result.location.id));
       setState(() {
+        final coords =
+            '${result.latitude.toStringAsFixed(5)}, ${result.longitude.toStringAsFixed(5)}';
+        final timezoneSource = result.timezoneFromNearestLocation
+            ? (_isRu
+                  ? 'fallback от ближайшего города'
+                  : 'nearest-city fallback')
+            : (_isRu ? 'по координатам' : 'by coordinates');
         _locationStatus = _isRu
-            ? 'Расчёт по GPS; часовой пояс от ближайшего города: ${result.location.name}, ${result.location.countryName} (${result.distanceKm.toStringAsFixed(1)} км).'
-            : 'Calculating by GPS; timezone from nearest city: ${result.location.name}, ${result.location.countryName} (${result.distanceKm.toStringAsFixed(1)} km).';
+            ? 'Расчёт по GPS-координатам: $coords. Часовой пояс: ${result.timezone} ($timezoneSource). Ближайший город: ${result.location.name}, ${result.location.countryName} (${result.distanceKm.toStringAsFixed(1)} км).'
+            : 'Calculating by GPS coordinates: $coords. Timezone: ${result.timezone} ($timezoneSource). Nearest city: ${result.location.name}, ${result.location.countryName} (${result.distanceKm.toStringAsFixed(1)} km).';
       });
     } catch (error) {
       setState(() {
@@ -1848,6 +1848,35 @@ class _SettingsGroup extends StatelessWidget {
       ),
     );
   }
+}
+
+class _LocationOption {
+  const _LocationOption._({
+    required this.label,
+    required this.location,
+    required this.headerValue,
+  });
+
+  factory _LocationOption.header(String label) {
+    final key = label.toLowerCase().replaceAll(RegExp(r'[^a-zа-яё0-9]+'), '-');
+    return _LocationOption._(
+      label: label,
+      location: null,
+      headerValue: '__group_$key',
+    );
+  }
+
+  factory _LocationOption.location(CalendarLocation location) {
+    return _LocationOption._(
+      label: location.name,
+      location: location,
+      headerValue: null,
+    );
+  }
+
+  final String label;
+  final CalendarLocation? location;
+  final String? headerValue;
 }
 
 class _FilterChipButton extends StatelessWidget {
@@ -2808,6 +2837,10 @@ class _DayCell extends StatelessWidget {
       final alpha = theme.brightness == Brightness.dark ? 0.30 : 0.13;
       return const Color(0xFF3949AB).withValues(alpha: alpha);
     }
+    if (category == 'vaishnava') return colors.vaishnavaDisappearance;
+    if (category == 'festival') return colors.festival;
+    if (category == 'deity') return colors.parana;
+    if (category == 'purushottama') return colors.festival;
     if (category.contains('appearance')) return colors.vaishnavaAppearance;
     if (category.contains('disappearance')) {
       return colors.vaishnavaDisappearance;
@@ -2846,6 +2879,10 @@ class _DayCell extends StatelessWidget {
     if (category == 'notice') return const Color(0xFFA33A1F);
     if (category == 'parana') return const Color(0xFF087A5B);
     if (category == 'ekadashi') return const Color(0xFFD4A017);
+    if (category == 'vaishnava') return const Color(0xFF7B3BB8);
+    if (category == 'festival') return const Color(0xFFB45A09);
+    if (category == 'deity') return const Color(0xFF087A5B);
+    if (category == 'purushottama') return const Color(0xFFB45A09);
     if (category.contains('appearance')) return const Color(0xFF6D4DD6);
     if (category.contains('disappearance')) return const Color(0xFF7B3BB8);
     if (category == 'avatar' ||
@@ -2928,7 +2965,12 @@ class _SelectedDayCard extends StatelessWidget {
                 _ParanaTomorrowNotice(label: paranaTomorrow),
                 const SizedBox(height: 12),
               ],
-              _EventsSection(events: events, isRu: isRu),
+              _EventsSection(
+                events: events,
+                panchanga: currentPanchanga,
+                timezone: currentLocation.timezone,
+                isRu: isRu,
+              ),
               const SizedBox(height: 14),
               _PanchangaSummaryGrid(
                 panchanga: currentPanchanga,
@@ -3322,6 +3364,8 @@ class _JyotishDaySection extends StatelessWidget {
           ),
         ),
         const SizedBox(height: 8),
+        _JyotishTermsHelpCard(isRu: isRu),
+        const SizedBox(height: 8),
         _JyotishInfoCard(
           title: isRu ? 'Титхи' : 'Tithi',
           headline: tithi.name,
@@ -3468,6 +3512,217 @@ class _JyotishLine {
 
   final String label;
   final String value;
+}
+
+class _JyotishTermsHelpCard extends StatelessWidget {
+  const _JyotishTermsHelpCard({required this.isRu});
+
+  final bool isRu;
+
+  @override
+  Widget build(BuildContext context) {
+    final colors = Theme.of(context).extension<VCalendarColors>()!;
+    final terms = _jyotishTerms(isRu);
+    return DecoratedBox(
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(14),
+        border: Border.all(color: Theme.of(context).colorScheme.outline),
+      ),
+      child: ExpansionTile(
+        tilePadding: const EdgeInsets.symmetric(horizontal: 12),
+        childrenPadding: const EdgeInsets.fromLTRB(12, 0, 12, 12),
+        leading: CircleAvatar(
+          radius: 14,
+          backgroundColor: colors.festival,
+          foregroundColor: Theme.of(context).colorScheme.onSurface,
+          child: const Text(
+            'i',
+            style: TextStyle(fontWeight: FontWeight.w900, fontSize: 16),
+          ),
+        ),
+        title: Text(
+          isRu ? 'Термины' : 'Terms',
+          style: Theme.of(
+            context,
+          ).textTheme.titleSmall?.copyWith(fontWeight: FontWeight.w900),
+        ),
+        subtitle: Text(
+          isRu ? 'Справка по терминам панчанга' : 'Panchang term reference',
+          style: TextStyle(color: colors.mutedText),
+        ),
+        children: [
+          for (final term in terms)
+            Padding(
+              padding: const EdgeInsets.only(bottom: 8),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    term.title,
+                    style: TextStyle(
+                      color: Theme.of(context).colorScheme.primary,
+                      fontWeight: FontWeight.w900,
+                    ),
+                  ),
+                  const SizedBox(height: 2),
+                  Text(term.description),
+                ],
+              ),
+            ),
+        ],
+      ),
+    );
+  }
+
+  List<_TermDefinition> _jyotishTerms(bool isRu) {
+    if (!isRu) {
+      return const [
+        _TermDefinition(
+          'Jyotish',
+          'Traditional Vedic astrology and calendrical timing system used here for muhurta notes.',
+        ),
+        _TermDefinition(
+          'Vara',
+          'Traditional weekday name in the Panchang order: Ravivara, Somavara, Mangalavara, Budhavara, Guruvara or Brihaspativara, Shukravara, Shanivara.',
+        ),
+        _TermDefinition(
+          'Masa',
+          'Lunar month used for Vaishnava calendar observances.',
+        ),
+        _TermDefinition(
+          'Paksha',
+          'Half of the lunar month: Gaura is waxing, Krishna is waning.',
+        ),
+        _TermDefinition(
+          'Tithi',
+          'Lunar day, calculated from the Moon-Sun angular distance.',
+        ),
+        _TermDefinition(
+          'Nakshatra',
+          'One of 27 lunar mansions. Each spans 13°20\' of the sidereal zodiac.',
+        ),
+        _TermDefinition(
+          'Pada',
+          'Quarter of a nakshatra; each nakshatra has four padas of 3°20\'.',
+        ),
+        _TermDefinition(
+          'AMRITA',
+          'A highly favorable Panjika muhurta slot for journeys, worship, and auspicious beginnings. It is treated as capable of neutralizing several travel blemishes.',
+        ),
+        _TermDefinition(
+          'MAHENDRA',
+          'A favorable and supportive Panjika muhurta slot for undertakings and travel, selected from the same month-group and weekday table as AMRITA.',
+        ),
+        _TermDefinition(
+          'VAKRA',
+          'A crooked or obstructive Panjika slot. It is generally avoided for important beginnings and journeys unless a stronger rule gives permission.',
+        ),
+        _TermDefinition(
+          'SHUNYA',
+          'An empty or void Panjika slot. Traditionally it is not chosen for important beginnings, travel, or auspicious work.',
+        ),
+        _TermDefinition(
+          'Sidereal longitude',
+          'Moon position measured against the sidereal zodiac after ayanamsha correction.',
+        ),
+        _TermDefinition(
+          'Graha ruler',
+          'The planetary ruler traditionally associated with a nakshatra.',
+        ),
+        _TermDefinition(
+          'Pratipat',
+          'The first tithi of a paksha, immediately after New Moon or Full Moon.',
+        ),
+        _TermDefinition(
+          'Amavasya',
+          'New Moon tithi, the last tithi of Krishna paksha.',
+        ),
+        _TermDefinition(
+          'Arunodaya',
+          'Pre-dawn period used for Ekadashi purity rules; it is calculated as one fifteenth of the previous night before sunrise.',
+        ),
+        _TermDefinition(
+          'Parana',
+          'The proper window for breaking an Ekadashi fast.',
+        ),
+      ];
+    }
+
+    return const [
+      _TermDefinition(
+        'Джйотиш',
+        'Традиционная ведическая астрология и система выбора времени, здесь используется для заметок по мухурте.',
+      ),
+      _TermDefinition(
+        'Вара',
+        'Традиционное название дня недели в порядке панчанги: Равивара, Сомавара, Мангалавара, Будхавара, Гурувара или Брихаспативара, Шукравара, Шанивара.',
+      ),
+      _TermDefinition(
+        'Маса',
+        'Лунный месяц, по которому определяются вайшнавские календарные события.',
+      ),
+      _TermDefinition(
+        'Пакша',
+        'Половина лунного месяца: Гаура - растущая Луна, Кришна - убывающая.',
+      ),
+      _TermDefinition(
+        'Титхи',
+        'Лунный день, рассчитывается по угловому расстоянию между Луной и Солнцем.',
+      ),
+      _TermDefinition(
+        'Накшатра',
+        'Одно из 27 лунных созвездий. Каждая накшатра занимает 13°20\' сидерического зодиака.',
+      ),
+      _TermDefinition(
+        'Пада',
+        'Четверть накшатры; в каждой накшатре четыре пады по 3°20\'.',
+      ),
+      _TermDefinition(
+        'AMRITA',
+        'Очень благоприятное мухурта-окно панжики для поездок, поклонения и добрых начинаний. В традиции считается, что оно может нейтрализовать ряд неблагоприятных факторов для путешествия.',
+      ),
+      _TermDefinition(
+        'MAHENDRA',
+        'Благоприятное поддерживающее мухурта-окно панжики для дел и поездок; выбирается по той же таблице группы месяца и дня недели, что и AMRITA.',
+      ),
+      _TermDefinition(
+        'VAKRA',
+        '«Кривой», затрудняющий отрезок панжики. Обычно его избегают для важных начинаний и поездок, если нет более сильного разрешающего правила.',
+      ),
+      _TermDefinition(
+        'SHUNYA',
+        '«Пустой» отрезок панжики. Традиционно не выбирается для важных начинаний, поездок и благоприятных дел.',
+      ),
+      _TermDefinition(
+        'Сидерическая долгота',
+        'Положение Луны в сидерическом зодиаке после поправки айанамши.',
+      ),
+      _TermDefinition(
+        'Граха-управитель',
+        'Планетный управитель, традиционно связанный с накшатрой.',
+      ),
+      _TermDefinition(
+        'Пратипад',
+        'Первая титхи пакши, сразу после новолуния или полнолуния.',
+      ),
+      _TermDefinition(
+        'Амавасья',
+        'Титхи новолуния, последняя титхи Кришна-пакши.',
+      ),
+      _TermDefinition(
+        'Арунодая',
+        'Предрассветный период для правил чистоты Экадаши; считается как одна пятнадцатая предыдущей ночи до восхода.',
+      ),
+      _TermDefinition('Паран', 'Правильное окно для выхода из поста Экадаши.'),
+    ];
+  }
+}
+
+class _TermDefinition {
+  const _TermDefinition(this.title, this.description);
+
+  final String title;
+  final String description;
 }
 
 class _PanjikaYogaCard extends StatelessWidget {
@@ -3654,13 +3909,21 @@ class _JyotishAdviceBlock extends StatelessWidget {
 }
 
 class _EventsSection extends StatelessWidget {
-  const _EventsSection({required this.events, required this.isRu});
+  const _EventsSection({
+    required this.events,
+    required this.panchanga,
+    required this.timezone,
+    required this.isRu,
+  });
 
   final List<MobileEvent> events;
+  final PanchangaDay panchanga;
+  final String timezone;
   final bool isRu;
 
   @override
   Widget build(BuildContext context) {
+    final paranaWindow = _paranaWindowLabel();
     if (events.isEmpty) {
       return Text(
         isRu ? 'Событий на этот день пока нет.' : 'No events for this day yet.',
@@ -3681,16 +3944,55 @@ class _EventsSection extends StatelessWidget {
           ),
         ),
         const SizedBox(height: 8),
-        for (final event in events) _EventTile(event: event),
+        for (final event in events)
+          _EventTile(
+            event: event,
+            paranaWindow: event.eventType == 'parana' ? paranaWindow : null,
+          ),
       ],
+    );
+  }
+
+  _ParanaWindowLabel? _paranaWindowLabel() {
+    if (panchanga.tithiAtSunrise.shortName != 'Dvadashi') return null;
+    final daylight = panchanga.sunset.difference(panchanga.sunrise);
+    final oneFifthEnd = panchanga.sunrise.add(
+      Duration(milliseconds: (daylight.inMilliseconds / 5).round()),
+    );
+    final oneThirdEnd = panchanga.sunrise.add(
+      Duration(milliseconds: (daylight.inMilliseconds / 3).round()),
+    );
+    final tithiEnd = panchanga.tithiEnd;
+    final preferredEnd =
+        tithiEnd != null &&
+            tithiEnd.isAfter(panchanga.sunrise) &&
+            tithiEnd.isBefore(oneThirdEnd)
+        ? tithiEnd
+        : oneThirdEnd;
+    final fifthEnd =
+        tithiEnd != null &&
+            tithiEnd.isAfter(panchanga.sunrise) &&
+            tithiEnd.isBefore(oneFifthEnd)
+        ? tithiEnd
+        : oneFifthEnd;
+    final formatter = const PanchangaFormatter();
+    final start = formatter.time(panchanga.sunrise, timezone);
+    final preferred = formatter.time(preferredEnd, timezone);
+    final fifth = formatter.time(fifthEnd, timezone);
+    return _ParanaWindowLabel(
+      summary: isRu
+          ? 'Время парана: $start-$preferred'
+          : 'Parana time: $start-$preferred',
+      oneFifth: isRu ? 'Окончание по 1/5 дня: $fifth' : '1/5 day end: $fifth',
     );
   }
 }
 
 class _EventTile extends StatelessWidget {
-  const _EventTile({required this.event});
+  const _EventTile({required this.event, this.paranaWindow});
 
   final MobileEvent event;
+  final _ParanaWindowLabel? paranaWindow;
 
   @override
   Widget build(BuildContext context) {
@@ -3698,37 +4000,73 @@ class _EventTile extends StatelessWidget {
       event.fullDescription ?? event.shortDescription,
     );
     final colors = Theme.of(context).extension<VCalendarColors>()!;
+    final eventStyle = _eventStyle(context, colors);
     return Padding(
       padding: const EdgeInsets.only(bottom: 8),
-      child: DecoratedBox(
-        decoration: BoxDecoration(
-          color: _eventColor(colors),
+      child: Material(
+        color: eventStyle.background,
+        clipBehavior: Clip.antiAlias,
+        shape: RoundedRectangleBorder(
+          side: BorderSide(
+            color: eventStyle.border,
+            width: eventStyle.tone == 'ekadashi' ? 2 : 1,
+          ),
           borderRadius: BorderRadius.circular(14),
-          border: Border.all(color: Theme.of(context).colorScheme.outline),
         ),
         child: ExpansionTile(
-          iconColor: colors.eventText.withValues(alpha: 0.74),
-          collapsedIconColor: colors.eventText.withValues(alpha: 0.64),
+          iconColor: eventStyle.foreground.withValues(alpha: 0.74),
+          collapsedIconColor: eventStyle.foreground.withValues(alpha: 0.64),
           tilePadding: const EdgeInsets.symmetric(horizontal: 12),
           childrenPadding: const EdgeInsets.fromLTRB(12, 0, 12, 12),
           title: Text(
             event.name,
             style: Theme.of(context).textTheme.titleSmall?.copyWith(
-              color: colors.eventText,
+              color: eventStyle.foreground,
               fontWeight: FontWeight.w900,
             ),
           ),
-          subtitle: event.shortDescription == null
+          subtitle: paranaWindow == null && event.shortDescription == null
               ? null
-              : Text(
-                  event.shortDescription!,
-                  maxLines: 2,
-                  overflow: TextOverflow.ellipsis,
-                  style: TextStyle(
-                    color: colors.eventText.withValues(alpha: 0.78),
-                  ),
+              : Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    if (paranaWindow != null) ...[
+                      const SizedBox(height: 4),
+                      Text(
+                        paranaWindow!.summary,
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                        style: TextStyle(
+                          color: eventStyle.foreground,
+                          fontWeight: FontWeight.w900,
+                        ),
+                      ),
+                    ],
+                    if (event.shortDescription != null)
+                      Text(
+                        event.shortDescription!,
+                        maxLines: 2,
+                        overflow: TextOverflow.ellipsis,
+                        style: TextStyle(
+                          color: eventStyle.foreground.withValues(alpha: 0.78),
+                        ),
+                      ),
+                  ],
                 ),
           children: [
+            if (paranaWindow != null) ...[
+              Align(
+                alignment: Alignment.centerLeft,
+                child: Text(
+                  paranaWindow!.oneFifth,
+                  style: TextStyle(
+                    color: eventStyle.foreground,
+                    fontWeight: FontWeight.w800,
+                  ),
+                ),
+              ),
+              const SizedBox(height: 8),
+            ],
             if (description == null || description.trim().isEmpty)
               const SizedBox.shrink()
             else
@@ -3736,7 +4074,7 @@ class _EventTile extends StatelessWidget {
                 alignment: Alignment.centerLeft,
                 child: Text(
                   description,
-                  style: TextStyle(color: colors.eventText),
+                  style: TextStyle(color: eventStyle.foreground),
                 ),
               ),
           ],
@@ -3745,30 +4083,117 @@ class _EventTile extends StatelessWidget {
     );
   }
 
-  Color _eventColor(VCalendarColors colors) {
-    if (event.eventType == 'ekadashi_notice') {
-      return const Color(0xFFA33A1F).withValues(alpha: 0.10);
+  _EventVisualStyle _eventStyle(BuildContext context, VCalendarColors colors) {
+    final theme = Theme.of(context);
+    final tone = _webEventTone(event) ?? 'festival';
+    final isDark = theme.brightness == Brightness.dark;
+    final isSepia = theme.scaffoldBackgroundColor == const Color(0xFFF7EFDF);
+    final surface = theme.colorScheme.surface;
+    final primary = theme.colorScheme.primary;
+    switch (tone) {
+      case 'ekadashi':
+        return _EventVisualStyle(
+          tone: tone,
+          background: isDark
+              ? const Color(0xFF3949AB).withValues(alpha: 0.24)
+              : const Color(0xFFEEF1FF),
+          foreground: isDark
+              ? const Color(0xFFC7D2FE)
+              : const Color(0xFF3949AB),
+          border: const Color(0xFFD4A017),
+        );
+      case 'notice':
+        return _EventVisualStyle(
+          tone: tone,
+          background: surface,
+          foreground: colors.mutedText,
+          border: colors.mutedText.withValues(alpha: 0.34),
+        );
+      case 'parana':
+        return _EventVisualStyle(
+          tone: tone,
+          background: isDark
+              ? const Color(0xFF6EE7B7).withValues(alpha: 0.13)
+              : isSepia
+              ? const Color(0xFFE6F5EE)
+              : const Color(0xFFEEFAF5),
+          foreground: isDark
+              ? const Color(0xFF6EE7B7)
+              : isSepia
+              ? const Color(0xFF23705F)
+              : const Color(0xFF3B8A78),
+          border: isDark
+              ? const Color(0xFF6EE7B7)
+              : isSepia
+              ? const Color(0xFF23705F)
+              : const Color(0xFF3B8A78),
+        );
+      case 'vaishnava':
+        return _EventVisualStyle(
+          tone: tone,
+          background: isDark
+              ? const Color(0xFFC4B5FD).withValues(alpha: 0.14)
+              : isSepia
+              ? const Color(0xFFF3EBF8)
+              : const Color(0xFFF6F1FB),
+          foreground: isDark
+              ? const Color(0xFFC4B5FD)
+              : isSepia
+              ? const Color(0xFF7A4CA0)
+              : const Color(0xFF8667B8),
+          border: isDark
+              ? const Color(0xFFC4B5FD)
+              : isSepia
+              ? const Color(0xFF7A4CA0)
+              : const Color(0xFF8667B8),
+        );
+      case 'deity':
+        return _EventVisualStyle(
+          tone: tone,
+          background: isDark
+              ? const Color(0xFF5EEAD4).withValues(alpha: 0.13)
+              : isSepia
+              ? const Color(0xFFF1F4D7)
+              : const Color(0xFFF5F8E8),
+          foreground: isDark
+              ? const Color(0xFF5EEAD4)
+              : isSepia
+              ? const Color(0xFF626C1F)
+              : const Color(0xFF6F8A38),
+          border: isDark
+              ? const Color(0xFF5EEAD4)
+              : isSepia
+              ? const Color(0xFF626C1F)
+              : const Color(0xFF6F8A38),
+        );
+      case 'purushottama':
+        return _EventVisualStyle(
+          tone: tone,
+          background: primary.withValues(alpha: isDark ? 0.14 : 0.10),
+          foreground: primary,
+          border: primary.withValues(alpha: 0.60),
+        );
+      case 'festival':
+      default:
+        return _EventVisualStyle(
+          tone: tone,
+          background: isDark
+              ? const Color(0xFFFBBF24).withValues(alpha: 0.28)
+              : isSepia
+              ? const Color(0xFFFFDFAD)
+              : const Color(0xFFFFE5BF),
+          foreground: isDark
+              ? const Color(0xFFFBBF24)
+              : isSepia
+              ? const Color(0xFF9A3412)
+              : const Color(0xFFA66A2B),
+          border: isDark
+              ? const Color(0xFFFBBF24).withValues(alpha: 0.72)
+              : isSepia
+              ? const Color(0xFF9A3412).withValues(alpha: 0.42)
+              : const Color(0xFFA66A2B).withValues(alpha: 0.36),
+        );
     }
-    if (event.eventType == 'parana') {
-      return colors.parana;
-    }
-    if (event.category == 'ekadashi') {
-      return colors.ekadashiBorder.withValues(alpha: 0.28);
-    }
-    if (event.category.contains('appearance')) {
-      return colors.vaishnavaAppearance;
-    }
-    if (event.category.contains('disappearance')) {
-      return colors.vaishnavaDisappearance;
-    }
-    if (event.category == 'avatar' ||
-        event.category == 'avatar_associate' ||
-        event.category == 'divine_appearance' ||
-        event.category == 'festival' ||
-        event.category == 'mahaprabhu_parsada') {
-      return colors.festival;
-    }
-    return colors.parana;
   }
 
   String? _cleanDescription(String? value) {
@@ -3783,6 +4208,27 @@ class _EventTile extends StatelessWidget {
         .replaceAll('__', '')
         .trim();
   }
+}
+
+class _ParanaWindowLabel {
+  const _ParanaWindowLabel({required this.summary, required this.oneFifth});
+
+  final String summary;
+  final String oneFifth;
+}
+
+class _EventVisualStyle {
+  const _EventVisualStyle({
+    required this.tone,
+    required this.background,
+    required this.foreground,
+    required this.border,
+  });
+
+  final String tone;
+  final Color background;
+  final Color foreground;
+  final Color border;
 }
 
 class _SeedSummaryCard extends StatelessWidget {
