@@ -55,6 +55,26 @@ function buildDay(isoDate, location, rules) {
   };
 }
 
+export function periodMarkerForDate(isoDate, location, rules) {
+  const astronomy = dayAstronomy(isoDate, location, rules);
+  const sunriseTithi = tithiInfo(astronomy.sunrise);
+  const masa = masaForDate(astronomy.sunrise);
+  return {
+    date: isoDate,
+    location,
+    masa,
+    lunar: {
+      masa: masa.name,
+      masa_display: masa.display_name,
+      masa_type: masa.type,
+      is_purushottama: masa.is_purushottama,
+      paksha: sunriseTithi.paksha,
+      tithi_at_sunrise: sunriseTithi,
+      tithi_angle_at_sunrise: sunriseTithi.angle
+    }
+  };
+}
+
 function weekStartForLocation(location) {
   return location.week_start ?? 1;
 }
