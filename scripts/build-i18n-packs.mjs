@@ -107,6 +107,7 @@ function countryNameEn(group) {
     Беларусь: "Belarus",
     Россия: "Russia",
     Европа: "Europe",
+    США: "United States",
     Индия: "India",
     Непал: "Nepal",
   };
@@ -132,6 +133,10 @@ function locationNameRu(location) {
     London: "Лондон",
     Bern: "Берн",
     Budapest: "Будапешт",
+    "New York": "Нью-Йорк",
+    "Washington": "Вашингтон",
+    Seattle: "Сиэтл",
+    "San Diego": "Сан-Диего",
     Mayapur: "Маяпур",
     Nabadwip: "Навадвип",
     Kolkata: "Калькутта",

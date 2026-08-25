@@ -132,6 +132,38 @@ export const LOCATIONS = [
     timezone: "Europe/Budapest"
   },
   {
+    id: "new-york",
+    name: "New York, United States",
+    group: "США",
+    lat: 40.7128,
+    lon: -74.006,
+    timezone: "America/New_York"
+  },
+  {
+    id: "washington-dc",
+    name: "Washington, D.C., United States",
+    group: "США",
+    lat: 38.9072,
+    lon: -77.0369,
+    timezone: "America/New_York"
+  },
+  {
+    id: "seattle",
+    name: "Seattle, United States",
+    group: "США",
+    lat: 47.6062,
+    lon: -122.3321,
+    timezone: "America/Los_Angeles"
+  },
+  {
+    id: "san-diego",
+    name: "San Diego, United States",
+    group: "США",
+    lat: 32.7157,
+    lon: -117.1611,
+    timezone: "America/Los_Angeles"
+  },
+  {
     id: "mayapur",
     name: "Mayapur, India",
     group: "Индия",

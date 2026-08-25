@@ -115,6 +115,34 @@
       "region_name": "Европа"
     },
     {
+      "id": "new-york",
+      "lang": "en",
+      "name": "New York, United States",
+      "country_name": "United States",
+      "region_name": "США"
+    },
+    {
+      "id": "washington-dc",
+      "lang": "en",
+      "name": "Washington, D.C., United States",
+      "country_name": "United States",
+      "region_name": "США"
+    },
+    {
+      "id": "seattle",
+      "lang": "en",
+      "name": "Seattle, United States",
+      "country_name": "United States",
+      "region_name": "США"
+    },
+    {
+      "id": "san-diego",
+      "lang": "en",
+      "name": "San Diego, United States",
+      "country_name": "United States",
+      "region_name": "США"
+    },
+    {
       "id": "mayapur",
       "lang": "en",
       "name": "Mayapur, India",
