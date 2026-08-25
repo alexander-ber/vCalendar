@@ -708,10 +708,14 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   String _calendarDayCategory(List<MobileEvent> events) {
-    if (events.any((event) => event.category == 'ekadashi')) {
+    if (events.any(_isEkadashiFastEvent)) {
       return 'ekadashi';
     }
-    return events.first.category;
+    final visualEvent = events.firstWhere(
+      (event) => event.eventType != 'ekadashi_notice',
+      orElse: () => events.first,
+    );
+    return _visualCategory(visualEvent);
   }
 
   Map<String, String> _calendarDayCategories({
@@ -724,18 +728,21 @@ class _HomeScreenState extends State<HomeScreen> {
       final events = eventMap[key];
       if (events != null && events.isNotEmpty) {
         categories[key] = _calendarDayCategory(events);
-        continue;
-      }
-      if (_isEkadashiTithi(panchanga)) {
-        categories[key] = 'ekadashi';
       }
     }
     return categories;
   }
 
-  bool _isEkadashiTithi(PanchangaDay panchanga) {
-    final number = panchanga.tithiAtSunrise.number;
-    return number == 11 || number == 26;
+  bool _isEkadashiFastEvent(MobileEvent event) {
+    return event.category == 'ekadashi' && event.eventType == 'ekadashi';
+  }
+
+  String _visualCategory(MobileEvent event) {
+    if (event.category != 'ekadashi') return event.category;
+    if (event.eventType == 'ekadashi') return 'ekadashi';
+    if (event.eventType == 'parana') return 'parana';
+    if (event.eventType == 'ekadashi_notice') return 'notice';
+    return event.category;
   }
 
   String _eventCategoryGroup(String category) {
@@ -2795,6 +2802,8 @@ class _DayCell extends StatelessWidget {
   Color? _eventFillColor(ThemeData theme, VCalendarColors colors) {
     final category = eventCategory;
     if (category == null) return null;
+    if (category == 'notice') return null;
+    if (category == 'parana') return colors.parana;
     if (category == 'ekadashi') {
       final alpha = theme.brightness == Brightness.dark ? 0.30 : 0.13;
       return const Color(0xFF3949AB).withValues(alpha: alpha);
@@ -2834,6 +2843,8 @@ class _DayCell extends StatelessWidget {
   Color _eventMarkerColor() {
     final category = eventCategory;
     if (category == null) return const Color(0xFFD4A017);
+    if (category == 'notice') return const Color(0xFFA33A1F);
+    if (category == 'parana') return const Color(0xFF087A5B);
     if (category == 'ekadashi') return const Color(0xFFD4A017);
     if (category.contains('appearance')) return const Color(0xFF6D4DD6);
     if (category.contains('disappearance')) return const Color(0xFF7B3BB8);
@@ -3100,7 +3111,7 @@ class _SelectedDayCard extends StatelessWidget {
     required PanchangaDay? nextPanchanga,
     required String timezone,
   }) {
-    if (!events.any((event) => event.category == 'ekadashi')) return null;
+    if (!events.any(_isEkadashiFastEvent)) return null;
     final next = nextPanchanga;
     if (next == null || next.tithiAtSunrise.shortName != 'Dvadashi') {
       return null;
@@ -3121,6 +3132,10 @@ class _SelectedDayCard extends StatelessWidget {
     return isRu
         ? 'Паран завтра: ${formatter.time(next.sunrise, timezone)}-${formatter.time(end, timezone)}'
         : 'Parana tomorrow: ${formatter.time(next.sunrise, timezone)}-${formatter.time(end, timezone)}';
+  }
+
+  bool _isEkadashiFastEvent(MobileEvent event) {
+    return event.category == 'ekadashi' && event.eventType == 'ekadashi';
   }
 }
 
@@ -3731,6 +3746,12 @@ class _EventTile extends StatelessWidget {
   }
 
   Color _eventColor(VCalendarColors colors) {
+    if (event.eventType == 'ekadashi_notice') {
+      return const Color(0xFFA33A1F).withValues(alpha: 0.10);
+    }
+    if (event.eventType == 'parana') {
+      return colors.parana;
+    }
     if (event.category == 'ekadashi') {
       return colors.ekadashiBorder.withValues(alpha: 0.28);
     }
