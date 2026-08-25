@@ -133,20 +133,12 @@ class _HomeScreenState extends State<HomeScreen> {
     final events = await _repository.loadRuleEvents(lang: widget.settings.lang);
     final languages = await _repository.loadAvailableLanguages();
     final glossary = await _repository.loadGlossary(lang: widget.settings.lang);
-    final selectedLocationId =
-        locations
-            .where((item) => item.id == widget.settings.locationId)
-            .firstOrNull
-            ?.id ??
-        locations.firstOrNull?.id;
-    final calendarCache = selectedLocationId == null
-        ? <String, CachedCalendarDay>{}
-        : await _repository.loadCalendarCache(
-            locationId: selectedLocationId,
-            lang: widget.settings.lang,
-            startYear: _visibleMonth.year - 1,
-            endYear: _visibleMonth.year + 1,
-          );
+    final calendarCache = await _repository.loadCalendarCache(
+      locationId: 'nabadwip',
+      lang: widget.settings.lang,
+      startYear: _visibleMonth.year - 1,
+      endYear: _visibleMonth.year + 1,
+    );
     return _HomeState(
       summary: summary,
       locations: locations,
@@ -595,16 +587,28 @@ class _HomeScreenState extends State<HomeScreen> {
         final cachedEvents = _enrichCachedEvents(
           cached.events,
           events,
-        ).where(_eventAllowedBySettings).toList(growable: false);
+        )
+            .where((event) {
+              if (location.id == 'nabadwip') return true;
+              return event.category != 'ekadashi';
+            })
+            .where(_eventAllowedBySettings)
+            .toList(growable: false);
         if (cachedEvents.isNotEmpty) {
           result[key] = cachedEvents;
         }
-        continue;
+        if (location.id == 'nabadwip') continue;
       }
       final panchanga = _calculateDay(date: day.date, location: location);
       final matched = _matchEventsForDay(panchanga, events);
       if (matched.isNotEmpty) {
-        result[key] = matched;
+        final localEvents = cached == null
+            ? matched
+            : matched.where((event) => event.category == 'ekadashi');
+        final merged = <String, MobileEvent>{
+          for (final event in [...?result[key], ...localEvents]) event.id: event,
+        }.values.toList(growable: false);
+        if (merged.isNotEmpty) result[key] = merged;
       }
     }
     return result;
@@ -686,13 +690,13 @@ class _HomeScreenState extends State<HomeScreen> {
     final categories = <String, String>{};
     for (final panchanga in panchangaDays) {
       final key = _dateKey(panchanga.date);
-      if (_isEkadashiTithi(panchanga)) {
-        categories[key] = 'ekadashi';
-        continue;
-      }
       final events = eventMap[key];
       if (events != null && events.isNotEmpty) {
         categories[key] = _calendarDayCategory(events);
+        continue;
+      }
+      if (_isEkadashiTithi(panchanga)) {
+        categories[key] = 'ekadashi';
       }
     }
     return categories;
@@ -776,8 +780,11 @@ class _HomeScreenState extends State<HomeScreen> {
     required CalendarLocation location,
     required _HomeState state,
   }) {
-    return state.calendarCache[_dateKey(date)]?.panchanga ??
-        _calculateDay(date: date, location: location);
+    if (location.id == 'nabadwip') {
+      return state.calendarCache[_dateKey(date)]?.panchanga ??
+          _calculateDay(date: date, location: location);
+    }
+    return _calculateDay(date: date, location: location);
   }
 }
 
