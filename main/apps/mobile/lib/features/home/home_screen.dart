@@ -11,6 +11,7 @@ import '../../data/local/preferences_store.dart';
 import '../../data/remote/content_update_service.dart';
 import '../../data/repositories/mobile_calendar_repository.dart';
 import '../../domain/models/calendar_location.dart';
+import '../../domain/models/cached_calendar_day.dart';
 import '../../domain/models/mobile_event.dart';
 import '../../domain/models/month_day.dart';
 import '../../domain/models/panchanga_day.dart';
@@ -115,7 +116,8 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   void didUpdateWidget(covariant HomeScreen oldWidget) {
     super.didUpdateWidget(oldWidget);
-    if (oldWidget.settings.lang != widget.settings.lang) {
+    if (oldWidget.settings.lang != widget.settings.lang ||
+        oldWidget.settings.locationId != widget.settings.locationId) {
       _state = _load();
     }
   }
@@ -131,12 +133,27 @@ class _HomeScreenState extends State<HomeScreen> {
     final events = await _repository.loadRuleEvents(lang: widget.settings.lang);
     final languages = await _repository.loadAvailableLanguages();
     final glossary = await _repository.loadGlossary(lang: widget.settings.lang);
+    final selectedLocationId =
+        locations
+            .where((item) => item.id == widget.settings.locationId)
+            .firstOrNull
+            ?.id ??
+        locations.firstOrNull?.id;
+    final calendarCache = selectedLocationId == null
+        ? <String, CachedCalendarDay>{}
+        : await _repository.loadCalendarCache(
+            locationId: selectedLocationId,
+            lang: widget.settings.lang,
+            startYear: _visibleMonth.year - 1,
+            endYear: _visibleMonth.year + 1,
+          );
     return _HomeState(
       summary: summary,
       locations: locations,
       events: events,
       languages: languages,
       glossary: glossary,
+      calendarCache: calendarCache,
     );
   }
 
@@ -185,28 +202,36 @@ class _HomeScreenState extends State<HomeScreen> {
                     days: monthDays,
                     location: selectedLocation,
                     events: state.events,
+                    calendarCache: state.calendarCache,
                   );
             final panchangaMonthDays = selectedLocation == null
                 ? <PanchangaDay>[]
                 : [
                     for (final day in monthDays)
                       if (day.inCurrentMonth)
-                        _calculateDay(
+                        _dayFor(
                           date: day.date,
                           location: selectedLocation,
+                          state: state,
                         ),
                   ];
+            final calendarDayCategories = _calendarDayCategories(
+              panchangaDays: panchangaMonthDays,
+              eventMap: eventMap,
+            );
             final selectedPanchanga = selectedLocation == null
                 ? null
-                : _calculateDay(
+                : _dayFor(
                     date: _selectedDate,
                     location: selectedLocation,
+                    state: state,
                   );
             final nextSelectedPanchanga = selectedLocation == null
                 ? null
-                : _calculateDay(
+                : _dayFor(
                     date: _selectedDate.add(const Duration(days: 1)),
                     location: selectedLocation,
+                    state: state,
                   );
             final selectedEvents = eventMap[_dateKey(_selectedDate)] ?? [];
 
@@ -263,10 +288,7 @@ class _HomeScreenState extends State<HomeScreen> {
                           for (final entry in eventMap.entries)
                             entry.key: entry.value.length,
                         },
-                        eventCategories: {
-                          for (final entry in eventMap.entries)
-                            entry.key: entry.value.first.category,
-                        },
+                        eventCategories: calendarDayCategories,
                         onlyDaysWithEvents: widget.settings.onlyDaysWithEvents,
                         onMonthPickerRequested: () =>
                             _openMonthPicker(initialMonth: _visibleMonth),
@@ -295,8 +317,11 @@ class _HomeScreenState extends State<HomeScreen> {
                         _MasaPeriodNoticeCard(
                           days: panchangaMonthDays,
                           location: selectedLocation,
-                          calculateDay: (date, location) =>
-                              _calculateDay(date: date, location: location),
+                          calculateDay: (date, location) => _dayFor(
+                            date: date,
+                            location: location,
+                            state: state,
+                          ),
                           isRu: _isRu,
                         ),
                         const SizedBox(height: 16),
@@ -560,16 +585,57 @@ class _HomeScreenState extends State<HomeScreen> {
     required List<MonthDay> days,
     required CalendarLocation location,
     required List<MobileEvent> events,
+    required Map<String, CachedCalendarDay> calendarCache,
   }) {
     final result = <String, List<MobileEvent>>{};
     for (final day in days.where((item) => item.inCurrentMonth)) {
+      final key = _dateKey(day.date);
+      final cached = calendarCache[key];
+      if (cached != null) {
+        final cachedEvents = _enrichCachedEvents(
+          cached.events,
+          events,
+        ).where(_eventAllowedBySettings).toList(growable: false);
+        if (cachedEvents.isNotEmpty) {
+          result[key] = cachedEvents;
+        }
+        continue;
+      }
       final panchanga = _calculateDay(date: day.date, location: location);
       final matched = _matchEventsForDay(panchanga, events);
       if (matched.isNotEmpty) {
-        result[_dateKey(day.date)] = matched;
+        result[key] = matched;
       }
     }
     return result;
+  }
+
+  List<MobileEvent> _enrichCachedEvents(
+    List<MobileEvent> cachedEvents,
+    List<MobileEvent> seedEvents,
+  ) {
+    final seedById = {for (final event in seedEvents) event.id: event};
+    return cachedEvents
+        .map((event) => _mergeCachedEvent(event, seedById[event.id]))
+        .toList(growable: false);
+  }
+
+  MobileEvent _mergeCachedEvent(MobileEvent cached, MobileEvent? seed) {
+    if (seed == null) return cached;
+    return MobileEvent(
+      id: cached.id,
+      category: cached.category,
+      eventType: cached.eventType,
+      masa: cached.masa,
+      masaType: cached.masaType,
+      paksha: cached.paksha,
+      tithi: cached.tithi,
+      allowInAdhika: cached.allowInAdhika,
+      priority: cached.priority,
+      name: cached.name,
+      shortDescription: cached.shortDescription ?? seed.shortDescription,
+      fullDescription: cached.fullDescription ?? seed.fullDescription,
+    );
   }
 
   List<MobileEvent> _matchEventsForDay(
@@ -604,6 +670,37 @@ class _HomeScreenState extends State<HomeScreen> {
     if (filters.isEmpty) return true;
     return filters.contains(event.category) ||
         filters.contains(_eventCategoryGroup(event.category));
+  }
+
+  String _calendarDayCategory(List<MobileEvent> events) {
+    if (events.any((event) => event.category == 'ekadashi')) {
+      return 'ekadashi';
+    }
+    return events.first.category;
+  }
+
+  Map<String, String> _calendarDayCategories({
+    required List<PanchangaDay> panchangaDays,
+    required Map<String, List<MobileEvent>> eventMap,
+  }) {
+    final categories = <String, String>{};
+    for (final panchanga in panchangaDays) {
+      final key = _dateKey(panchanga.date);
+      if (_isEkadashiTithi(panchanga)) {
+        categories[key] = 'ekadashi';
+        continue;
+      }
+      final events = eventMap[key];
+      if (events != null && events.isNotEmpty) {
+        categories[key] = _calendarDayCategory(events);
+      }
+    }
+    return categories;
+  }
+
+  bool _isEkadashiTithi(PanchangaDay panchanga) {
+    final number = panchanga.tithiAtSunrise.number;
+    return number == 11 || number == 26;
   }
 
   String _eventCategoryGroup(String category) {
@@ -672,6 +769,15 @@ class _HomeScreenState extends State<HomeScreen> {
     );
     _panchangaCache[key] = calculated;
     return calculated;
+  }
+
+  PanchangaDay _dayFor({
+    required DateTime date,
+    required CalendarLocation location,
+    required _HomeState state,
+  }) {
+    return state.calendarCache[_dateKey(date)]?.panchanga ??
+        _calculateDay(date: date, location: location);
   }
 }
 
@@ -2581,7 +2687,11 @@ class _DayCell extends StatelessWidget {
             color: day.inCurrentMonth ? eventFillColor : null,
             border: Border.all(
               color: borderColor ?? Colors.transparent,
-              width: borderColor == null ? 0 : 2,
+              width: borderColor == null
+                  ? 0
+                  : eventCategory == 'ekadashi'
+                  ? 2.6
+                  : 2,
             ),
           ),
           child: Stack(
@@ -3734,6 +3844,7 @@ class _HomeState {
     required this.events,
     required this.languages,
     required this.glossary,
+    required this.calendarCache,
   });
 
   final MobileSeedSummary summary;
@@ -3741,6 +3852,7 @@ class _HomeState {
   final List<MobileEvent> events;
   final List<String> languages;
   final List<GlossaryTerm> glossary;
+  final Map<String, CachedCalendarDay> calendarCache;
 }
 
 class _EventFilterDefinition {

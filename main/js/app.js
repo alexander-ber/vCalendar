@@ -68,6 +68,7 @@ const LOCATION_GROUP_LABELS = {
   "Беларусь": { en: "Belarus", ru: "Беларусь" },
   "Россия": { en: "Russia", ru: "Россия" },
   "Европа": { en: "Europe", ru: "Европа" },
+  "США": { en: "United States", ru: "США" },
   "Индия": { en: "India", ru: "Индия" },
   "Непал": { en: "Nepal", ru: "Непал" },
   Other: { en: "Other", ru: "Другое" }
@@ -90,6 +91,10 @@ const LOCATION_LABELS = {
   london: { en: "London, United Kingdom", ru: "Лондон, Великобритания" },
   bern: { en: "Bern, Switzerland", ru: "Берн, Швейцария" },
   budapest: { en: "Budapest, Hungary", ru: "Будапешт, Венгрия" },
+  "new-york": { en: "New York, United States", ru: "Нью-Йорк, США" },
+  "washington-dc": { en: "Washington, D.C., United States", ru: "Вашингтон, США" },
+  seattle: { en: "Seattle, United States", ru: "Сиэтл, США" },
+  "san-diego": { en: "San Diego, United States", ru: "Сан-Диего, США" },
   mayapur: { en: "Mayapur, India", ru: "Маяпур, Индия" },
   nabadwip: { en: "Nabadwip, India", ru: "Навадвип, Индия" },
   kolkata: { en: "Kolkata, India", ru: "Калькутта, Индия" },

@@ -17,7 +17,9 @@ class AppDatabase {
 
     final docsDir = await getApplicationDocumentsDirectory();
     final dbPath = p.join(docsDir.path, 'vcalendar.sqlite');
+    final signaturePath = p.join(docsDir.path, 'vcalendar.seed.sig');
     final dbFile = File(dbPath);
+    final signatureFile = File(signaturePath);
 
     await dbFile.parent.create(recursive: true);
     final seedBytes = await rootBundle.load(seedAssetPath);
@@ -25,14 +27,28 @@ class AppDatabase {
       seedBytes.offsetInBytes,
       seedBytes.lengthInBytes,
     );
+    final seedSignature = _seedSignature(seedData);
     final seedLength = seedData.length;
     final existingLength = await dbFile.exists() ? await dbFile.length() : -1;
-    if (existingLength != seedLength) {
+    final existingSignature = await signatureFile.exists()
+        ? (await signatureFile.readAsString()).trim()
+        : '';
+    if (existingLength != seedLength || existingSignature != seedSignature) {
       await dbFile.writeAsBytes(seedData, flush: true);
+      await signatureFile.writeAsString(seedSignature, flush: true);
     }
 
     _database = await openDatabase(dbPath, readOnly: false);
     return _database!;
+  }
+
+  String _seedSignature(Uint8List bytes) {
+    var hash = 0xcbf29ce484222325;
+    for (final byte in bytes) {
+      hash ^= byte;
+      hash = (hash * 0x100000001b3) & 0xFFFFFFFFFFFFFFFF;
+    }
+    return '${bytes.length}:${hash.toRadixString(16).padLeft(16, '0')}';
   }
 
   Future<void> close() async {
