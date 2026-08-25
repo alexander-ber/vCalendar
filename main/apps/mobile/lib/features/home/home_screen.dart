@@ -96,6 +96,8 @@ class _HomeScreenState extends State<HomeScreen> {
   late DateTime _periodFrom;
   late DateTime _periodTo;
   final Map<String, PanchangaDay> _panchangaCache = {};
+  CalendarLocation? _gpsLocation;
+  String? _gpsNearestLocationId;
 
   bool get _isRu => widget.settings.lang == 'ru';
 
@@ -157,6 +159,11 @@ class _HomeScreenState extends State<HomeScreen> {
 
   void _changeSettings(AppSettings settings) {
     if (settings.locationId != widget.settings.locationId) {
+      if (_gpsLocation != null &&
+          settings.locationId != _gpsNearestLocationId) {
+        _gpsLocation = null;
+        _gpsNearestLocationId = null;
+      }
       _panchangaCache.clear();
     }
     widget.onSettingsChanged(settings);
@@ -182,7 +189,8 @@ class _HomeScreenState extends State<HomeScreen> {
               );
             }
             final state = snapshot.requireData;
-            final selectedLocation = _selectedLocation(state.locations);
+            final storedLocation = _storedLocation(state.locations);
+            final selectedLocation = _gpsLocation ?? storedLocation;
             final compactMode = widget.settings.compactMode && !isTablet;
             final monthDays = _monthGridService.buildMonth(
               month: _visibleMonth,
@@ -241,7 +249,8 @@ class _HomeScreenState extends State<HomeScreen> {
                       ),
                       onSettingsTap: () => _openSettingsSheet(
                         locations: state.locations,
-                        selectedLocation: selectedLocation,
+                        selectedLocation: storedLocation,
+                        exportLocation: selectedLocation,
                         events: state.events,
                         languages: state.languages,
                       ),
@@ -261,7 +270,8 @@ class _HomeScreenState extends State<HomeScreen> {
                         _LocationPromptCard(
                           onTap: () => _openSettingsSheet(
                             locations: state.locations,
-                            selectedLocation: selectedLocation,
+                            selectedLocation: storedLocation,
+                            exportLocation: selectedLocation,
                             events: state.events,
                             languages: state.languages,
                           ),
@@ -368,6 +378,7 @@ class _HomeScreenState extends State<HomeScreen> {
   Future<void> _openSettingsSheet({
     required List<CalendarLocation> locations,
     required CalendarLocation? selectedLocation,
+    required CalendarLocation? exportLocation,
     required List<MobileEvent> events,
     required List<String> languages,
   }) {
@@ -386,13 +397,12 @@ class _HomeScreenState extends State<HomeScreen> {
           isRu: _isRu,
           onSettingsChanged: _changeSettings,
           onPeriodChanged: _setPeriod,
-          onDetectLocation: () =>
-              _locationMatcherService.detectNearest(locations),
+          onDetectLocation: () => _detectGpsLocation(locations),
           onCheckUpdates: _checkContentUpdates,
-          onExportRequested: selectedLocation == null
+          onExportRequested: exportLocation == null
               ? null
               : (from, to) => _exportCalendar(
-                  location: selectedLocation,
+                  location: exportLocation,
                   events: events,
                   from: from,
                   to: to,
@@ -565,7 +575,30 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
-  CalendarLocation? _selectedLocation(List<CalendarLocation> locations) {
+  Future<LocationMatchResult> _detectGpsLocation(
+    List<CalendarLocation> locations,
+  ) async {
+    final result = await _locationMatcherService.detectNearest(locations);
+    final gpsLocation = CalendarLocation(
+      id: 'gps-${result.latitude.toStringAsFixed(5)}-${result.longitude.toStringAsFixed(5)}-${result.location.id}',
+      name: _isRu ? 'Текущая GPS-позиция' : 'Current GPS position',
+      countryName: '${result.location.name}, ${result.location.countryName}',
+      timezone: result.location.timezone,
+      latitude: result.latitude,
+      longitude: result.longitude,
+      weekStart: result.location.weekStart,
+    );
+    if (mounted) {
+      setState(() {
+        _gpsLocation = gpsLocation;
+        _gpsNearestLocationId = result.location.id;
+        _panchangaCache.clear();
+      });
+    }
+    return result;
+  }
+
+  CalendarLocation? _storedLocation(List<CalendarLocation> locations) {
     if (locations.isEmpty) return null;
     return locations
             .where((item) => item.id == widget.settings.locationId)
@@ -584,10 +617,7 @@ class _HomeScreenState extends State<HomeScreen> {
       final key = _dateKey(day.date);
       final cached = calendarCache[key];
       if (cached != null) {
-        final cachedEvents = _enrichCachedEvents(
-          cached.events,
-          events,
-        )
+        final cachedEvents = _enrichCachedEvents(cached.events, events)
             .where((event) {
               if (location.id == 'nabadwip') return true;
               return event.category != 'ekadashi';
@@ -606,7 +636,8 @@ class _HomeScreenState extends State<HomeScreen> {
             ? matched
             : matched.where((event) => event.category == 'ekadashi');
         final merged = <String, MobileEvent>{
-          for (final event in [...?result[key], ...localEvents]) event.id: event,
+          for (final event in [...?result[key], ...localEvents])
+            event.id: event,
         }.values.toList(growable: false);
         if (merged.isNotEmpty) result[key] = merged;
       }
@@ -1436,8 +1467,8 @@ class _SettingsSheetState extends State<_SettingsSheet> {
       _change(_settings.copyWith(locationId: result.location.id));
       setState(() {
         _locationStatus = _isRu
-            ? 'Выбран ближайший город: ${result.location.name}, ${result.location.countryName} (${result.distanceKm.toStringAsFixed(1)} км).'
-            : 'Nearest city selected: ${result.location.name}, ${result.location.countryName} (${result.distanceKm.toStringAsFixed(1)} km).';
+            ? 'Расчёт по GPS; часовой пояс от ближайшего города: ${result.location.name}, ${result.location.countryName} (${result.distanceKm.toStringAsFixed(1)} км).'
+            : 'Calculating by GPS; timezone from nearest city: ${result.location.name}, ${result.location.countryName} (${result.distanceKm.toStringAsFixed(1)} km).';
       });
     } catch (error) {
       setState(() {
