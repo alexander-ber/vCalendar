@@ -383,13 +383,13 @@ function seedCalendarDayCache(lines, locations, now) {
   const startDate = "2026-01-01";
   const endDate = "2026-12-31";
   const engineVersion = "web-calendar-engine";
-  for (const location of locations) {
-    const calendar = generateCalendarRange(startDate, endDate, location, WEB_RULES, WEB_EVENTS);
-    for (const day of calendar.days) {
-      for (const lang of ["en", "ru"]) {
-        lines.push(`insert into calendar_day_cache (location_key, date_iso, engine_version, lang, payload_json, created_at)
+  const location = locations.find((item) => item.id === "nabadwip");
+  if (!location) throw new Error("Nabadwip location is required for the mobile day cache");
+  const calendar = generateCalendarRange(startDate, endDate, location, WEB_RULES, WEB_EVENTS);
+  for (const day of calendar.days) {
+    for (const lang of ["en", "ru"]) {
+      lines.push(`insert into calendar_day_cache (location_key, date_iso, engine_version, lang, payload_json, created_at)
 values (${sql(location.id)}, ${sql(day.date)}, ${sql(engineVersion)}, ${sql(lang)}, ${jsonSql(calendarDayPayload(day, lang))}, ${sql(now)});`);
-      }
     }
   }
 }
@@ -571,7 +571,7 @@ function seedUi(lines, now) {
 
 mkdirSync(dirname(outputPath), { recursive: true });
 mkdirSync(dirname(tempSqlPath), { recursive: true });
-if (existsSync(outputPath)) rmSync(outputPath);
+rmSync(outputPath, { force: true });
 writeFileSync(tempSqlPath, statements(), "utf8");
 
 const sqlite = spawnSync("sqlite3", [outputPath, `.read ${tempSqlPath}`], {
