@@ -1,9 +1,15 @@
+import 'dart:convert';
+
+import 'package:http/http.dart' as http;
 import 'package:geolocator/geolocator.dart';
 
 import '../models/calendar_location.dart';
 
 class LocationMatcherService {
-  const LocationMatcherService();
+  LocationMatcherService({http.Client? client})
+    : _client = client ?? http.Client();
+
+  final http.Client _client;
 
   Future<LocationMatchResult> detectNearest(
     List<CalendarLocation> locations,
@@ -51,12 +57,42 @@ class LocationMatcherService {
       }
     }
 
+    final timezone =
+        await _timezoneByCoordinates(position.latitude, position.longitude) ??
+        nearest!.timezone;
+
     return LocationMatchResult(
       location: nearest!,
       latitude: position.latitude,
       longitude: position.longitude,
+      timezone: timezone,
+      timezoneFromNearestLocation: timezone == nearest.timezone,
       distanceMeters: nearestDistanceMeters,
     );
+  }
+
+  Future<String?> _timezoneByCoordinates(
+    double latitude,
+    double longitude,
+  ) async {
+    final uri = Uri.https('timeapi.io', '/api/TimeZone/coordinate', {
+      'latitude': latitude.toStringAsFixed(6),
+      'longitude': longitude.toStringAsFixed(6),
+    });
+    try {
+      final response = await _client
+          .get(uri)
+          .timeout(const Duration(seconds: 5));
+      if (response.statusCode < 200 || response.statusCode >= 300) return null;
+      final payload = jsonDecode(response.body);
+      final timezone = payload is Map ? payload['timeZone'] : null;
+      if (timezone is String && timezone.trim().isNotEmpty) {
+        return timezone.trim();
+      }
+    } catch (_) {
+      return null;
+    }
+    return null;
   }
 }
 
@@ -65,12 +101,16 @@ class LocationMatchResult {
     required this.location,
     required this.latitude,
     required this.longitude,
+    required this.timezone,
+    required this.timezoneFromNearestLocation,
     required this.distanceMeters,
   });
 
   final CalendarLocation location;
   final double latitude;
   final double longitude;
+  final String timezone;
+  final bool timezoneFromNearestLocation;
   final double distanceMeters;
 
   double get distanceKm => distanceMeters / 1000;

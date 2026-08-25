@@ -120,10 +120,11 @@ const I18N = {
     fontLarge: "Large font size",
     fontExtraLarge: "Extra large font size",
     location: "Location",
-    detectGps: "Use GPS",
+    detectGps: "Use current GPS",
     gpsDetecting: "Detecting...",
     gpsUnsupported: "GPS is not available in this browser.",
-    gpsSelected: "GPS position is used; timezone from nearest city:",
+    gpsSelected: "Calculating by GPS coordinates:",
+    gpsTimezoneFallback: "nearest-city fallback",
     gpsFailed: "GPS did not work:",
     periodFrom: "From",
     periodTo: "To",
@@ -327,10 +328,11 @@ const I18N = {
     fontLarge: "Крупный шрифт",
     fontExtraLarge: "Очень крупный шрифт",
     location: "Место",
-    detectGps: "GPS",
+    detectGps: "По GPS-координатам",
     gpsDetecting: "Ищу...",
     gpsUnsupported: "GPS недоступен в этом браузере.",
-    gpsSelected: "Расчёт по GPS; часовой пояс от ближайшего города:",
+    gpsSelected: "Расчёт по GPS-координатам:",
+    gpsTimezoneFallback: "fallback от ближайшего города",
     gpsFailed: "GPS не сработал:",
     periodFrom: "С",
     periodTo: "По",
@@ -1806,6 +1808,26 @@ function nearestKnownLocation(latitude, longitude) {
   }, null);
 }
 
+async function timezoneByCoordinates(latitude, longitude) {
+  const controller = new AbortController();
+  const timeout = window.setTimeout(() => controller.abort(), 5000);
+  const url = new URL("https://timeapi.io/api/TimeZone/coordinate");
+  url.searchParams.set("latitude", latitude.toFixed(6));
+  url.searchParams.set("longitude", longitude.toFixed(6));
+  try {
+    const response = await fetch(url, { signal: controller.signal });
+    if (!response.ok) return null;
+    const payload = await response.json();
+    return typeof payload.timeZone === "string" && payload.timeZone.trim()
+      ? payload.timeZone.trim()
+      : null;
+  } catch (_) {
+    return null;
+  } finally {
+    window.clearTimeout(timeout);
+  }
+}
+
 function detectGpsLocation() {
   if (!navigator.geolocation) {
     if (gpsLocationStatus) gpsLocationStatus.textContent = tr("gpsUnsupported");
@@ -1813,11 +1835,13 @@ function detectGpsLocation() {
   }
   if (gpsLocationButton) gpsLocationButton.textContent = tr("gpsDetecting");
   navigator.geolocation.getCurrentPosition(
-    (position) => {
+    async (position) => {
       const latitude = position.coords.latitude;
       const longitude = position.coords.longitude;
       const nearest = nearestKnownLocation(latitude, longitude);
       if (!nearest) return;
+      const resolvedTimezone = await timezoneByCoordinates(latitude, longitude);
+      const timezone = resolvedTimezone || nearest.location.timezone;
       locationSelect.value = nearest.location.id;
       gpsLocationOverride = {
         ...nearest.location,
@@ -1825,12 +1849,13 @@ function detectGpsLocation() {
         name: currentLanguage === "ru" ? "Текущая GPS-позиция" : "Current GPS position",
         lat: latitude,
         lon: longitude,
-        timezone: nearest.location.timezone,
+        timezone,
         week_start: nearest.location.week_start
       };
       writePersistedSetting("vcalendar-location", nearest.location.id);
       if (gpsLocationStatus) {
-        gpsLocationStatus.textContent = `${tr("gpsSelected")} ${localizedLocationName(nearest.location)} (${formatDistanceKm(nearest.distanceKm)}).`;
+        const timezoneSource = resolvedTimezone ? "" : ` (${tr("gpsTimezoneFallback")})`;
+        gpsLocationStatus.textContent = `${tr("gpsSelected")} ${latitude.toFixed(5)}, ${longitude.toFixed(5)}; ${tr("timezone")}: ${timezone}${timezoneSource}; ${localizedLocationName(nearest.location)} (${formatDistanceKm(nearest.distanceKm)}).`;
       }
       if (gpsLocationButton) gpsLocationButton.textContent = tr("detectGps");
       periodMarkerCache.clear();
