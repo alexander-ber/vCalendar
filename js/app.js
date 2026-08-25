@@ -1,4 +1,4 @@
-import { generateCalendarRange, viewModelForDay } from "./calendar-engine.js?v=20260707-1";
+import { generateCalendarRange, periodMarkerForDate, viewModelForDay } from "./calendar-engine.js?v=20260825-1";
 import { EVENTS } from "./events-data.js?v=20260709-1";
 import { LOCATIONS } from "./locations-data.js?v=20260704-1";
 import { RULES } from "./rules-data.js?v=20260703-1";
@@ -1756,8 +1756,14 @@ function selectedCalendarLocation() {
   return LOCATIONS.find((item) => item.id === locationSelect.value) || LOCATIONS[0];
 }
 
-function calculateSingleDay(isoDate, location) {
-  return generateCalendarRange(isoDate, isoDate, location, RULES, EVENTS).days[0];
+const periodMarkerCache = new Map();
+
+function calculatePeriodMarker(isoDate, location) {
+  const key = `${location.id}:${isoDate}`;
+  if (!periodMarkerCache.has(key)) {
+    periodMarkerCache.set(key, periodMarkerForDate(isoDate, location, RULES));
+  }
+  return periodMarkerCache.get(key);
 }
 
 function expandPeriodDays(visibleDays, predicate) {
@@ -1768,14 +1774,14 @@ function expandPeriodDays(visibleDays, predicate) {
 
   for (let i = 0; i < 370; i += 1) {
     const previousDate = shiftIsoDateByDays(first.date, -1);
-    const previous = calculateSingleDay(previousDate, location);
+    const previous = calculatePeriodMarker(previousDate, location);
     if (!predicate(previous)) break;
     first = previous;
   }
 
   for (let i = 0; i < 370; i += 1) {
     const nextDate = shiftIsoDateByDays(last.date, 1);
-    const next = calculateSingleDay(nextDate, location);
+    const next = calculatePeriodMarker(nextDate, location);
     if (!predicate(next)) break;
     last = next;
   }
