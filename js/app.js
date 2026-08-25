@@ -8,6 +8,8 @@ import { tithiMuhurtaForNumber } from "./tithi-muhurta-data.js?v=20260628-1";
 import { AMRITA_MAHENDRA_SOURCE } from "./amrita-mahendra-data.js?v=20260711-1";
 
 const locationSelect = document.querySelector("#locationSelect");
+const gpsLocationButton = document.querySelector("#gpsLocationButton");
+const gpsLocationStatus = document.querySelector("#gpsLocationStatus");
 const periodFromInput = document.querySelector("#periodFromInput");
 const periodToInput = document.querySelector("#periodToInput");
 const compactViewInput = document.querySelector("#compactViewInput");
@@ -57,6 +59,7 @@ let pendingScrollTarget = null;
 let vaishnavaTypeaheadText = "";
 let vaishnavaTypeaheadTimer = null;
 let calendarPickerYear = new Date().getFullYear();
+let gpsLocationOverride = null;
 const MAX_RENDER_DAYS = 400;
 const DEFAULT_LOCATION_ID = "nabadwip";
 const COOKIE_MAX_AGE = 60 * 60 * 24 * 365;
@@ -117,6 +120,11 @@ const I18N = {
     fontLarge: "Large font size",
     fontExtraLarge: "Extra large font size",
     location: "Location",
+    detectGps: "Use GPS",
+    gpsDetecting: "Detecting...",
+    gpsUnsupported: "GPS is not available in this browser.",
+    gpsSelected: "GPS position is used; timezone from nearest city:",
+    gpsFailed: "GPS did not work:",
     periodFrom: "From",
     periodTo: "To",
     generate: "Generate",
@@ -319,6 +327,11 @@ const I18N = {
     fontLarge: "Крупный шрифт",
     fontExtraLarge: "Очень крупный шрифт",
     location: "Место",
+    detectGps: "GPS",
+    gpsDetecting: "Ищу...",
+    gpsUnsupported: "GPS недоступен в этом браузере.",
+    gpsSelected: "Расчёт по GPS; часовой пояс от ближайшего города:",
+    gpsFailed: "GPS не сработал:",
     periodFrom: "С",
     periodTo: "По",
     generate: "Рассчитать",
@@ -1362,8 +1375,8 @@ function renderSanskritTermsHelp() {
 function renderCalendar() {
   normalizePeriodInputs();
   if (!ensureRenderablePeriod()) return;
-  const location = LOCATIONS.find((item) => item.id === locationSelect.value) || LOCATIONS[0];
-  locationSelect.value = location.id;
+  const location = selectedCalendarLocation();
+  if (!gpsLocationOverride) locationSelect.value = location.id;
   syncCalendarPicker();
   const calendar = generateCalendarRange(periodFromInput.value, periodToInput.value, location, RULES, EVENTS);
 
@@ -1431,7 +1444,7 @@ function renderCalendar() {
 function exportCurrentCalendarIcs() {
   normalizePeriodInputs();
   if (!ensureRenderablePeriod()) return;
-  const location = LOCATIONS.find((item) => item.id === locationSelect.value) || LOCATIONS[0];
+  const location = selectedCalendarLocation();
   const calendar = generateCalendarRange(periodFromInput.value, periodToInput.value, location, RULES, EVENTS);
   const entries = [];
 
@@ -1758,7 +1771,77 @@ function isChaturmasyaDay(day) {
 }
 
 function selectedCalendarLocation() {
-  return LOCATIONS.find((item) => item.id === locationSelect.value) || LOCATIONS[0];
+  return gpsLocationOverride || LOCATIONS.find((item) => item.id === locationSelect.value) || LOCATIONS[0];
+}
+
+function localizedLocationName(location) {
+  return LOCATION_LABELS[location.id]?.[currentLanguage] || location.name;
+}
+
+function clearGpsLocationOverride() {
+  gpsLocationOverride = null;
+  if (gpsLocationStatus) gpsLocationStatus.textContent = "";
+}
+
+function formatDistanceKm(distanceKm) {
+  const value = distanceKm.toFixed(1);
+  return currentLanguage === "ru" ? `${value} км` : `${value} km`;
+}
+
+function distanceKmBetween(lat1, lon1, lat2, lon2) {
+  const toRad = (value) => (value * Math.PI) / 180;
+  const earthRadiusKm = 6371.0088;
+  const dLat = toRad(lat2 - lat1);
+  const dLon = toRad(lon2 - lon1);
+  const a =
+    Math.sin(dLat / 2) ** 2 +
+    Math.cos(toRad(lat1)) * Math.cos(toRad(lat2)) * Math.sin(dLon / 2) ** 2;
+  return 2 * earthRadiusKm * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+}
+
+function nearestKnownLocation(latitude, longitude) {
+  return LOCATIONS.reduce((best, location) => {
+    const distanceKm = distanceKmBetween(latitude, longitude, location.lat, location.lon);
+    return !best || distanceKm < best.distanceKm ? { location, distanceKm } : best;
+  }, null);
+}
+
+function detectGpsLocation() {
+  if (!navigator.geolocation) {
+    if (gpsLocationStatus) gpsLocationStatus.textContent = tr("gpsUnsupported");
+    return;
+  }
+  if (gpsLocationButton) gpsLocationButton.textContent = tr("gpsDetecting");
+  navigator.geolocation.getCurrentPosition(
+    (position) => {
+      const latitude = position.coords.latitude;
+      const longitude = position.coords.longitude;
+      const nearest = nearestKnownLocation(latitude, longitude);
+      if (!nearest) return;
+      locationSelect.value = nearest.location.id;
+      gpsLocationOverride = {
+        ...nearest.location,
+        id: `gps-${latitude.toFixed(5)}-${longitude.toFixed(5)}-${nearest.location.id}`,
+        name: currentLanguage === "ru" ? "Текущая GPS-позиция" : "Current GPS position",
+        lat: latitude,
+        lon: longitude,
+        timezone: nearest.location.timezone,
+        week_start: nearest.location.week_start
+      };
+      writePersistedSetting("vcalendar-location", nearest.location.id);
+      if (gpsLocationStatus) {
+        gpsLocationStatus.textContent = `${tr("gpsSelected")} ${localizedLocationName(nearest.location)} (${formatDistanceKm(nearest.distanceKm)}).`;
+      }
+      if (gpsLocationButton) gpsLocationButton.textContent = tr("detectGps");
+      periodMarkerCache.clear();
+      renderCalendar();
+    },
+    (error) => {
+      if (gpsLocationButton) gpsLocationButton.textContent = tr("detectGps");
+      if (gpsLocationStatus) gpsLocationStatus.textContent = `${tr("gpsFailed")} ${error.message}`;
+    },
+    { enableHighAccuracy: false, timeout: 12000, maximumAge: 300000 }
+  );
 }
 
 const periodMarkerCache = new Map();
@@ -1986,7 +2069,7 @@ function calendarTimeOrDash(date, timezone) {
 function init() {
   if (controlsPanel) controlsPanel.open = false;
   initLocationSelect();
-  const location = LOCATIONS.find((item) => item.id === locationSelect.value) || LOCATIONS[0];
+  const location = selectedCalendarLocation();
   const period = queryPeriodForLocation(location);
   periodFromInput.value = period.start;
   periodToInput.value = period.end;
@@ -2016,6 +2099,7 @@ function init() {
   vaishnavaJumpSelect.addEventListener("keydown", handleVaishnavaSelectTypeahead);
   vaishnavaSearchButton.addEventListener("click", () => jumpToVaishnava(vaishnavaJumpSelect.value));
   eventSearchButton.addEventListener("click", jumpToEventSearch);
+  if (gpsLocationButton) gpsLocationButton.addEventListener("click", detectGpsLocation);
   eventSearchInput.addEventListener("keydown", (event) => {
     if (event.key !== "Enter") return;
     event.preventDefault();
@@ -2057,7 +2141,7 @@ function markPeriodChanged() {
 
 function setCurrentWeekPeriod() {
   normalizePeriodInputs();
-  const location = LOCATIONS.find((item) => item.id === locationSelect.value) || LOCATIONS[0];
+  const location = selectedCalendarLocation();
   const dayOfWeek = weekdayOfIsoDate(periodFromInput.value);
   const startDay = weekStartForLocation(location);
   const startOffset = -((dayOfWeek - startDay + 7) % 7);
@@ -2311,7 +2395,7 @@ function jumpToEventMonth(targetId) {
   const target = EVENT_JUMP_TARGETS.find((item) => item.id === targetId);
   if (!target) return;
   const year = Number(periodFromInput.value.slice(0, 4));
-  const location = LOCATIONS.find((item) => item.id === locationSelect.value) || LOCATIONS[0];
+  const location = selectedCalendarLocation();
   const calendar = generateCalendarRange(`${year}-01-01`, `${year}-12-31`, location, RULES, EVENTS);
   const foundDays = calendar.days.filter((day) => eventJumpMatchesDay(day, target));
   renderVaishnavaJumpOptions();
@@ -2327,7 +2411,7 @@ function jumpToVaishnava(targetId) {
   if (!target) return;
   ensureVaishnavaFiltersEnabled();
   const year = Number(periodFromInput.value.slice(0, 4));
-  const location = LOCATIONS.find((item) => item.id === locationSelect.value) || LOCATIONS[0];
+  const location = selectedCalendarLocation();
   const calendar = generateCalendarRange(`${year}-01-01`, `${year}-12-31`, location, RULES, EVENTS);
   const selectedType = vaishnavaEventTypeSelect.value;
   const foundDays = calendar.days.filter((day) =>
@@ -2359,7 +2443,7 @@ function jumpToEventSearch() {
   const query = eventSearchInput.value.trim();
   if (!query) return;
   const year = Number(periodFromInput.value.slice(0, 4));
-  const location = LOCATIONS.find((item) => item.id === locationSelect.value) || LOCATIONS[0];
+  const location = selectedCalendarLocation();
   const calendar = generateCalendarRange(`${year}-01-01`, `${year}-12-31`, location, RULES, EVENTS);
   const needle = normalizeSearchText(query);
   const foundDays = calendar.days.filter((day) => dayMatchesSearch(day, needle));
@@ -2685,7 +2769,9 @@ function initLocationSelect() {
   locationSelect.value = locationId;
   writePersistedSetting("vcalendar-location", locationId);
   locationSelect.addEventListener("change", () => {
+    clearGpsLocationOverride();
     writePersistedSetting("vcalendar-location", locationSelect.value);
+    periodMarkerCache.clear();
     renderCalendar();
   });
 }
