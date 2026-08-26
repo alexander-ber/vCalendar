@@ -21,6 +21,7 @@ import '../../domain/services/jyotish_info_service.dart';
 import '../../domain/services/panjika_yoga_service.dart';
 import '../../domain/services/panchanga_calculator.dart';
 import '../../domain/services/panchanga_formatter.dart';
+import '../../domain/services/parana_calculator.dart';
 
 const _eventFilterDefinitions = [
   _EventFilterDefinition(
@@ -2432,7 +2433,7 @@ class _MonthCalendarCard extends StatelessWidget {
                 itemCount: days.length,
                 gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                   crossAxisCount: 7,
-                  childAspectRatio: compactMode ? 1 : 1.18,
+                  childAspectRatio: compactMode ? 0.88 : 1.04,
                 ),
                 itemBuilder: (context, index) {
                   final day = days[index];
@@ -2924,7 +2925,7 @@ class _SelectedDayCard extends StatelessWidget {
     final currentPanchanga = panchanga;
     final paranaTomorrow = currentLocation == null
         ? null
-        : _paranaTomorrowLabel(
+        : _paranaTomorrowDetails(
             events: events,
             nextPanchanga: nextPanchanga,
             timezone: currentLocation.timezone,
@@ -2962,7 +2963,7 @@ class _SelectedDayCard extends StatelessWidget {
               Text(isRu ? 'Выберите место.' : 'Select a location.')
             else ...[
               if (paranaTomorrow != null) ...[
-                _ParanaTomorrowNotice(label: paranaTomorrow),
+                _ParanaTomorrowNotice(details: paranaTomorrow),
                 const SizedBox(height: 12),
               ],
               _EventsSection(
@@ -3148,7 +3149,7 @@ class _SelectedDayCard extends StatelessWidget {
     return names[number - 1];
   }
 
-  String? _paranaTomorrowLabel({
+  _ParanaWindowLabel? _paranaTomorrowDetails({
     required List<MobileEvent> events,
     required PanchangaDay? nextPanchanga,
     required String timezone,
@@ -3158,22 +3159,15 @@ class _SelectedDayCard extends StatelessWidget {
     if (next == null || next.tithiAtSunrise.shortName != 'Dvadashi') {
       return null;
     }
-
-    final daylight = next.sunset.difference(next.sunrise);
-    final oneThirdEnd = next.sunrise.add(
-      Duration(milliseconds: (daylight.inMilliseconds / 3).round()),
+    final parana = const ParanaCalculator().normalEkadashi(next);
+    if (parana == null) return null;
+    return _formatParanaWindow(
+      parana: parana,
+      dvadashiDay: next,
+      timezone: timezone,
+      isRu: isRu,
+      tomorrow: true,
     );
-    var end = oneThirdEnd;
-    final tithiEnd = next.tithiEnd;
-    if (tithiEnd != null &&
-        tithiEnd.isAfter(next.sunrise) &&
-        tithiEnd.isBefore(oneThirdEnd)) {
-      end = tithiEnd;
-    }
-    final formatter = const PanchangaFormatter();
-    return isRu
-        ? 'Паран завтра: ${formatter.time(next.sunrise, timezone)}-${formatter.time(end, timezone)}'
-        : 'Parana tomorrow: ${formatter.time(next.sunrise, timezone)}-${formatter.time(end, timezone)}';
   }
 
   bool _isEkadashiFastEvent(MobileEvent event) {
@@ -3182,9 +3176,9 @@ class _SelectedDayCard extends StatelessWidget {
 }
 
 class _ParanaTomorrowNotice extends StatelessWidget {
-  const _ParanaTomorrowNotice({required this.label});
+  const _ParanaTomorrowNotice({required this.details});
 
-  final String label;
+  final _ParanaWindowLabel details;
 
   @override
   Widget build(BuildContext context) {
@@ -3196,13 +3190,31 @@ class _ParanaTomorrowNotice extends StatelessWidget {
         border: Border.all(color: colors.parana),
       ),
       child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
-        child: Text(
-          label,
-          style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-            fontWeight: FontWeight.w900,
-            color: Theme.of(context).colorScheme.onSurface,
-          ),
+        padding: const EdgeInsets.all(12),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              details.summary,
+              style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                fontWeight: FontWeight.w900,
+                color: Theme.of(context).colorScheme.onSurface,
+              ),
+            ),
+            const SizedBox(height: 6),
+            for (final line in details.formulaLines)
+              Padding(
+                padding: const EdgeInsets.only(top: 3),
+                child: Text(
+                  line,
+                  style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                    color: colors.mutedText,
+                    fontWeight: FontWeight.w700,
+                    height: 1.25,
+                  ),
+                ),
+              ),
+          ],
         ),
       ),
     );
@@ -3955,35 +3967,14 @@ class _EventsSection extends StatelessWidget {
 
   _ParanaWindowLabel? _paranaWindowLabel() {
     if (panchanga.tithiAtSunrise.shortName != 'Dvadashi') return null;
-    final daylight = panchanga.sunset.difference(panchanga.sunrise);
-    final oneFifthEnd = panchanga.sunrise.add(
-      Duration(milliseconds: (daylight.inMilliseconds / 5).round()),
-    );
-    final oneThirdEnd = panchanga.sunrise.add(
-      Duration(milliseconds: (daylight.inMilliseconds / 3).round()),
-    );
-    final tithiEnd = panchanga.tithiEnd;
-    final preferredEnd =
-        tithiEnd != null &&
-            tithiEnd.isAfter(panchanga.sunrise) &&
-            tithiEnd.isBefore(oneThirdEnd)
-        ? tithiEnd
-        : oneThirdEnd;
-    final fifthEnd =
-        tithiEnd != null &&
-            tithiEnd.isAfter(panchanga.sunrise) &&
-            tithiEnd.isBefore(oneFifthEnd)
-        ? tithiEnd
-        : oneFifthEnd;
-    final formatter = const PanchangaFormatter();
-    final start = formatter.time(panchanga.sunrise, timezone);
-    final preferred = formatter.time(preferredEnd, timezone);
-    final fifth = formatter.time(fifthEnd, timezone);
-    return _ParanaWindowLabel(
-      summary: isRu
-          ? 'Время парана: $start-$preferred'
-          : 'Parana time: $start-$preferred',
-      oneFifth: isRu ? 'Окончание по 1/5 дня: $fifth' : '1/5 day end: $fifth',
+    final parana = const ParanaCalculator().normalEkadashi(panchanga);
+    if (parana == null) return null;
+    return _formatParanaWindow(
+      parana: parana,
+      dvadashiDay: panchanga,
+      timezone: timezone,
+      isRu: isRu,
+      tomorrow: false,
     );
   }
 }
@@ -4058,13 +4049,29 @@ class _EventTile extends StatelessWidget {
               Align(
                 alignment: Alignment.centerLeft,
                 child: Text(
-                  paranaWindow!.oneFifth,
+                  paranaWindow!.formulaTitle,
                   style: TextStyle(
                     color: eventStyle.foreground,
-                    fontWeight: FontWeight.w800,
+                    fontWeight: FontWeight.w900,
                   ),
                 ),
               ),
+              const SizedBox(height: 4),
+              for (final line in paranaWindow!.formulaLines)
+                Align(
+                  alignment: Alignment.centerLeft,
+                  child: Padding(
+                    padding: const EdgeInsets.only(top: 4),
+                    child: Text(
+                      line,
+                      style: TextStyle(
+                        color: eventStyle.foreground.withValues(alpha: 0.86),
+                        fontWeight: FontWeight.w700,
+                        height: 1.25,
+                      ),
+                    ),
+                  ),
+                ),
               const SizedBox(height: 8),
             ],
             if (description == null || description.trim().isEmpty)
@@ -4211,10 +4218,53 @@ class _EventTile extends StatelessWidget {
 }
 
 class _ParanaWindowLabel {
-  const _ParanaWindowLabel({required this.summary, required this.oneFifth});
+  const _ParanaWindowLabel({
+    required this.summary,
+    required this.formulaTitle,
+    required this.formulaLines,
+  });
 
   final String summary;
-  final String oneFifth;
+  final String formulaTitle;
+  final List<String> formulaLines;
+}
+
+_ParanaWindowLabel _formatParanaWindow({
+  required ParanaWindow parana,
+  required PanchangaDay dvadashiDay,
+  required String timezone,
+  required bool isRu,
+  required bool tomorrow,
+}) {
+  final formatter = const PanchangaFormatter();
+  final start = formatter.time(parana.start, timezone);
+  final preferred = formatter.time(parana.preferredEnd, timezone);
+  final sunrise = formatter.time(dvadashiDay.sunrise, timezone);
+  final hariVasaraEnd = formatter.time(parana.hariVasaraEnd, timezone);
+  final dvadashiEnd = formatter.dateTime(dvadashiDay.tithiEnd, timezone);
+  final oneThirdEnd = formatter.time(parana.oneThirdEnd, timezone);
+  final oneFifthEnd = formatter.time(parana.oneFifthEnd, timezone);
+  return _ParanaWindowLabel(
+    summary: tomorrow
+        ? isRu
+              ? 'Паран завтра: $start-$preferred'
+              : 'Parana tomorrow: $start-$preferred'
+        : isRu
+        ? 'Время парана: $start-$preferred'
+        : 'Parana time: $start-$preferred',
+    formulaTitle: isRu ? 'Формула парана' : 'Parana formula',
+    formulaLines: isRu
+        ? [
+            'Начало = max(восход $sunrise, конец Хари-васары $hariVasaraEnd) = $start',
+            'Конец = min(окончание Двадаши $dvadashiEnd, 1/3 дня $oneThirdEnd) = $preferred',
+            'Окончание по 1/5 дня: $oneFifthEnd',
+          ]
+        : [
+            'Start = max(sunrise $sunrise, Hari-vasara end $hariVasaraEnd) = $start',
+            'End = min(Dvadashi end $dvadashiEnd, 1/3 day $oneThirdEnd) = $preferred',
+            '1/5 day end: $oneFifthEnd',
+          ],
+  );
 }
 
 class _EventVisualStyle {
