@@ -16,6 +16,8 @@ import 'dart:io';
 
 import 'package:flutter_test/flutter_test.dart';
 import 'package:vcalendar_mobile/domain/models/calendar_location.dart';
+import 'package:vcalendar_mobile/domain/models/panchanga_day.dart';
+import 'package:vcalendar_mobile/domain/services/ekadashi_classifier.dart';
 import 'package:vcalendar_mobile/domain/services/masa_rule_validator.dart';
 import 'package:vcalendar_mobile/domain/services/panchanga_calculator.dart';
 import 'package:vcalendar_mobile/domain/services/parana_engine.dart';
@@ -290,6 +292,156 @@ void main() {
       },
     );
   });
+
+  group('Phase C - Ekadashi classification', () {
+    test(
+      'EkadashiClassifier reproduces the web fixture\'s fast days, no-fast '
+      'notices, and parana windows for every sampled location',
+      () {
+        const calculator = PanchangaCalculator();
+        final classifier = EkadashiClassifier(
+          engineRules,
+          calculator: calculator,
+        );
+
+        final casesByLocation = <String, List<Map<String, dynamic>>>{};
+        for (final rawCase in fixtureCases) {
+          final fixtureCase = Map<String, dynamic>.from(rawCase as Map);
+          casesByLocation
+              .putIfAbsent(fixtureCase['location_id'] as String, () => [])
+              .add(fixtureCase);
+        }
+
+        final mismatches = <String>[];
+        var fastsChecked = 0;
+        var noticesChecked = 0;
+
+        for (final entry in casesByLocation.entries) {
+          final locationId = entry.key;
+          final location = _locations[locationId];
+          if (location == null) continue;
+          final cases = entry.value;
+
+          final dates = cases
+              .map((c) => c['date'] as String)
+              .toList(growable: false)
+            ..sort();
+          final minDate = _parseDate(dates.first);
+          final maxDate = _parseDate(dates.last);
+          final days = _buildDayRange(
+            calculator: calculator,
+            location: location,
+            start: minDate.subtract(const Duration(days: 20)),
+            end: maxDate.add(const Duration(days: 20)),
+          );
+
+          final result = classifier.classifyRange(days, location);
+
+          for (final fixtureCase in cases) {
+            for (final rawEvent in fixtureCase['events'] as List) {
+              final event = Map<String, dynamic>.from(rawEvent as Map);
+              final label = '$locationId ${fixtureCase['date']} (${event['name']})';
+
+              if (event['type'] == 'ekadashi') {
+                fastsChecked += 1;
+                final fastDate = event['fast_date'] as String;
+                final actual = result.fastsByFastDate[fastDate];
+                if (actual == null) {
+                  mismatches.add('$label: MISSING fast on $fastDate');
+                  continue;
+                }
+                if (actual.classification != event['classification'] ||
+                    actual.candidateDate != event['candidate_date'] ||
+                    actual.fastDayType != event['fast_day_type'] ||
+                    actual.paranaType != event['parana_type']) {
+                  mismatches.add(
+                    '$label: classification(dart=${actual.classification} '
+                    'web=${event['classification']}) candidate_date(dart=${actual.candidateDate} '
+                    'web=${event['candidate_date']}) fast_day_type(dart=${actual.fastDayType} '
+                    'web=${event['fast_day_type']}) parana_type(dart=${actual.paranaType} '
+                    'web=${event['parana_type']})',
+                  );
+                  continue;
+                }
+                final expectedParana = Map<String, dynamic>.from(
+                  event['parana'] as Map,
+                );
+                final startDiff = _minuteDiffOrNull(
+                  actual.parana.start,
+                  expectedParana['start'] as String?,
+                );
+                final absoluteEndDiff = _minuteDiffOrNull(
+                  actual.parana.absoluteEnd,
+                  expectedParana['absolute_end'] as String?,
+                );
+                if ((startDiff != null && startDiff > 2) ||
+                    (absoluteEndDiff != null && absoluteEndDiff > 2)) {
+                  mismatches.add(
+                    '$label: parana start_diff=$startDiff absolute_end_diff=$absoluteEndDiff',
+                  );
+                }
+              } else if (event['type'] == 'ekadashi_notice') {
+                noticesChecked += 1;
+                final candidateDate = fixtureCase['date'] as String;
+                final actual = result.noFastByCandidateDate[candidateDate];
+                if (actual == null) {
+                  mismatches.add(
+                    '$label: MISSING no-fast notice on $candidateDate '
+                    '(web reason=${event['candidate_no_fast_reason']})',
+                  );
+                  continue;
+                }
+                if (actual.reason != event['candidate_no_fast_reason']) {
+                  mismatches.add(
+                    '$label: no-fast reason mismatch dart=${actual.reason} '
+                    'web=${event['candidate_no_fast_reason']}',
+                  );
+                }
+              }
+            }
+          }
+        }
+
+        expect(
+          fastsChecked,
+          greaterThan(20),
+          reason: 'Expected a healthy sample of Ekadashi fast events - got $fastsChecked.',
+        );
+        expect(
+          noticesChecked,
+          greaterThanOrEqualTo(5),
+          reason: 'Expected a healthy sample of no-fast notices - got $noticesChecked.',
+        );
+        expect(
+          mismatches,
+          isEmpty,
+          reason:
+              '${mismatches.length} Ekadashi classification mismatches vs web:\n'
+              '${mismatches.join('\n')}',
+        );
+      },
+    );
+  });
+}
+
+DateTime _parseDate(String iso) {
+  final parts = iso.split('-').map(int.parse).toList(growable: false);
+  return DateTime.utc(parts[0], parts[1], parts[2]);
+}
+
+List<PanchangaDay> _buildDayRange({
+  required PanchangaCalculator calculator,
+  required CalendarLocation location,
+  required DateTime start,
+  required DateTime end,
+}) {
+  final days = <PanchangaDay>[];
+  var cursor = start;
+  while (!cursor.isAfter(end)) {
+    days.add(calculator.calculateDay(date: cursor, location: location));
+    cursor = cursor.add(const Duration(days: 1));
+  }
+  return days;
 }
 
 /// Null-safe minute difference between a Dart DateTime and an ISO string

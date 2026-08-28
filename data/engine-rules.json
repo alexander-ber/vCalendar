@@ -20,6 +20,16 @@
       }
     ]
   },
+  "ekadashi": {
+    "_comment": "Mirrors js/ekadashi-engine.js. The branch ORDER and guard conditions themselves stay in apps/mobile/lib/domain/services/ekadashi_classifier.dart (hand-ported, line-cited) rather than this file, for the same reason as parana: the real logic is a two-pass, cross-day-referencing algorithm (classifyDvadashiMahadvadashi's results feed classifyEkadashiDay's tomorrow-is-Mahadvadashi check) plus one forward array scan (Paksavardhini), not a flat priority list. This section only holds the one genuinely tabular piece: the nakshatra Mahadvadashi candidate table.",
+    "nakshatra_mahadvadashi_candidates": [
+      { "nakshatra_number": 22, "classification": "vijaya_mahadvadashi", "parana_type": "jayanti_vijaya" },
+      { "nakshatra_number": 7, "classification": "jaya_mahadvadashi", "parana_type": "jaya_papanasini" },
+      { "nakshatra_number": 4, "classification": "jayanti_mahadvadashi", "parana_type": "jayanti_vijaya" },
+      { "nakshatra_number": 8, "classification": "papanasini_mahadvadashi", "parana_type": "jaya_papanasini" }
+    ],
+    "vijaya_prahar_day_fraction": 0.375
+  },
   "parana": {
     "_comment": "Mirrors js/parana-engine.js computeParana (lines 67-134): one shared formula gated by which bucket fast_day_type falls into. See apps/mobile/lib/domain/services/parana_engine.dart for the ported formula itself - these are its configuration inputs, not the formula.",
     "hari_vasara_fraction": 0.25,
