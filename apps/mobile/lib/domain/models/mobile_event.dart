@@ -73,29 +73,6 @@ class MobileEvent {
     );
   }
 
-  factory MobileEvent.fromCache(Map<String, Object?> map) {
-    return MobileEvent(
-      id: map['id']! as String,
-      category: map['category']! as String,
-      eventType: map['event_type']! as String,
-      masa: map['masa']! as String,
-      masaType: map['masa_type'] as String?,
-      paksha: map['paksha']! as String,
-      tithi: map['tithi']! as String,
-      naksatra: null,
-      timingRule: null,
-      gaudiyaMasa: null,
-      anchorEventId: null,
-      observanceOffsetDays: 0,
-      disabled: false,
-      allowInAdhika: map['allow_in_adhika'] == true,
-      priority: (map['priority'] as num?)?.toInt() ?? 100,
-      name: map['name']! as String,
-      shortDescription: map['short_description'] as String?,
-      fullDescription: map['full_description'] as String?,
-    );
-  }
-
   static Map<String, dynamic>? _decodeRawJson(String? source) {
     if (source == null || source.isEmpty) return null;
     try {

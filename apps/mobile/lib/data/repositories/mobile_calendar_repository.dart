@@ -1,7 +1,6 @@
 import 'package:sqflite/sqflite.dart';
 
 import '../../domain/models/calendar_location.dart';
-import '../../domain/models/cached_calendar_day.dart';
 import '../../domain/models/mobile_event.dart';
 import '../local/app_database.dart';
 
@@ -117,38 +116,6 @@ class MobileCalendarRepository {
       [lang, lang],
     );
     return rows.map(MobileEvent.fromMap).toList(growable: false);
-  }
-
-  Future<Map<String, CachedCalendarDay>> loadCalendarCache({
-    required String locationId,
-    required String lang,
-    required int startYear,
-    required int endYear,
-  }) async {
-    final db = await _database.open();
-    final rows = await db.rawQuery(
-      '''
-      select date_iso, payload_json
-        from calendar_day_cache
-       where location_key = ?
-         and lang = ?
-         and engine_version = 'web-calendar-engine'
-         and date_iso between ? and ?
-       order by date_iso
-      ''',
-      [
-        locationId,
-        lang,
-        '${startYear.toString().padLeft(4, '0')}-01-01',
-        '${endYear.toString().padLeft(4, '0')}-12-31',
-      ],
-    );
-    return {
-      for (final row in rows)
-        row['date_iso']! as String: CachedCalendarDay.fromJson(
-          row['payload_json']! as String,
-        ),
-    };
   }
 
   Future<List<GlossaryTerm>> loadGlossary({required String lang}) async {

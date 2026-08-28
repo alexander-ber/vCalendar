@@ -334,6 +334,25 @@ class CalendarEventEngine {
     }
   }
 
+  /// Looks up the [EkadashiFast] whose Parana falls on [paranaDate] within
+  /// [days] (should include enough padding before [paranaDate] to cover a
+  /// full lunar month, since Ekadashi classification is a range scan, not
+  /// a single-day computation). Used by UI that wants the raw window
+  /// (start/preferred_end/diagnostics) rather than the pre-formatted
+  /// display string already in the day's event list.
+  EkadashiFast? findFastByParanaDate({
+    required List<PanchangaDay> days,
+    required CalendarLocation location,
+    required DateTime paranaDate,
+  }) {
+    final result = _classifier.classifyRange(days, location);
+    final key = _dateKey(paranaDate);
+    for (final fast in result.fastsByFastDate.values) {
+      if (_dateKey(fast.parana.date) == key) return fast;
+    }
+    return null;
+  }
+
   String _dateKey(DateTime date) {
     final y = date.year.toString().padLeft(4, '0');
     final m = date.month.toString().padLeft(2, '0');

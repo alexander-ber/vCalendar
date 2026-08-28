@@ -11,6 +11,9 @@ class ParanaResult {
     required this.absoluteEnd,
     required this.preferredWindowStatus,
     required this.fastDayType,
+    this.hariVasaraEnd,
+    this.dvadashiEnd,
+    this.pratahEnd,
   });
 
   final DateTime date;
@@ -20,6 +23,13 @@ class ParanaResult {
   final DateTime? absoluteEnd;
   final String? preferredWindowStatus;
   final String fastDayType;
+
+  /// Diagnostic-only fields (mirrors js/parana-engine.js's `diagnostics`
+  /// object) - not used by the core computation, only by UI that wants to
+  /// show the formula's inputs. Null when [start] is null.
+  final DateTime? hariVasaraEnd;
+  final DateTime? dvadashiEnd;
+  final DateTime? pratahEnd;
 }
 
 /// Computes the Ekadashi Parana (fast-breaking) time window. A direct,
@@ -186,6 +196,9 @@ class ParanaEngine {
                 ? 'available'
                 : 'unavailable_after_hari_vasara'),
       fastDayType: fastDayType,
+      hariVasaraEnd: hariVasaraEnd,
+      dvadashiEnd: dvadashiEnd,
+      pratahEnd: pratahEnd,
     );
   }
 }
