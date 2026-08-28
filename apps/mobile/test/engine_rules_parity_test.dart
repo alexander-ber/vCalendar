@@ -15,9 +15,12 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:flutter_test/flutter_test.dart';
+import 'package:timezone/data/latest.dart' as tzdata;
 import 'package:vcalendar_mobile/domain/models/calendar_location.dart';
+import 'package:vcalendar_mobile/domain/models/mobile_event.dart';
 import 'package:vcalendar_mobile/domain/models/panchanga_day.dart';
 import 'package:vcalendar_mobile/domain/services/ekadashi_classifier.dart';
+import 'package:vcalendar_mobile/domain/services/event_matcher.dart';
 import 'package:vcalendar_mobile/domain/services/masa_rule_validator.dart';
 import 'package:vcalendar_mobile/domain/services/panchanga_calculator.dart';
 import 'package:vcalendar_mobile/domain/services/parana_engine.dart';
@@ -86,8 +89,10 @@ const _locations = <String, CalendarLocation>{
 void main() {
   late Map<String, dynamic> engineRules;
   late List<dynamic> fixtureCases;
+  late List<MobileEvent> eventRules;
 
   setUpAll(() {
+    tzdata.initializeTimeZones();
     final engineRulesFile = File('../../data/engine-rules.json');
     engineRules = Map<String, dynamic>.from(
       jsonDecode(engineRulesFile.readAsStringSync()) as Map,
@@ -106,6 +111,9 @@ void main() {
           'engine_parity.json fixture is empty - run '
           'node scripts/generate-mobile-fixtures.mjs from the repo root.',
     );
+    eventRules = (fixture['event_rules'] as List)
+        .map((raw) => _mobileEventFromFixture(Map<String, dynamic>.from(raw as Map)))
+        .toList(growable: false);
   });
 
   group('Phase A - masa classification', () {
@@ -422,6 +430,133 @@ void main() {
       },
     );
   });
+
+  group('Phase D - event matching', () {
+    test(
+      'EventMatcher reproduces the web fixture\'s non-shifted, non-anchored '
+      'event matches for every sampled location',
+      () {
+        const calculator = PanchangaCalculator();
+        final classifier = EkadashiClassifier(
+          engineRules,
+          calculator: calculator,
+        );
+        final matcher = EventMatcher(calculator: calculator);
+        final eventRuleById = {for (final e in eventRules) e.id: e};
+
+        final casesByLocation = <String, List<Map<String, dynamic>>>{};
+        for (final rawCase in fixtureCases) {
+          final fixtureCase = Map<String, dynamic>.from(rawCase as Map);
+          casesByLocation
+              .putIfAbsent(fixtureCase['location_id'] as String, () => [])
+              .add(fixtureCase);
+        }
+
+        final mismatches = <String>[];
+        var daysChecked = 0;
+
+        for (final entry in casesByLocation.entries) {
+          final locationId = entry.key;
+          final location = _locations[locationId];
+          if (location == null) continue;
+          final cases = entry.value;
+
+          final dates = cases.map((c) => c['date'] as String).toList(growable: false)
+            ..sort();
+          final minDate = _parseDate(dates.first);
+          final maxDate = _parseDate(dates.last);
+          final days = _buildDayRange(
+            calculator: calculator,
+            location: location,
+            start: minDate.subtract(const Duration(days: 20)),
+            end: maxDate.add(const Duration(days: 20)),
+          );
+          final dayIndexByKey = {
+            for (var i = 0; i < days.length; i++) _fmtDate(days[i].date): i,
+          };
+
+          final ekadashiResult = classifier.classifyRange(days, location);
+
+          for (final fixtureCase in cases) {
+            final date = fixtureCase['date'] as String;
+            final index = dayIndexByKey[date];
+            if (index == null) continue;
+            daysChecked += 1;
+            final day = days[index];
+            final previousDay = index > 0 ? days[index - 1] : null;
+            final nextDay = index + 1 < days.length ? days[index + 1] : null;
+
+            final matched = matcher.matchEventsForDay(
+              day: day,
+              events: eventRules,
+              timezone: location.timezone,
+              nextDay: nextDay,
+              previousDay: previousDay,
+              ekadashiFastsByDate: ekadashiResult.fastsByFastDate,
+            );
+            // Exclude shifted events from the raw-match comparison too: a
+            // matchEventsForDay hit for a shifted event happens on its RAW
+            // tithi day, but the fixture only records where it ends up
+            // AFTER js/calendar-engine.js::attachEvents shifts it by
+            // observance_offset_days - the two are not comparable per-day
+            // without also porting the shift itself (separate from Phase D's
+            // core matching, tracked as follow-up orchestration work).
+            final matchedIds = matched
+                .map((e) => e.id)
+                .where((id) => eventRuleById[id]?.observanceOffsetDays == 0)
+                .toSet();
+
+            // Only compare against fixture events that matchEventsForDay
+            // alone is responsible for: non-shifted (observance_offset_days
+            // absent/0), non-anchor-dependent, and whose id exists in our
+            // event_rules snapshot (excludes ekadashi/parana/purushottama/
+            // sankranti/bhishma-panchaka, which come from other generators
+            // in js/calendar-engine.js::attachEvents, not event-matcher.js).
+            final expectedIds = <String>{};
+            for (final rawEvent in fixtureCase['events'] as List) {
+              final event = Map<String, dynamic>.from(rawEvent as Map);
+              final id = event['id'] as String;
+              final rule = eventRuleById[id];
+              if (rule == null) continue;
+              if (rule.anchorEventId != null) continue;
+              if (rule.observanceOffsetDays != 0) continue;
+              expectedIds.add(id);
+            }
+
+            final missing = expectedIds.difference(matchedIds);
+            final extra = matchedIds
+                .intersection(eventRuleById.keys.toSet())
+                .difference(expectedIds);
+            if (missing.isNotEmpty || extra.isNotEmpty) {
+              mismatches.add(
+                '$locationId $date: missing=$missing extra=$extra',
+              );
+            }
+          }
+        }
+
+        expect(
+          daysChecked,
+          greaterThan(400),
+          reason: 'Expected a healthy sample of days - got $daysChecked.',
+        );
+        expect(
+          mismatches,
+          isEmpty,
+          reason:
+              '${mismatches.length}/$daysChecked days have event-matching '
+              'mismatches vs web:\n${mismatches.take(30).join('\n')}',
+        );
+      },
+    );
+  });
+}
+
+String _fmtDate(DateTime date) {
+  final y = date.year.toString().padLeft(4, '0');
+  final m = date.month.toString().padLeft(2, '0');
+  final d = date.day.toString().padLeft(2, '0');
+  return '$y-$m-$d';
 }
 
 DateTime _parseDate(String iso) {
@@ -442,6 +577,29 @@ List<PanchangaDay> _buildDayRange({
     cursor = cursor.add(const Duration(days: 1));
   }
   return days;
+}
+
+MobileEvent _mobileEventFromFixture(Map<String, dynamic> json) {
+  return MobileEvent(
+    id: json['id'] as String,
+    category: (json['category'] as String?) ?? 'event',
+    eventType: (json['event_type'] as String?) ?? 'event',
+    masa: (json['masa'] as String?) ?? '',
+    masaType: null,
+    paksha: (json['paksha'] as String?) ?? '',
+    tithi: (json['tithi'] as String?) ?? '',
+    naksatra: json['naksatra'] as String?,
+    timingRule: json['timing_rule'] as String?,
+    gaudiyaMasa: json['gaudiya_masa'] as String?,
+    anchorEventId: json['anchor_event_id'] as String?,
+    observanceOffsetDays: (json['observance_offset_days'] as num?)?.toInt() ?? 0,
+    disabled: json['disabled'] == true,
+    allowInAdhika: json['allow_in_adhika'] == true,
+    priority: (json['priority'] as num?)?.toInt() ?? 100,
+    name: json['name'] as String,
+    shortDescription: null,
+    fullDescription: null,
+  );
 }
 
 /// Null-safe minute difference between a Dart DateTime and an ISO string
