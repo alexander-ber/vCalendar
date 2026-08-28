@@ -100,6 +100,126 @@ String? _webEventTone(MobileEvent event) {
   return null;
 }
 
+/// Single source of truth for event-category colors, shared by the day
+/// details view (`_EventTile`) and the month-grid day cell (`_DayCell`) so
+/// both agree with each other and with web's `--ekadashi`/`--parana`/
+/// `--vaishnava`/`--festival`/`--deity` CSS custom properties (styles.css)
+/// for the 3 themes web actually has (day/night/sepia) - `isDark`/`isSepia`
+/// select which of web's 3 palettes to use; any other mobile-only theme
+/// (ocean/forest/lotus/icon) falls back to the day palette, since those
+/// have no web equivalent to align with.
+_EventVisualStyle _eventVisualStyleForTone(
+  String tone, {
+  required bool isDark,
+  required bool isSepia,
+  required Color surface,
+  required Color primary,
+  required Color mutedText,
+}) {
+  switch (tone) {
+    case 'ekadashi':
+      return _EventVisualStyle(
+        tone: tone,
+        background: isDark
+            ? const Color(0xFF3949AB).withValues(alpha: 0.24)
+            : const Color(0xFFEEF1FF),
+        foreground: isDark ? const Color(0xFFC7D2FE) : const Color(0xFF3949AB),
+        border: const Color(0xFFD4A017),
+      );
+    case 'notice':
+      return _EventVisualStyle(
+        tone: tone,
+        background: surface,
+        foreground: mutedText,
+        border: mutedText.withValues(alpha: 0.34),
+      );
+    case 'parana':
+      return _EventVisualStyle(
+        tone: tone,
+        background: isDark
+            ? const Color(0xFF6EE7B7).withValues(alpha: 0.13)
+            : isSepia
+            ? const Color(0xFFE6F5EE)
+            : const Color(0xFFEEFAF5),
+        foreground: isDark
+            ? const Color(0xFF6EE7B7)
+            : isSepia
+            ? const Color(0xFF23705F)
+            : const Color(0xFF3B8A78),
+        border: isDark
+            ? const Color(0xFF6EE7B7)
+            : isSepia
+            ? const Color(0xFF23705F)
+            : const Color(0xFF3B8A78),
+      );
+    case 'vaishnava':
+      return _EventVisualStyle(
+        tone: tone,
+        background: isDark
+            ? const Color(0xFFC4B5FD).withValues(alpha: 0.14)
+            : isSepia
+            ? const Color(0xFFF3EBF8)
+            : const Color(0xFFF6F1FB),
+        foreground: isDark
+            ? const Color(0xFFC4B5FD)
+            : isSepia
+            ? const Color(0xFF7A4CA0)
+            : const Color(0xFF8667B8),
+        border: isDark
+            ? const Color(0xFFC4B5FD)
+            : isSepia
+            ? const Color(0xFF7A4CA0)
+            : const Color(0xFF8667B8),
+      );
+    case 'deity':
+      return _EventVisualStyle(
+        tone: tone,
+        background: isDark
+            ? const Color(0xFF5EEAD4).withValues(alpha: 0.13)
+            : isSepia
+            ? const Color(0xFFF1F4D7)
+            : const Color(0xFFF5F8E8),
+        foreground: isDark
+            ? const Color(0xFF5EEAD4)
+            : isSepia
+            ? const Color(0xFF626C1F)
+            : const Color(0xFF6F8A38),
+        border: isDark
+            ? const Color(0xFF5EEAD4)
+            : isSepia
+            ? const Color(0xFF626C1F)
+            : const Color(0xFF6F8A38),
+      );
+    case 'purushottama':
+      return _EventVisualStyle(
+        tone: tone,
+        background: primary.withValues(alpha: isDark ? 0.14 : 0.10),
+        foreground: primary,
+        border: primary.withValues(alpha: 0.60),
+      );
+    case 'festival':
+    default:
+      return _EventVisualStyle(
+        tone: tone,
+        background: isDark
+            ? const Color(0xFFFBBF24).withValues(alpha: 0.28)
+            : isSepia
+            ? const Color(0xFFFFDFAD)
+            : const Color(0xFFFFE5BF),
+        foreground: isDark
+            ? const Color(0xFFFBBF24)
+            : isSepia
+            ? const Color(0xFF9A3412)
+            : const Color(0xFFA66A2B),
+        border: isDark
+            ? const Color(0xFFFBBF24).withValues(alpha: 0.72)
+            : isSepia
+            ? const Color(0xFF9A3412).withValues(alpha: 0.42)
+            : const Color(0xFFA66A2B).withValues(alpha: 0.36),
+      );
+  }
+}
+
 class HomeScreen extends StatefulWidget {
   const HomeScreen({
     super.key,
@@ -2723,12 +2843,26 @@ class _DayCell extends StatelessWidget {
     final textColor = day.inCurrentMonth
         ? theme.colorScheme.onSurface
         : colors.mutedText.withValues(alpha: 0.45);
-    final eventFillColor = _eventFillColor(theme, colors);
-    final borderColor = _borderColor(theme, colors);
-    final eventMarkerColor = _eventMarkerColor();
+    final style = eventCategory == null
+        ? null
+        : _eventVisualStyleForTone(
+            eventCategory!,
+            isDark: theme.brightness == Brightness.dark,
+            isSepia: theme.scaffoldBackgroundColor == const Color(0xFFF7EFDF),
+            surface: theme.colorScheme.surface,
+            primary: theme.colorScheme.primary,
+            mutedText: colors.mutedText,
+          );
+    final eventFillColor = eventCategory == 'notice' ? null : style?.background;
+    final borderColor = eventCategory == 'ekadashi'
+        ? style?.border
+        : (selected ? theme.colorScheme.primary : null);
+    final eventMarkerColor = style?.foreground ?? const Color(0xFFD4A017);
     final markerCount = eventCount > 3 ? 3 : eventCount;
     final cellSize = compactMode ? 46.0 : 56.0;
-    final dayTextColor = _dayTextColor(theme, textColor);
+    final dayTextColor = eventCategory == 'ekadashi'
+        ? style!.foreground
+        : (selected ? theme.colorScheme.primary : textColor);
 
     return InkWell(
       borderRadius: BorderRadius.circular(999),
@@ -2810,73 +2944,6 @@ class _DayCell extends StatelessWidget {
     );
   }
 
-  Color? _eventFillColor(ThemeData theme, VCalendarColors colors) {
-    final category = eventCategory;
-    if (category == null) return null;
-    if (category == 'notice') return null;
-    if (category == 'parana') return colors.parana;
-    if (category == 'ekadashi') {
-      final alpha = theme.brightness == Brightness.dark ? 0.30 : 0.13;
-      return const Color(0xFF3949AB).withValues(alpha: alpha);
-    }
-    if (category == 'vaishnava') return colors.vaishnavaDisappearance;
-    if (category == 'festival') return colors.festival;
-    if (category == 'deity') return colors.parana;
-    if (category == 'purushottama') return colors.festival;
-    if (category.contains('appearance')) return colors.vaishnavaAppearance;
-    if (category.contains('disappearance')) {
-      return colors.vaishnavaDisappearance;
-    }
-    if (category == 'avatar' ||
-        category == 'avatar_associate' ||
-        category == 'divine_appearance' ||
-        category == 'festival' ||
-        category == 'mahaprabhu_parsada') {
-      return colors.festival;
-    }
-    if (category == 'deity_temple') return colors.parana;
-    return colors.ekadashiBorder;
-  }
-
-  Color? _borderColor(ThemeData theme, VCalendarColors colors) {
-    final category = eventCategory;
-    if (category == 'ekadashi') return const Color(0xFFD4A017);
-    if (selected) return theme.colorScheme.primary;
-    return null;
-  }
-
-  Color _dayTextColor(ThemeData theme, Color defaultColor) {
-    if (eventCategory == 'ekadashi') {
-      return theme.brightness == Brightness.dark
-          ? const Color(0xFFBFC8FF)
-          : const Color(0xFF3949AB);
-    }
-    if (selected) return theme.colorScheme.primary;
-    return defaultColor;
-  }
-
-  Color _eventMarkerColor() {
-    final category = eventCategory;
-    if (category == null) return const Color(0xFFD4A017);
-    if (category == 'notice') return const Color(0xFFA33A1F);
-    if (category == 'parana') return const Color(0xFF087A5B);
-    if (category == 'ekadashi') return const Color(0xFFD4A017);
-    if (category == 'vaishnava') return const Color(0xFF7B3BB8);
-    if (category == 'festival') return const Color(0xFFB45A09);
-    if (category == 'deity') return const Color(0xFF087A5B);
-    if (category == 'purushottama') return const Color(0xFFB45A09);
-    if (category.contains('appearance')) return const Color(0xFF6D4DD6);
-    if (category.contains('disappearance')) return const Color(0xFF7B3BB8);
-    if (category == 'avatar' ||
-        category == 'avatar_associate' ||
-        category == 'divine_appearance' ||
-        category == 'festival' ||
-        category == 'mahaprabhu_parsada') {
-      return const Color(0xFFB45A09);
-    }
-    if (category == 'deity_temple') return const Color(0xFF087A5B);
-    return const Color(0xFFD4A017);
-  }
 }
 
 class _SelectedDayCard extends StatelessWidget {
@@ -3166,12 +3233,21 @@ class _ParanaTomorrowNotice extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final colors = Theme.of(context).extension<VCalendarColors>()!;
+    final theme = Theme.of(context);
+    final colors = theme.extension<VCalendarColors>()!;
+    final style = _eventVisualStyleForTone(
+      'parana',
+      isDark: theme.brightness == Brightness.dark,
+      isSepia: theme.scaffoldBackgroundColor == const Color(0xFFF7EFDF),
+      surface: theme.colorScheme.surface,
+      primary: theme.colorScheme.primary,
+      mutedText: colors.mutedText,
+    );
     return DecoratedBox(
       decoration: BoxDecoration(
-        color: colors.parana.withValues(alpha: 0.35),
+        color: style.background,
         borderRadius: BorderRadius.circular(14),
-        border: Border.all(color: colors.parana),
+        border: Border.all(color: style.border),
       ),
       child: Padding(
         padding: const EdgeInsets.all(12),
@@ -4077,115 +4153,14 @@ class _EventTile extends StatelessWidget {
 
   _EventVisualStyle _eventStyle(BuildContext context, VCalendarColors colors) {
     final theme = Theme.of(context);
-    final tone = _webEventTone(event) ?? 'festival';
-    final isDark = theme.brightness == Brightness.dark;
-    final isSepia = theme.scaffoldBackgroundColor == const Color(0xFFF7EFDF);
-    final surface = theme.colorScheme.surface;
-    final primary = theme.colorScheme.primary;
-    switch (tone) {
-      case 'ekadashi':
-        return _EventVisualStyle(
-          tone: tone,
-          background: isDark
-              ? const Color(0xFF3949AB).withValues(alpha: 0.24)
-              : const Color(0xFFEEF1FF),
-          foreground: isDark
-              ? const Color(0xFFC7D2FE)
-              : const Color(0xFF3949AB),
-          border: const Color(0xFFD4A017),
-        );
-      case 'notice':
-        return _EventVisualStyle(
-          tone: tone,
-          background: surface,
-          foreground: colors.mutedText,
-          border: colors.mutedText.withValues(alpha: 0.34),
-        );
-      case 'parana':
-        return _EventVisualStyle(
-          tone: tone,
-          background: isDark
-              ? const Color(0xFF6EE7B7).withValues(alpha: 0.13)
-              : isSepia
-              ? const Color(0xFFE6F5EE)
-              : const Color(0xFFEEFAF5),
-          foreground: isDark
-              ? const Color(0xFF6EE7B7)
-              : isSepia
-              ? const Color(0xFF23705F)
-              : const Color(0xFF3B8A78),
-          border: isDark
-              ? const Color(0xFF6EE7B7)
-              : isSepia
-              ? const Color(0xFF23705F)
-              : const Color(0xFF3B8A78),
-        );
-      case 'vaishnava':
-        return _EventVisualStyle(
-          tone: tone,
-          background: isDark
-              ? const Color(0xFFC4B5FD).withValues(alpha: 0.14)
-              : isSepia
-              ? const Color(0xFFF3EBF8)
-              : const Color(0xFFF6F1FB),
-          foreground: isDark
-              ? const Color(0xFFC4B5FD)
-              : isSepia
-              ? const Color(0xFF7A4CA0)
-              : const Color(0xFF8667B8),
-          border: isDark
-              ? const Color(0xFFC4B5FD)
-              : isSepia
-              ? const Color(0xFF7A4CA0)
-              : const Color(0xFF8667B8),
-        );
-      case 'deity':
-        return _EventVisualStyle(
-          tone: tone,
-          background: isDark
-              ? const Color(0xFF5EEAD4).withValues(alpha: 0.13)
-              : isSepia
-              ? const Color(0xFFF1F4D7)
-              : const Color(0xFFF5F8E8),
-          foreground: isDark
-              ? const Color(0xFF5EEAD4)
-              : isSepia
-              ? const Color(0xFF626C1F)
-              : const Color(0xFF6F8A38),
-          border: isDark
-              ? const Color(0xFF5EEAD4)
-              : isSepia
-              ? const Color(0xFF626C1F)
-              : const Color(0xFF6F8A38),
-        );
-      case 'purushottama':
-        return _EventVisualStyle(
-          tone: tone,
-          background: primary.withValues(alpha: isDark ? 0.14 : 0.10),
-          foreground: primary,
-          border: primary.withValues(alpha: 0.60),
-        );
-      case 'festival':
-      default:
-        return _EventVisualStyle(
-          tone: tone,
-          background: isDark
-              ? const Color(0xFFFBBF24).withValues(alpha: 0.28)
-              : isSepia
-              ? const Color(0xFFFFDFAD)
-              : const Color(0xFFFFE5BF),
-          foreground: isDark
-              ? const Color(0xFFFBBF24)
-              : isSepia
-              ? const Color(0xFF9A3412)
-              : const Color(0xFFA66A2B),
-          border: isDark
-              ? const Color(0xFFFBBF24).withValues(alpha: 0.72)
-              : isSepia
-              ? const Color(0xFF9A3412).withValues(alpha: 0.42)
-              : const Color(0xFFA66A2B).withValues(alpha: 0.36),
-        );
-    }
+    return _eventVisualStyleForTone(
+      _webEventTone(event) ?? 'festival',
+      isDark: theme.brightness == Brightness.dark,
+      isSepia: theme.scaffoldBackgroundColor == const Color(0xFFF7EFDF),
+      surface: theme.colorScheme.surface,
+      primary: theme.colorScheme.primary,
+      mutedText: colors.mutedText,
+    );
   }
 
   String? _cleanDescription(String? value) {
