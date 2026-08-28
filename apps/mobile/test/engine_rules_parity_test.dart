@@ -19,6 +19,7 @@ import 'package:timezone/data/latest.dart' as tzdata;
 import 'package:vcalendar_mobile/domain/models/calendar_location.dart';
 import 'package:vcalendar_mobile/domain/models/mobile_event.dart';
 import 'package:vcalendar_mobile/domain/models/panchanga_day.dart';
+import 'package:vcalendar_mobile/domain/services/calendar_event_engine.dart';
 import 'package:vcalendar_mobile/domain/services/ekadashi_classifier.dart';
 import 'package:vcalendar_mobile/domain/services/event_matcher.dart';
 import 'package:vcalendar_mobile/domain/services/masa_rule_validator.dart';
@@ -443,6 +444,12 @@ void main() {
         );
         final matcher = EventMatcher(calculator: calculator);
         final eventRuleById = {for (final e in eventRules) e.id: e};
+        // Mirrors CalendarEventEngine: `ekadashi` category rows are for
+        // name lookup only and must never reach matchEventsForDay (web only
+        // ever calls it with EVENTS, never EKADASHI_DB).
+        final genericEventRules = eventRules
+            .where((e) => e.category != 'ekadashi')
+            .toList(growable: false);
 
         final casesByLocation = <String, List<Map<String, dynamic>>>{};
         for (final rawCase in fixtureCases) {
@@ -488,7 +495,7 @@ void main() {
 
             final matched = matcher.matchEventsForDay(
               day: day,
-              events: eventRules,
+              events: genericEventRules,
               timezone: location.timezone,
               nextDay: nextDay,
               previousDay: previousDay,
@@ -550,6 +557,91 @@ void main() {
       },
     );
   });
+
+  group('Phase D2 - full orchestration (shift + anchor events)', () {
+    test(
+      'CalendarEventEngine places shifted and anchor-dependent events on '
+      'the correct day, matching known cases from tests/regression.mjs',
+      () {
+        const calculator = PanchangaCalculator();
+        final engine = CalendarEventEngine(engineRules, calculator: calculator);
+
+        // Mayapur, July 2026: Ratha Yatra family (anchor-dependent events).
+        final mayapur = _locations['mayapur']!;
+        final mayapurDays = _buildDayRange(
+          calculator: calculator,
+          location: mayapur,
+          start: DateTime.utc(2026, 6, 25),
+          end: DateTime.utc(2026, 8, 5),
+        );
+        final mayapurEvents = engine.attachEvents(
+          days: mayapurDays,
+          location: mayapur,
+          eventRules: eventRules,
+          isRu: false,
+        );
+        expect(
+          mayapurEvents['2026-07-16']?.any((e) => e.name == 'Beginning of Ratha Yatra'),
+          isTrue,
+          reason: 'Ratha Yatra should begin 2026-07-16 in Mayapur (tests/regression.mjs)',
+        );
+        expect(
+          mayapurEvents['2026-07-15']?.any((e) => e.name == 'Gundicha Mardzhana'),
+          isTrue,
+          reason: 'Gundicha Mardzhana (anchor -1 day) should land on 2026-07-15',
+        );
+        expect(
+          mayapurEvents['2026-07-24']?.any((e) => e.name == 'Punar Yatra of Sri Jagannathdev'),
+          isTrue,
+          reason: 'Punar Yatra (anchor +8 days) should land on 2026-07-24',
+        );
+
+        // Maalot, late Jan/early Feb 2026: two events sharing the same
+        // Madhava/Gaura/Trayodashi tithi rule but different timing_rule
+        // (noon_based vs sunrise_based) end up matching - and therefore
+        // shifting by observance_offset_days=1 - on different raw days, per
+        // the fixture: the noon_based one matches 01-30 (noon reads
+        // Trayodashi there) and shifts to display on 01-31; the
+        // sunrise_based one matches via the ksaya table on 01-31 and shifts
+        // to display on 02-01.
+        final maalot = _locations['maalot']!;
+        final maalotDays = _buildDayRange(
+          calculator: calculator,
+          location: maalot,
+          start: DateTime.utc(2026, 1, 20),
+          end: DateTime.utc(2026, 2, 10),
+        );
+        final maalotEvents = engine.attachEvents(
+          days: maalotDays,
+          location: maalot,
+          eventRules: eventRules,
+          isRu: false,
+        );
+        expect(
+          maalotEvents['2026-01-31']?.any(
+            (e) => e.id == 'scsmath_541_guru_gaura_nityananda_installation',
+          ),
+          isTrue,
+          reason: 'noon_based shifted event should display on 2026-01-31 (fixture-verified)',
+        );
+        expect(
+          maalotEvents['2026-02-01']?.any(
+            (e) => e.id.contains('нитьянанда_трайодаши'),
+          ),
+          isTrue,
+          reason: 'sunrise_based shifted event should display on 2026-02-01 (fixture-verified)',
+        );
+
+        // Ekadashi fast/parana entries should still come through the
+        // orchestrator with resolved display names (not raw classifier ids).
+        expect(
+          maalotEvents['2026-01-29']?.any((e) => e.category == 'ekadashi' && e.name.isNotEmpty && e.name != 'Gaura Ekadashi'),
+          isTrue,
+          reason: 'Ekadashi fast on 2026-01-29 should resolve a real traditional name via the ekadashi rule table',
+        );
+      },
+    );
+  });
 }
 
 String _fmtDate(DateTime date) {
@@ -585,7 +677,7 @@ MobileEvent _mobileEventFromFixture(Map<String, dynamic> json) {
     category: (json['category'] as String?) ?? 'event',
     eventType: (json['event_type'] as String?) ?? 'event',
     masa: (json['masa'] as String?) ?? '',
-    masaType: null,
+    masaType: json['masa_type'] as String?,
     paksha: (json['paksha'] as String?) ?? '',
     tithi: (json['tithi'] as String?) ?? '',
     naksatra: json['naksatra'] as String?,

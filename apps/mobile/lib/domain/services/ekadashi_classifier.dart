@@ -130,17 +130,32 @@ class EkadashiClassifier {
   final double _vijayaPraharFraction;
   final List<NakshatraMahadvadashiCandidate> _nakshatraCandidates;
 
+  /// Amanta masa names in calendar order - mirrors js/masa-engine.js
+  /// `MASA_NAMES`. Public so callers can build the [resolverMasaName] key
+  /// needed to look up an Ekadashi's traditional name from the
+  /// `ekadashi`/`ekadashi_i18n` tables.
+  static const List<String> masaNamesInOrder = [
+    'Chaitra',
+    'Vaishakha',
+    'Jyeshtha',
+    'Ashadha',
+    'Shravana',
+    'Bhadrapada',
+    'Ashvina',
+    'Kartika',
+    'Agrahayana',
+    'Pausha',
+    'Magha',
+    'Phalguna',
+  ];
+
   /// The traditional Ekadashi name/story tables (`ekadashi`/`ekadashi_i18n`
   /// SQLite tables, from `data/ekadashi.json`) are keyed by masa+paksha, but
   /// for Krishna paksha the lookup key is the *following* amanta masa, not
   /// the current one - mirrors js/ekadashi-engine.js:40-41
   /// `ekadashiRecord`'s `resolverMasa`. Callers resolving a display name
   /// for an [EkadashiFast] must apply this to `masaName`/`paksha` first.
-  static String resolverMasaName(
-    List<String> masaNamesInOrder,
-    String amantaMasaName,
-    String paksha,
-  ) {
+  static String resolverMasaName(String amantaMasaName, String paksha) {
     if (paksha != 'Krishna') return amantaMasaName;
     final index = masaNamesInOrder.indexOf(amantaMasaName);
     if (index == -1) return amantaMasaName;

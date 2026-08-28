@@ -13,6 +13,7 @@ import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
 import { generateCalendar } from "../js/calendar-engine.js";
 import { EVENTS } from "../js/events-data.js";
+import { EKADASHI_DB } from "../js/ekadashi-data.js";
 import { LOCATIONS } from "../js/locations-data.js";
 import { RULES } from "../js/rules-data.js";
 
@@ -119,6 +120,7 @@ function eventRuleFixture(event) {
     category: event.category ?? null,
     event_type: event.type ?? event.event_type ?? null,
     masa: event.masa ?? null,
+    masa_type: null,
     gaudiya_masa: event.gaudiya_masa ?? null,
     paksha: event.paksha ?? null,
     tithi: event.tithi ?? null,
@@ -134,8 +136,36 @@ function eventRuleFixture(event) {
   };
 }
 
+// Mirrors js/ekadashi-engine.js's ekadashiRecord() lookup table
+// (js/ekadashi-data.js EKADASHI_DB): masa+paksha+masa_type fields, matched
+// by value, not by id - data/ekadashi.json's ids (e.g. "utpanna") don't
+// encode masa/paksha themselves.
+function ekadashiRecordFixture(entry) {
+  return {
+    id: entry.id,
+    category: "ekadashi",
+    event_type: "ekadashi",
+    masa: entry.masa ?? "*",
+    masa_type: entry.masa_type ?? "normal",
+    gaudiya_masa: null,
+    paksha: entry.paksha ?? null,
+    tithi: "Ekadashi",
+    naksatra: null,
+    timing_rule: null,
+    allow_in_adhika: entry.masa_type === "adhika",
+    priority: 10,
+    source_status: "confirmed",
+    anchor_event_id: null,
+    observance_offset_days: 0,
+    disabled: false,
+    name: entry.name ?? entry.id
+  };
+}
+
 function buildEventRules() {
-  return EVENTS.filter((event) => event.source_status !== "needs_exact_lunar_rule").map(eventRuleFixture);
+  const generic = EVENTS.filter((event) => event.source_status !== "needs_exact_lunar_rule").map(eventRuleFixture);
+  const ekadashiRecords = EKADASHI_DB.map(ekadashiRecordFixture);
+  return [...generic, ...ekadashiRecords];
 }
 
 function buildFixture() {
