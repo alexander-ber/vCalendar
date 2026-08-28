@@ -41,6 +41,9 @@ class CachedCalendarDay {
       masaType: masa['type']! as String,
       normalMasaName:
           (masa['normal_masa_name'] as String?) ?? (masa['name']! as String),
+      // The cached payload_json doesn't carry sankranti_count (see
+      // scripts/build-mobile-db.mjs calendarDayPayload) - not available here.
+      masaSankrantiCount: null,
       engineNote: 'Bundled web-calendar-engine cache.',
     );
     final eventsJson = (json['events'] as List<Object?>? ?? const []);

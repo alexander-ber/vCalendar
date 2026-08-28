@@ -184,6 +184,7 @@ class PanchangaCalculator {
       masa: masa.name,
       masaType: masa.type,
       normalMasaName: masa.normalMasaName,
+      masaSankrantiCount: masa.sankrantiCount,
       engineNote:
           'Dart mobile engine: local sunrise/sunset + Astronomy Engine apparent geocentric Moon/Sun longitude.',
     );
@@ -289,14 +290,67 @@ class PanchangaCalculator {
     return b;
   }
 
+  // The classic "Sunrise Equation" closed-form formula (as implemented
+  // below in _sunEventCandidate) only guarantees the correct wall-clock
+  // time; it does NOT reliably land the result on the correct UTC calendar
+  // day for longitudes where local mean solar time is offset far enough
+  // from UTC (roughly: India/Nepal-class longitudes) - naively wrapping the
+  // formula's raw hour into [0,24) and attaching it to the requested date's
+  // own UTC midnight can silently mislabel sunrise (and occasionally
+  // sunset) onto the wrong civil day by a full 24h. Confirmed against the
+  // web engine (js/astronomy-adapter.js, which uses a proper numerical
+  // rise/set search, not this closed form) for Nabadwip/Mayapur/Vrindavan/
+  // Kathmandu - see engine_rules_parity_test.dart.
+  //
+  // Fix: compute the candidate, then verify which LOCAL calendar day it
+  // actually falls on (using the location's longitude as a mean-solar-time
+  // offset - consistent with what this formula already assumes "local"
+  // means, so no timezone-database dependency is introduced), and retry
+  // with the anchor date shifted by ±1 if it doesn't match the requested
+  // date. Converges in at most one retry for any realistic longitude.
   DateTime _sunEventUtc(
     DateTime date,
     CalendarLocation location, {
     required bool rise,
   }) {
-    final year = date.year;
-    final month = date.month;
-    final day = date.day;
+    final lngHourOffset = Duration(
+      milliseconds: (location.longitude / 15 * 3600000).round(),
+    );
+    for (final anchorShift in [0, -1, 1]) {
+      final anchor = DateTime.utc(
+        date.year,
+        date.month,
+        date.day,
+      ).add(Duration(days: anchorShift));
+      final candidate = _sunEventCandidate(anchor, location, rise: rise);
+      final localInstant = candidate.add(lngHourOffset);
+      if (localInstant.year == date.year &&
+          localInstant.month == date.month &&
+          localInstant.day == date.day) {
+        return candidate;
+      }
+    }
+    // Should be unreachable for any real longitude/date, but fall back to
+    // the naive same-day candidate rather than throwing.
+    return _sunEventCandidate(
+      DateTime.utc(date.year, date.month, date.day),
+      location,
+      rise: rise,
+    );
+  }
+
+  /// The closed-form Sunrise Equation, evaluated with [anchor]'s UTC
+  /// midnight as the reference point. Returns the correct wall-clock UTC
+  /// instant, but the *day* it's attached to is only correct once verified
+  /// by [_sunEventUtc] above.
+  DateTime _sunEventCandidate(
+    DateTime anchor,
+    CalendarLocation location, {
+    required bool rise,
+  }) {
+    final year = anchor.year;
+    final month = anchor.month;
+    final day = anchor.day;
     final dayOfYear = _dayOfYear(year, month, day);
     final lngHour = location.longitude / 15;
     final baseHour = rise ? 6 : 18;
@@ -330,13 +384,9 @@ class PanchangaCalculator {
         (rise ? 360 - math.acos(cosH) / _deg : math.acos(cosH) / _deg) / 15;
     final localMeanTime =
         localHourAngle + rightAscension - (0.06571 * t) - 6.622;
-    final utcHour = _normalizeHours(localMeanTime - lngHour);
+    final utcHour = ((localMeanTime - lngHour) % 24 + 24) % 24;
     final milliseconds = (utcHour * 3600000).round();
-    return DateTime.utc(
-      year,
-      month,
-      day,
-    ).add(Duration(milliseconds: milliseconds));
+    return DateTime.utc(year, month, day).add(Duration(milliseconds: milliseconds));
   }
 
   int _dayOfYear(int year, int month, int day) {
@@ -359,6 +409,7 @@ class PanchangaCalculator {
         name: 'unknown',
         type: 'unknown',
         normalMasaName: 'unknown',
+        sankrantiCount: null,
       );
     }
 
@@ -374,7 +425,12 @@ class PanchangaCalculator {
         ? _gaudiyaMasaName(name, 'Gaura')
         : _gaudiyaMasaName(name, paksha);
 
-    return _MasaInfo(name: name, type: type, normalMasaName: normalMasaName);
+    return _MasaInfo(
+      name: name,
+      type: type,
+      normalMasaName: normalMasaName,
+      sankrantiCount: sankrantiCount,
+    );
   }
 
   DateTime? _findNewMoonBefore(DateTime utc) {
@@ -497,10 +553,6 @@ class PanchangaCalculator {
   double _normalizeDegrees(double value) {
     return ((value % 360) + 360) % 360;
   }
-
-  double _normalizeHours(double value) {
-    return ((value % 24) + 24) % 24;
-  }
 }
 
 class _MasaInfo {
@@ -508,9 +560,11 @@ class _MasaInfo {
     required this.name,
     required this.type,
     required this.normalMasaName,
+    required this.sankrantiCount,
   });
 
   final String name;
   final String type;
   final String normalMasaName;
+  final int? sankrantiCount;
 }
