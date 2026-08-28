@@ -1,8 +1,10 @@
 # vCalendar Panchang POC
 
-Static browser POC for a Gaudiya Vaishnava Panchang generator.
+Static browser POC for a Gaudiya Vaishnava Panchang generator, plus an offline-first Flutter mobile app under [`apps/mobile`](apps/mobile/README.md) that ships this app's data (see [`docs/mobile-offline-app-design.md`](docs/mobile-offline-app-design.md) for the mobile architecture and current web/mobile parity gaps).
 
-The current app runs without a backend and without a database. It calculates locally in browser JavaScript and keeps external Panchang calendars out of the runtime path.
+The current web app runs without a backend and without a database. It calculates locally in browser JavaScript and keeps external Panchang calendars out of the runtime path.
+
+For the current calculation implementation status (what's actually implemented vs. the GCAL reference model), see [`docs/gcal-calculation-comparison.md`](docs/gcal-calculation-comparison.md) — it is kept up to date with the code; `PROJECT_CONTEXT.md` is the original historical spec and may not match current behavior.
 
 ## Runtime Calculation Principle
 

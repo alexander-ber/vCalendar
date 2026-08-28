@@ -1,5 +1,7 @@
 # Panchang POC — Project Context for Codex
 
+> **Status note (2026-08-27):** this file is the original architecture/rules spec written to brief Codex. It describes intent, not always current behavior — later engine changes (e.g. the arunodaya default, the fuller GCAL-derived Ekadashi/parana rule set) are not reflected here. For the current, code-verified implementation status, see [`docs/gcal-calculation-comparison.md`](docs/gcal-calculation-comparison.md) (web engine) and [`docs/mobile-offline-app-design.md`](docs/mobile-offline-app-design.md) (mobile app). Treat this file as historical/design-intent reference, not a live source of truth.
+
 ## 0. Project Goal
 
 Build a static-browser POC for a Gaudiya Vaishnava Panchang generator in the style required by the user, with strict calculation logic for:

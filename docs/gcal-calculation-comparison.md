@@ -183,7 +183,7 @@ The final GCAL phase applies DST/time corrections to:
 
 - Range-based calculation in phases: `generateCalendarRange()` builds days, then attaches events.
 - Sunrise, sunset, moonrise, moonset, arunodaya. Rise/set is now calculated through the vendored Astronomy Engine library.
-- Arunodaya now defaults to the verified Panjika rule: fixed 96 minutes before sunrise. The earlier `1/15` previous-night model is retained only in comparison scripts.
+- Arunodaya currently defaults to the `1/15` previous-night-duration model (`js/rules-data.js`: `arunodaya_mode: "previous_night_fraction"`, verified against `apps/mobile/lib/domain/services/panchanga_calculator.dart`, which uses the same 1/15 rule). The verified-Panjika fixed 96-minute rule (`arunodaya_offset_minutes: 96`) is the fallback/comparison value, used only when `arunodaya_mode` is not `previous_night_fraction`.
 - Tithi and paksha from Moon-Sun angular separation, using the current local approximation layer.
 - Nakshatra and yoga at sunrise.
 - Tithi end by boundary search.
@@ -265,7 +265,7 @@ GCAL distinguishes:
 
 We currently implement Suddha, Viddha/no-fast, no-sunrise, Vyanjuli, Unmilani, Trisprsa, Unmilani Trisprsa, Paksavardhini and nakshatra Mahadvadashi branches. Nakshatra Mahadvadashi is restricted to Gaura Dvadashi and now also checks the Dvadashi-duration condition from the verified Panjika rules.
 
-Validation note: the earlier `1/15` previous-night arunodaya model matched several shifted Ekadashi witnesses, but the verified Panjika rules explicitly define arunodaya as 96 minutes before sunrise. Current production follows the verified rule; witness differences should be analyzed with the comparison harness instead of silently changing the rule.
+Validation note: the verified Panjika rules explicitly define arunodaya as 96 minutes before sunrise, but current production (`js/rules-data.js`) still runs the `1/15` previous-night model, which matched several shifted Ekadashi witnesses. This is a known open discrepancy between the verified-rule value and the runtime default, not a resolved decision; witness differences should be analyzed with the comparison harness (`scripts/compare-arunodaya-models.mjs`) instead of silently changing the rule.
 
 ### Parana
 
@@ -335,6 +335,16 @@ GCAL marks second day of vriddhi and calculates exact times for ksaya tithis. We
 ### DST correction
 
 GCAL has a final correction phase for parana, sunrise/sunset/noon/arunodaya and moonrise/moonset. Our code formats dates with `Intl.DateTimeFormat` in the location timezone, so modern DST display is delegated to the browser timezone database. We do not have a separate GCAL-style correction phase.
+
+## Mobile app parity (web is reference)
+
+The Flutter app under `apps/mobile` does not run this JS engine. It is a separate Dart reimplementation (`apps/mobile/lib/domain/services/panchanga_calculator.dart`), with its own sunrise/sunset formula (classic Sunrise Equation, hand-coded) and its own Sun/Moon longitude source (`package:geoengine`, not the vendored Astronomy Engine used on web). Verified as of 2026-08-27:
+
+- **Event dates match by construction, not by shared code.** Festival, Vaishnava appearance/disappearance and Ekadashi fast-day dates are computed once by this web engine (`scripts/build-events-db.mjs`), baked into `apps/mobile/assets/db/vcalendar_seed.sqlite`, and read read-only by the app. So the *date* of a classified (viddha/double-sunrise/no-sunrise/Unmilani/Trisprsa/Vyanjuli/Paksavardhini) Ekadashi shown on mobile is correct relative to web, as long as the seed DB was rebuilt after the last engine change.
+- **Parana time window is computed live in Dart and only implements the standard case.** `apps/mobile/lib/domain/services/parana_calculator.dart` (`ParanaCalculator.normalEkadashi`) always applies `start = max(sunrise, hari_vasara_end)`, `preferred_end = min(dvadashi_end, pratah_end)` using Dvadashi start/end from the Dart tithi engine. It has no Viddha/Unmilani/Vyanjuli/Trisprsa/nakshatra-Mahadvadashi branches, unlike `js/parana-engine.js` + `js/ekadashi-engine.js`. On a shifted-Ekadashi day the displayed parana window can therefore be wrong on mobile even though the fast date is right. There is no Dart equivalent of `js/ekadashi-engine.js` at all.
+- **Tithi/masa boundary times can differ between platforms** even for the "normal" case, because sunrise and Moon/Sun longitude come from two independent implementations (Astronomy Engine JS vs. `geoengine` + hand-rolled sunrise formula in Dart), not because the classification rules disagree.
+
+Until the Dart engine either ports `js/parana-engine.js`'s branch logic or the app reads a precomputed parana window from the seed DB like it already does for event dates, treat mobile's on-screen parana times as unverified for shifted Ekadashi days. See `docs/mobile-offline-app-design.md` for the fuller mobile architecture writeup.
 
 ## Suggested next implementation order
 

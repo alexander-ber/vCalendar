@@ -83,7 +83,9 @@ apps/mobile/scripts/build-apk.sh debug
 - `data/local`: database access.
 - `data/repositories`: app-facing data repositories.
 - `domain/models`: plain data models.
+- `domain/services`: calculation engine (`PanchangaCalculator`, `ParanaCalculator`, etc.) — an independent Dart reimplementation, not a port of `js/*.js`. See "Known web/mobile parity gaps" in [`docs/mobile-offline-app-design.md`](../../docs/mobile-offline-app-design.md) before relying on parana times for shifted Ekadashi days.
 - `features`: UI features.
-- calculation engine will be ported into a separate domain/service layer.
+
+Event dates (festivals, Ekadashi, appearance/disappearance days) are not calculated on-device: they come precomputed from the bundled SQLite seed, built from the same web engine via `scripts/build-events-db.mjs` + `scripts/build-mobile-db.mjs`. Only day-level astronomy (sunrise/tithi/nakshatra) and the parana time window are computed live in Dart.
 
 Keep UI, storage, sync, and calculations independent from each other.
