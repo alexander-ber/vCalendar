@@ -5,7 +5,6 @@ import 'ekadashi_classifier.dart';
 import 'event_matcher.dart';
 import 'generated_calendar_events.dart';
 import 'panchanga_calculator.dart';
-import 'panchanga_formatter.dart';
 
 /// Assembles the final per-day event list mobile should display, mirroring
 /// js/calendar-engine.js's `attachEvents` orchestration: Ekadashi fast/
@@ -25,13 +24,11 @@ class CalendarEventEngine {
     required PanchangaCalculator calculator,
   }) : _classifier = EkadashiClassifier(engineRules, calculator: calculator),
        _matcher = EventMatcher(calculator: calculator),
-       _generated = const GeneratedCalendarEvents(),
-       _formatter = const PanchangaFormatter();
+       _generated = const GeneratedCalendarEvents();
 
   final EkadashiClassifier _classifier;
   final EventMatcher _matcher;
   final GeneratedCalendarEvents _generated;
-  final PanchangaFormatter _formatter;
 
   /// [days] should include padding before/after the dates you actually need
   /// results for (Ekadashi/event matching read D-1/D+1 neighbors, and
@@ -137,9 +134,7 @@ class CalendarEventEngine {
     // / `scheduleEkadashi`'s addDaysToLocalDate(fast_date, 1)).
     for (final candidateFast in ekadashi.fastsByFastDate.values) {
       if (_dateKey(candidateFast.parana.date) == key) {
-        events.add(
-          _paranaDisplayEvent(candidateFast, ekadashiRecords, location, isRu),
-        );
+        events.add(_paranaDisplayEvent(candidateFast, ekadashiRecords, isRu));
       }
     }
 
@@ -204,18 +199,10 @@ class CalendarEventEngine {
   MobileEvent _paranaDisplayEvent(
     EkadashiFast fast,
     List<MobileEvent> ekadashiRecords,
-    CalendarLocation location,
     bool isRu,
   ) {
     final record = _resolveEkadashiRecord(fast, ekadashiRecords);
     final name = record?.name ?? '${fast.paksha} Ekadashi';
-    final tz = location.timezone;
-    final start = fast.parana.start != null
-        ? _formatter.time(fast.parana.start!, tz)
-        : (isRu ? 'недоступно' : 'not available');
-    final preferredEnd = fast.parana.preferredEnd != null
-        ? _formatter.time(fast.parana.preferredEnd!, tz)
-        : (isRu ? 'недоступно' : 'not available');
     return MobileEvent(
       id: 'parana_ekadashi_${fast.fastDate}',
       category: 'vrata',
@@ -233,7 +220,7 @@ class CalendarEventEngine {
       allowInAdhika: true,
       priority: 10,
       name: isRu ? 'Паран для $name' : 'Parana for $name',
-      shortDescription: '$start–$preferredEnd',
+      shortDescription: null,
       fullDescription: null,
     );
   }
@@ -288,7 +275,8 @@ class CalendarEventEngine {
       for (final anchorEvent in anchorEvents) {
         for (final dependent in dependents) {
           if (dependent.anchorEventId != anchorEvent.id) continue;
-          final targetIndex = keyIndex[anchorKey]! + dependent.observanceOffsetDays;
+          final targetIndex =
+              keyIndex[anchorKey]! + dependent.observanceOffsetDays;
           if (targetIndex < 0 || targetIndex >= days.length) continue;
           final targetKey = dayKeys[targetIndex];
           final list = byDate.putIfAbsent(targetKey, () => []);

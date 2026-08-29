@@ -486,10 +486,8 @@ class _HomeScreenState extends State<HomeScreen> {
                         _MasaPeriodNoticeCard(
                           days: panchangaMonthDays,
                           location: selectedLocation,
-                          calculateDay: (date, location) => _calculateDay(
-                            date: date,
-                            location: location,
-                          ),
+                          calculateDay: (date, location) =>
+                              _calculateDay(date: date, location: location),
                           isRu: _isRu,
                         ),
                         const SizedBox(height: 16),
@@ -2864,86 +2862,107 @@ class _DayCell extends StatelessWidget {
         ? style!.foreground
         : (selected ? theme.colorScheme.primary : textColor);
 
+    // Mirrors styles.css .compact-day.is-selected: an outer accent-tinted
+    // outline (2px, ~42% opacity, offset ~3px) around the inner event-tone
+    // border, giving the "double ring" look web uses for the selected day -
+    // kept even on Ekadashi days, since .compact-day.compact-ekadashi
+    // .is-selected only overrides border-color/box-shadow, not the outline.
+    final outerRingDiameter = cellSize + 10;
+
     return InkWell(
       borderRadius: BorderRadius.circular(999),
       onTap: onTap,
       child: Center(
-        child: AnimatedContainer(
-          duration: const Duration(milliseconds: 160),
-          width: cellSize,
-          height: cellSize,
-          decoration: BoxDecoration(
-            shape: BoxShape.circle,
-            color: day.inCurrentMonth ? eventFillColor : null,
-            border: Border.all(
-              color: borderColor ?? Colors.transparent,
-              width: borderColor == null
-                  ? 0
-                  : eventCategory == 'ekadashi'
-                  ? 2.6
-                  : 2,
-            ),
-          ),
-          child: Stack(
-            alignment: Alignment.center,
-            children: [
-              Text(
-                '${day.date.day}',
-                style: theme.textTheme.titleMedium?.copyWith(
-                  fontSize: compactMode ? 18 : 20,
-                  fontWeight: FontWeight.w900,
-                  color: dimEmptyEventDay
-                      ? textColor.withValues(alpha: 0.32)
-                      : dayTextColor,
+        child: Container(
+          width: selected ? outerRingDiameter : cellSize,
+          height: selected ? outerRingDiameter : cellSize,
+          decoration: selected
+              ? BoxDecoration(
+                  shape: BoxShape.circle,
+                  border: Border.all(
+                    color: theme.colorScheme.primary.withValues(alpha: 0.42),
+                    width: 2,
+                  ),
+                )
+              : null,
+          child: Center(
+            child: AnimatedContainer(
+              duration: const Duration(milliseconds: 160),
+              width: cellSize,
+              height: cellSize,
+              decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                color: day.inCurrentMonth ? eventFillColor : null,
+                border: Border.all(
+                  color: borderColor ?? Colors.transparent,
+                  width: borderColor == null
+                      ? 0
+                      : eventCategory == 'ekadashi'
+                      ? 2.6
+                      : 2,
                 ),
               ),
-              if (day.isToday)
-                Align(
-                  alignment: Alignment.bottomCenter,
-                  child: Padding(
-                    padding: EdgeInsets.only(bottom: compactMode ? 3 : 4),
-                    child: DecoratedBox(
-                      decoration: BoxDecoration(
-                        color: colors.todayMarker,
-                        borderRadius: BorderRadius.circular(8),
-                      ),
-                      child: const SizedBox(width: 18, height: 4),
+              child: Stack(
+                alignment: Alignment.center,
+                children: [
+                  Text(
+                    '${day.date.day}',
+                    style: theme.textTheme.titleMedium?.copyWith(
+                      fontSize: compactMode ? 18 : 20,
+                      fontWeight: FontWeight.w900,
+                      color: dimEmptyEventDay
+                          ? textColor.withValues(alpha: 0.32)
+                          : dayTextColor,
                     ),
                   ),
-                ),
-              if (eventCount > 0)
-                Positioned(
-                  right: compactMode ? 4 : 5,
-                  top: 0,
-                  bottom: 0,
-                  child: Center(
-                    child: Column(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        for (var index = 0; index < markerCount; index += 1)
-                          Padding(
-                            padding: EdgeInsets.only(
-                              bottom: index == markerCount - 1 ? 0 : 2,
-                            ),
-                            child: DecoratedBox(
-                              decoration: BoxDecoration(
-                                color: eventMarkerColor,
-                                borderRadius: BorderRadius.circular(8),
-                              ),
-                              child: const SizedBox(width: 4, height: 4),
-                            ),
+                  if (day.isToday)
+                    Align(
+                      alignment: Alignment.bottomCenter,
+                      child: Padding(
+                        padding: EdgeInsets.only(bottom: compactMode ? 3 : 4),
+                        child: DecoratedBox(
+                          decoration: BoxDecoration(
+                            color: colors.todayMarker,
+                            borderRadius: BorderRadius.circular(8),
                           ),
-                      ],
+                          child: const SizedBox(width: 18, height: 4),
+                        ),
+                      ),
                     ),
-                  ),
-                ),
-            ],
+                  if (eventCount > 0)
+                    Positioned(
+                      right: compactMode ? 4 : 5,
+                      top: 0,
+                      bottom: 0,
+                      child: Center(
+                        child: Column(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            for (var index = 0; index < markerCount; index += 1)
+                              Padding(
+                                padding: EdgeInsets.only(
+                                  bottom: index == markerCount - 1 ? 0 : 2,
+                                ),
+                                child: DecoratedBox(
+                                  decoration: BoxDecoration(
+                                    color: eventMarkerColor,
+                                    borderRadius: BorderRadius.circular(8),
+                                  ),
+                                  child: const SizedBox(width: 4, height: 4),
+                                ),
+                              ),
+                          ],
+                        ),
+                      ),
+                    ),
+                ],
+              ),
+            ),
           ),
         ),
       ),
     );
   }
-
 }
 
 class _SelectedDayCard extends StatelessWidget {
@@ -3016,7 +3035,10 @@ class _SelectedDayCard extends StatelessWidget {
               Text(isRu ? 'Выберите место.' : 'Select a location.')
             else ...[
               if (paranaTomorrow != null) ...[
-                _ParanaTomorrowNotice(details: paranaTomorrow),
+                _EventTile(
+                  event: paranaTomorrow.event,
+                  paranaWindow: paranaTomorrow.window,
+                ),
                 const SizedBox(height: 12),
               ],
               _EventsSection(
@@ -3203,21 +3225,48 @@ class _SelectedDayCard extends StatelessWidget {
     return names[number - 1];
   }
 
-  _ParanaWindowLabel? _paranaTomorrowDetails({
+  _ParanaTomorrowInfo? _paranaTomorrowDetails({
     required List<MobileEvent> events,
     required PanchangaDay? nextPanchanga,
     required ParanaResult? parana,
     required String timezone,
   }) {
-    if (!events.any(_isEkadashiFastEvent)) return null;
+    final fastEvent = events.where(_isEkadashiFastEvent).firstOrNull;
+    if (fastEvent == null) return null;
     final next = nextPanchanga;
     if (next == null || parana == null || parana.start == null) return null;
-    return _formatParanaWindow(
+    final window = _formatParanaWindow(
       parana: parana,
       dvadashiDay: next,
       timezone: timezone,
       isRu: isRu,
-      tomorrow: true,
+    );
+    return _ParanaTomorrowInfo(
+      // Reuses _EventTile (the same widget the actual parana day uses) so
+      // this notice on the fast day renders as an identical block.
+      event: MobileEvent(
+        id: 'parana_tomorrow_notice_${fastEvent.id}',
+        category: 'vrata',
+        eventType: 'parana',
+        masa: '',
+        masaType: null,
+        paksha: fastEvent.paksha,
+        tithi: 'Dvadashi',
+        naksatra: null,
+        timingRule: null,
+        gaudiyaMasa: null,
+        anchorEventId: null,
+        observanceOffsetDays: 0,
+        disabled: false,
+        allowInAdhika: true,
+        priority: 10,
+        name: isRu
+            ? 'Паран для ${fastEvent.name}'
+            : 'Parana for ${fastEvent.name}',
+        shortDescription: null,
+        fullDescription: null,
+      ),
+      window: window,
     );
   }
 
@@ -3226,59 +3275,11 @@ class _SelectedDayCard extends StatelessWidget {
   }
 }
 
-class _ParanaTomorrowNotice extends StatelessWidget {
-  const _ParanaTomorrowNotice({required this.details});
+class _ParanaTomorrowInfo {
+  const _ParanaTomorrowInfo({required this.event, required this.window});
 
-  final _ParanaWindowLabel details;
-
-  @override
-  Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    final colors = theme.extension<VCalendarColors>()!;
-    final style = _eventVisualStyleForTone(
-      'parana',
-      isDark: theme.brightness == Brightness.dark,
-      isSepia: theme.scaffoldBackgroundColor == const Color(0xFFF7EFDF),
-      surface: theme.colorScheme.surface,
-      primary: theme.colorScheme.primary,
-      mutedText: colors.mutedText,
-    );
-    return DecoratedBox(
-      decoration: BoxDecoration(
-        color: style.background,
-        borderRadius: BorderRadius.circular(14),
-        border: Border.all(color: style.border),
-      ),
-      child: Padding(
-        padding: const EdgeInsets.all(12),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              details.summary,
-              style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                fontWeight: FontWeight.w900,
-                color: Theme.of(context).colorScheme.onSurface,
-              ),
-            ),
-            const SizedBox(height: 6),
-            for (final line in details.formulaLines)
-              Padding(
-                padding: const EdgeInsets.only(top: 3),
-                child: Text(
-                  line,
-                  style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                    color: colors.mutedText,
-                    fontWeight: FontWeight.w700,
-                    height: 1.25,
-                  ),
-                ),
-              ),
-          ],
-        ),
-      ),
-    );
-  }
+  final MobileEvent event;
+  final _ParanaWindowLabel window;
 }
 
 class _PanchangaSummaryGrid extends StatelessWidget {
@@ -4035,7 +4036,6 @@ class _EventsSection extends StatelessWidget {
       dvadashiDay: panchanga,
       timezone: timezone,
       isRu: isRu,
-      tomorrow: false,
     );
   }
 }
@@ -4066,6 +4066,10 @@ class _EventTile extends StatelessWidget {
           borderRadius: BorderRadius.circular(14),
         ),
         child: ExpansionTile(
+          // Collapsed by default: the collapsed summary already shows the
+          // actual "с A по Б" parana window, so the formula breakdown
+          // (1/3, 1/5, tithi end) is supplementary detail behind a tap,
+          // not the only place the window is visible.
           iconColor: eventStyle.foreground.withValues(alpha: 0.74),
           collapsedIconColor: eventStyle.foreground.withValues(alpha: 0.64),
           tilePadding: const EdgeInsets.symmetric(horizontal: 12),
@@ -4194,7 +4198,6 @@ _ParanaWindowLabel _formatParanaWindow({
   required PanchangaDay dvadashiDay,
   required String timezone,
   required bool isRu,
-  required bool tomorrow,
 }) {
   final formatter = const PanchangaFormatter();
   final start = formatter.time(parana.start!, timezone);
@@ -4206,38 +4209,41 @@ _ParanaWindowLabel _formatParanaWindow({
   final oneFifthEnd = oneFifthEndValue != null
       ? formatter.time(oneFifthEndValue, timezone)
       : '-';
-
-  // isSunriseBegin in js/parana-engine.js is true for every fast_day_type
-  // except normal_ekadashi - only that case actually starts at
-  // max(sunrise, hari-vasara end); every other classification starts at
-  // sunrise directly, so showing the max() formula for them would be wrong.
-  final isNormal = parana.fastDayType == 'normal_ekadashi';
+  final oneThirdValue = parana.pratahEnd;
+  final oneThird = oneThirdValue != null
+      ? formatter.time(oneThirdValue, timezone)
+      : '-';
+  final tithiEndValue = parana.dvadashiEnd;
+  final tithiEnd = tithiEndValue != null
+      ? formatter.time(tithiEndValue, timezone)
+      : '-';
   final sunrise = formatter.time(dvadashiDay.sunrise, timezone);
-  final startLine = isNormal && parana.hariVasaraEnd != null
-      ? (isRu
-            ? 'Начало = max(восход $sunrise, конец Хари-васары ${formatter.time(parana.hariVasaraEnd!, timezone)}) = $start'
-            : 'Start = max(sunrise $sunrise, Hari-vasara end ${formatter.time(parana.hariVasaraEnd!, timezone)}) = $start')
-      : (isRu ? 'Начало = восход $start' : 'Start = sunrise $start');
-  final endLine = preferredEnd == null
-      ? (isRu
-            ? 'Предпочтительное окно недоступно (закончилось до восхода парана-титхи).'
-            : 'Preferred window unavailable (ended before the parana tithi\'s sunrise).')
-      : (isRu ? 'Окончание (предпочтительное) = $preferred' : 'End (preferred) = $preferred');
+
+  final isTrisprsa =
+      parana.fastDayType == 'trisprsa' ||
+      parana.fastDayType == 'unmilani_trisprsa';
+  final formula = isTrisprsa
+      ? (isRu ? 'Окончание = 1/3 дня' : 'End = 1/3 of daylight')
+      : (isRu
+            ? 'Окончание = min(конец титхи, 1/3 дня)'
+            : 'End = min(tithi end, 1/3 of daylight)');
 
   return _ParanaWindowLabel(
-    summary: tomorrow
-        ? isRu
-              ? 'Паран завтра: $start-$preferred'
-              : 'Parana tomorrow: $start-$preferred'
-        : isRu
-        ? 'Время парана: $start-$preferred'
-        : 'Parana time: $start-$preferred',
+    summary: isRu ? 'с $start по $preferred' : '$start to $preferred',
     formulaTitle: isRu ? 'Окно парана' : 'Parana window',
-    formulaLines: [
-      startLine,
-      endLine,
-      isRu ? 'Окончание по 1/5 дня: $oneFifthEnd' : '1/5 day end: $oneFifthEnd',
-    ],
+    formulaLines: preferredEnd == null
+        ? [
+            isRu
+                ? 'Предпочтительное окно недоступно'
+                : 'Preferred window unavailable',
+          ]
+        : [
+            isRu ? 'Восход: $sunrise' : 'Sunrise: $sunrise',
+            isRu ? 'Окончание титхи: $tithiEnd' : 'Tithi end: $tithiEnd',
+            '1/3: $oneThird',
+            '1/5: $oneFifthEnd',
+            isRu ? 'Формула: $formula' : 'Formula: $formula',
+          ],
   );
 }
 
