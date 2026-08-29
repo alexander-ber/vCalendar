@@ -3,10 +3,7 @@ import { spawnSync } from "node:child_process";
 import { existsSync, mkdirSync, readFileSync, rmSync, writeFileSync } from "node:fs";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
-import { generateCalendarRange } from "../js/calendar-engine.js";
-import { EVENTS as WEB_EVENTS } from "../js/events-data.js";
 import { LOCATIONS } from "../js/locations-data.js";
-import { RULES as WEB_RULES } from "../js/rules-data.js";
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const repoRoot = join(__dirname, "..");
@@ -304,18 +301,6 @@ create table documents (
   updated_at text
 );
 `);
-  lines.push(`
-create table calendar_day_cache (
-  location_key text not null,
-  date_iso text not null,
-  engine_version text not null,
-  lang text not null,
-  payload_json text not null,
-  created_at text not null,
-  primary key (location_key, date_iso, engine_version, lang)
-);
-`);
-
   lines.push("create index events_rule_idx on events (masa, paksha, tithi, category);");
   lines.push("create index event_i18n_lang_name_idx on event_i18n (lang, name);");
   lines.push("create index locations_sort_idx on locations (sort_order, id);");
@@ -373,96 +358,9 @@ values (${sql(item.id)}, ${sql(lang)}, ${sql(t.name ?? item.name)}, ${sql(t.bene
 
   seedGlossary(lines);
   seedUi(lines, now);
-  seedCalendarDayCache(lines, locations, now);
 
   lines.push("commit;");
   return lines.join("\n");
-}
-
-function seedCalendarDayCache(lines, locations, now) {
-  const startDate = "2026-01-01";
-  const endDate = "2026-12-31";
-  const engineVersion = "web-calendar-engine";
-  const location = locations.find((item) => item.id === "nabadwip");
-  if (!location) throw new Error("Nabadwip location is required for the mobile day cache");
-  const calendar = generateCalendarRange(startDate, endDate, location, WEB_RULES, WEB_EVENTS);
-  for (const day of calendar.days) {
-    for (const lang of ["en", "ru"]) {
-      lines.push(`insert into calendar_day_cache (location_key, date_iso, engine_version, lang, payload_json, created_at)
-values (${sql(location.id)}, ${sql(day.date)}, ${sql(engineVersion)}, ${sql(lang)}, ${jsonSql(calendarDayPayload(day, lang))}, ${sql(now)});`);
-    }
-  }
-}
-
-function calendarDayPayload(day, lang) {
-  const moonset = day.astronomy.moonset_after_moonrise || day.astronomy.moonset;
-  return {
-    date: day.date,
-    location_id: day.location.id,
-    astronomy: {
-      sunrise: isoDateTime(day.astronomy.sunrise),
-      sunset: isoDateTime(day.astronomy.sunset),
-      arunodaya: isoDateTime(day.astronomy.arunodaya),
-      moonrise: isoDateTime(day.astronomy.moonrise),
-      moonset: isoDateTime(moonset)
-    },
-    masa: {
-      name: day.masa.name,
-      display_name: day.masa.display_name,
-      type: day.masa.type,
-      normal_masa_name: day.masa.normal_masa_name,
-      bengali_solar_month: day.masa.bengali_solar_month?.name || null
-    },
-    lunar: {
-      paksha: day.lunar.paksha,
-      tithi_at_sunrise: day.lunar.tithi_at_sunrise,
-      tithi_at_arunodaya: day.lunar.tithi_at_arunodaya,
-      nakshatra_at_sunrise: day.lunar.nakshatra_at_sunrise,
-      current_tithi_boundary: isoDateTime(day.lunar.current_tithi_boundary),
-      next_tithi_boundary: isoDateTime(day.lunar.next_tithi_boundary)
-    },
-    diagnostics: day.diagnostics,
-    events: day.events.map((event) => localizedCalendarEvent(event, lang, day))
-  };
-}
-
-function localizedCalendarEvent(event, lang, day) {
-  const translation = event.i18n?.[lang] || event.i18n?.en || {};
-  const generated = /^(ekadashi_|parana_|purushottama_|bhishma_|sankranti_)/i.test(event.id || "");
-  const category = event.type === "ekadashi_notice" || /ekadashi/i.test(event.id || "")
-    ? "ekadashi"
-    : event.category || "event";
-  return {
-    id: event.id,
-    category,
-    event_type: event.type || event.event_type || category,
-    masa: day.masa.name,
-    masa_type: day.masa.type,
-    paksha: day.lunar.paksha,
-    tithi: tithiShortName(day.lunar.tithi_at_sunrise.number),
-    allow_in_adhika: true,
-    priority: priorityValue(event.priority),
-    name: translation.name || event.name || event.title || event.id,
-    short_description: translation.description || event.description || null,
-    full_description: generated ? translation.full_description || event.full_description || null : null
-  };
-}
-
-function isoDateTime(value) {
-  if (!value) return null;
-  return value instanceof Date ? value.toISOString() : new Date(value).toISOString();
-}
-
-function tithiShortName(number) {
-  const names = [
-    "Pratipat", "Dvitiya", "Tritiya", "Chaturthi", "Panchami", "Shashthi",
-    "Saptami", "Ashtami", "Navami", "Dashami", "Ekadashi", "Dvadashi",
-    "Trayodashi", "Chaturdashi", "Purnima", "Pratipat", "Dvitiya",
-    "Tritiya", "Chaturthi", "Panchami", "Shashthi", "Saptami", "Ashtami",
-    "Navami", "Dashami", "Ekadashi", "Dvadashi", "Trayodashi",
-    "Chaturdashi", "Amavasya"
-  ];
-  return names[number - 1] || "";
 }
 
 function countryCodeFor(timezone, group) {

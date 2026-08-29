@@ -11,6 +11,7 @@ class PanchangaDay {
     required this.masa,
     required this.masaType,
     required this.normalMasaName,
+    required this.masaSankrantiCount,
     required this.engineNote,
   });
 
@@ -25,6 +26,7 @@ class PanchangaDay {
   final String masa;
   final String masaType;
   final String normalMasaName;
+  final int? masaSankrantiCount;
   final String engineNote;
 }
 

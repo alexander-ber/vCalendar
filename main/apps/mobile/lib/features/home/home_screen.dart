@@ -1,6 +1,8 @@
+import 'dart:convert';
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart' show rootBundle;
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:path_provider/path_provider.dart';
 
@@ -11,17 +13,17 @@ import '../../data/local/preferences_store.dart';
 import '../../data/remote/content_update_service.dart';
 import '../../data/repositories/mobile_calendar_repository.dart';
 import '../../domain/models/calendar_location.dart';
-import '../../domain/models/cached_calendar_day.dart';
 import '../../domain/models/mobile_event.dart';
 import '../../domain/models/month_day.dart';
 import '../../domain/models/panchanga_day.dart';
+import '../../domain/services/calendar_event_engine.dart';
 import '../../domain/services/location_matcher_service.dart';
 import '../../domain/services/month_grid_service.dart';
 import '../../domain/services/jyotish_info_service.dart';
 import '../../domain/services/panjika_yoga_service.dart';
 import '../../domain/services/panchanga_calculator.dart';
 import '../../domain/services/panchanga_formatter.dart';
-import '../../domain/services/parana_calculator.dart';
+import '../../domain/services/parana_engine.dart';
 
 const _eventFilterDefinitions = [
   _EventFilterDefinition(
@@ -98,6 +100,126 @@ String? _webEventTone(MobileEvent event) {
   return null;
 }
 
+/// Single source of truth for event-category colors, shared by the day
+/// details view (`_EventTile`) and the month-grid day cell (`_DayCell`) so
+/// both agree with each other and with web's `--ekadashi`/`--parana`/
+/// `--vaishnava`/`--festival`/`--deity` CSS custom properties (styles.css)
+/// for the 3 themes web actually has (day/night/sepia) - `isDark`/`isSepia`
+/// select which of web's 3 palettes to use; any other mobile-only theme
+/// (ocean/forest/lotus/icon) falls back to the day palette, since those
+/// have no web equivalent to align with.
+_EventVisualStyle _eventVisualStyleForTone(
+  String tone, {
+  required bool isDark,
+  required bool isSepia,
+  required Color surface,
+  required Color primary,
+  required Color mutedText,
+}) {
+  switch (tone) {
+    case 'ekadashi':
+      return _EventVisualStyle(
+        tone: tone,
+        background: isDark
+            ? const Color(0xFF3949AB).withValues(alpha: 0.24)
+            : const Color(0xFFEEF1FF),
+        foreground: isDark ? const Color(0xFFC7D2FE) : const Color(0xFF3949AB),
+        border: const Color(0xFFD4A017),
+      );
+    case 'notice':
+      return _EventVisualStyle(
+        tone: tone,
+        background: surface,
+        foreground: mutedText,
+        border: mutedText.withValues(alpha: 0.34),
+      );
+    case 'parana':
+      return _EventVisualStyle(
+        tone: tone,
+        background: isDark
+            ? const Color(0xFF6EE7B7).withValues(alpha: 0.13)
+            : isSepia
+            ? const Color(0xFFE6F5EE)
+            : const Color(0xFFEEFAF5),
+        foreground: isDark
+            ? const Color(0xFF6EE7B7)
+            : isSepia
+            ? const Color(0xFF23705F)
+            : const Color(0xFF3B8A78),
+        border: isDark
+            ? const Color(0xFF6EE7B7)
+            : isSepia
+            ? const Color(0xFF23705F)
+            : const Color(0xFF3B8A78),
+      );
+    case 'vaishnava':
+      return _EventVisualStyle(
+        tone: tone,
+        background: isDark
+            ? const Color(0xFFC4B5FD).withValues(alpha: 0.14)
+            : isSepia
+            ? const Color(0xFFF3EBF8)
+            : const Color(0xFFF6F1FB),
+        foreground: isDark
+            ? const Color(0xFFC4B5FD)
+            : isSepia
+            ? const Color(0xFF7A4CA0)
+            : const Color(0xFF8667B8),
+        border: isDark
+            ? const Color(0xFFC4B5FD)
+            : isSepia
+            ? const Color(0xFF7A4CA0)
+            : const Color(0xFF8667B8),
+      );
+    case 'deity':
+      return _EventVisualStyle(
+        tone: tone,
+        background: isDark
+            ? const Color(0xFF5EEAD4).withValues(alpha: 0.13)
+            : isSepia
+            ? const Color(0xFFF1F4D7)
+            : const Color(0xFFF5F8E8),
+        foreground: isDark
+            ? const Color(0xFF5EEAD4)
+            : isSepia
+            ? const Color(0xFF626C1F)
+            : const Color(0xFF6F8A38),
+        border: isDark
+            ? const Color(0xFF5EEAD4)
+            : isSepia
+            ? const Color(0xFF626C1F)
+            : const Color(0xFF6F8A38),
+      );
+    case 'purushottama':
+      return _EventVisualStyle(
+        tone: tone,
+        background: primary.withValues(alpha: isDark ? 0.14 : 0.10),
+        foreground: primary,
+        border: primary.withValues(alpha: 0.60),
+      );
+    case 'festival':
+    default:
+      return _EventVisualStyle(
+        tone: tone,
+        background: isDark
+            ? const Color(0xFFFBBF24).withValues(alpha: 0.28)
+            : isSepia
+            ? const Color(0xFFFFDFAD)
+            : const Color(0xFFFFE5BF),
+        foreground: isDark
+            ? const Color(0xFFFBBF24)
+            : isSepia
+            ? const Color(0xFF9A3412)
+            : const Color(0xFFA66A2B),
+        border: isDark
+            ? const Color(0xFFFBBF24).withValues(alpha: 0.72)
+            : isSepia
+            ? const Color(0xFF9A3412).withValues(alpha: 0.42)
+            : const Color(0xFFA66A2B).withValues(alpha: 0.36),
+      );
+  }
+}
+
 class HomeScreen extends StatefulWidget {
   const HomeScreen({
     super.key,
@@ -121,6 +243,7 @@ class _HomeScreenState extends State<HomeScreen> {
   late final AppDatabase _database;
   late final MobileCalendarRepository _repository;
   late final ContentUpdateService _contentUpdateService;
+  late CalendarEventEngine _calendarEventEngine;
   late Future<_HomeState> _state;
   late DateTime _visibleMonth;
   late DateTime _selectedDate;
@@ -166,11 +289,10 @@ class _HomeScreenState extends State<HomeScreen> {
     final events = await _repository.loadRuleEvents(lang: widget.settings.lang);
     final languages = await _repository.loadAvailableLanguages();
     final glossary = await _repository.loadGlossary(lang: widget.settings.lang);
-    final calendarCache = await _repository.loadCalendarCache(
-      locationId: 'nabadwip',
-      lang: widget.settings.lang,
-      startYear: _visibleMonth.year - 1,
-      endYear: _visibleMonth.year + 1,
+    final engineRules = await _loadEngineRules();
+    _calendarEventEngine = CalendarEventEngine(
+      engineRules,
+      calculator: _panchangaCalculator,
     );
     return _HomeState(
       summary: summary,
@@ -178,8 +300,12 @@ class _HomeScreenState extends State<HomeScreen> {
       events: events,
       languages: languages,
       glossary: glossary,
-      calendarCache: calendarCache,
     );
+  }
+
+  Future<Map<String, dynamic>> _loadEngineRules() async {
+    final raw = await rootBundle.loadString('assets/engine-rules.json');
+    return Map<String, dynamic>.from(jsonDecode(raw) as Map);
   }
 
   void _reload() {
@@ -233,17 +359,15 @@ class _HomeScreenState extends State<HomeScreen> {
                     days: monthDays,
                     location: selectedLocation,
                     events: state.events,
-                    calendarCache: state.calendarCache,
                   );
             final panchangaMonthDays = selectedLocation == null
                 ? <PanchangaDay>[]
                 : [
                     for (final day in monthDays)
                       if (day.inCurrentMonth)
-                        _dayFor(
+                        _calculateDay(
                           date: day.date,
                           location: selectedLocation,
-                          state: state,
                         ),
                   ];
             final calendarDayTones = _calendarDayTones(
@@ -252,19 +376,29 @@ class _HomeScreenState extends State<HomeScreen> {
             );
             final selectedPanchanga = selectedLocation == null
                 ? null
-                : _dayFor(
+                : _calculateDay(
                     date: _selectedDate,
                     location: selectedLocation,
-                    state: state,
                   );
             final nextSelectedPanchanga = selectedLocation == null
                 ? null
-                : _dayFor(
+                : _calculateDay(
                     date: _selectedDate.add(const Duration(days: 1)),
                     location: selectedLocation,
-                    state: state,
                   );
             final selectedEvents = eventMap[_dateKey(_selectedDate)] ?? [];
+            final paranaForSelectedDay = selectedLocation == null
+                ? null
+                : _paranaResultForDay(
+                    location: selectedLocation,
+                    date: _selectedDate,
+                  );
+            final paranaForNextDay = selectedLocation == null
+                ? null
+                : _paranaResultForDay(
+                    location: selectedLocation,
+                    date: _selectedDate.add(const Duration(days: 1)),
+                  );
 
             return CustomScrollView(
               slivers: [
@@ -352,11 +486,8 @@ class _HomeScreenState extends State<HomeScreen> {
                         _MasaPeriodNoticeCard(
                           days: panchangaMonthDays,
                           location: selectedLocation,
-                          calculateDay: (date, location) => _dayFor(
-                            date: date,
-                            location: location,
-                            state: state,
-                          ),
+                          calculateDay: (date, location) =>
+                              _calculateDay(date: date, location: location),
                           isRu: _isRu,
                         ),
                         const SizedBox(height: 16),
@@ -387,6 +518,8 @@ class _HomeScreenState extends State<HomeScreen> {
                           events: selectedEvents,
                           panchanga: selectedPanchanga,
                           nextPanchanga: nextSelectedPanchanga,
+                          paranaForSelectedDay: paranaForSelectedDay,
+                          paranaForNextDay: paranaForNextDay,
                           bengaliSolarMonth: selectedPanchanga == null
                               ? null
                               : _panchangaCalculator.bengaliSolarMonth(
@@ -478,7 +611,7 @@ class _HomeScreenState extends State<HomeScreen> {
           onSettingsChanged: _changeSettings,
           onJumpToEvent: selectedLocation == null
               ? null
-              : (event) => _jumpToEvent(event, selectedLocation),
+              : (event) => _jumpToEvent(event, selectedLocation, events),
         );
       },
     );
@@ -519,13 +652,20 @@ class _HomeScreenState extends State<HomeScreen> {
       'CALSCALE:GREGORIAN',
     ];
 
+    final eventsMap = _computeEventsMap(
+      from: from,
+      to: to,
+      location: location,
+      events: events,
+    );
     for (
       var date = DateTime(from.year, from.month, from.day);
       !date.isAfter(to);
       date = date.add(const Duration(days: 1))
     ) {
-      final panchanga = _calculateDay(date: date, location: location);
-      final matched = _matchEventsForDay(panchanga, events);
+      final matched = (eventsMap[_dateKey(date)] ?? const <MobileEvent>[])
+          .where(_eventAllowedBySettings)
+          .toList(growable: false);
       for (final event in matched) {
         final stamp = DateTime.now().toUtc();
         lines
@@ -568,15 +708,25 @@ class _HomeScreenState extends State<HomeScreen> {
         .replaceAll(';', r'\;');
   }
 
-  void _jumpToEvent(MobileEvent event, CalendarLocation location) {
+  void _jumpToEvent(
+    MobileEvent event,
+    CalendarLocation location,
+    List<MobileEvent> allEvents,
+  ) {
     final year = _selectedDate.year;
+    final eventsMap = _computeEventsMap(
+      from: DateTime(year, 1, 1),
+      to: DateTime(year, 12, 31),
+      location: location,
+      events: allEvents,
+    );
     for (
       var date = DateTime(year);
       date.year == year;
       date = date.add(const Duration(days: 1))
     ) {
-      final panchanga = _calculateDay(date: date, location: location);
-      if (_matchEventsForDay(panchanga, [event], applyFilters: false).isEmpty) {
+      final matched = eventsMap[_dateKey(date)] ?? const <MobileEvent>[];
+      if (!matched.any((e) => e.id == event.id)) {
         continue;
       }
       setState(() {
@@ -630,98 +780,32 @@ class _HomeScreenState extends State<HomeScreen> {
         locations.first;
   }
 
+  /// Uses [CalendarEventEngine] (via [_computeEventsMap]) for the visible
+  /// month, then applies the user's active category filters - the engine
+  /// itself has no UI-settings knowledge, matching how the web app also
+  /// keeps filtering as a display-layer concern.
   Map<String, List<MobileEvent>> _eventsForVisibleDays({
     required List<MonthDay> days,
     required CalendarLocation location,
     required List<MobileEvent> events,
-    required Map<String, CachedCalendarDay> calendarCache,
   }) {
+    final visibleDays = days.where((item) => item.inCurrentMonth).toList();
+    if (visibleDays.isEmpty) return const {};
+    final eventsMap = _computeEventsMap(
+      from: visibleDays.first.date,
+      to: visibleDays.last.date,
+      location: location,
+      events: events,
+    );
     final result = <String, List<MobileEvent>>{};
-    for (final day in days.where((item) => item.inCurrentMonth)) {
+    for (final day in visibleDays) {
       final key = _dateKey(day.date);
-      final cached = calendarCache[key];
-      if (cached != null) {
-        final cachedEvents = _enrichCachedEvents(cached.events, events)
-            .where((event) {
-              if (location.id == 'nabadwip') return true;
-              return event.category != 'ekadashi';
-            })
-            .where(_eventAllowedBySettings)
-            .toList(growable: false);
-        if (cachedEvents.isNotEmpty) {
-          result[key] = cachedEvents;
-        }
-        if (location.id == 'nabadwip') continue;
-      }
-      final panchanga = _calculateDay(date: day.date, location: location);
-      final matched = _matchEventsForDay(panchanga, events);
-      if (matched.isNotEmpty) {
-        final localEvents = cached == null
-            ? matched
-            : matched.where((event) => event.category == 'ekadashi');
-        final merged = <String, MobileEvent>{
-          for (final event in [...?result[key], ...localEvents])
-            event.id: event,
-        }.values.toList(growable: false);
-        if (merged.isNotEmpty) result[key] = merged;
-      }
+      final filtered = (eventsMap[key] ?? const <MobileEvent>[])
+          .where(_eventAllowedBySettings)
+          .toList(growable: false);
+      if (filtered.isNotEmpty) result[key] = filtered;
     }
     return result;
-  }
-
-  List<MobileEvent> _enrichCachedEvents(
-    List<MobileEvent> cachedEvents,
-    List<MobileEvent> seedEvents,
-  ) {
-    final seedById = {for (final event in seedEvents) event.id: event};
-    return cachedEvents
-        .map((event) => _mergeCachedEvent(event, seedById[event.id]))
-        .toList(growable: false);
-  }
-
-  MobileEvent _mergeCachedEvent(MobileEvent cached, MobileEvent? seed) {
-    if (seed == null) return cached;
-    return MobileEvent(
-      id: cached.id,
-      category: cached.category,
-      eventType: cached.eventType,
-      masa: cached.masa,
-      masaType: cached.masaType,
-      paksha: cached.paksha,
-      tithi: cached.tithi,
-      allowInAdhika: cached.allowInAdhika,
-      priority: cached.priority,
-      name: cached.name,
-      shortDescription: cached.shortDescription ?? seed.shortDescription,
-      fullDescription: cached.fullDescription ?? seed.fullDescription,
-    );
-  }
-
-  List<MobileEvent> _matchEventsForDay(
-    PanchangaDay panchanga,
-    List<MobileEvent> events, {
-    bool applyFilters = true,
-  }) {
-    final tithi = _tithiShortName(panchanga.tithiAtSunrise.number);
-    return events
-        .where((event) {
-          if (applyFilters && !_eventAllowedBySettings(event)) return false;
-          if (event.masaType == 'adhika' && panchanga.masaType != 'adhika') {
-            return false;
-          }
-          if (event.masa != '*' &&
-              event.masa != panchanga.masa &&
-              event.masa != panchanga.normalMasaName) {
-            return false;
-          }
-          if (event.paksha != panchanga.tithiAtSunrise.paksha) return false;
-          if (event.tithi != tithi) return false;
-          if (panchanga.masaType == 'adhika' && !event.allowInAdhika) {
-            return false;
-          }
-          return true;
-        })
-        .toList(growable: false);
   }
 
   bool _eventAllowedBySettings(MobileEvent event) {
@@ -793,42 +877,6 @@ class _HomeScreenState extends State<HomeScreen> {
     return 'other';
   }
 
-  String _tithiShortName(int number) {
-    const names = [
-      'Pratipat',
-      'Dvitiya',
-      'Tritiya',
-      'Chaturthi',
-      'Panchami',
-      'Shashthi',
-      'Saptami',
-      'Ashtami',
-      'Navami',
-      'Dashami',
-      'Ekadashi',
-      'Dvadashi',
-      'Trayodashi',
-      'Chaturdashi',
-      'Purnima',
-      'Pratipat',
-      'Dvitiya',
-      'Tritiya',
-      'Chaturthi',
-      'Panchami',
-      'Shashthi',
-      'Saptami',
-      'Ashtami',
-      'Navami',
-      'Dashami',
-      'Ekadashi',
-      'Dvadashi',
-      'Trayodashi',
-      'Chaturdashi',
-      'Amavasya',
-    ];
-    return names[number - 1];
-  }
-
   String _dateKey(DateTime date) =>
       '${date.year.toString().padLeft(4, '0')}-${date.month.toString().padLeft(2, '0')}-${date.day.toString().padLeft(2, '0')}';
 
@@ -847,16 +895,67 @@ class _HomeScreenState extends State<HomeScreen> {
     return calculated;
   }
 
-  PanchangaDay _dayFor({
-    required DateTime date,
+  /// Builds a [PanchangaDay] list covering [from]..[to] inclusive, using
+  /// the memoized [_calculateDay] per day. Ekadashi classification and
+  /// event matching both need neighbor days (and, for Ekadashi, a full
+  /// lunar-month-ish window for the forward Paksavardhini scan), so callers
+  /// should pad [from]/[to] generously - see [_computeEventsMap] and
+  /// [_paranaResultForDay].
+  List<PanchangaDay> _dayRange({
+    required DateTime from,
+    required DateTime to,
     required CalendarLocation location,
-    required _HomeState state,
   }) {
-    if (location.id == 'nabadwip') {
-      return state.calendarCache[_dateKey(date)]?.panchanga ??
-          _calculateDay(date: date, location: location);
+    final days = <PanchangaDay>[];
+    var cursor = DateTime(from.year, from.month, from.day);
+    final end = DateTime(to.year, to.month, to.day);
+    while (!cursor.isAfter(end)) {
+      days.add(_calculateDay(date: cursor, location: location));
+      cursor = cursor.add(const Duration(days: 1));
     }
-    return _calculateDay(date: date, location: location);
+    return days;
+  }
+
+  /// Computes the full day-event map (Ekadashi fast/notice/parana display,
+  /// rule-matched festivals with shift/anchor resolution, Purushottama/
+  /// Bhishma notices) for [from]..[to], mirrors
+  /// js/calendar-engine.js's generateCalendarRange - including its 10ish
+  /// day padding on each side so boundary-day classification stays correct.
+  Map<String, List<MobileEvent>> _computeEventsMap({
+    required DateTime from,
+    required DateTime to,
+    required CalendarLocation location,
+    required List<MobileEvent> events,
+  }) {
+    final days = _dayRange(
+      from: from.subtract(const Duration(days: 15)),
+      to: to.add(const Duration(days: 15)),
+      location: location,
+    );
+    return _calendarEventEngine.attachEvents(
+      days: days,
+      location: location,
+      eventRules: events,
+      isRu: _isRu,
+    );
+  }
+
+  /// Looks up the raw [ParanaResult] (for the detailed formula breakdown
+  /// UI) whose Parana date is [date]. Separate from [_computeEventsMap]
+  /// because the day's displayed "parana" event only carries a
+  /// pre-formatted summary string, not the underlying DateTimes.
+  ParanaResult? _paranaResultForDay({
+    required CalendarLocation location,
+    required DateTime date,
+  }) {
+    final days = _dayRange(
+      from: date.subtract(const Duration(days: 35)),
+      to: date.add(const Duration(days: 2)),
+      location: location,
+    );
+    return _calendarEventEngine
+        .findFastByParanaDate(days: days, location: location, paranaDate: date)
+        ?.parana;
   }
 }
 
@@ -2742,159 +2841,127 @@ class _DayCell extends StatelessWidget {
     final textColor = day.inCurrentMonth
         ? theme.colorScheme.onSurface
         : colors.mutedText.withValues(alpha: 0.45);
-    final eventFillColor = _eventFillColor(theme, colors);
-    final borderColor = _borderColor(theme, colors);
-    final eventMarkerColor = _eventMarkerColor();
+    final style = eventCategory == null
+        ? null
+        : _eventVisualStyleForTone(
+            eventCategory!,
+            isDark: theme.brightness == Brightness.dark,
+            isSepia: theme.scaffoldBackgroundColor == const Color(0xFFF7EFDF),
+            surface: theme.colorScheme.surface,
+            primary: theme.colorScheme.primary,
+            mutedText: colors.mutedText,
+          );
+    final eventFillColor = eventCategory == 'notice' ? null : style?.background;
+    final borderColor = eventCategory == 'ekadashi'
+        ? style?.border
+        : (selected ? theme.colorScheme.primary : null);
+    final eventMarkerColor = style?.foreground ?? const Color(0xFFD4A017);
     final markerCount = eventCount > 3 ? 3 : eventCount;
     final cellSize = compactMode ? 46.0 : 56.0;
-    final dayTextColor = _dayTextColor(theme, textColor);
+    final dayTextColor = eventCategory == 'ekadashi'
+        ? style!.foreground
+        : (selected ? theme.colorScheme.primary : textColor);
+
+    // Mirrors styles.css .compact-day.is-selected: an outer accent-tinted
+    // outline (2px, ~42% opacity, offset ~3px) around the inner event-tone
+    // border, giving the "double ring" look web uses for the selected day -
+    // kept even on Ekadashi days, since .compact-day.compact-ekadashi
+    // .is-selected only overrides border-color/box-shadow, not the outline.
+    final outerRingDiameter = cellSize + 10;
 
     return InkWell(
       borderRadius: BorderRadius.circular(999),
       onTap: onTap,
       child: Center(
-        child: AnimatedContainer(
-          duration: const Duration(milliseconds: 160),
-          width: cellSize,
-          height: cellSize,
-          decoration: BoxDecoration(
-            shape: BoxShape.circle,
-            color: day.inCurrentMonth ? eventFillColor : null,
-            border: Border.all(
-              color: borderColor ?? Colors.transparent,
-              width: borderColor == null
-                  ? 0
-                  : eventCategory == 'ekadashi'
-                  ? 2.6
-                  : 2,
-            ),
-          ),
-          child: Stack(
-            alignment: Alignment.center,
-            children: [
-              Text(
-                '${day.date.day}',
-                style: theme.textTheme.titleMedium?.copyWith(
-                  fontSize: compactMode ? 18 : 20,
-                  fontWeight: FontWeight.w900,
-                  color: dimEmptyEventDay
-                      ? textColor.withValues(alpha: 0.32)
-                      : dayTextColor,
+        child: Container(
+          width: selected ? outerRingDiameter : cellSize,
+          height: selected ? outerRingDiameter : cellSize,
+          decoration: selected
+              ? BoxDecoration(
+                  shape: BoxShape.circle,
+                  border: Border.all(
+                    color: theme.colorScheme.primary.withValues(alpha: 0.42),
+                    width: 2,
+                  ),
+                )
+              : null,
+          child: Center(
+            child: AnimatedContainer(
+              duration: const Duration(milliseconds: 160),
+              width: cellSize,
+              height: cellSize,
+              decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                color: day.inCurrentMonth ? eventFillColor : null,
+                border: Border.all(
+                  color: borderColor ?? Colors.transparent,
+                  width: borderColor == null
+                      ? 0
+                      : eventCategory == 'ekadashi'
+                      ? 2.6
+                      : 2,
                 ),
               ),
-              if (day.isToday)
-                Align(
-                  alignment: Alignment.bottomCenter,
-                  child: Padding(
-                    padding: EdgeInsets.only(bottom: compactMode ? 3 : 4),
-                    child: DecoratedBox(
-                      decoration: BoxDecoration(
-                        color: colors.todayMarker,
-                        borderRadius: BorderRadius.circular(8),
-                      ),
-                      child: const SizedBox(width: 18, height: 4),
+              child: Stack(
+                alignment: Alignment.center,
+                children: [
+                  Text(
+                    '${day.date.day}',
+                    style: theme.textTheme.titleMedium?.copyWith(
+                      fontSize: compactMode ? 18 : 20,
+                      fontWeight: FontWeight.w900,
+                      color: dimEmptyEventDay
+                          ? textColor.withValues(alpha: 0.32)
+                          : dayTextColor,
                     ),
                   ),
-                ),
-              if (eventCount > 0)
-                Positioned(
-                  right: compactMode ? 4 : 5,
-                  top: 0,
-                  bottom: 0,
-                  child: Center(
-                    child: Column(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        for (var index = 0; index < markerCount; index += 1)
-                          Padding(
-                            padding: EdgeInsets.only(
-                              bottom: index == markerCount - 1 ? 0 : 2,
-                            ),
-                            child: DecoratedBox(
-                              decoration: BoxDecoration(
-                                color: eventMarkerColor,
-                                borderRadius: BorderRadius.circular(8),
-                              ),
-                              child: const SizedBox(width: 4, height: 4),
-                            ),
+                  if (day.isToday)
+                    Align(
+                      alignment: Alignment.bottomCenter,
+                      child: Padding(
+                        padding: EdgeInsets.only(bottom: compactMode ? 3 : 4),
+                        child: DecoratedBox(
+                          decoration: BoxDecoration(
+                            color: colors.todayMarker,
+                            borderRadius: BorderRadius.circular(8),
                           ),
-                      ],
+                          child: const SizedBox(width: 18, height: 4),
+                        ),
+                      ),
                     ),
-                  ),
-                ),
-            ],
+                  if (eventCount > 0)
+                    Positioned(
+                      right: compactMode ? 4 : 5,
+                      top: 0,
+                      bottom: 0,
+                      child: Center(
+                        child: Column(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            for (var index = 0; index < markerCount; index += 1)
+                              Padding(
+                                padding: EdgeInsets.only(
+                                  bottom: index == markerCount - 1 ? 0 : 2,
+                                ),
+                                child: DecoratedBox(
+                                  decoration: BoxDecoration(
+                                    color: eventMarkerColor,
+                                    borderRadius: BorderRadius.circular(8),
+                                  ),
+                                  child: const SizedBox(width: 4, height: 4),
+                                ),
+                              ),
+                          ],
+                        ),
+                      ),
+                    ),
+                ],
+              ),
+            ),
           ),
         ),
       ),
     );
-  }
-
-  Color? _eventFillColor(ThemeData theme, VCalendarColors colors) {
-    final category = eventCategory;
-    if (category == null) return null;
-    if (category == 'notice') return null;
-    if (category == 'parana') return colors.parana;
-    if (category == 'ekadashi') {
-      final alpha = theme.brightness == Brightness.dark ? 0.30 : 0.13;
-      return const Color(0xFF3949AB).withValues(alpha: alpha);
-    }
-    if (category == 'vaishnava') return colors.vaishnavaDisappearance;
-    if (category == 'festival') return colors.festival;
-    if (category == 'deity') return colors.parana;
-    if (category == 'purushottama') return colors.festival;
-    if (category.contains('appearance')) return colors.vaishnavaAppearance;
-    if (category.contains('disappearance')) {
-      return colors.vaishnavaDisappearance;
-    }
-    if (category == 'avatar' ||
-        category == 'avatar_associate' ||
-        category == 'divine_appearance' ||
-        category == 'festival' ||
-        category == 'mahaprabhu_parsada') {
-      return colors.festival;
-    }
-    if (category == 'deity_temple') return colors.parana;
-    return colors.ekadashiBorder;
-  }
-
-  Color? _borderColor(ThemeData theme, VCalendarColors colors) {
-    final category = eventCategory;
-    if (category == 'ekadashi') return const Color(0xFFD4A017);
-    if (selected) return theme.colorScheme.primary;
-    return null;
-  }
-
-  Color _dayTextColor(ThemeData theme, Color defaultColor) {
-    if (eventCategory == 'ekadashi') {
-      return theme.brightness == Brightness.dark
-          ? const Color(0xFFBFC8FF)
-          : const Color(0xFF3949AB);
-    }
-    if (selected) return theme.colorScheme.primary;
-    return defaultColor;
-  }
-
-  Color _eventMarkerColor() {
-    final category = eventCategory;
-    if (category == null) return const Color(0xFFD4A017);
-    if (category == 'notice') return const Color(0xFFA33A1F);
-    if (category == 'parana') return const Color(0xFF087A5B);
-    if (category == 'ekadashi') return const Color(0xFFD4A017);
-    if (category == 'vaishnava') return const Color(0xFF7B3BB8);
-    if (category == 'festival') return const Color(0xFFB45A09);
-    if (category == 'deity') return const Color(0xFF087A5B);
-    if (category == 'purushottama') return const Color(0xFFB45A09);
-    if (category.contains('appearance')) return const Color(0xFF6D4DD6);
-    if (category.contains('disappearance')) return const Color(0xFF7B3BB8);
-    if (category == 'avatar' ||
-        category == 'avatar_associate' ||
-        category == 'divine_appearance' ||
-        category == 'festival' ||
-        category == 'mahaprabhu_parsada') {
-      return const Color(0xFFB45A09);
-    }
-    if (category == 'deity_temple') return const Color(0xFF087A5B);
-    return const Color(0xFFD4A017);
   }
 }
 
@@ -2906,6 +2973,8 @@ class _SelectedDayCard extends StatelessWidget {
     required this.events,
     required this.panchanga,
     required this.nextPanchanga,
+    required this.paranaForSelectedDay,
+    required this.paranaForNextDay,
     required this.bengaliSolarMonth,
     required this.isRu,
   });
@@ -2915,6 +2984,8 @@ class _SelectedDayCard extends StatelessWidget {
   final List<MobileEvent> events;
   final PanchangaDay? panchanga;
   final PanchangaDay? nextPanchanga;
+  final ParanaResult? paranaForSelectedDay;
+  final ParanaResult? paranaForNextDay;
   final String? bengaliSolarMonth;
   final bool isRu;
 
@@ -2928,6 +2999,7 @@ class _SelectedDayCard extends StatelessWidget {
         : _paranaTomorrowDetails(
             events: events,
             nextPanchanga: nextPanchanga,
+            parana: paranaForNextDay,
             timezone: currentLocation.timezone,
           );
     return Card(
@@ -2963,12 +3035,16 @@ class _SelectedDayCard extends StatelessWidget {
               Text(isRu ? 'Выберите место.' : 'Select a location.')
             else ...[
               if (paranaTomorrow != null) ...[
-                _ParanaTomorrowNotice(details: paranaTomorrow),
+                _EventTile(
+                  event: paranaTomorrow.event,
+                  paranaWindow: paranaTomorrow.window,
+                ),
                 const SizedBox(height: 12),
               ],
               _EventsSection(
                 events: events,
                 panchanga: currentPanchanga,
+                parana: paranaForSelectedDay,
                 timezone: currentLocation.timezone,
                 isRu: isRu,
               ),
@@ -3149,24 +3225,48 @@ class _SelectedDayCard extends StatelessWidget {
     return names[number - 1];
   }
 
-  _ParanaWindowLabel? _paranaTomorrowDetails({
+  _ParanaTomorrowInfo? _paranaTomorrowDetails({
     required List<MobileEvent> events,
     required PanchangaDay? nextPanchanga,
+    required ParanaResult? parana,
     required String timezone,
   }) {
-    if (!events.any(_isEkadashiFastEvent)) return null;
+    final fastEvent = events.where(_isEkadashiFastEvent).firstOrNull;
+    if (fastEvent == null) return null;
     final next = nextPanchanga;
-    if (next == null || next.tithiAtSunrise.shortName != 'Dvadashi') {
-      return null;
-    }
-    final parana = const ParanaCalculator().normalEkadashi(next);
-    if (parana == null) return null;
-    return _formatParanaWindow(
+    if (next == null || parana == null || parana.start == null) return null;
+    final window = _formatParanaWindow(
       parana: parana,
       dvadashiDay: next,
       timezone: timezone,
       isRu: isRu,
-      tomorrow: true,
+    );
+    return _ParanaTomorrowInfo(
+      // Reuses _EventTile (the same widget the actual parana day uses) so
+      // this notice on the fast day renders as an identical block.
+      event: MobileEvent(
+        id: 'parana_tomorrow_notice_${fastEvent.id}',
+        category: 'vrata',
+        eventType: 'parana',
+        masa: '',
+        masaType: null,
+        paksha: fastEvent.paksha,
+        tithi: 'Dvadashi',
+        naksatra: null,
+        timingRule: null,
+        gaudiyaMasa: null,
+        anchorEventId: null,
+        observanceOffsetDays: 0,
+        disabled: false,
+        allowInAdhika: true,
+        priority: 10,
+        name: isRu
+            ? 'Паран для ${fastEvent.name}'
+            : 'Parana for ${fastEvent.name}',
+        shortDescription: null,
+        fullDescription: null,
+      ),
+      window: window,
     );
   }
 
@@ -3175,50 +3275,11 @@ class _SelectedDayCard extends StatelessWidget {
   }
 }
 
-class _ParanaTomorrowNotice extends StatelessWidget {
-  const _ParanaTomorrowNotice({required this.details});
+class _ParanaTomorrowInfo {
+  const _ParanaTomorrowInfo({required this.event, required this.window});
 
-  final _ParanaWindowLabel details;
-
-  @override
-  Widget build(BuildContext context) {
-    final colors = Theme.of(context).extension<VCalendarColors>()!;
-    return DecoratedBox(
-      decoration: BoxDecoration(
-        color: colors.parana.withValues(alpha: 0.35),
-        borderRadius: BorderRadius.circular(14),
-        border: Border.all(color: colors.parana),
-      ),
-      child: Padding(
-        padding: const EdgeInsets.all(12),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              details.summary,
-              style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                fontWeight: FontWeight.w900,
-                color: Theme.of(context).colorScheme.onSurface,
-              ),
-            ),
-            const SizedBox(height: 6),
-            for (final line in details.formulaLines)
-              Padding(
-                padding: const EdgeInsets.only(top: 3),
-                child: Text(
-                  line,
-                  style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                    color: colors.mutedText,
-                    fontWeight: FontWeight.w700,
-                    height: 1.25,
-                  ),
-                ),
-              ),
-          ],
-        ),
-      ),
-    );
-  }
+  final MobileEvent event;
+  final _ParanaWindowLabel window;
 }
 
 class _PanchangaSummaryGrid extends StatelessWidget {
@@ -3924,12 +3985,14 @@ class _EventsSection extends StatelessWidget {
   const _EventsSection({
     required this.events,
     required this.panchanga,
+    required this.parana,
     required this.timezone,
     required this.isRu,
   });
 
   final List<MobileEvent> events;
   final PanchangaDay panchanga;
+  final ParanaResult? parana;
   final String timezone;
   final bool isRu;
 
@@ -3966,15 +4029,13 @@ class _EventsSection extends StatelessWidget {
   }
 
   _ParanaWindowLabel? _paranaWindowLabel() {
-    if (panchanga.tithiAtSunrise.shortName != 'Dvadashi') return null;
-    final parana = const ParanaCalculator().normalEkadashi(panchanga);
-    if (parana == null) return null;
+    final result = parana;
+    if (result == null || result.start == null) return null;
     return _formatParanaWindow(
-      parana: parana,
+      parana: result,
       dvadashiDay: panchanga,
       timezone: timezone,
       isRu: isRu,
-      tomorrow: false,
     );
   }
 }
@@ -4005,6 +4066,10 @@ class _EventTile extends StatelessWidget {
           borderRadius: BorderRadius.circular(14),
         ),
         child: ExpansionTile(
+          // Collapsed by default: the collapsed summary already shows the
+          // actual "с A по Б" parana window, so the formula breakdown
+          // (1/3, 1/5, tithi end) is supplementary detail behind a tap,
+          // not the only place the window is visible.
           iconColor: eventStyle.foreground.withValues(alpha: 0.74),
           collapsedIconColor: eventStyle.foreground.withValues(alpha: 0.64),
           tilePadding: const EdgeInsets.symmetric(horizontal: 12),
@@ -4092,115 +4157,14 @@ class _EventTile extends StatelessWidget {
 
   _EventVisualStyle _eventStyle(BuildContext context, VCalendarColors colors) {
     final theme = Theme.of(context);
-    final tone = _webEventTone(event) ?? 'festival';
-    final isDark = theme.brightness == Brightness.dark;
-    final isSepia = theme.scaffoldBackgroundColor == const Color(0xFFF7EFDF);
-    final surface = theme.colorScheme.surface;
-    final primary = theme.colorScheme.primary;
-    switch (tone) {
-      case 'ekadashi':
-        return _EventVisualStyle(
-          tone: tone,
-          background: isDark
-              ? const Color(0xFF3949AB).withValues(alpha: 0.24)
-              : const Color(0xFFEEF1FF),
-          foreground: isDark
-              ? const Color(0xFFC7D2FE)
-              : const Color(0xFF3949AB),
-          border: const Color(0xFFD4A017),
-        );
-      case 'notice':
-        return _EventVisualStyle(
-          tone: tone,
-          background: surface,
-          foreground: colors.mutedText,
-          border: colors.mutedText.withValues(alpha: 0.34),
-        );
-      case 'parana':
-        return _EventVisualStyle(
-          tone: tone,
-          background: isDark
-              ? const Color(0xFF6EE7B7).withValues(alpha: 0.13)
-              : isSepia
-              ? const Color(0xFFE6F5EE)
-              : const Color(0xFFEEFAF5),
-          foreground: isDark
-              ? const Color(0xFF6EE7B7)
-              : isSepia
-              ? const Color(0xFF23705F)
-              : const Color(0xFF3B8A78),
-          border: isDark
-              ? const Color(0xFF6EE7B7)
-              : isSepia
-              ? const Color(0xFF23705F)
-              : const Color(0xFF3B8A78),
-        );
-      case 'vaishnava':
-        return _EventVisualStyle(
-          tone: tone,
-          background: isDark
-              ? const Color(0xFFC4B5FD).withValues(alpha: 0.14)
-              : isSepia
-              ? const Color(0xFFF3EBF8)
-              : const Color(0xFFF6F1FB),
-          foreground: isDark
-              ? const Color(0xFFC4B5FD)
-              : isSepia
-              ? const Color(0xFF7A4CA0)
-              : const Color(0xFF8667B8),
-          border: isDark
-              ? const Color(0xFFC4B5FD)
-              : isSepia
-              ? const Color(0xFF7A4CA0)
-              : const Color(0xFF8667B8),
-        );
-      case 'deity':
-        return _EventVisualStyle(
-          tone: tone,
-          background: isDark
-              ? const Color(0xFF5EEAD4).withValues(alpha: 0.13)
-              : isSepia
-              ? const Color(0xFFF1F4D7)
-              : const Color(0xFFF5F8E8),
-          foreground: isDark
-              ? const Color(0xFF5EEAD4)
-              : isSepia
-              ? const Color(0xFF626C1F)
-              : const Color(0xFF6F8A38),
-          border: isDark
-              ? const Color(0xFF5EEAD4)
-              : isSepia
-              ? const Color(0xFF626C1F)
-              : const Color(0xFF6F8A38),
-        );
-      case 'purushottama':
-        return _EventVisualStyle(
-          tone: tone,
-          background: primary.withValues(alpha: isDark ? 0.14 : 0.10),
-          foreground: primary,
-          border: primary.withValues(alpha: 0.60),
-        );
-      case 'festival':
-      default:
-        return _EventVisualStyle(
-          tone: tone,
-          background: isDark
-              ? const Color(0xFFFBBF24).withValues(alpha: 0.28)
-              : isSepia
-              ? const Color(0xFFFFDFAD)
-              : const Color(0xFFFFE5BF),
-          foreground: isDark
-              ? const Color(0xFFFBBF24)
-              : isSepia
-              ? const Color(0xFF9A3412)
-              : const Color(0xFFA66A2B),
-          border: isDark
-              ? const Color(0xFFFBBF24).withValues(alpha: 0.72)
-              : isSepia
-              ? const Color(0xFF9A3412).withValues(alpha: 0.42)
-              : const Color(0xFFA66A2B).withValues(alpha: 0.36),
-        );
-    }
+    return _eventVisualStyleForTone(
+      _webEventTone(event) ?? 'festival',
+      isDark: theme.brightness == Brightness.dark,
+      isSepia: theme.scaffoldBackgroundColor == const Color(0xFFF7EFDF),
+      surface: theme.colorScheme.surface,
+      primary: theme.colorScheme.primary,
+      mutedText: colors.mutedText,
+    );
   }
 
   String? _cleanDescription(String? value) {
@@ -4230,39 +4194,55 @@ class _ParanaWindowLabel {
 }
 
 _ParanaWindowLabel _formatParanaWindow({
-  required ParanaWindow parana,
+  required ParanaResult parana,
   required PanchangaDay dvadashiDay,
   required String timezone,
   required bool isRu,
-  required bool tomorrow,
 }) {
   final formatter = const PanchangaFormatter();
-  final start = formatter.time(parana.start, timezone);
-  final preferred = formatter.time(parana.preferredEnd, timezone);
+  final start = formatter.time(parana.start!, timezone);
+  final preferredEnd = parana.preferredEnd;
+  final preferred = preferredEnd != null
+      ? formatter.time(preferredEnd, timezone)
+      : (isRu ? 'недоступно' : 'not available');
+  final oneFifthEndValue = parana.oneFifthEnd;
+  final oneFifthEnd = oneFifthEndValue != null
+      ? formatter.time(oneFifthEndValue, timezone)
+      : '-';
+  final oneThirdValue = parana.pratahEnd;
+  final oneThird = oneThirdValue != null
+      ? formatter.time(oneThirdValue, timezone)
+      : '-';
+  final tithiEndValue = parana.dvadashiEnd;
+  final tithiEnd = tithiEndValue != null
+      ? formatter.time(tithiEndValue, timezone)
+      : '-';
   final sunrise = formatter.time(dvadashiDay.sunrise, timezone);
-  final hariVasaraEnd = formatter.time(parana.hariVasaraEnd, timezone);
-  final dvadashiEnd = formatter.dateTime(dvadashiDay.tithiEnd, timezone);
-  final oneThirdEnd = formatter.time(parana.oneThirdEnd, timezone);
-  final oneFifthEnd = formatter.time(parana.oneFifthEnd, timezone);
+
+  final isTrisprsa =
+      parana.fastDayType == 'trisprsa' ||
+      parana.fastDayType == 'unmilani_trisprsa';
+  final formula = isTrisprsa
+      ? (isRu ? 'Окончание = 1/3 дня' : 'End = 1/3 of daylight')
+      : (isRu
+            ? 'Окончание = min(конец титхи, 1/3 дня)'
+            : 'End = min(tithi end, 1/3 of daylight)');
+
   return _ParanaWindowLabel(
-    summary: tomorrow
-        ? isRu
-              ? 'Паран завтра: $start-$preferred'
-              : 'Parana tomorrow: $start-$preferred'
-        : isRu
-        ? 'Время парана: $start-$preferred'
-        : 'Parana time: $start-$preferred',
-    formulaTitle: isRu ? 'Формула парана' : 'Parana formula',
-    formulaLines: isRu
+    summary: isRu ? 'с $start по $preferred' : '$start to $preferred',
+    formulaTitle: isRu ? 'Окно парана' : 'Parana window',
+    formulaLines: preferredEnd == null
         ? [
-            'Начало = max(восход $sunrise, конец Хари-васары $hariVasaraEnd) = $start',
-            'Конец = min(окончание Двадаши $dvadashiEnd, 1/3 дня $oneThirdEnd) = $preferred',
-            'Окончание по 1/5 дня: $oneFifthEnd',
+            isRu
+                ? 'Предпочтительное окно недоступно'
+                : 'Preferred window unavailable',
           ]
         : [
-            'Start = max(sunrise $sunrise, Hari-vasara end $hariVasaraEnd) = $start',
-            'End = min(Dvadashi end $dvadashiEnd, 1/3 day $oneThirdEnd) = $preferred',
-            '1/5 day end: $oneFifthEnd',
+            isRu ? 'Восход: $sunrise' : 'Sunrise: $sunrise',
+            isRu ? 'Окончание титхи: $tithiEnd' : 'Tithi end: $tithiEnd',
+            '1/3: $oneThird',
+            '1/5: $oneFifthEnd',
+            isRu ? 'Формула: $formula' : 'Formula: $formula',
           ],
   );
 }
@@ -4399,7 +4379,6 @@ class _HomeState {
     required this.events,
     required this.languages,
     required this.glossary,
-    required this.calendarCache,
   });
 
   final MobileSeedSummary summary;
@@ -4407,7 +4386,6 @@ class _HomeState {
   final List<MobileEvent> events;
   final List<String> languages;
   final List<GlossaryTerm> glossary;
-  final Map<String, CachedCalendarDay> calendarCache;
 }
 
 class _EventFilterDefinition {

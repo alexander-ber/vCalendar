@@ -1,7 +1,6 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:vcalendar_mobile/domain/models/calendar_location.dart';
 import 'package:vcalendar_mobile/domain/services/panchanga_calculator.dart';
-import 'package:vcalendar_mobile/domain/services/parana_calculator.dart';
 
 void main() {
   const maalot = CalendarLocation(
@@ -33,26 +32,10 @@ void main() {
     );
   });
 
-  test('starts ordinary Ekadashi parana after Hari-vasara', () {
-    const calculator = PanchangaCalculator();
-    const paranaCalculator = ParanaCalculator();
-    final dvadashi = calculator.calculateDay(
-      date: DateTime.utc(2026, 8, 24),
-      location: maalot,
-    );
-
-    final parana = paranaCalculator.normalEkadashi(dvadashi);
-
-    expect(parana, isNotNull);
-    expect(
-      _minutesFrom(parana!.start, DateTime.utc(2026, 8, 24, 5, 19)),
-      lessThanOrEqualTo(2),
-    );
-    expect(
-      _minutesFrom(parana.preferredEnd, DateTime.utc(2026, 8, 24, 7, 30)),
-      lessThanOrEqualTo(2),
-    );
-  });
+  // Parana coverage moved to engine_rules_parity_test.dart's Phase B group,
+  // which checks ParanaEngine against 34 real Ekadashi cases from the web
+  // engine (not just one hand-picked date) - see that file instead of
+  // duplicating a narrower check here.
 }
 
 int _minutesFrom(DateTime actual, DateTime expected) {

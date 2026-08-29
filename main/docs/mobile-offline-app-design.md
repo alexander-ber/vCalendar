@@ -600,31 +600,30 @@ Event color roles should be tokenized instead of hardcoded in widgets:
 
 ## Current Implementation Status
 
+_Last verified against code on 2026-08-27. This section describes the running app, not a plan — check `apps/mobile/lib` before trusting it again if much time has passed._
+
 Implemented:
 
-- Flutter app scaffold under `apps/mobile`.
-- Bundled SQLite seed at `apps/mobile/assets/db/vcalendar_seed.sqlite`.
-- SQLite seed builder: `scripts/build-mobile-db.mjs`.
-- Built-in RU/EN content imported into SQLite.
-- Location selector backed by SQLite.
-- Persistent settings for language, theme, font scale, compact mode, and location.
-- Phone-first compact month calendar.
-- Selected-day panel with local sunrise, sunset, arunodaya, tithi at sunrise, tithi angle, and tithi boundary times.
-- A replaceable Dart panchanga calculation service.
+- Flutter app scaffold under `apps/mobile`, GPS-aware location and timezone lookup.
+- Bundled SQLite seed at `apps/mobile/assets/db/vcalendar_seed.sqlite`, built by `scripts/build-mobile-db.mjs` from the same `data/events*` sources the web app uses.
+- Built-in RU/EN content imported into SQLite, plus GitHub-based language/content pack sync (`apps/mobile/lib/data/remote/content_update_service.dart`).
+- Location selector, persistent settings (language, theme, font scale, compact mode, location) backed by SQLite.
+- Phone-first compact month calendar with event search and Vaishnava search.
+- Selected-day panel: local sunrise, sunset, arunodaya, tithi at sunrise, tithi angle, tithi boundary times, nakshatra, and a parana time window for Ekadashi days.
+- `PanchangaCalculator` (`apps/mobile/lib/domain/services/panchanga_calculator.dart`): an independent Dart calculation layer (own sunrise/sunset formula + `package:geoengine` for Sun/Moon longitude, arunodaya via the same `1/15` previous-night rule as web).
+- `ParanaCalculator` (`apps/mobile/lib/domain/services/parana_calculator.dart`): computes the parana window live in Dart, but only the **standard/normal Ekadashi case**.
 
-Important limitation:
+Known web/mobile parity gaps (verified in code, not just inferred from commit messages):
 
-- The first Dart panchanga service is a scaffolded calculation layer. It already separates UI from calculation logic, but its Moon/Sun longitude model must be replaced or validated against the production ephemeris layer before event matching and Ekadashi rules are treated as authoritative.
+- **Event dates (festivals, appearance/disappearance days, Ekadashi fast day) are not calculated on-device.** They are precomputed once by the web engine (`scripts/build-events-db.mjs`) and shipped inside the seed SQLite. This is intentional and correct as an architecture — it means the mobile app never has to reimplement Ekadashi classification (viddha/double-sunrise/no-sunrise/Unmilani/Trisprsa/Vyanjuli/Paksavardhini) — but it also means mobile dates go stale if the seed DB isn't rebuilt after a web engine change.
+- **The on-screen parana window is not.** `ParanaCalculator.normalEkadashi()` always uses the standard-case formula (`start = max(sunrise, hari_vasara_end)`, `preferred_end = min(dvadashi_end, pratah_end)`), computed from Dart's own tithi engine. There is no Dart branch for Viddha, Unmilani, Vyanjuli, Trisprsa, or nakshatra-Mahadvadashi parana, and no Dart equivalent of `js/ekadashi-engine.js` at all. On a shifted-Ekadashi day, the fast *date* shown on mobile is correct (it comes from the seed DB) but the parana *time window* can be wrong. See `docs/gcal-calculation-comparison.md` → "Mobile app parity" for the full comparison against the web engine.
+- Sunrise/sunset and Moon/Sun longitude are computed by two independent implementations (Astronomy Engine JS on web vs. hand-rolled formula + `geoengine` on Dart), so boundary-sensitive tithi/masa transitions can differ by minutes between platforms even outside the parana case above.
 
 Next implementation order:
 
-1. Port the production ephemeris tithi angle to Dart.
-2. Add masa, paksha, adhika/Purushottama, and year assignment.
-3. Add Ekadashi transfer and parana rules.
-4. Match tithi-based events from SQLite.
-5. Add event search and Vaishnava search.
-6. Add GPS nearest-location flow.
-7. Add GitHub language/content pack sync.
+1. Either port `js/parana-engine.js`'s Viddha/Unmilani/Vyanjuli/Trisprsa/Mahadvadashi branches into `ParanaCalculator`, or precompute the parana window in `scripts/build-events-db.mjs` / `scripts/build-mobile-db.mjs` and read it from SQLite the same way event dates already are — the second option keeps a single source of truth and is the lower-risk path.
+2. Decide whether the Dart sunrise/Moon-Sun model should be replaced with a binding to the same astronomy source web uses, or kept independent and continuously cross-validated; document the decision once made.
+3. Add GitHub language/content pack sync validation coverage (the sync client exists; test coverage for failure/rollback paths does not).
 
 ## Open Decisions
 
