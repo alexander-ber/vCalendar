@@ -1,6 +1,9 @@
 {
   "schema_version": 1,
-  "updated_at": "2026-08-21T08:29:28.792Z",
+  "updated_at": "2026-08-30T15:29:39.714Z",
+  "events_source": {
+    "path": "data/events.json"
+  },
   "languages": [
     {
       "lang": "ru",
@@ -8,7 +11,6 @@
       "required_app_schema": 1,
       "files": {
         "ui": "i18n/ru/ui.json",
-        "events": "i18n/ru/events.json",
         "ekadashi": "i18n/ru/ekadashi.json",
         "glossary": "i18n/ru/glossary.json",
         "locations": "i18n/ru/locations.json"
@@ -20,7 +22,6 @@
       "required_app_schema": 1,
       "files": {
         "ui": "i18n/en/ui.json",
-        "events": "i18n/en/events.json",
         "ekadashi": "i18n/en/ekadashi.json",
         "glossary": "i18n/en/glossary.json",
         "locations": "i18n/en/locations.json"

@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:crypto/crypto.dart';
 import 'package:http/http.dart' as http;
 import 'package:sqflite/sqflite.dart';
 
@@ -16,6 +17,14 @@ class ContentUpdateService {
       'https://raw.githubusercontent.com/alexander-ber/vCalendar/main/i18n/manifest.json';
 
   static const supportedSchemaVersion = 1;
+
+  /// Events aren't a per-language pack: `data/events.json` is the single
+  /// source of truth already consumed as-is (including raw_json) by
+  /// scripts/build-mobile-db.mjs at seed-build time. This sentinel `lang`
+  /// value marks the corresponding [content_packs] row, which is gated by
+  /// content hash rather than a manually-bumped version number.
+  static const _eventsPackLang = '*';
+  static const _eventsPackKind = 'events';
 
   final AppDatabase _database;
   final http.Client _client;
@@ -34,22 +43,28 @@ class ContentUpdateService {
       );
     }
 
-    final languages = (manifest['languages'] as List? ?? const [])
-        .whereType<Map<String, Object?>>()
-        .toList(growable: false);
-    if (languages.isEmpty) {
-      return ContentUpdateResult(
-        checkedAt: checkedAt,
-        installedFiles: 0,
-        skippedFiles: 0,
-        message: 'No language packs were found in the manifest.',
-      );
-    }
-
     final db = await _database.open();
     var installed = 0;
     var skipped = 0;
     final importedLangs = <String>{};
+
+    final eventsSource = manifest['events_source'];
+    if (eventsSource is Map) {
+      final path = eventsSource['path'];
+      if (path is String) {
+        final result = await _syncEvents(db, path, checkedAt);
+        if (result.applied) {
+          installed += 1;
+          if (result.rows > 0) importedLangs.add('events');
+        } else {
+          skipped += 1;
+        }
+      }
+    }
+
+    final languages = (manifest['languages'] as List? ?? const [])
+        .whereType<Map<String, Object?>>()
+        .toList(growable: false);
 
     for (final language in languages) {
       final lang = language['lang'] as String?;
@@ -113,6 +128,157 @@ class ContentUpdateService {
     );
   }
 
+  /// Downloads `data/events.json` verbatim, and only touches the database
+  /// when its content hash differs from what's already installed - no
+  /// separately-normalized pack to drift out of sync with the seed builder.
+  Future<_EventsSyncResult> _syncEvents(
+    Database db,
+    String path,
+    DateTime checkedAt,
+  ) async {
+    final url = _resolvePackUrl(path);
+    final response = await _client.get(url);
+    if (response.statusCode < 200 || response.statusCode >= 300) {
+      throw ContentUpdateException(
+        'Cannot download ${url.toString()} (${response.statusCode}).',
+      );
+    }
+    final bytes = response.bodyBytes;
+    final checksum = sha256.convert(bytes).toString();
+
+    final existingRows = await db.query(
+      'content_packs',
+      columns: ['checksum', 'version'],
+      where: 'lang = ? and pack_kind = ? and is_active = 1',
+      whereArgs: [_eventsPackLang, _eventsPackKind],
+      limit: 1,
+    );
+    final existingChecksum = existingRows.isEmpty
+        ? null
+        : existingRows.first['checksum'] as String?;
+    if (existingChecksum == checksum) {
+      return const _EventsSyncResult(applied: false, rows: 0);
+    }
+    final nextVersion = existingRows.isEmpty
+        ? 1
+        : ((existingRows.first['version'] as num?)?.toInt() ?? 0) + 1;
+
+    final decoded = jsonDecode(utf8.decode(bytes));
+    if (decoded is! List) {
+      throw ContentUpdateException('Invalid JSON array at ${url.toString()}.');
+    }
+    final items = decoded.whereType<Map>().toList(growable: false);
+
+    final rows = await db.transaction((txn) async {
+      var count = 0;
+      for (final item in items) {
+        final id = item['id'];
+        if (id is! String || id.trim().isEmpty) continue;
+        await _upsertEventFromSource(txn, id, item);
+        for (final lang in const ['en', 'ru']) {
+          await _upsertEventI18nFromSource(txn, id, lang, item);
+        }
+        count += 1;
+      }
+      await txn.insert('content_packs', {
+        'lang': _eventsPackLang,
+        'pack_kind': _eventsPackKind,
+        'version': nextVersion,
+        'source': 'remote',
+        'source_url': url.toString(),
+        'checksum': checksum,
+        'installed_at': checkedAt.toIso8601String(),
+        'is_builtin': 0,
+        'is_active': 1,
+      }, conflictAlgorithm: ConflictAlgorithm.replace);
+      return count;
+    });
+
+    return _EventsSyncResult(applied: true, rows: rows);
+  }
+
+  /// Mirrors scripts/build-mobile-db.mjs's `normalizeEvent`: the same
+  /// top-level-or-`rules.*` fallback chain used when building the seed, so
+  /// a server-synced event is derived exactly like a seeded one - not a
+  /// second, differently-shaped interpretation of the same source object.
+  Future<void> _upsertEventFromSource(
+    Transaction txn,
+    String id,
+    Map item,
+  ) async {
+    final rules = item['rules'] is Map ? item['rules'] as Map : const {};
+    String? pick(String key) {
+      final direct = item[key];
+      if (direct is String) return direct;
+      final nested = rules[key];
+      if (nested is String) return nested;
+      return null;
+    }
+
+    await txn.insert('events', {
+      'id': id,
+      'category': (item['category'] as String?) ?? 'event',
+      'event_type':
+          (item['type'] as String?) ?? (item['event_type'] as String?) ?? 'event',
+      'scope': item['scope'] as String?,
+      'subject': item['subject'] as String?,
+      'masa': pick('masa') ?? pick('gaudiya_masa'),
+      'paksha': pick('paksha'),
+      'tithi': pick('tithi'),
+      'naksatra': pick('naksatra') ?? pick('nakshatra'),
+      'timing_rule': pick('timing_rule'),
+      'fasting_rule': pick('fasting_rule'),
+      'allow_in_adhika': _boolInt(
+        item['allow_in_adhika'] ?? rules['allow_in_adhika'],
+      ),
+      'priority': _priorityValue(item['priority']),
+      'source_status': (item['source_status'] as String?) ?? 'confirmed',
+      'source_url': item['source_url'] as String?,
+      'source_note': item['source_note'] as String?,
+      'raw_json': jsonEncode(item),
+      'created_at': item['created_at'] as String?,
+      'updated_at':
+          item['updated_at'] as String? ??
+          DateTime.now().toUtc().toIso8601String(),
+    }, conflictAlgorithm: ConflictAlgorithm.replace);
+  }
+
+  Future<void> _upsertEventI18nFromSource(
+    Transaction txn,
+    String eventId,
+    String lang,
+    Map item,
+  ) async {
+    final i18n = item['i18n'] is Map ? item['i18n'] as Map : const {};
+    final translation = i18n[lang] is Map ? i18n[lang] as Map : const {};
+    final name =
+        (translation['name'] as String?) ?? (item['name'] as String?) ?? eventId;
+    final description =
+        (translation['description'] as String?) ??
+        (translation['short_description'] as String?) ??
+        (item['description'] as String?);
+    final fullDescription =
+        (translation['full_description'] as String?) ??
+        (item['full_description'] as String?);
+    await txn.insert('event_i18n', {
+      'event_id': eventId,
+      'lang': lang,
+      'name': name,
+      'short_description': description,
+      'full_description': fullDescription,
+      'source_url':
+          (translation['source_url'] as String?) ?? (item['source_url'] as String?),
+      'translator_note': translation['translator_note'] as String?,
+      'updated_at': DateTime.now().toUtc().toIso8601String(),
+    }, conflictAlgorithm: ConflictAlgorithm.replace);
+  }
+
+  int _priorityValue(Object? priority) {
+    if (priority is num) return priority.toInt();
+    const map = {'highest': 10, 'high': 25, 'medium': 50, 'low': 75};
+    return map[priority] ?? 100;
+  }
+
   Uri _resolvePackUrl(String path) {
     final uri = Uri.tryParse(path);
     if (uri != null && uri.hasScheme) return uri;
@@ -161,7 +327,6 @@ class ContentUpdateService {
   }) {
     return switch (kind) {
       'ui' => _importUi(txn, lang, payload),
-      'events' => _importEvents(txn, lang, payload),
       'ekadashi' => _importEkadashi(txn, lang, payload),
       'glossary' => _importGlossary(txn, lang, payload),
       'locations' => _importLocations(txn, lang, payload),
@@ -188,107 +353,6 @@ class ContentUpdateService {
       rows += 1;
     }
     return rows;
-  }
-
-  Future<int> _importEvents(
-    Transaction txn,
-    String lang,
-    Map<String, Object?> payload,
-  ) async {
-    final events = _listFrom(payload, 'events');
-    var rows = 0;
-    for (final item in events) {
-      final id = item['id'] as String?;
-      if (id == null || id.trim().isEmpty) continue;
-      await _upsertEventRuleIfPresent(txn, item);
-      rows += await _upsertEventI18n(txn, id, lang, item);
-    }
-    return rows;
-  }
-
-  Future<void> _upsertEventRuleIfPresent(
-    Transaction txn,
-    Map<String, Object?> item,
-  ) async {
-    final id = item['id'] as String?;
-    final category = item['category'] as String?;
-    final eventType = item['event_type'] as String?;
-    if (id == null || category == null || eventType == null) return;
-
-    await txn.insert('events', {
-      'id': id,
-      'category': category,
-      'event_type': eventType,
-      'scope': item['scope'] as String?,
-      'subject': item['subject'] as String?,
-      'masa': item['masa'] as String?,
-      'paksha': item['paksha'] as String?,
-      'tithi': item['tithi'] as String?,
-      'naksatra': item['naksatra'] as String?,
-      'timing_rule': item['timing_rule'] as String?,
-      'fasting_rule': item['fasting_rule'] as String?,
-      'allow_in_adhika': _boolInt(item['allow_in_adhika']),
-      'priority': (item['priority'] as num?)?.toInt() ?? 100,
-      'source_status': item['source_status'] as String? ?? 'confirmed',
-      'source_url': item['source_url'] as String?,
-      'source_note': item['source_note'] as String?,
-      'raw_json': jsonEncode(item),
-      'created_at': item['created_at'] as String?,
-      'updated_at':
-          item['updated_at'] as String? ??
-          DateTime.now().toUtc().toIso8601String(),
-    }, conflictAlgorithm: ConflictAlgorithm.replace);
-  }
-
-  Future<int> _upsertEventI18n(
-    Transaction txn,
-    String eventId,
-    String fallbackLang,
-    Map<String, Object?> item,
-  ) async {
-    final translations = item['translations'];
-    if (translations is List) {
-      var rows = 0;
-      for (final translation
-          in translations.whereType<Map<String, Object?>>()) {
-        rows += await _insertEventI18n(
-          txn,
-          eventId,
-          translation['lang'] as String? ?? fallbackLang,
-          translation,
-        );
-      }
-      return rows;
-    }
-    return _insertEventI18n(
-      txn,
-      eventId,
-      item['lang'] as String? ?? fallbackLang,
-      item,
-    );
-  }
-
-  Future<int> _insertEventI18n(
-    Transaction txn,
-    String eventId,
-    String lang,
-    Map<String, Object?> item,
-  ) async {
-    final name = item['name'] as String?;
-    if (name == null || name.trim().isEmpty) return 0;
-    await txn.insert('event_i18n', {
-      'event_id': eventId,
-      'lang': lang,
-      'name': name,
-      'short_description': item['short_description'] as String?,
-      'full_description': item['full_description'] as String?,
-      'source_url': item['source_url'] as String?,
-      'translator_note': item['translator_note'] as String?,
-      'updated_at':
-          item['updated_at'] as String? ??
-          DateTime.now().toUtc().toIso8601String(),
-    }, conflictAlgorithm: ConflictAlgorithm.replace);
-    return 1;
   }
 
   Future<int> _importEkadashi(
@@ -375,6 +439,13 @@ class ContentUpdateService {
     if (value is num) return value == 0 ? 0 : 1;
     return 0;
   }
+}
+
+class _EventsSyncResult {
+  const _EventsSyncResult({required this.applied, required this.rows});
+
+  final bool applied;
+  final int rows;
 }
 
 class ContentUpdateResult {

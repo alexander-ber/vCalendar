@@ -10,17 +10,6 @@ function readJson(relativePath) {
   return fs.readFile(path.join(repoRoot, relativePath), "utf8").then(JSON.parse);
 }
 
-async function jsonFiles(dir) {
-  const entries = await fs.readdir(dir, { withFileTypes: true });
-  const files = [];
-  for (const entry of entries) {
-    const full = path.join(dir, entry.name);
-    if (entry.isDirectory()) files.push(...(await jsonFiles(full)));
-    else if (entry.isFile() && entry.name.endsWith(".json")) files.push(full);
-  }
-  return files.sort((a, b) => a.localeCompare(b));
-}
-
 async function readLocations() {
   const source = await fs.readFile(path.join(repoRoot, "js/locations-data.js"), "utf8");
   const match = source.match(/export\s+const\s+LOCATIONS\s*=\s*(\[[\s\S]*?\]);/);
@@ -28,64 +17,10 @@ async function readLocations() {
   return Function(`"use strict"; return (${match[1]});`)();
 }
 
-function translationsToMap(translations) {
-  if (!Array.isArray(translations)) return {};
-  return Object.fromEntries(
-    translations
-      .filter((item) => item?.lang)
-      .map((item) => [
-        item.lang,
-        {
-          name: item.name,
-          short_description: item.short_description ?? item.description,
-          full_description: item.full_description,
-          source_url: item.source_url,
-          translator_note: item.translator_note,
-        },
-      ])
-  );
-}
-
-function priorityValue(priority) {
-  if (typeof priority === "number") return priority;
-  const map = { highest: 10, high: 25, medium: 50, low: 75 };
-  return map[priority] ?? 100;
-}
-
 function compactObject(value) {
   return Object.fromEntries(
     Object.entries(value).filter(([, entry]) => entry !== undefined && entry !== null)
   );
-}
-
-function normalizeEvent(raw, lang) {
-  const rules = raw.rules ?? {};
-  const i18n = raw.i18n ?? translationsToMap(raw.translations);
-  const translation = i18n[lang] ?? i18n.en ?? i18n.ru ?? {};
-  const id = raw.runtime_id ?? raw.id;
-  return compactObject({
-    id,
-    category: raw.category ?? "event",
-    event_type: raw.type ?? raw.event_type ?? "event",
-    scope: raw.scope,
-    subject: raw.subject,
-    masa: raw.masa ?? rules.masa ?? raw.gaudiya_masa ?? rules.gaudiya_masa,
-    paksha: raw.paksha ?? rules.paksha,
-    tithi: raw.tithi ?? rules.tithi,
-    naksatra: raw.naksatra ?? raw.nakshatra ?? rules.naksatra ?? rules.nakshatra,
-    timing_rule: raw.timing_rule ?? rules.timing_rule,
-    fasting_rule: raw.fasting_rule ?? rules.fasting_rule,
-    allow_in_adhika: Boolean(raw.allow_in_adhika ?? rules.allow_in_adhika),
-    priority: priorityValue(raw.priority),
-    source_status: raw.source_status ?? "confirmed",
-    source_url: raw.source_url ?? raw.sources?.[0]?.url,
-    source_note: raw.source_note,
-    name: translation.name ?? raw.name ?? raw.id,
-    short_description:
-      translation.short_description ?? translation.description ?? raw.description,
-    full_description: translation.full_description ?? raw.full_description,
-    translator_note: translation.translator_note,
-  });
 }
 
 function normalizeEkadashi(item, lang) {
@@ -235,19 +170,10 @@ async function writeJson(relativePath, value) {
 
 async function main() {
   const now = new Date().toISOString();
-  const eventFiles = await jsonFiles(path.join(repoRoot, "data/events"));
-  const rawEvents = await Promise.all(
-    eventFiles.map((file) => fs.readFile(file, "utf8").then(JSON.parse))
-  );
   const ekadashi = await readJson("data/ekadashi.json");
   const locations = await readLocations();
 
   for (const lang of langs) {
-    await writeJson(`i18n/${lang}/events.json`, {
-      schema_version: 1,
-      updated_at: now,
-      events: rawEvents.map((event) => normalizeEvent(event, lang)),
-    });
     await writeJson(`i18n/${lang}/ekadashi.json`, {
       schema_version: 1,
       updated_at: now,
@@ -273,13 +199,20 @@ async function main() {
   await writeJson("i18n/manifest.json", {
     schema_version: 1,
     updated_at: now,
+    // Events are not a per-language pack: data/events.json is the single
+    // source of truth (already built by scripts/build-events-db.mjs and
+    // consumed as-is, raw_json included, by scripts/build-mobile-db.mjs).
+    // The client hashes this file directly instead of syncing a separately
+    // normalized (and inevitably drifting) i18n/{lang}/events.json copy.
+    events_source: {
+      path: "data/events.json",
+    },
     languages: langs.map((lang) => ({
       lang,
       version: 2,
       required_app_schema: 1,
       files: {
         ui: `i18n/${lang}/ui.json`,
-        events: `i18n/${lang}/events.json`,
         ekadashi: `i18n/${lang}/ekadashi.json`,
         glossary: `i18n/${lang}/glossary.json`,
         locations: `i18n/${lang}/locations.json`,
