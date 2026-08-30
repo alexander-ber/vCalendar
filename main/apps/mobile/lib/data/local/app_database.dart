@@ -28,12 +28,18 @@ class AppDatabase {
       seedBytes.lengthInBytes,
     );
     final seedSignature = _seedSignature(seedData);
-    final seedLength = seedData.length;
-    final existingLength = await dbFile.exists() ? await dbFile.length() : -1;
+    // Only re-copy when the bundled seed asset itself changed since the
+    // last copy (tracked by [signatureFile], written once at copy time).
+    // The runtime db file's own byte length is NOT a valid signal here -
+    // it legitimately grows/shrinks as soon as anything writes to it (e.g.
+    // ContentUpdateService's synced events), which would otherwise trip a
+    // false "needs re-copy" on every single launch and silently discard
+    // every local write, including all synced content, right after it was
+    // written.
     final existingSignature = await signatureFile.exists()
         ? (await signatureFile.readAsString()).trim()
         : '';
-    if (existingLength != seedLength || existingSignature != seedSignature) {
+    if (!await dbFile.exists() || existingSignature != seedSignature) {
       await dbFile.writeAsBytes(seedData, flush: true);
       await signatureFile.writeAsString(seedSignature, flush: true);
     }
