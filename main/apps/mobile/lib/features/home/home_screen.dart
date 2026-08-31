@@ -100,6 +100,19 @@ String? _webEventTone(MobileEvent event) {
   return null;
 }
 
+/// Mirrors js/date-utils.js's `addDaysToLocalDate`: calendar-day arithmetic
+/// must reconstruct the date from adjusted year/month/day fields, not add a
+/// fixed Duration to a local DateTime. `DateTime.add(Duration(days: n))`
+/// adds exactly n*24 hours of elapsed time, which lands on the wrong
+/// wall-clock day (e.g. 23:00 instead of the next midnight) as soon as the
+/// device's own local timezone crosses a DST transition - and since the
+/// date this returns keeps the same day-of-month whenever that happens, a
+/// loop stepping day-by-day with it can get stuck reprocessing one date
+/// forever instead of ever advancing.
+DateTime _addCalendarDays(DateTime date, int days) {
+  return DateTime(date.year, date.month, date.day + days);
+}
+
 /// Single source of truth for event-category colors, shared by the day
 /// details view (`_EventTile`) and the month-grid day cell (`_DayCell`) so
 /// both agree with each other and with web's `--ekadashi`/`--parana`/
@@ -383,7 +396,7 @@ class _HomeScreenState extends State<HomeScreen> {
             final nextSelectedPanchanga = selectedLocation == null
                 ? null
                 : _calculateDay(
-                    date: _selectedDate.add(const Duration(days: 1)),
+                    date: _addCalendarDays(_selectedDate, 1),
                     location: selectedLocation,
                   );
             final selectedEvents = eventMap[_dateKey(_selectedDate)] ?? [];
@@ -397,7 +410,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 ? null
                 : _paranaResultForDay(
                     location: selectedLocation,
-                    date: _selectedDate.add(const Duration(days: 1)),
+                    date: _addCalendarDays(_selectedDate, 1),
                   );
 
             return CustomScrollView(
@@ -661,7 +674,7 @@ class _HomeScreenState extends State<HomeScreen> {
     for (
       var date = DateTime(from.year, from.month, from.day);
       !date.isAfter(to);
-      date = date.add(const Duration(days: 1))
+      date = _addCalendarDays(date, 1)
     ) {
       final matched = (eventsMap[_dateKey(date)] ?? const <MobileEvent>[])
           .where(_eventAllowedBySettings)
@@ -674,7 +687,7 @@ class _HomeScreenState extends State<HomeScreen> {
           ..add('DTSTAMP:${_icsDateTime(stamp)}')
           ..add('DTSTART;VALUE=DATE:${_icsDate(date)}')
           ..add(
-            'DTEND;VALUE=DATE:${_icsDate(date.add(const Duration(days: 1)))}',
+            'DTEND;VALUE=DATE:${_icsDate(_addCalendarDays(date, 1))}',
           )
           ..add('SUMMARY:${_icsText(event.name)}');
         final description = event.shortDescription ?? event.fullDescription;
@@ -723,7 +736,7 @@ class _HomeScreenState extends State<HomeScreen> {
     for (
       var date = DateTime(year);
       date.year == year;
-      date = date.add(const Duration(days: 1))
+      date = _addCalendarDays(date, 1)
     ) {
       final matched = eventsMap[_dateKey(date)] ?? const <MobileEvent>[];
       if (!matched.any((e) => e.id == event.id)) {
@@ -911,7 +924,7 @@ class _HomeScreenState extends State<HomeScreen> {
     final end = DateTime(to.year, to.month, to.day);
     while (!cursor.isAfter(end)) {
       days.add(_calculateDay(date: cursor, location: location));
-      cursor = cursor.add(const Duration(days: 1));
+      cursor = _addCalendarDays(cursor, 1);
     }
     return days;
   }
@@ -928,8 +941,8 @@ class _HomeScreenState extends State<HomeScreen> {
     required List<MobileEvent> events,
   }) {
     final days = _dayRange(
-      from: from.subtract(const Duration(days: 15)),
-      to: to.add(const Duration(days: 15)),
+      from: _addCalendarDays(from, -15),
+      to: _addCalendarDays(to, 15),
       location: location,
     );
     return _calendarEventEngine.attachEvents(
@@ -949,8 +962,8 @@ class _HomeScreenState extends State<HomeScreen> {
     required DateTime date,
   }) {
     final days = _dayRange(
-      from: date.subtract(const Duration(days: 35)),
-      to: date.add(const Duration(days: 2)),
+      from: _addCalendarDays(date, -35),
+      to: _addCalendarDays(date, 2),
       location: location,
     );
     return _calendarEventEngine
@@ -1635,8 +1648,8 @@ class _SettingsSheetState extends State<_SettingsSheet> {
 
   void _setThisWeek() {
     final today = DateTime.now();
-    final from = today.subtract(Duration(days: today.weekday - 1));
-    final to = from.add(const Duration(days: 6));
+    final from = _addCalendarDays(today, -(today.weekday - 1));
+    final to = _addCalendarDays(from, 6);
     _setPeriod(from, to);
   }
 
@@ -2337,13 +2350,13 @@ class _MasaPeriodNoticeCard extends StatelessWidget {
     var last = visibleDays.last;
 
     for (var i = 0; i < 370; i += 1) {
-      final previousDate = first.date.subtract(const Duration(days: 1));
+      final previousDate = _addCalendarDays(first.date, -1);
       final previous = calculateDay(previousDate, currentLocation);
       if (!predicate(previous)) break;
       first = previous;
     }
     for (var i = 0; i < 370; i += 1) {
-      final nextDate = last.date.add(const Duration(days: 1));
+      final nextDate = _addCalendarDays(last.date, 1);
       final next = calculateDay(nextDate, currentLocation);
       if (!predicate(next)) break;
       last = next;
