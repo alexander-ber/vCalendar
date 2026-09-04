@@ -1,6 +1,7 @@
 import 'dart:math' as math;
 
 import 'package:geoengine/geoengine.dart' as astronomy;
+import 'package:timezone/timezone.dart' as tz;
 
 import '../models/calendar_location.dart';
 import '../models/panchanga_day.dart';
@@ -290,48 +291,25 @@ class PanchangaCalculator {
     return b;
   }
 
-  // The classic "Sunrise Equation" closed-form formula (as implemented
-  // below in _sunEventCandidate) only guarantees the correct wall-clock
-  // time; it does NOT reliably land the result on the correct UTC calendar
-  // day for longitudes where local mean solar time is offset far enough
-  // from UTC (roughly: India/Nepal-class longitudes) - naively wrapping the
-  // formula's raw hour into [0,24) and attaching it to the requested date's
-  // own UTC midnight can silently mislabel sunrise (and occasionally
-  // sunset) onto the wrong civil day by a full 24h. Confirmed against the
-  // web engine (js/astronomy-adapter.js, which uses a proper numerical
-  // rise/set search, not this closed form) for Nabadwip/Mayapur/Vrindavan/
-  // Kathmandu - see engine_rules_parity_test.dart.
-  //
-  // Fix: compute the candidate, then verify which LOCAL calendar day it
-  // actually falls on (using the location's longitude as a mean-solar-time
-  // offset - consistent with what this formula already assumes "local"
-  // means, so no timezone-database dependency is introduced), and retry
-  // with the anchor date shifted by ±1 if it doesn't match the requested
-  // date. Converges in at most one retry for any realistic longitude.
+  /// Mirrors web's `localRiseSet` (js/astronomy-adapter.js) almost exactly:
+  /// same underlying algorithm family (geoengine's `searchRiseSet` is a
+  /// direct Dart port of astronomy-engine's `SearchRiseSet` - same default
+  /// horizon/refraction correction, same `limitDays: 1.2` search window),
+  /// same real-timezone civil-day bounds check via [_zonedDateToUtc] (Dart
+  /// equivalent of web's `zonedDateToUtc`/`localDayBounds`). This replaced
+  /// a hand-rolled closed-form "Sunrise Equation" that was only accurate to
+  /// ~1-2 minutes and degraded further at higher latitudes/near solstices -
+  /// unlike web, which has always used the numerical ephemeris search.
   DateTime _sunEventUtc(
     DateTime date,
     CalendarLocation location, {
     required bool rise,
   }) {
-    final lngHourOffset = Duration(
-      milliseconds: (location.longitude / 15 * 3600000).round(),
-    );
-    for (final anchorShift in [0, -1, 1]) {
-      final anchor = DateTime.utc(
-        date.year,
-        date.month,
-        date.day,
-      ).add(Duration(days: anchorShift));
-      final candidate = _sunEventCandidate(anchor, location, rise: rise);
-      final localInstant = candidate.add(lngHourOffset);
-      if (localInstant.year == date.year &&
-          localInstant.month == date.month &&
-          localInstant.day == date.day) {
-        return candidate;
-      }
-    }
-    // Should be unreachable for any real longitude/date, but fall back to
-    // the naive same-day candidate rather than throwing.
+    final found = _localRiseSet(date, location, rise: rise);
+    if (found != null) return found;
+    // Should be unreachable for any of this app's configured locations
+    // (none are near the polar circle), but fall back to the old
+    // closed-form estimate rather than crashing.
     return _sunEventCandidate(
       DateTime.utc(date.year, date.month, date.day),
       location,
@@ -339,10 +317,53 @@ class PanchangaCalculator {
     );
   }
 
-  /// The closed-form Sunrise Equation, evaluated with [anchor]'s UTC
-  /// midnight as the reference point. Returns the correct wall-clock UTC
-  /// instant, but the *day* it's attached to is only correct once verified
-  /// by [_sunEventUtc] above.
+  DateTime? _localRiseSet(
+    DateTime civilDate,
+    CalendarLocation location, {
+    required bool rise,
+  }) {
+    final observer = astronomy.Observer(
+      location.latitude,
+      location.longitude,
+      0,
+    );
+    final dayStart = _zonedDateToUtc(civilDate, 0, 0, 0, location.timezone);
+    final dayEnd = _zonedDateToUtc(civilDate, 23, 59, 59, location.timezone);
+    final found = astronomy.searchRiseSet(
+      astronomy.Body.Sun,
+      observer,
+      rise ? 1.0 : -1.0,
+      dayStart,
+      1.2,
+    );
+    final result = found?.date;
+    if (result == null) return null;
+    if (result.isBefore(dayStart) || result.isAfter(dayEnd)) return null;
+    return result;
+  }
+
+  DateTime _zonedDateToUtc(
+    DateTime civilDate,
+    int hour,
+    int minute,
+    int second,
+    String timezone,
+  ) {
+    final local = tz.TZDateTime(
+      tz.getLocation(timezone),
+      civilDate.year,
+      civilDate.month,
+      civilDate.day,
+      hour,
+      minute,
+      second,
+    );
+    return local.toUtc();
+  }
+
+  /// The classic closed-form "Sunrise Equation" - kept only as a last-resort
+  /// fallback for [_sunEventUtc] when the ephemeris search finds nothing
+  /// within the local civil day (extreme latitudes only).
   DateTime _sunEventCandidate(
     DateTime anchor,
     CalendarLocation location, {
