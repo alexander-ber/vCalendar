@@ -1,8 +1,13 @@
 import 'package:flutter_test/flutter_test.dart';
+import 'package:timezone/data/latest.dart' as tzdata;
 import 'package:vcalendar_mobile/domain/models/calendar_location.dart';
 import 'package:vcalendar_mobile/domain/services/panchanga_calculator.dart';
 
 void main() {
+  setUpAll(() {
+    tzdata.initializeTimeZones();
+  });
+
   const maalot = CalendarLocation(
     id: 'maalot',
     name: 'Maalot, Israel',
