@@ -4099,9 +4099,13 @@ class _EventTile extends StatelessWidget {
                     ],
                     if (event.shortDescription != null)
                       Text(
-                        event.shortDescription!,
-                        maxLines: 2,
-                        overflow: TextOverflow.ellipsis,
+                        // No maxLines/ellipsis here on purpose: _previewText
+                        // already cuts at a word boundary within a budget
+                        // short enough to fit its own 2-3 lines, so it's the
+                        // one place that decides where the text ends -
+                        // letting Text's width-based ellipsis also apply on
+                        // top of it is what caused the mid-word "Я ни..." cut.
+                        _previewText(event.shortDescription!),
                         style: TextStyle(
                           color: eventStyle.foreground.withValues(alpha: 0.78),
                         ),
@@ -4164,6 +4168,19 @@ class _EventTile extends StatelessWidget {
       primary: theme.colorScheme.primary,
       mutedText: colors.mutedText,
     );
+  }
+
+  /// Truncates at the last word boundary within [maxChars] instead of
+  /// relying solely on [Text]'s width-based ellipsis, which cuts mid-word
+  /// (e.g. "Я ни...") whenever a line break lands inside a word. [maxChars]
+  /// is generous relative to the 2-line collapsed preview it's used for, so
+  /// this is normally what actually determines where the text is cut.
+  String _previewText(String text, {int maxChars = 140}) {
+    if (text.length <= maxChars) return text;
+    final cut = text.substring(0, maxChars);
+    final lastSpace = cut.lastIndexOf(' ');
+    final trimmed = lastSpace > 0 ? cut.substring(0, lastSpace) : cut;
+    return '${trimmed.trimRight()}…';
   }
 
   String? _cleanDescription(String? value) {
