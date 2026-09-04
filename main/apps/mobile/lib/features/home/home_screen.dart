@@ -4196,7 +4196,7 @@ class _EventTile extends StatelessWidget {
     final cutPoint = lastSpace > 0 ? lastSpace : maxChars;
     final remainder = full.substring(cutPoint).trim();
     return _SplitDescription(
-      preview: '${full.substring(0, cutPoint).trimRight()}…',
+      preview: full.substring(0, cutPoint).trimRight(),
       remainder: remainder.isEmpty ? null : remainder,
     );
   }
