@@ -1094,7 +1094,7 @@ class _HeaderTitleLine extends StatelessWidget {
               line,
               maxLines: 1,
               style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                fontWeight: FontWeight.w900,
+                fontWeight: FontWeight.w600,
                 height: 0.98,
               ),
             ),
@@ -1235,8 +1235,8 @@ class _SettingsSheetState extends State<_SettingsSheet> {
                   child: Text(
                     _isRu ? 'Настройки' : 'Settings',
                     style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                      fontSize: 18,
-                      fontWeight: FontWeight.w900,
+                      fontSize: 19,
+                      fontWeight: FontWeight.w600,
                     ),
                   ),
                 ),
@@ -1406,7 +1406,7 @@ class _SettingsSheetState extends State<_SettingsSheet> {
                             option.label,
                             style: Theme.of(context).textTheme.labelLarge
                                 ?.copyWith(
-                                  fontWeight: FontWeight.w900,
+                                  fontWeight: FontWeight.w600,
                                   color: Theme.of(
                                     context,
                                   ).extension<VCalendarColors>()!.mutedText,
@@ -1457,7 +1457,7 @@ class _SettingsSheetState extends State<_SettingsSheet> {
                       color: Theme.of(
                         context,
                       ).extension<VCalendarColors>()!.mutedText,
-                      fontWeight: FontWeight.w700,
+                      fontWeight: FontWeight.w500,
                     ),
                   ),
                 ],
@@ -1540,7 +1540,7 @@ class _SettingsSheetState extends State<_SettingsSheet> {
                         _isRu
                             ? 'Версия приложения: $version'
                             : 'App version: $version',
-                        style: const TextStyle(fontWeight: FontWeight.w900),
+                        style: const TextStyle(fontWeight: FontWeight.w600),
                       ),
                     );
                   },
@@ -1608,7 +1608,7 @@ class _SettingsSheetState extends State<_SettingsSheet> {
                       color: Theme.of(
                         context,
                       ).extension<VCalendarColors>()!.mutedText,
-                      fontWeight: FontWeight.w700,
+                      fontWeight: FontWeight.w500,
                     ),
                   ),
                 ],
@@ -1803,8 +1803,8 @@ class _EventSearchSheetState extends State<_EventSearchSheet> {
                   child: Text(
                     _isRu ? 'Поиск события' : 'Event finder',
                     style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                      fontSize: 18,
-                      fontWeight: FontWeight.w900,
+                      fontSize: 19,
+                      fontWeight: FontWeight.w600,
                     ),
                   ),
                 ),
@@ -2000,8 +2000,8 @@ class _SettingsGroup extends StatelessWidget {
             Text(
               title,
               style: Theme.of(context).textTheme.titleSmall?.copyWith(
-                fontSize: 16,
-                fontWeight: FontWeight.w900,
+                fontSize: 17,
+                fontWeight: FontWeight.w600,
               ),
             ),
             const SizedBox(height: 12),
@@ -2201,7 +2201,7 @@ class _SearchableOptionSheetState<T> extends State<_SearchableOptionSheet<T>> {
                     child: Text(
                       widget.title,
                       style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                        fontWeight: FontWeight.w900,
+                        fontWeight: FontWeight.w600,
                       ),
                     ),
                   ),
@@ -2307,8 +2307,8 @@ class _MasaPeriodNoticeCard extends StatelessWidget {
               Text(
                 notices[index].title,
                 style: Theme.of(context).textTheme.titleSmall?.copyWith(
-                  fontSize: 16,
-                  fontWeight: FontWeight.w900,
+                  fontSize: 17,
+                  fontWeight: FontWeight.w600,
                   color: scheme.onSecondaryContainer,
                 ),
               ),
@@ -2318,7 +2318,7 @@ class _MasaPeriodNoticeCard extends StatelessWidget {
                   notices[index].subtitle,
                   style: TextStyle(
                     color: scheme.onSecondaryContainer.withValues(alpha: 0.76),
-                    fontWeight: FontWeight.w700,
+                    fontWeight: FontWeight.w500,
                   ),
                 ),
               ],
@@ -2573,7 +2573,7 @@ class _MonthCalendarCard extends StatelessWidget {
                   child: Text(
                     labels[index],
                     style: Theme.of(context).textTheme.labelLarge?.copyWith(
-                      fontWeight: FontWeight.w900,
+                      fontWeight: FontWeight.w600,
                       color: Theme.of(
                         context,
                       ).extension<VCalendarColors>()!.mutedText,
@@ -2712,8 +2712,8 @@ class _MonthPickerButton extends StatelessWidget {
               label,
               overflow: TextOverflow.ellipsis,
               style: theme.textTheme.titleMedium?.copyWith(
-                fontSize: compactMode ? 16 : 18,
-                fontWeight: FontWeight.w900,
+                fontSize: compactMode ? 17 : 19,
+                fontWeight: FontWeight.w600,
               ),
             ),
           ),
@@ -2782,8 +2782,8 @@ class _MonthYearPickerSheetState extends State<_MonthYearPickerSheet> {
                 Text(
                   widget.isRu ? 'Выберите месяц' : 'Choose month',
                   style: theme.textTheme.titleMedium?.copyWith(
-                    fontSize: 16,
-                    fontWeight: FontWeight.w900,
+                    fontSize: 17,
+                    fontWeight: FontWeight.w600,
                   ),
                 ),
                 const Spacer(),
@@ -2805,8 +2805,8 @@ class _MonthYearPickerSheetState extends State<_MonthYearPickerSheet> {
                     child: Text(
                       '$_year',
                       style: theme.textTheme.titleLarge?.copyWith(
-                        fontSize: 24,
-                        fontWeight: FontWeight.w900,
+                        fontSize: 25,
+                        fontWeight: FontWeight.w600,
                       ),
                     ),
                   ),
@@ -2881,8 +2881,8 @@ class _MonthChoiceButton extends StatelessWidget {
           maxLines: 1,
           textAlign: TextAlign.center,
           style: theme.textTheme.labelLarge?.copyWith(
-            fontSize: 14,
-            fontWeight: FontWeight.w900,
+            fontSize: 15,
+            fontWeight: FontWeight.w600,
           ),
         ),
       ),
@@ -3100,16 +3100,16 @@ class _SelectedDayCard extends StatelessWidget {
             Text(
               isRu ? 'Выбранный день' : 'Selected day',
               style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                fontSize: 18,
-                fontWeight: FontWeight.w900,
+                fontSize: 19,
+                fontWeight: FontWeight.w600,
               ),
             ),
             const SizedBox(height: 12),
             Text(
               _dateLabel(date, isRu),
               style: Theme.of(context).textTheme.titleSmall?.copyWith(
-                fontSize: 15,
-                fontWeight: FontWeight.w800,
+                fontSize: 16,
+                fontWeight: FontWeight.w600,
               ),
             ),
             const SizedBox(height: 6),
@@ -3397,7 +3397,7 @@ class _PanchangaSummaryGrid extends StatelessWidget {
         '${formatter.dateTime(panchanga.tithiStart, timezone)} - ${formatter.dateTime(panchanga.tithiEnd, timezone)}';
     final textStyle = Theme.of(
       context,
-    ).textTheme.bodyMedium?.copyWith(fontWeight: FontWeight.w700);
+    ).textTheme.bodyMedium?.copyWith(fontWeight: FontWeight.w500);
 
     return DecoratedBox(
       decoration: BoxDecoration(
@@ -3467,12 +3467,12 @@ class _PanchangaSummaryLine extends StatelessWidget {
               text: '$label: ',
               style: TextStyle(
                 color: colors.mutedText,
-                fontWeight: FontWeight.w900,
+                fontWeight: FontWeight.w600,
               ),
             ),
             TextSpan(
               text: value,
-              style: const TextStyle(fontWeight: FontWeight.w800),
+              style: const TextStyle(fontWeight: FontWeight.w600),
             ),
           ],
         ),
@@ -3521,8 +3521,8 @@ class _JyotishDaySection extends StatelessWidget {
         Text(
           isRu ? 'Джйотиш' : 'Jyotish',
           style: Theme.of(context).textTheme.titleSmall?.copyWith(
-            fontSize: 17,
-            fontWeight: FontWeight.w900,
+            fontSize: 18,
+            fontWeight: FontWeight.w600,
           ),
         ),
         const SizedBox(height: 8),
@@ -3614,7 +3614,7 @@ class _JyotishInfoCard extends StatelessWidget {
               title,
               style: Theme.of(context).textTheme.labelMedium?.copyWith(
                 color: colors.mutedText,
-                fontWeight: FontWeight.w900,
+                fontWeight: FontWeight.w600,
               ),
             ),
             const SizedBox(height: 4),
@@ -3622,7 +3622,7 @@ class _JyotishInfoCard extends StatelessWidget {
               headline,
               style: Theme.of(
                 context,
-              ).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.w900),
+              ).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.w600),
             ),
             const SizedBox(height: 2),
             Text(meta, style: TextStyle(color: colors.mutedText)),
@@ -3637,7 +3637,7 @@ class _JyotishInfoCard extends StatelessWidget {
                         text: '${line.label}: ',
                         style: TextStyle(
                           color: colors.mutedText,
-                          fontWeight: FontWeight.w800,
+                          fontWeight: FontWeight.w600,
                         ),
                       ),
                       TextSpan(text: line.value),
@@ -3699,14 +3699,14 @@ class _JyotishTermsHelpCard extends StatelessWidget {
           foregroundColor: Theme.of(context).colorScheme.onSurface,
           child: const Text(
             'i',
-            style: TextStyle(fontWeight: FontWeight.w900, fontSize: 16),
+            style: TextStyle(fontWeight: FontWeight.w600, fontSize: 17),
           ),
         ),
         title: Text(
           isRu ? 'Термины' : 'Terms',
           style: Theme.of(
             context,
-          ).textTheme.titleSmall?.copyWith(fontWeight: FontWeight.w900),
+          ).textTheme.titleSmall?.copyWith(fontWeight: FontWeight.w600),
         ),
         subtitle: Text(
           isRu ? 'Справка по терминам панчанга' : 'Panchang term reference',
@@ -3723,7 +3723,7 @@ class _JyotishTermsHelpCard extends StatelessWidget {
                     term.title,
                     style: TextStyle(
                       color: Theme.of(context).colorScheme.primary,
-                      fontWeight: FontWeight.w900,
+                      fontWeight: FontWeight.w600,
                     ),
                   ),
                   const SizedBox(height: 2),
@@ -3940,7 +3940,7 @@ class _PanjikaYogaCard extends StatelessWidget {
               isRu ? 'Амрита / Махендра-йога' : 'Amrita / Mahendra-yoga',
               style: Theme.of(
                 context,
-              ).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.w900),
+              ).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.w600),
             ),
             const SizedBox(height: 4),
             Text(
@@ -4025,7 +4025,7 @@ class _JyotishAdviceBlock extends StatelessWidget {
               title,
               style: Theme.of(context).textTheme.labelMedium?.copyWith(
                 color: baseColor,
-                fontWeight: FontWeight.w900,
+                fontWeight: FontWeight.w600,
               ),
             ),
             const SizedBox(height: 6),
@@ -4043,7 +4043,7 @@ class _JyotishAdviceBlock extends StatelessWidget {
                           style: Theme.of(context).textTheme.bodyMedium
                               ?.copyWith(
                                 color: baseColor,
-                                fontWeight: FontWeight.w900,
+                                fontWeight: FontWeight.w600,
                                 height: 1.22,
                               ),
                         ),
@@ -4053,7 +4053,7 @@ class _JyotishAdviceBlock extends StatelessWidget {
                             style: Theme.of(context).textTheme.bodyMedium
                                 ?.copyWith(
                                   color: onSurface,
-                                  fontWeight: FontWeight.w700,
+                                  fontWeight: FontWeight.w500,
                                   height: 1.22,
                                 ),
                           ),
@@ -4103,8 +4103,8 @@ class _EventsSection extends StatelessWidget {
         Text(
           isRu ? 'События' : 'Events',
           style: Theme.of(context).textTheme.titleSmall?.copyWith(
-            fontSize: 17,
-            fontWeight: FontWeight.w900,
+            fontSize: 18,
+            fontWeight: FontWeight.w600,
           ),
         ),
         const SizedBox(height: 8),
@@ -4179,7 +4179,7 @@ class _EventTileState extends State<_EventTile> {
                         event.name,
                         style: Theme.of(context).textTheme.titleSmall?.copyWith(
                           color: eventStyle.foreground,
-                          fontWeight: FontWeight.w900,
+                          fontWeight: FontWeight.w600,
                         ),
                       ),
                     ),
@@ -4201,7 +4201,7 @@ class _EventTileState extends State<_EventTile> {
                     overflow: TextOverflow.ellipsis,
                     style: TextStyle(
                       color: eventStyle.foreground,
-                      fontWeight: FontWeight.w900,
+                      fontWeight: FontWeight.w600,
                     ),
                   ),
                 ],
@@ -4241,7 +4241,7 @@ class _EventTileState extends State<_EventTile> {
                     paranaWindow!.formulaTitle,
                     style: TextStyle(
                       color: eventStyle.foreground,
-                      fontWeight: FontWeight.w900,
+                      fontWeight: FontWeight.w600,
                     ),
                   ),
                   const SizedBox(height: 4),
@@ -4252,7 +4252,7 @@ class _EventTileState extends State<_EventTile> {
                         line,
                         style: TextStyle(
                           color: eventStyle.foreground.withValues(alpha: 0.86),
-                          fontWeight: FontWeight.w700,
+                          fontWeight: FontWeight.w500,
                           height: 1.25,
                         ),
                       ),
@@ -4401,8 +4401,8 @@ class _SeedSummaryCard extends StatelessWidget {
             Text(
               isRu ? 'Офлайн-база готова' : 'Offline database is ready',
               style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                fontSize: 18,
-                fontWeight: FontWeight.w900,
+                fontSize: 19,
+                fontWeight: FontWeight.w600,
               ),
             ),
             const SizedBox(height: 12),
@@ -4456,7 +4456,7 @@ class _Metric extends StatelessWidget {
               value,
               style: Theme.of(
                 context,
-              ).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.w900),
+              ).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.w600),
             ),
           ],
         ),
