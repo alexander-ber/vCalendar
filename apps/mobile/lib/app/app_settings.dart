@@ -30,7 +30,7 @@ class AppSettings {
     contentAutoUpdate: true,
     contentUpdateIntervalHours: 24,
     calendarDigitFont: CalendarDigitFont.system,
-    calendarDigitBold: true,
+    calendarDigitBold: false,
     calendarDigitItalic: false,
     calendarDigitScale: 1,
   );
