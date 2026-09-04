@@ -4118,22 +4118,30 @@ class _EventTileState extends State<_EventTile> {
                     ),
                   ),
                 ],
-                // One Text for the whole description at all times, so
-                // expanding just reveals more of the same wrapped
-                // paragraph in place - not a second, separately-positioned
-                // widget starting a new block below it.
+                // Same description text either way, just two pre-laid-out
+                // states cross-fading - AnimatedSize around a single Text
+                // whose maxLines jumps discretely (3 <-> unbounded) doesn't
+                // animate the text's own relayout, only the box around it,
+                // so the two visibly fall out of sync as a flicker/jump.
                 if (description != null) ...[
                   const SizedBox(height: 4),
-                  AnimatedSize(
+                  AnimatedCrossFade(
                     duration: const Duration(milliseconds: 160),
                     alignment: Alignment.topLeft,
-                    child: Text(
+                    crossFadeState: _expanded
+                        ? CrossFadeState.showSecond
+                        : CrossFadeState.showFirst,
+                    firstChild: Text(
                       description,
-                      maxLines: _expanded ? null : 3,
-                      overflow: _expanded
-                          ? TextOverflow.visible
-                          : TextOverflow.fade,
+                      maxLines: 3,
+                      overflow: TextOverflow.fade,
                       softWrap: true,
+                      style: TextStyle(
+                        color: eventStyle.foreground.withValues(alpha: 0.78),
+                      ),
+                    ),
+                    secondChild: Text(
+                      description,
                       style: TextStyle(
                         color: eventStyle.foreground.withValues(alpha: 0.78),
                       ),
