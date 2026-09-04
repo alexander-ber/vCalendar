@@ -4,7 +4,7 @@
     <uses-permission android:name="android.permission.INTERNET" />
 
     <application
-        android:label="vcalendar_mobile"
+        android:label="VCalendar"
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher">
         <activity
