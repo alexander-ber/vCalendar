@@ -4266,15 +4266,27 @@ class _EventTileState extends State<_EventTile> {
     );
   }
 
+  // Background/text always follow the active app theme (day/night/sepia) -
+  // only the border keeps the event-category color, matching the calendar
+  // grid's dots. Per-tone background/foreground from _eventVisualStyleForTone
+  // is designed for small color chips, not a full-size readable text card,
+  // and could land on low-contrast pairs (e.g. reddish text on a reddish
+  // festival background) depending on theme.
   _EventVisualStyle _eventStyle(BuildContext context, VCalendarColors colors) {
     final theme = Theme.of(context);
-    return _eventVisualStyleForTone(
+    final toneStyle = _eventVisualStyleForTone(
       _webEventTone(event) ?? 'festival',
       isDark: theme.brightness == Brightness.dark,
       isSepia: theme.scaffoldBackgroundColor == const Color(0xFFF7EFDF),
       surface: theme.colorScheme.surface,
       primary: theme.colorScheme.primary,
       mutedText: colors.mutedText,
+    );
+    return _EventVisualStyle(
+      tone: toneStyle.tone,
+      background: theme.colorScheme.surface,
+      foreground: theme.colorScheme.onSurface,
+      border: toneStyle.border,
     );
   }
 
