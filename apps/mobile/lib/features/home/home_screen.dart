@@ -460,6 +460,10 @@ class _HomeScreenState extends State<HomeScreen> {
                             entry.key: entry.value.first,
                         },
                         onlyDaysWithEvents: widget.settings.onlyDaysWithEvents,
+                        digitFont: widget.settings.calendarDigitFont,
+                        digitBold: widget.settings.calendarDigitBold,
+                        digitItalic: widget.settings.calendarDigitItalic,
+                        digitScale: widget.settings.calendarDigitScale,
                         onMonthPickerRequested: () =>
                             _openMonthPicker(initialMonth: _visibleMonth),
                         onPreviousMonth: () {
@@ -674,9 +678,7 @@ class _HomeScreenState extends State<HomeScreen> {
           ..add('UID:${event.id}-${_dateKey(date)}@vcalendar-mobile')
           ..add('DTSTAMP:${_icsDateTime(stamp)}')
           ..add('DTSTART;VALUE=DATE:${_icsDate(date)}')
-          ..add(
-            'DTEND;VALUE=DATE:${_icsDate(addCalendarDays(date, 1))}',
-          )
+          ..add('DTEND;VALUE=DATE:${_icsDate(addCalendarDays(date, 1))}')
           ..add('SUMMARY:${_icsText(event.name)}');
         final description = event.shortDescription ?? event.fullDescription;
         if (description != null && description.trim().isNotEmpty) {
@@ -1307,6 +1309,66 @@ class _SettingsSheetState extends State<_SettingsSheet> {
                   selected: {_settings.fontScale},
                   onSelectionChanged: (value) {
                     _change(_settings.copyWith(fontScale: value.first));
+                  },
+                ),
+                const SizedBox(height: 14),
+                Text(_isRu ? 'Шрифт цифр в календаре' : 'Calendar digit font'),
+                const SizedBox(height: 8),
+                Wrap(
+                  spacing: 8,
+                  runSpacing: 8,
+                  children: CalendarDigitFont.values.map((id) {
+                    final selected = _settings.calendarDigitFont == id;
+                    return ChoiceChip(
+                      label: Text(
+                        CalendarDigitFont.label(id, isRu: _isRu),
+                        style: TextStyle(
+                          fontFamily: id == CalendarDigitFont.system
+                              ? null
+                              : id,
+                        ),
+                      ),
+                      selected: selected,
+                      onSelected: (_) {
+                        _change(_settings.copyWith(calendarDigitFont: id));
+                      },
+                    );
+                  }).toList(),
+                ),
+                const SizedBox(height: 10),
+                Wrap(
+                  spacing: 8,
+                  children: [
+                    FilterChip(
+                      label: Text(_isRu ? 'Жирный' : 'Bold'),
+                      selected: _settings.calendarDigitBold,
+                      onSelected: (value) {
+                        _change(_settings.copyWith(calendarDigitBold: value));
+                      },
+                    ),
+                    FilterChip(
+                      label: Text(_isRu ? 'Курсив' : 'Italic'),
+                      selected: _settings.calendarDigitItalic,
+                      onSelected: (value) {
+                        _change(_settings.copyWith(calendarDigitItalic: value));
+                      },
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 10),
+                Text(
+                  _isRu
+                      ? 'Размер цифр: ${(_settings.calendarDigitScale * 100).round()}%'
+                      : 'Digit size: ${(_settings.calendarDigitScale * 100).round()}%',
+                ),
+                Slider(
+                  value: _settings.calendarDigitScale,
+                  min: 0.7,
+                  max: 1.6,
+                  divisions: 18,
+                  label: '${(_settings.calendarDigitScale * 100).round()}%',
+                  onChanged: (value) {
+                    _change(_settings.copyWith(calendarDigitScale: value));
                   },
                 ),
               ],
@@ -2439,6 +2501,10 @@ class _MonthCalendarCard extends StatelessWidget {
     required this.eventCounts,
     required this.eventCategories,
     required this.onlyDaysWithEvents,
+    required this.digitFont,
+    required this.digitBold,
+    required this.digitItalic,
+    required this.digitScale,
     required this.onMonthPickerRequested,
     required this.onPreviousMonth,
     required this.onNextMonth,
@@ -2454,6 +2520,10 @@ class _MonthCalendarCard extends StatelessWidget {
   final Map<String, int> eventCounts;
   final Map<String, String> eventCategories;
   final bool onlyDaysWithEvents;
+  final String digitFont;
+  final bool digitBold;
+  final bool digitItalic;
+  final double digitScale;
   final VoidCallback onMonthPickerRequested;
   final VoidCallback onPreviousMonth;
   final VoidCallback onNextMonth;
@@ -2547,6 +2617,10 @@ class _MonthCalendarCard extends StatelessWidget {
                         onlyDaysWithEvents &&
                         day.inCurrentMonth &&
                         (eventCounts[_dateKey(day.date)] ?? 0) == 0,
+                    digitFont: digitFont,
+                    digitBold: digitBold,
+                    digitItalic: digitItalic,
+                    digitScale: digitScale,
                     onTap: () => onDaySelected(day.date),
                   );
                 },
@@ -2824,6 +2898,10 @@ class _DayCell extends StatelessWidget {
     required this.eventCount,
     required this.eventCategory,
     required this.dimEmptyEventDay,
+    required this.digitFont,
+    required this.digitBold,
+    required this.digitItalic,
+    required this.digitScale,
     required this.onTap,
   });
 
@@ -2833,6 +2911,10 @@ class _DayCell extends StatelessWidget {
   final int eventCount;
   final String? eventCategory;
   final bool dimEmptyEventDay;
+  final String digitFont;
+  final bool digitBold;
+  final bool digitItalic;
+  final double digitScale;
   final VoidCallback onTap;
 
   @override
@@ -2909,8 +2991,14 @@ class _DayCell extends StatelessWidget {
                   Text(
                     '${day.date.day}',
                     style: theme.textTheme.titleMedium?.copyWith(
-                      fontSize: compactMode ? 18 : 20,
-                      fontWeight: FontWeight.w900,
+                      fontFamily: digitFont == CalendarDigitFont.system
+                          ? null
+                          : digitFont,
+                      fontSize: (compactMode ? 18 : 20) * digitScale,
+                      fontWeight: digitBold ? FontWeight.w900 : FontWeight.w600,
+                      fontStyle: digitItalic
+                          ? FontStyle.italic
+                          : FontStyle.normal,
                       color: dimEmptyEventDay
                           ? textColor.withValues(alpha: 0.32)
                           : dayTextColor,
@@ -4089,11 +4177,10 @@ class _EventTileState extends State<_EventTile> {
                     Expanded(
                       child: Text(
                         event.name,
-                        style: Theme.of(context).textTheme.titleSmall
-                            ?.copyWith(
-                              color: eventStyle.foreground,
-                              fontWeight: FontWeight.w900,
-                            ),
+                        style: Theme.of(context).textTheme.titleSmall?.copyWith(
+                          color: eventStyle.foreground,
+                          fontWeight: FontWeight.w900,
+                        ),
                       ),
                     ),
                     Icon(
