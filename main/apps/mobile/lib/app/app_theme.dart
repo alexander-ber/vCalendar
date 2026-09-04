@@ -204,11 +204,11 @@ class AppTheme {
               checkmarkColor: palette.primary,
               labelStyle: TextStyle(
                 color: palette.text,
-                fontWeight: FontWeight.w700,
+                fontWeight: FontWeight.w500,
               ),
               secondaryLabelStyle: TextStyle(
                 color: palette.primary,
-                fontWeight: FontWeight.w900,
+                fontWeight: FontWeight.w600,
               ),
               side: BorderSide(color: palette.outline),
               shape: RoundedRectangleBorder(
