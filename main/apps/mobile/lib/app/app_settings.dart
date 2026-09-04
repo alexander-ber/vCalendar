@@ -12,6 +12,10 @@ class AppSettings {
     required this.vaishnavaEventKind,
     required this.contentAutoUpdate,
     required this.contentUpdateIntervalHours,
+    required this.calendarDigitFont,
+    required this.calendarDigitBold,
+    required this.calendarDigitItalic,
+    required this.calendarDigitScale,
   });
 
   static const defaults = AppSettings(
@@ -25,6 +29,10 @@ class AppSettings {
     vaishnavaEventKind: 'any',
     contentAutoUpdate: true,
     contentUpdateIntervalHours: 24,
+    calendarDigitFont: CalendarDigitFont.system,
+    calendarDigitBold: false,
+    calendarDigitItalic: false,
+    calendarDigitScale: 1,
   );
 
   final String lang;
@@ -37,6 +45,10 @@ class AppSettings {
   final String vaishnavaEventKind;
   final bool contentAutoUpdate;
   final int contentUpdateIntervalHours;
+  final String calendarDigitFont;
+  final bool calendarDigitBold;
+  final bool calendarDigitItalic;
+  final double calendarDigitScale;
 
   AppSettings copyWith({
     String? lang,
@@ -49,6 +61,10 @@ class AppSettings {
     String? vaishnavaEventKind,
     bool? contentAutoUpdate,
     int? contentUpdateIntervalHours,
+    String? calendarDigitFont,
+    bool? calendarDigitBold,
+    bool? calendarDigitItalic,
+    double? calendarDigitScale,
   }) {
     return AppSettings(
       lang: lang ?? this.lang,
@@ -63,6 +79,60 @@ class AppSettings {
       contentAutoUpdate: contentAutoUpdate ?? this.contentAutoUpdate,
       contentUpdateIntervalHours:
           contentUpdateIntervalHours ?? this.contentUpdateIntervalHours,
+      calendarDigitFont: calendarDigitFont ?? this.calendarDigitFont,
+      calendarDigitBold: calendarDigitBold ?? this.calendarDigitBold,
+      calendarDigitItalic: calendarDigitItalic ?? this.calendarDigitItalic,
+      calendarDigitScale: calendarDigitScale ?? this.calendarDigitScale,
     );
+  }
+}
+
+/// Font family ids for the calendar day-number digits (settings screen).
+/// Bold/italic are applied on top via [FontWeight]/[FontStyle], not baked
+/// into separate bundled files - see pubspec.yaml's `fonts:` section for
+/// the actual asset registrations these family names resolve to.
+class CalendarDigitFont {
+  static const system = 'system';
+  static const inter = 'Inter';
+  static const nunito = 'Nunito';
+  static const yatraOne = 'YatraOne';
+  static const khand = 'Khand';
+  static const rajdhani = 'Rajdhani';
+  static const dancingScript = 'DancingScript';
+  static const sacramento = 'Sacramento';
+
+  static const values = [
+    system,
+    inter,
+    nunito,
+    yatraOne,
+    khand,
+    rajdhani,
+    dancingScript,
+    sacramento,
+  ];
+
+  static String label(String id, {required bool isRu}) {
+    const labelsRu = {
+      system: 'По умолчанию',
+      inter: 'Inter',
+      nunito: 'Nunito',
+      yatraOne: 'Yatra One',
+      khand: 'Khand',
+      rajdhani: 'Rajdhani',
+      dancingScript: 'Dancing Script',
+      sacramento: 'Sacramento',
+    };
+    const labelsEn = {
+      system: 'Default',
+      inter: 'Inter',
+      nunito: 'Nunito',
+      yatraOne: 'Yatra One',
+      khand: 'Khand',
+      rajdhani: 'Rajdhani',
+      dancingScript: 'Dancing Script',
+      sacramento: 'Sacramento',
+    };
+    return (isRu ? labelsRu : labelsEn)[id] ?? id;
   }
 }

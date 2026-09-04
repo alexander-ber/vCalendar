@@ -15,6 +15,10 @@ class PreferencesStore {
   static const _contentAutoUpdate = 'content_auto_update';
   static const _contentUpdateIntervalHours = 'content_update_interval_hours';
   static const _lastContentUpdateCheck = 'last_content_update_check';
+  static const _calendarDigitFont = 'calendar_digit_font';
+  static const _calendarDigitBold = 'calendar_digit_bold';
+  static const _calendarDigitItalic = 'calendar_digit_italic';
+  static const _calendarDigitScale = 'calendar_digit_scale';
 
   Future<AppSettings> load() async {
     final prefs = await SharedPreferences.getInstance();
@@ -41,6 +45,18 @@ class PreferencesStore {
       contentUpdateIntervalHours:
           prefs.getInt(_contentUpdateIntervalHours) ??
           AppSettings.defaults.contentUpdateIntervalHours,
+      calendarDigitFont:
+          prefs.getString(_calendarDigitFont) ??
+          AppSettings.defaults.calendarDigitFont,
+      calendarDigitBold:
+          prefs.getBool(_calendarDigitBold) ??
+          AppSettings.defaults.calendarDigitBold,
+      calendarDigitItalic:
+          prefs.getBool(_calendarDigitItalic) ??
+          AppSettings.defaults.calendarDigitItalic,
+      calendarDigitScale:
+          prefs.getDouble(_calendarDigitScale) ??
+          AppSettings.defaults.calendarDigitScale,
     );
   }
 
@@ -62,6 +78,10 @@ class PreferencesStore {
       _contentUpdateIntervalHours,
       settings.contentUpdateIntervalHours,
     );
+    await prefs.setString(_calendarDigitFont, settings.calendarDigitFont);
+    await prefs.setBool(_calendarDigitBold, settings.calendarDigitBold);
+    await prefs.setBool(_calendarDigitItalic, settings.calendarDigitItalic);
+    await prefs.setDouble(_calendarDigitScale, settings.calendarDigitScale);
   }
 
   Future<bool> isContentUpdateDue(int intervalHours) async {
