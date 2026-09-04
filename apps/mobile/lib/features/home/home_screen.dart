@@ -3014,7 +3014,7 @@ class _DayCell extends StatelessWidget {
                             color: colors.todayMarker,
                             borderRadius: BorderRadius.circular(8),
                           ),
-                          child: const SizedBox(width: 18, height: 4),
+                          child: const SizedBox(width: 18, height: 2),
                         ),
                       ),
                     ),
