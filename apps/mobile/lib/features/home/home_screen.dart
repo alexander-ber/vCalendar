@@ -2995,7 +2995,7 @@ class _DayCell extends StatelessWidget {
                           ? null
                           : digitFont,
                       fontSize: (compactMode ? 18 : 20) * digitScale,
-                      fontWeight: digitBold ? FontWeight.w900 : FontWeight.w600,
+                      fontWeight: digitBold ? FontWeight.w900 : FontWeight.w400,
                       fontStyle: digitItalic
                           ? FontStyle.italic
                           : FontStyle.normal,
@@ -3008,7 +3008,7 @@ class _DayCell extends StatelessWidget {
                     Align(
                       alignment: Alignment.bottomCenter,
                       child: Padding(
-                        padding: EdgeInsets.only(bottom: compactMode ? 3 : 4),
+                        padding: EdgeInsets.only(bottom: compactMode ? 6 : 7),
                         child: DecoratedBox(
                           decoration: BoxDecoration(
                             color: colors.todayMarker,
