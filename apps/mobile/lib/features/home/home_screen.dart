@@ -4041,15 +4041,27 @@ class _EventsSection extends StatelessWidget {
   }
 }
 
-class _EventTile extends StatelessWidget {
+class _EventTile extends StatefulWidget {
   const _EventTile({required this.event, this.paranaWindow});
 
   final MobileEvent event;
   final _ParanaWindowLabel? paranaWindow;
 
   @override
+  State<_EventTile> createState() => _EventTileState();
+}
+
+class _EventTileState extends State<_EventTile> {
+  bool _expanded = false;
+
+  MobileEvent get event => widget.event;
+  _ParanaWindowLabel? get paranaWindow => widget.paranaWindow;
+
+  @override
   Widget build(BuildContext context) {
-    final split = _splitDescription();
+    final description = _cleanDescription(
+      event.fullDescription ?? event.shortDescription,
+    );
     final colors = Theme.of(context).extension<VCalendarColors>()!;
     final eventStyle = _eventStyle(context, colors);
     return Padding(
@@ -4064,87 +4076,96 @@ class _EventTile extends StatelessWidget {
           ),
           borderRadius: BorderRadius.circular(14),
         ),
-        child: ExpansionTile(
-          // Collapsed by default: the collapsed summary already shows the
-          // actual "с A по Б" parana window, so the formula breakdown
-          // (1/3, 1/5, tithi end) is supplementary detail behind a tap,
-          // not the only place the window is visible.
-          iconColor: eventStyle.foreground.withValues(alpha: 0.74),
-          collapsedIconColor: eventStyle.foreground.withValues(alpha: 0.64),
-          tilePadding: const EdgeInsets.symmetric(horizontal: 12),
-          childrenPadding: const EdgeInsets.fromLTRB(12, 0, 12, 12),
-          title: Text(
-            event.name,
-            style: Theme.of(context).textTheme.titleSmall?.copyWith(
-              color: eventStyle.foreground,
-              fontWeight: FontWeight.w900,
-            ),
-          ),
-          subtitle: paranaWindow == null && split.preview == null
-              ? null
-              : Column(
+        child: InkWell(
+          onTap: () => setState(() => _expanded = !_expanded),
+          child: Padding(
+            padding: const EdgeInsets.all(12),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Row(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    if (paranaWindow != null) ...[
-                      const SizedBox(height: 4),
-                      Text(
-                        paranaWindow!.summary,
-                        maxLines: 1,
-                        overflow: TextOverflow.ellipsis,
-                        style: TextStyle(
-                          color: eventStyle.foreground,
-                          fontWeight: FontWeight.w900,
-                        ),
+                    Expanded(
+                      child: Text(
+                        event.name,
+                        style: Theme.of(context).textTheme.titleSmall
+                            ?.copyWith(
+                              color: eventStyle.foreground,
+                              fontWeight: FontWeight.w900,
+                            ),
                       ),
-                    ],
-                    if (split.preview != null)
-                      Text(
-                        split.preview!,
-                        style: TextStyle(
-                          color: eventStyle.foreground.withValues(alpha: 0.78),
-                        ),
+                    ),
+                    Icon(
+                      _expanded
+                          ? Icons.keyboard_arrow_up
+                          : Icons.keyboard_arrow_down,
+                      color: eventStyle.foreground.withValues(
+                        alpha: _expanded ? 0.74 : 0.64,
                       ),
+                    ),
                   ],
                 ),
-          children: [
-            if (paranaWindow != null) ...[
-              Align(
-                alignment: Alignment.centerLeft,
-                child: Text(
-                  paranaWindow!.formulaTitle,
-                  style: TextStyle(
-                    color: eventStyle.foreground,
-                    fontWeight: FontWeight.w900,
+                if (paranaWindow != null) ...[
+                  const SizedBox(height: 4),
+                  Text(
+                    paranaWindow!.summary,
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                    style: TextStyle(
+                      color: eventStyle.foreground,
+                      fontWeight: FontWeight.w900,
+                    ),
                   ),
-                ),
-              ),
-              const SizedBox(height: 4),
-              for (final line in paranaWindow!.formulaLines)
-                Align(
-                  alignment: Alignment.centerLeft,
-                  child: Padding(
-                    padding: const EdgeInsets.only(top: 4),
+                ],
+                // One Text for the whole description at all times, so
+                // expanding just reveals more of the same wrapped
+                // paragraph in place - not a second, separately-positioned
+                // widget starting a new block below it.
+                if (description != null) ...[
+                  const SizedBox(height: 4),
+                  AnimatedSize(
+                    duration: const Duration(milliseconds: 160),
+                    alignment: Alignment.topLeft,
                     child: Text(
-                      line,
+                      description,
+                      maxLines: _expanded ? null : 3,
+                      overflow: _expanded
+                          ? TextOverflow.visible
+                          : TextOverflow.fade,
+                      softWrap: true,
                       style: TextStyle(
-                        color: eventStyle.foreground.withValues(alpha: 0.86),
-                        fontWeight: FontWeight.w700,
-                        height: 1.25,
+                        color: eventStyle.foreground.withValues(alpha: 0.78),
                       ),
                     ),
                   ),
-                ),
-              const SizedBox(height: 8),
-            ],
-            if (split.remainder != null)
-              Align(
-                alignment: Alignment.centerLeft,
-                child: Text(
-                  split.remainder!,
-                  style: TextStyle(color: eventStyle.foreground),
-                ),
-              ),
-          ],
+                ],
+                if (_expanded && paranaWindow != null) ...[
+                  const SizedBox(height: 8),
+                  Text(
+                    paranaWindow!.formulaTitle,
+                    style: TextStyle(
+                      color: eventStyle.foreground,
+                      fontWeight: FontWeight.w900,
+                    ),
+                  ),
+                  const SizedBox(height: 4),
+                  for (final line in paranaWindow!.formulaLines)
+                    Padding(
+                      padding: const EdgeInsets.only(top: 4),
+                      child: Text(
+                        line,
+                        style: TextStyle(
+                          color: eventStyle.foreground.withValues(alpha: 0.86),
+                          fontWeight: FontWeight.w700,
+                          height: 1.25,
+                        ),
+                      ),
+                    ),
+                ],
+              ],
+            ),
+          ),
         ),
       ),
     );
@@ -4174,39 +4195,6 @@ class _EventTile extends StatelessWidget {
         .replaceAll('__', '')
         .trim();
   }
-
-  /// Splits the description into a short collapsed [_SplitDescription.preview]
-  /// and the rest of the same text as [_SplitDescription.remainder], cut at
-  /// the last word boundary within [maxChars] - not two independently
-  /// authored strings (short_description often duplicated or diverged from
-  /// full_description's opening), and not [Text]'s own width-based ellipsis
-  /// (which cuts mid-word, e.g. "Я ни..."/"В..."). preview + remainder is
-  /// exactly the original text, so expanding always continues from the next
-  /// word instead of repeating or jumping to an unrelated paragraph.
-  _SplitDescription _splitDescription({int maxChars = 110}) {
-    final full =
-        _cleanDescription(event.fullDescription) ??
-        _cleanDescription(event.shortDescription);
-    if (full == null) return const _SplitDescription(preview: null, remainder: null);
-    if (full.length <= maxChars) {
-      return _SplitDescription(preview: full, remainder: null);
-    }
-    final cut = full.substring(0, maxChars);
-    final lastSpace = cut.lastIndexOf(' ');
-    final cutPoint = lastSpace > 0 ? lastSpace : maxChars;
-    final remainder = full.substring(cutPoint).trim();
-    return _SplitDescription(
-      preview: full.substring(0, cutPoint).trimRight(),
-      remainder: remainder.isEmpty ? null : remainder,
-    );
-  }
-}
-
-class _SplitDescription {
-  const _SplitDescription({required this.preview, required this.remainder});
-
-  final String? preview;
-  final String? remainder;
 }
 
 class _ParanaWindowLabel {
