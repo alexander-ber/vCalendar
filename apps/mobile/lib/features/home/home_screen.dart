@@ -3008,7 +3008,7 @@ class _DayCell extends StatelessWidget {
                     Align(
                       alignment: Alignment.bottomCenter,
                       child: Padding(
-                        padding: EdgeInsets.only(bottom: compactMode ? 6 : 7),
+                        padding: EdgeInsets.only(bottom: compactMode ? 9 : 10),
                         child: DecoratedBox(
                           decoration: BoxDecoration(
                             color: colors.todayMarker,
