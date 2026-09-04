@@ -1,3 +1,4 @@
+import '../date_utils.dart';
 import '../models/month_day.dart';
 
 class MonthGridService {
@@ -11,11 +12,11 @@ class MonthGridService {
     final normalizedToday = _dateOnly(today ?? DateTime.now());
     final first = DateTime(month.year, month.month);
     final daysBefore = (first.weekday % 7 - weekStart) % 7;
-    final start = first.subtract(Duration(days: daysBefore));
+    final start = addCalendarDays(first, -daysBefore);
     final days = <MonthDay>[];
 
     for (var index = 0; index < 42; index += 1) {
-      final date = start.add(Duration(days: index));
+      final date = addCalendarDays(start, index);
       days.add(
         MonthDay(
           date: date,

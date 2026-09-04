@@ -1,3 +1,4 @@
+import '../date_utils.dart';
 import '../models/calendar_location.dart';
 import '../rules/fact_functions.dart';
 import 'panchanga_calculator.dart';
@@ -88,7 +89,7 @@ class ParanaEngine {
     required CalendarLocation location,
     required PanchangaCalculator calculator,
   }) {
-    final paranaDate = fastDate.add(const Duration(days: 1));
+    final paranaDate = addCalendarDays(fastDate, 1);
     final astronomy = calculator.calculateDay(
       date: paranaDate,
       location: location,
