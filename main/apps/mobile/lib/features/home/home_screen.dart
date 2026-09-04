@@ -4049,7 +4049,7 @@ class _EventTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final description = _expandedDescription();
+    final split = _splitDescription();
     final colors = Theme.of(context).extension<VCalendarColors>()!;
     final eventStyle = _eventStyle(context, colors);
     return Padding(
@@ -4080,7 +4080,7 @@ class _EventTile extends StatelessWidget {
               fontWeight: FontWeight.w900,
             ),
           ),
-          subtitle: paranaWindow == null && event.shortDescription == null
+          subtitle: paranaWindow == null && split.preview == null
               ? null
               : Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -4097,15 +4097,9 @@ class _EventTile extends StatelessWidget {
                         ),
                       ),
                     ],
-                    if (event.shortDescription != null)
+                    if (split.preview != null)
                       Text(
-                        // No maxLines/ellipsis here on purpose: _previewText
-                        // already cuts at a word boundary within a budget
-                        // short enough to fit its own 2-3 lines, so it's the
-                        // one place that decides where the text ends -
-                        // letting Text's width-based ellipsis also apply on
-                        // top of it is what caused the mid-word "Я ни..." cut.
-                        _previewText(event.shortDescription!),
+                        split.preview!,
                         style: TextStyle(
                           color: eventStyle.foreground.withValues(alpha: 0.78),
                         ),
@@ -4142,13 +4136,11 @@ class _EventTile extends StatelessWidget {
                 ),
               const SizedBox(height: 8),
             ],
-            if (description == null || description.trim().isEmpty)
-              const SizedBox.shrink()
-            else
+            if (split.remainder != null)
               Align(
                 alignment: Alignment.centerLeft,
                 child: Text(
-                  description,
+                  split.remainder!,
                   style: TextStyle(color: eventStyle.foreground),
                 ),
               ),
@@ -4170,19 +4162,6 @@ class _EventTile extends StatelessWidget {
     );
   }
 
-  /// Truncates at the last word boundary within [maxChars] instead of
-  /// relying solely on [Text]'s width-based ellipsis, which cuts mid-word
-  /// (e.g. "Я ни...") whenever a line break lands inside a word. [maxChars]
-  /// is generous relative to the 2-line collapsed preview it's used for, so
-  /// this is normally what actually determines where the text is cut.
-  String _previewText(String text, {int maxChars = 140}) {
-    if (text.length <= maxChars) return text;
-    final cut = text.substring(0, maxChars);
-    final lastSpace = cut.lastIndexOf(' ');
-    final trimmed = lastSpace > 0 ? cut.substring(0, lastSpace) : cut;
-    return '${trimmed.trimRight()}…';
-  }
-
   String? _cleanDescription(String? value) {
     final text = value?.trim();
     if (text == null || text.isEmpty) return null;
@@ -4196,22 +4175,38 @@ class _EventTile extends StatelessWidget {
         .trim();
   }
 
-  /// short_description is often just the opening paragraph of
-  /// full_description (a "hook" quote reused as the collapsed preview) -
-  /// since that preview stays visible in [subtitle] even when expanded,
-  /// showing the same paragraph again at the top of the expanded body read
-  /// as duplicated text. Strip it so the body continues from where the
-  /// preview left off instead of repeating it.
-  String? _expandedDescription() {
-    final full = _cleanDescription(event.fullDescription);
-    if (full == null) return null;
-    final short = _cleanDescription(event.shortDescription);
-    if (short != null && full.startsWith(short)) {
-      final remainder = full.substring(short.length).trim();
-      return remainder.isEmpty ? null : remainder;
+  /// Splits the description into a short collapsed [_SplitDescription.preview]
+  /// and the rest of the same text as [_SplitDescription.remainder], cut at
+  /// the last word boundary within [maxChars] - not two independently
+  /// authored strings (short_description often duplicated or diverged from
+  /// full_description's opening), and not [Text]'s own width-based ellipsis
+  /// (which cuts mid-word, e.g. "Я ни..."/"В..."). preview + remainder is
+  /// exactly the original text, so expanding always continues from the next
+  /// word instead of repeating or jumping to an unrelated paragraph.
+  _SplitDescription _splitDescription({int maxChars = 110}) {
+    final full =
+        _cleanDescription(event.fullDescription) ??
+        _cleanDescription(event.shortDescription);
+    if (full == null) return const _SplitDescription(preview: null, remainder: null);
+    if (full.length <= maxChars) {
+      return _SplitDescription(preview: full, remainder: null);
     }
-    return full;
+    final cut = full.substring(0, maxChars);
+    final lastSpace = cut.lastIndexOf(' ');
+    final cutPoint = lastSpace > 0 ? lastSpace : maxChars;
+    final remainder = full.substring(cutPoint).trim();
+    return _SplitDescription(
+      preview: '${full.substring(0, cutPoint).trimRight()}…',
+      remainder: remainder.isEmpty ? null : remainder,
+    );
   }
+}
+
+class _SplitDescription {
+  const _SplitDescription({required this.preview, required this.remainder});
+
+  final String? preview;
+  final String? remainder;
 }
 
 class _ParanaWindowLabel {
