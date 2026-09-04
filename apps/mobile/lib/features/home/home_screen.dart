@@ -4049,9 +4049,7 @@ class _EventTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final description = _cleanDescription(
-      event.fullDescription ?? event.shortDescription,
-    );
+    final description = _expandedDescription();
     final colors = Theme.of(context).extension<VCalendarColors>()!;
     final eventStyle = _eventStyle(context, colors);
     return Padding(
@@ -4179,6 +4177,23 @@ class _EventTile extends StatelessWidget {
         .replaceAll('**', '')
         .replaceAll('__', '')
         .trim();
+  }
+
+  /// short_description is often just the opening paragraph of
+  /// full_description (a "hook" quote reused as the collapsed preview) -
+  /// since that preview stays visible in [subtitle] even when expanded,
+  /// showing the same paragraph again at the top of the expanded body read
+  /// as duplicated text. Strip it so the body continues from where the
+  /// preview left off instead of repeating it.
+  String? _expandedDescription() {
+    final full = _cleanDescription(event.fullDescription);
+    if (full == null) return null;
+    final short = _cleanDescription(event.shortDescription);
+    if (short != null && full.startsWith(short)) {
+      final remainder = full.substring(short.length).trim();
+      return remainder.isEmpty ? null : remainder;
+    }
+    return full;
   }
 }
 
