@@ -5,6 +5,7 @@ import 'ekadashi_classifier.dart';
 import 'event_matcher.dart';
 import 'generated_calendar_events.dart';
 import 'panchanga_calculator.dart';
+import 'parana_engine.dart';
 
 /// Assembles the final per-day event list mobile should display, mirroring
 /// js/calendar-engine.js's `attachEvents` orchestration: Ekadashi fast/
@@ -24,11 +25,26 @@ class CalendarEventEngine {
     required PanchangaCalculator calculator,
   }) : _classifier = EkadashiClassifier(engineRules, calculator: calculator),
        _matcher = EventMatcher(calculator: calculator),
-       _generated = const GeneratedCalendarEvents();
+       _generated = const GeneratedCalendarEvents(),
+       _parana = ParanaEngine(engineRules),
+       _calculator = calculator;
 
   final EkadashiClassifier _classifier;
   final EventMatcher _matcher;
   final GeneratedCalendarEvents _generated;
+  final ParanaEngine _parana;
+  final PanchangaCalculator _calculator;
+
+  /// Event ids that fast like Ekadashi (all-day fast, next-day parana using
+  /// the identical sunrise-to-min(next-tithi-end, 1/3-daylight) formula) but
+  /// are matched as an ordinary rule event rather than through the Ekadashi
+  /// classifier - currently only Sri Krishna Janmashtami. The fast day is
+  /// whichever day [EventMatcher.matchEventsForDay] actually placed that
+  /// event id on (already handles the double-Ashtami tie-break, ksaya
+  /// shift, etc.), so this only reads the matched result, it doesn't
+  /// re-derive the match. Mirrors js/calendar-engine.js's
+  /// `SINGLE_DAY_FAST_EVENT_IDS`/`addSingleDayFastParanaEvents`.
+  static const _singleDayFastEventIds = {'janmashtami'};
 
   /// [days] should include padding before/after the dates you actually need
   /// results for (Ekadashi/event matching read D-1/D+1 neighbors, and
@@ -44,6 +60,7 @@ class CalendarEventEngine {
     final ekadashi = _classifier.classifyRange(days, location);
     final byDate = <String, List<MobileEvent>>{};
     final shiftedByDate = <String, List<MobileEvent>>{};
+    final singleDayFastParanaByDate = <String, List<MobileEvent>>{};
     // The `ekadashi` category rows exist for name/content lookup only
     // (mirrors js/ekadashi-data.js EKADASHI_DB, which js/ekadashi-engine.js
     // reads separately from js/events-data.js's EVENTS) - they must never
@@ -87,6 +104,29 @@ class CalendarEventEngine {
         shiftedByDate.putIfAbsent(targetKey, () => []).add(event);
       }
 
+      // Single-day fasts (Janmashtami) that aren't Ekadashi but get the
+      // same next-day parana treatment - scheduled onto nextDay the same
+      // way observance_offset_days shifts are (this loop reaches nextDay's
+      // own iteration later, since offset is always +1 here).
+      if (nextDay != null) {
+        for (final event in matched) {
+          if (!_singleDayFastEventIds.contains(event.id)) continue;
+          final fastTithiNumber = day.tithiAtSunrise.number;
+          final paranaTithiNumber = (fastTithiNumber % 30) + 1;
+          final parana = _parana.computeSimple(
+            fastDate: day.date,
+            paranaTithiNumber: paranaTithiNumber,
+            location: location,
+            calculator: _calculator,
+          );
+          if (parana.start == null) continue;
+          final targetKey = _dateKey(nextDay.date);
+          singleDayFastParanaByDate
+              .putIfAbsent(targetKey, () => [])
+              .add(_singleDayFastParanaEvent(event, day, isRu));
+        }
+      }
+
       final vrataEvents = _vrataEventsForDay(
         key: key,
         ekadashi: ekadashi,
@@ -99,6 +139,7 @@ class CalendarEventEngine {
         ...vrataEvents,
         ...currentGenerated,
         ...(shiftedByDate[key] ?? const []),
+        ...(singleDayFastParanaByDate[key] ?? const []),
       ];
     }
 
@@ -225,6 +266,37 @@ class CalendarEventEngine {
     );
   }
 
+  // ---- single-day fast parana entries (Janmashtami) ----
+
+  MobileEvent _singleDayFastParanaEvent(
+    MobileEvent fastEvent,
+    PanchangaDay fastDay,
+    bool isRu,
+  ) {
+    return MobileEvent(
+      id: 'parana_${fastEvent.id}_${_dateKey(fastDay.date)}',
+      category: 'vrata',
+      eventType: 'janmashtami_parana',
+      masa: '',
+      masaType: null,
+      paksha: fastEvent.paksha,
+      tithi: '',
+      naksatra: null,
+      timingRule: null,
+      gaudiyaMasa: null,
+      anchorEventId: null,
+      observanceOffsetDays: 0,
+      disabled: false,
+      allowInAdhika: true,
+      priority: 10,
+      name: isRu
+          ? 'Паран для ${fastEvent.name}'
+          : 'Parana for ${fastEvent.name}',
+      shortDescription: null,
+      fullDescription: null,
+    );
+  }
+
   /// Mirrors js/ekadashi-engine.js:40-58 `ekadashiRecord`: this is a
   /// masa+paksha field MATCH against the `ekadashi` rule table, not an id
   /// lookup - `data/ekadashi.json`'s ids (e.g. `utpanna`) don't encode
@@ -337,6 +409,53 @@ class CalendarEventEngine {
     final key = _dateKey(paranaDate);
     for (final fast in result.fastsByFastDate.values) {
       if (_dateKey(fast.parana.date) == key) return fast;
+    }
+    return null;
+  }
+
+  /// Looks up the raw [ParanaResult] for the single-day-fast (Janmashtami)
+  /// parana that falls on [paranaDate] within [days]. Mirrors
+  /// [findFastByParanaDate] above, but for the Janmashtami-style fast,
+  /// which isn't tracked by [EkadashiClassifier] - so this re-runs
+  /// [EventMatcher.matchEventsForDay] instead of reading a classifier
+  /// result.
+  ParanaResult? findSingleDayFastParanaByDate({
+    required List<PanchangaDay> days,
+    required CalendarLocation location,
+    required List<MobileEvent> eventRules,
+    required DateTime paranaDate,
+  }) {
+    final ekadashi = _classifier.classifyRange(days, location);
+    final genericEventRules = eventRules
+        .where((e) => e.category != 'ekadashi')
+        .toList(growable: false);
+    final targetKey = _dateKey(paranaDate);
+
+    for (var i = 0; i < days.length - 1; i += 1) {
+      final day = days[i];
+      final nextDay = days[i + 1];
+      if (_dateKey(nextDay.date) != targetKey) continue;
+      final previousDay = i > 0 ? days[i - 1] : null;
+      final matched = _matcher.matchEventsForDay(
+        day: day,
+        events: genericEventRules,
+        timezone: location.timezone,
+        nextDay: nextDay,
+        previousDay: previousDay,
+        ekadashiFastsByDate: ekadashi.fastsByFastDate,
+      );
+      final hasSingleDayFast = matched.any(
+        (event) => _singleDayFastEventIds.contains(event.id),
+      );
+      if (!hasSingleDayFast) continue;
+      final fastTithiNumber = day.tithiAtSunrise.number;
+      final paranaTithiNumber = (fastTithiNumber % 30) + 1;
+      return _parana.computeSimple(
+        fastDate: day.date,
+        paranaTithiNumber: paranaTithiNumber,
+        location: location,
+        calculator: _calculator,
+      );
     }
     return null;
   }
