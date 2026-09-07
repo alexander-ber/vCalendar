@@ -121,7 +121,7 @@ export const EVENTS = [
     "category": "avatar",
     "scope": "core_gaudiya",
     "subject": "Lord Krishna",
-    "masa": "Bhadrapada",
+    "gaudiya_masa": "Hrishikesha",
     "paksha": "Krishna",
     "tithi": "Ashtami",
     "timing_rule": "midnight_based",
@@ -502,6 +502,7 @@ export const EVENTS = [
     "allow_in_adhika": false,
     "priority": "medium",
     "source_status": "matched_by_name_type_tithi",
+    "disabled": true,
     "description": "Imported calendar reference for \"Шри Кришна Джанмаштами - день явления Господа Шри Кришны (пост)\". English summary still needs editorial translation; the Russian source summary is linked in source_url.",
     "source_url": "http://harekrishnazp.info/materialy/vajshnavskij-kalendar/825-dzhanmashtami-yavlenie-gospoda-shri-krishny.html",
     "i18n": {

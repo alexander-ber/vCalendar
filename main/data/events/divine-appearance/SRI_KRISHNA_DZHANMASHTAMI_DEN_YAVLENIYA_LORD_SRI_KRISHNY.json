@@ -13,6 +13,8 @@
     "allow_in_adhika": false
   },
   "priority": "medium",
+  "disabled": true,
+  "disabled_reason": "Duplicate of the canonical SRI_KRISHNA_JANMASHTAMI record, which previously failed to match (wrong masa field) and made this imported fallback the only one that fired. Now that the canonical record's gaudiya_masa is fixed, both would match the same day, so this legacy import is retired.",
   "source_status": "matched_by_name_type_tithi",
   "sources": [
     {

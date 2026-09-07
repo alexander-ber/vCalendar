@@ -64,6 +64,45 @@ function findTithiEndBefore(start, targetNumber, maxHours, getTithiInfo) {
   return null;
 }
 
+// Generic single-day-fast parana: sunrise to min(next tithi's end, 1/3 of
+// daylight), no Ekadashi-specific Hari-vasara/Trisprsa refinement - for
+// fasts like Sri Krishna Janmashtami's Ashtami, which are not Ekadashi but
+// use the identical fraction-based parana formula (same rules.parana
+// constants as computeParana above).
+export function computeSimpleTithiParana(fastDate, paranaTithiNumber, location, rules, getTithiInfo) {
+  const paranaDate = addDaysToLocalDate(fastDate, 1);
+  const astronomy = dayAstronomy(paranaDate, location, rules);
+  if (!astronomy.sunrise || !astronomy.sunset) {
+    return { date: paranaDate, start: null, preferred_end: null, one_fifth_end: null, absolute_end: null, preferred_window_status: null };
+  }
+
+  const paranaTithiEnd =
+    getTithiInfo(astronomy.sunrise).number === paranaTithiNumber
+      ? findTithiBoundaryAfter(astronomy.sunrise, paranaTithiNumber, 48, getTithiInfo)
+      : findTithiEndBefore(astronomy.sunrise, paranaTithiNumber, 48, getTithiInfo);
+  if (!paranaTithiEnd) {
+    return { date: paranaDate, start: astronomy.sunrise, preferred_end: null, one_fifth_end: null, absolute_end: null, preferred_window_status: null };
+  }
+
+  const pratahEnd = new Date(
+    astronomy.sunrise.getTime() +
+      rules.parana.pratah_fraction_of_daylight * (astronomy.sunset.getTime() - astronomy.sunrise.getTime())
+  );
+  const oneFifthEnd = new Date(
+    astronomy.sunrise.getTime() +
+      (rules.parana.one_fifth_fraction_of_daylight || 1 / 5) * (astronomy.sunset.getTime() - astronomy.sunrise.getTime())
+  );
+  const tithiEndedBeforeSunrise = paranaTithiEnd.getTime() < astronomy.sunrise.getTime();
+  return {
+    date: paranaDate,
+    start: astronomy.sunrise,
+    preferred_end: tithiEndedBeforeSunrise ? null : new Date(Math.min(paranaTithiEnd.getTime(), pratahEnd.getTime())),
+    one_fifth_end: oneFifthEnd,
+    absolute_end: tithiEndedBeforeSunrise ? pratahEnd : paranaTithiEnd,
+    preferred_window_status: tithiEndedBeforeSunrise ? "tithi_ended_before_sunrise" : "available"
+  };
+}
+
 export function computeParana(fastDate, ekadashiNumber, location, rules, getTithiInfo, fastDayType = "normal_ekadashi") {
   const paranaDate = addDaysToLocalDate(fastDate, 1);
   const astronomy = dayAstronomy(paranaDate, location, rules);

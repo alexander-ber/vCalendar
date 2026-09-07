@@ -202,4 +202,75 @@ class ParanaEngine {
       pratahEnd: pratahEnd,
     );
   }
+
+  /// Generic single-day-fast parana: sunrise to min(next tithi's end, 1/3 of
+  /// daylight), with no Ekadashi-specific Hari-vasara/Trisprsa refinement -
+  /// a direct port of js/parana-engine.js's `computeSimpleTithiParana`, for
+  /// fasts like Sri Krishna Janmashtami's Ashtami that are not Ekadashi but
+  /// use the identical fraction-based parana formula (same [_pratahFraction]/
+  /// [_oneFifthFraction] constants as [compute] above).
+  ParanaResult computeSimple({
+    required DateTime fastDate,
+    required int paranaTithiNumber,
+    required CalendarLocation location,
+    required PanchangaCalculator calculator,
+  }) {
+    final paranaDate = addCalendarDays(fastDate, 1);
+    final astronomy = calculator.calculateDay(
+      date: paranaDate,
+      location: location,
+    );
+    final search = TithiBoundarySearch(calculator);
+
+    final sunriseTithiNumber = calculator.tithiInfo(astronomy.sunrise).number;
+    final paranaTithiEnd = sunriseTithiNumber == paranaTithiNumber
+        ? search.tithiEndAfter(
+            astronomy.sunrise,
+            paranaTithiNumber,
+            maxHours: 48,
+          )
+        : search.tithiEndBefore(
+            astronomy.sunrise,
+            paranaTithiNumber,
+            maxHours: 48,
+          );
+
+    if (paranaTithiEnd == null) {
+      return ParanaResult(
+        date: paranaDate,
+        start: astronomy.sunrise,
+        preferredEnd: null,
+        oneFifthEnd: null,
+        absoluteEnd: null,
+        preferredWindowStatus: null,
+        fastDayType: 'single_day_fast',
+      );
+    }
+
+    final daylightMs = astronomy.sunset
+        .difference(astronomy.sunrise)
+        .inMilliseconds;
+    final pratahEnd = astronomy.sunrise.add(
+      Duration(milliseconds: (_pratahFraction * daylightMs).round()),
+    );
+    final oneFifthEnd = astronomy.sunrise.add(
+      Duration(milliseconds: (_oneFifthFraction * daylightMs).round()),
+    );
+    final tithiEndedBeforeSunrise = paranaTithiEnd.isBefore(astronomy.sunrise);
+
+    return ParanaResult(
+      date: paranaDate,
+      start: astronomy.sunrise,
+      preferredEnd: tithiEndedBeforeSunrise
+          ? null
+          : (paranaTithiEnd.isBefore(pratahEnd) ? paranaTithiEnd : pratahEnd),
+      oneFifthEnd: oneFifthEnd,
+      absoluteEnd: tithiEndedBeforeSunrise ? pratahEnd : paranaTithiEnd,
+      preferredWindowStatus: tithiEndedBeforeSunrise
+          ? 'tithi_ended_before_sunrise'
+          : 'available',
+      fastDayType: 'single_day_fast',
+      pratahEnd: pratahEnd,
+    );
+  }
 }

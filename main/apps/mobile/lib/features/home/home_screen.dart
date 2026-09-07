@@ -84,7 +84,9 @@ const _webEventTonePriority = [
 String? _webEventTone(MobileEvent event) {
   if (event.eventType == 'ekadashi') return 'ekadashi';
   if (event.eventType == 'ekadashi_notice') return 'notice';
-  if (event.eventType == 'parana') return 'parana';
+  if (event.eventType == 'parana' || event.eventType == 'janmashtami_parana') {
+    return 'parana';
+  }
   if (event.eventType == 'purushottama_boundary') return 'purushottama';
   if (event.eventType == 'festival' || event.eventType == 'divine_appearance') {
     return 'festival';
@@ -247,6 +249,7 @@ class _HomeScreenState extends State<HomeScreen> {
   late CalendarEventEngine _calendarEventEngine;
   late Future<_HomeState> _state;
   late DateTime _visibleMonth;
+  int _monthSlideDirection = 1;
   late DateTime _selectedDate;
   late DateTime _periodFrom;
   late DateTime _periodTo;
@@ -400,6 +403,20 @@ class _HomeScreenState extends State<HomeScreen> {
                     location: selectedLocation,
                     date: addCalendarDays(_selectedDate, 1),
                   );
+            final janmashtamiParanaForSelectedDay = selectedLocation == null
+                ? null
+                : _singleDayFastParanaResultForDay(
+                    location: selectedLocation,
+                    date: _selectedDate,
+                    eventRules: state.events,
+                  );
+            final janmashtamiParanaForNextDay = selectedLocation == null
+                ? null
+                : _singleDayFastParanaResultForDay(
+                    location: selectedLocation,
+                    date: addCalendarDays(_selectedDate, 1),
+                    eventRules: state.events,
+                  );
 
             return CustomScrollView(
               slivers: [
@@ -444,47 +461,103 @@ class _HomeScreenState extends State<HomeScreen> {
                         ),
                         const SizedBox(height: 16),
                       ],
-                      _MonthCalendarCard(
-                        month: _visibleMonth,
-                        selectedDate: _selectedDate,
-                        compactMode: compactMode,
-                        weekStart: selectedLocation?.weekStart ?? 1,
-                        isRu: _isRu,
-                        days: monthDays,
-                        eventCounts: {
-                          for (final entry in calendarDayTones.entries)
-                            entry.key: entry.value.length,
-                        },
-                        eventCategories: {
-                          for (final entry in calendarDayTones.entries)
-                            entry.key: entry.value.first,
-                        },
-                        onlyDaysWithEvents: widget.settings.onlyDaysWithEvents,
-                        digitFont: widget.settings.calendarDigitFont,
-                        digitBold: widget.settings.calendarDigitBold,
-                        digitItalic: widget.settings.calendarDigitItalic,
-                        digitScale: widget.settings.calendarDigitScale,
-                        onMonthPickerRequested: () =>
-                            _openMonthPicker(initialMonth: _visibleMonth),
-                        onPreviousMonth: () {
-                          setState(() {
-                            _visibleMonth = DateTime(
-                              _visibleMonth.year,
-                              _visibleMonth.month - 1,
+                      GestureDetector(
+                        behavior: HitTestBehavior.translucent,
+                        onHorizontalDragEnd: (details) {
+                          final velocity = details.primaryVelocity ?? 0;
+                          if (velocity.abs() < 200) return;
+                          if (velocity > 0) {
+                            _goToMonth(
+                              DateTime(
+                                _visibleMonth.year,
+                                _visibleMonth.month - 1,
+                              ),
+                              direction: -1,
                             );
-                          });
-                        },
-                        onNextMonth: () {
-                          setState(() {
-                            _visibleMonth = DateTime(
-                              _visibleMonth.year,
-                              _visibleMonth.month + 1,
+                          } else {
+                            _goToMonth(
+                              DateTime(
+                                _visibleMonth.year,
+                                _visibleMonth.month + 1,
+                              ),
+                              direction: 1,
                             );
-                          });
+                          }
                         },
-                        onDaySelected: (date) {
-                          setState(() => _selectedDate = date);
-                        },
+                        child: AnimatedSwitcher(
+                          duration: const Duration(milliseconds: 220),
+                          switchInCurve: Curves.easeOutCubic,
+                          switchOutCurve: Curves.easeInCubic,
+                          layoutBuilder: (currentChild, previousChildren) =>
+                              Stack(
+                                alignment: Alignment.topCenter,
+                                children: [
+                                  ...previousChildren,
+                                  ?currentChild,
+                                ],
+                              ),
+                          transitionBuilder: (child, animation) {
+                            final inFromRight = _monthSlideDirection > 0;
+                            final offset =
+                                Tween<Offset>(
+                                  begin: Offset(inFromRight ? 0.18 : -0.18, 0),
+                                  end: Offset.zero,
+                                ).animate(animation);
+                            return ClipRect(
+                              child: SlideTransition(
+                                position: offset,
+                                child: FadeTransition(
+                                  opacity: animation,
+                                  child: child,
+                                ),
+                              ),
+                            );
+                          },
+                          child: _MonthCalendarCard(
+                            key: ValueKey(
+                              '${_visibleMonth.year}-${_visibleMonth.month}',
+                            ),
+                            month: _visibleMonth,
+                            selectedDate: _selectedDate,
+                            compactMode: compactMode,
+                            weekStart: selectedLocation?.weekStart ?? 1,
+                            isRu: _isRu,
+                            days: monthDays,
+                            eventCounts: {
+                              for (final entry in calendarDayTones.entries)
+                                entry.key: entry.value.length,
+                            },
+                            eventCategories: {
+                              for (final entry in calendarDayTones.entries)
+                                entry.key: entry.value.first,
+                            },
+                            onlyDaysWithEvents:
+                                widget.settings.onlyDaysWithEvents,
+                            digitFont: widget.settings.calendarDigitFont,
+                            digitBold: widget.settings.calendarDigitBold,
+                            digitItalic: widget.settings.calendarDigitItalic,
+                            digitScale: widget.settings.calendarDigitScale,
+                            onMonthPickerRequested: () =>
+                                _openMonthPicker(initialMonth: _visibleMonth),
+                            onPreviousMonth: () => _goToMonth(
+                              DateTime(
+                                _visibleMonth.year,
+                                _visibleMonth.month - 1,
+                              ),
+                              direction: -1,
+                            ),
+                            onNextMonth: () => _goToMonth(
+                              DateTime(
+                                _visibleMonth.year,
+                                _visibleMonth.month + 1,
+                              ),
+                              direction: 1,
+                            ),
+                            onDaySelected: (date) {
+                              setState(() => _selectedDate = date);
+                            },
+                          ),
+                        ),
                       ),
                       const SizedBox(height: 16),
                       if (panchangaMonthDays.isNotEmpty) ...[
@@ -525,6 +598,10 @@ class _HomeScreenState extends State<HomeScreen> {
                           nextPanchanga: nextSelectedPanchanga,
                           paranaForSelectedDay: paranaForSelectedDay,
                           paranaForNextDay: paranaForNextDay,
+                          janmashtamiParanaForSelectedDay:
+                              janmashtamiParanaForSelectedDay,
+                          janmashtamiParanaForNextDay:
+                              janmashtamiParanaForNextDay,
                           bengaliSolarMonth: selectedPanchanga == null
                               ? null
                               : _panchangaCalculator.bengaliSolarMonth(
@@ -620,6 +697,13 @@ class _HomeScreenState extends State<HomeScreen> {
         );
       },
     );
+  }
+
+  void _goToMonth(DateTime target, {required int direction}) {
+    setState(() {
+      _monthSlideDirection = direction;
+      _visibleMonth = DateTime(target.year, target.month);
+    });
   }
 
   Future<void> _openMonthPicker({required DateTime initialMonth}) async {
@@ -849,7 +933,9 @@ class _HomeScreenState extends State<HomeScreen> {
     if (event.eventType == 'ekadashi' || event.eventType == 'ekadashi_notice') {
       return 'ekadashi';
     }
-    if (event.eventType == 'parana') return 'parana';
+    if (event.eventType == 'parana' || event.eventType == 'janmashtami_parana') {
+    return 'parana';
+  }
     if (event.eventType == 'purushottama_boundary') return 'purushottama';
     if (event.eventType == 'divine_appearance') return 'divineAppearance';
     if (event.eventType == 'vaishnava_appearance') {
@@ -959,6 +1045,28 @@ class _HomeScreenState extends State<HomeScreen> {
     return _calendarEventEngine
         .findFastByParanaDate(days: days, location: location, paranaDate: date)
         ?.parana;
+  }
+
+  /// Same idea as [_paranaResultForDay], but for single-day fasts that
+  /// aren't Ekadashi (currently only Sri Krishna Janmashtami) - these need
+  /// [eventRules] since, unlike Ekadashi, they're matched as an ordinary
+  /// rule event rather than classified purely from astronomy.
+  ParanaResult? _singleDayFastParanaResultForDay({
+    required CalendarLocation location,
+    required DateTime date,
+    required List<MobileEvent> eventRules,
+  }) {
+    final days = _dayRange(
+      from: addCalendarDays(date, -2),
+      to: addCalendarDays(date, 2),
+      location: location,
+    );
+    return _calendarEventEngine.findSingleDayFastParanaByDate(
+      days: days,
+      location: location,
+      eventRules: eventRules,
+      paranaDate: date,
+    );
   }
 }
 
@@ -2492,6 +2600,7 @@ class _PeriodNotice {
 
 class _MonthCalendarCard extends StatelessWidget {
   const _MonthCalendarCard({
+    super.key,
     required this.month,
     required this.selectedDate,
     required this.compactMode,
@@ -3064,6 +3173,8 @@ class _SelectedDayCard extends StatelessWidget {
     required this.nextPanchanga,
     required this.paranaForSelectedDay,
     required this.paranaForNextDay,
+    required this.janmashtamiParanaForSelectedDay,
+    required this.janmashtamiParanaForNextDay,
     required this.bengaliSolarMonth,
     required this.isRu,
   });
@@ -3075,6 +3186,8 @@ class _SelectedDayCard extends StatelessWidget {
   final PanchangaDay? nextPanchanga;
   final ParanaResult? paranaForSelectedDay;
   final ParanaResult? paranaForNextDay;
+  final ParanaResult? janmashtamiParanaForSelectedDay;
+  final ParanaResult? janmashtamiParanaForNextDay;
   final String? bengaliSolarMonth;
   final bool isRu;
 
@@ -3089,6 +3202,14 @@ class _SelectedDayCard extends StatelessWidget {
             events: events,
             nextPanchanga: nextPanchanga,
             parana: paranaForNextDay,
+            timezone: currentLocation.timezone,
+          );
+    final janmashtamiParanaTomorrow = currentLocation == null
+        ? null
+        : _janmashtamiParanaTomorrowDetails(
+            events: events,
+            nextPanchanga: nextPanchanga,
+            parana: janmashtamiParanaForNextDay,
             timezone: currentLocation.timezone,
           );
     return Card(
@@ -3130,10 +3251,18 @@ class _SelectedDayCard extends StatelessWidget {
                 ),
                 const SizedBox(height: 12),
               ],
+              if (janmashtamiParanaTomorrow != null) ...[
+                _EventTile(
+                  event: janmashtamiParanaTomorrow.event,
+                  paranaWindow: janmashtamiParanaTomorrow.window,
+                ),
+                const SizedBox(height: 12),
+              ],
               _EventsSection(
                 events: events,
                 panchanga: currentPanchanga,
                 parana: paranaForSelectedDay,
+                janmashtamiParana: janmashtamiParanaForSelectedDay,
                 timezone: currentLocation.timezone,
                 isRu: isRu,
               ),
@@ -3361,6 +3490,51 @@ class _SelectedDayCard extends StatelessWidget {
 
   bool _isEkadashiFastEvent(MobileEvent event) {
     return event.category == 'ekadashi' && event.eventType == 'ekadashi';
+  }
+
+  /// Same idea as [_paranaTomorrowDetails], but for single-day fasts that
+  /// aren't Ekadashi (currently only Sri Krishna Janmashtami).
+  _ParanaTomorrowInfo? _janmashtamiParanaTomorrowDetails({
+    required List<MobileEvent> events,
+    required PanchangaDay? nextPanchanga,
+    required ParanaResult? parana,
+    required String timezone,
+  }) {
+    final fastEvent = events.where((e) => e.id == 'janmashtami').firstOrNull;
+    if (fastEvent == null) return null;
+    final next = nextPanchanga;
+    if (next == null || parana == null || parana.start == null) return null;
+    final window = _formatParanaWindow(
+      parana: parana,
+      dvadashiDay: next,
+      timezone: timezone,
+      isRu: isRu,
+    );
+    return _ParanaTomorrowInfo(
+      event: MobileEvent(
+        id: 'janmashtami_parana_tomorrow_notice_${fastEvent.id}',
+        category: 'vrata',
+        eventType: 'janmashtami_parana',
+        masa: '',
+        masaType: null,
+        paksha: fastEvent.paksha,
+        tithi: '',
+        naksatra: null,
+        timingRule: null,
+        gaudiyaMasa: null,
+        anchorEventId: null,
+        observanceOffsetDays: 0,
+        disabled: false,
+        allowInAdhika: true,
+        priority: 10,
+        name: isRu
+            ? 'Паран для ${fastEvent.name}'
+            : 'Parana for ${fastEvent.name}',
+        shortDescription: null,
+        fullDescription: null,
+      ),
+      window: window,
+    );
   }
 }
 
@@ -4075,6 +4249,7 @@ class _EventsSection extends StatelessWidget {
     required this.events,
     required this.panchanga,
     required this.parana,
+    required this.janmashtamiParana,
     required this.timezone,
     required this.isRu,
   });
@@ -4082,12 +4257,14 @@ class _EventsSection extends StatelessWidget {
   final List<MobileEvent> events;
   final PanchangaDay panchanga;
   final ParanaResult? parana;
+  final ParanaResult? janmashtamiParana;
   final String timezone;
   final bool isRu;
 
   @override
   Widget build(BuildContext context) {
-    final paranaWindow = _paranaWindowLabel();
+    final paranaWindow = _paranaWindowLabel(parana);
+    final janmashtamiParanaWindow = _paranaWindowLabel(janmashtamiParana);
     if (events.isEmpty) {
       return Text(
         isRu ? 'Событий на этот день пока нет.' : 'No events for this day yet.',
@@ -4111,14 +4288,17 @@ class _EventsSection extends StatelessWidget {
         for (final event in events)
           _EventTile(
             event: event,
-            paranaWindow: event.eventType == 'parana' ? paranaWindow : null,
+            paranaWindow: event.eventType == 'parana'
+                ? paranaWindow
+                : event.eventType == 'janmashtami_parana'
+                ? janmashtamiParanaWindow
+                : null,
           ),
       ],
     );
   }
 
-  _ParanaWindowLabel? _paranaWindowLabel() {
-    final result = parana;
+  _ParanaWindowLabel? _paranaWindowLabel(ParanaResult? result) {
     if (result == null || result.start == null) return null;
     return _formatParanaWindow(
       parana: result,

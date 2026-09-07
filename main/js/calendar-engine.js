@@ -13,6 +13,7 @@ import {
 import { masaForDate } from "./masa-engine.js?v=20260704-1";
 import { buildEkadashiEvents } from "./ekadashi-engine.js?v=20260703-1";
 import { matchEventsForDay } from "./event-matcher.js?v=20260703-1";
+import { computeSimpleTithiParana } from "./parana-engine.js?v=20260906-1";
 import { calculateAmritaMahendra } from "./amrita-mahendra-engine.js?v=20260704-1";
 import { amritaMahendraTemplateForDay } from "./amrita-mahendra-data.js?v=20260711-1";
 
@@ -407,6 +408,53 @@ function addSankrantiEvents(days, location) {
   }
 }
 
+// Fasts that behave like Ekadashi (all-day fast, next-day parana using the
+// identical sunrise-to-min(next-tithi-end, 1/3-daylight) formula) but are
+// matched as an ordinary rule event rather than through the Ekadashi
+// classifier - currently only Sri Krishna Janmashtami. Keyed by event id;
+// the fast day is whichever day matchEventsForDay actually placed that
+// event id on (already handles the double-Ashtami tie-break, ksaya shift,
+// etc.), so this only needs to read day.events, not re-derive the match.
+const SINGLE_DAY_FAST_EVENT_IDS = ["janmashtami"];
+
+function addSingleDayFastParanaEvents(days, location, rules) {
+  const byDate = new Map(days.map((day) => [day.date, day]));
+  for (let i = 0; i < days.length - 1; i += 1) {
+    const day = days[i];
+    const fastEvent = day.events.find((event) => SINGLE_DAY_FAST_EVENT_IDS.includes(event.id));
+    if (!fastEvent) continue;
+    const nextDay = days[i + 1];
+    if (!nextDay) continue;
+
+    const fastTithiNumber = day.lunar.tithi_at_sunrise.number;
+    const paranaTithiNumber = (fastTithiNumber % 30) + 1;
+    const parana = computeSimpleTithiParana(day.date, paranaTithiNumber, location, rules, tithiInfo);
+    if (!parana.start) continue;
+
+    const nameRu = fastEvent.i18n?.ru?.name || fastEvent.name;
+    addEventOnce(byDate.get(nextDay.date), {
+      id: `parana_${fastEvent.id}_${day.date}`,
+      name: `Parana for ${fastEvent.name}`,
+      type: "parana",
+      category: "vrata",
+      parana: {
+        start: formatTime(parana.start, location.timezone),
+        preferred_end: parana.preferred_end ? formatTime(parana.preferred_end, location.timezone) : "not available",
+        one_fifth_end: parana.one_fifth_end ? formatTime(parana.one_fifth_end, location.timezone) : "not available",
+        absolute_end: parana.absolute_end ? formatTime(parana.absolute_end, location.timezone) : "not available",
+        preferred_window_status: parana.preferred_window_status || "available"
+      },
+      description: `Parana window calculated the same way as an Ekadashi parana: sunrise to min(next tithi end, 1/3 of daylight), for the fast on ${day.date}.`,
+      i18n: {
+        ru: {
+          name: `Паран для ${nameRu}`,
+          description: `Окно парана рассчитано так же, как паран Экадаши: от восхода до минимума из (конец следующей титхи, 1/3 дня), для поста ${day.date}.`
+        }
+      }
+    });
+  }
+}
+
 function attachEvents(days, location, rules, events) {
   const ekadashiByDate = buildEkadashiEvents(days, location, rules);
   const shiftedEventsByDate = new Map();
@@ -430,6 +478,7 @@ function attachEvents(days, location, rules, events) {
   addPurushottamaBoundaryEvents(days);
   addBhishmaPanchakaActiveEvents(days);
   addSankrantiEvents(days, location);
+  addSingleDayFastParanaEvents(days, location, rules);
 }
 
 export function generateCalendar(year, month, location, rules, events) {
