@@ -249,6 +249,7 @@ class _HomeScreenState extends State<HomeScreen> {
   late CalendarEventEngine _calendarEventEngine;
   late Future<_HomeState> _state;
   late DateTime _visibleMonth;
+  int _monthSlideDirection = 1;
   late DateTime _selectedDate;
   late DateTime _periodFrom;
   late DateTime _periodTo;
@@ -460,47 +461,103 @@ class _HomeScreenState extends State<HomeScreen> {
                         ),
                         const SizedBox(height: 16),
                       ],
-                      _MonthCalendarCard(
-                        month: _visibleMonth,
-                        selectedDate: _selectedDate,
-                        compactMode: compactMode,
-                        weekStart: selectedLocation?.weekStart ?? 1,
-                        isRu: _isRu,
-                        days: monthDays,
-                        eventCounts: {
-                          for (final entry in calendarDayTones.entries)
-                            entry.key: entry.value.length,
-                        },
-                        eventCategories: {
-                          for (final entry in calendarDayTones.entries)
-                            entry.key: entry.value.first,
-                        },
-                        onlyDaysWithEvents: widget.settings.onlyDaysWithEvents,
-                        digitFont: widget.settings.calendarDigitFont,
-                        digitBold: widget.settings.calendarDigitBold,
-                        digitItalic: widget.settings.calendarDigitItalic,
-                        digitScale: widget.settings.calendarDigitScale,
-                        onMonthPickerRequested: () =>
-                            _openMonthPicker(initialMonth: _visibleMonth),
-                        onPreviousMonth: () {
-                          setState(() {
-                            _visibleMonth = DateTime(
-                              _visibleMonth.year,
-                              _visibleMonth.month - 1,
+                      GestureDetector(
+                        behavior: HitTestBehavior.translucent,
+                        onHorizontalDragEnd: (details) {
+                          final velocity = details.primaryVelocity ?? 0;
+                          if (velocity.abs() < 200) return;
+                          if (velocity > 0) {
+                            _goToMonth(
+                              DateTime(
+                                _visibleMonth.year,
+                                _visibleMonth.month - 1,
+                              ),
+                              direction: -1,
                             );
-                          });
-                        },
-                        onNextMonth: () {
-                          setState(() {
-                            _visibleMonth = DateTime(
-                              _visibleMonth.year,
-                              _visibleMonth.month + 1,
+                          } else {
+                            _goToMonth(
+                              DateTime(
+                                _visibleMonth.year,
+                                _visibleMonth.month + 1,
+                              ),
+                              direction: 1,
                             );
-                          });
+                          }
                         },
-                        onDaySelected: (date) {
-                          setState(() => _selectedDate = date);
-                        },
+                        child: AnimatedSwitcher(
+                          duration: const Duration(milliseconds: 220),
+                          switchInCurve: Curves.easeOutCubic,
+                          switchOutCurve: Curves.easeInCubic,
+                          layoutBuilder: (currentChild, previousChildren) =>
+                              Stack(
+                                alignment: Alignment.topCenter,
+                                children: [
+                                  ...previousChildren,
+                                  ?currentChild,
+                                ],
+                              ),
+                          transitionBuilder: (child, animation) {
+                            final inFromRight = _monthSlideDirection > 0;
+                            final offset =
+                                Tween<Offset>(
+                                  begin: Offset(inFromRight ? 0.18 : -0.18, 0),
+                                  end: Offset.zero,
+                                ).animate(animation);
+                            return ClipRect(
+                              child: SlideTransition(
+                                position: offset,
+                                child: FadeTransition(
+                                  opacity: animation,
+                                  child: child,
+                                ),
+                              ),
+                            );
+                          },
+                          child: _MonthCalendarCard(
+                            key: ValueKey(
+                              '${_visibleMonth.year}-${_visibleMonth.month}',
+                            ),
+                            month: _visibleMonth,
+                            selectedDate: _selectedDate,
+                            compactMode: compactMode,
+                            weekStart: selectedLocation?.weekStart ?? 1,
+                            isRu: _isRu,
+                            days: monthDays,
+                            eventCounts: {
+                              for (final entry in calendarDayTones.entries)
+                                entry.key: entry.value.length,
+                            },
+                            eventCategories: {
+                              for (final entry in calendarDayTones.entries)
+                                entry.key: entry.value.first,
+                            },
+                            onlyDaysWithEvents:
+                                widget.settings.onlyDaysWithEvents,
+                            digitFont: widget.settings.calendarDigitFont,
+                            digitBold: widget.settings.calendarDigitBold,
+                            digitItalic: widget.settings.calendarDigitItalic,
+                            digitScale: widget.settings.calendarDigitScale,
+                            onMonthPickerRequested: () =>
+                                _openMonthPicker(initialMonth: _visibleMonth),
+                            onPreviousMonth: () => _goToMonth(
+                              DateTime(
+                                _visibleMonth.year,
+                                _visibleMonth.month - 1,
+                              ),
+                              direction: -1,
+                            ),
+                            onNextMonth: () => _goToMonth(
+                              DateTime(
+                                _visibleMonth.year,
+                                _visibleMonth.month + 1,
+                              ),
+                              direction: 1,
+                            ),
+                            onDaySelected: (date) {
+                              setState(() => _selectedDate = date);
+                            },
+                          ),
+                        ),
                       ),
                       const SizedBox(height: 16),
                       if (panchangaMonthDays.isNotEmpty) ...[
@@ -640,6 +697,13 @@ class _HomeScreenState extends State<HomeScreen> {
         );
       },
     );
+  }
+
+  void _goToMonth(DateTime target, {required int direction}) {
+    setState(() {
+      _monthSlideDirection = direction;
+      _visibleMonth = DateTime(target.year, target.month);
+    });
   }
 
   Future<void> _openMonthPicker({required DateTime initialMonth}) async {
@@ -2536,6 +2600,7 @@ class _PeriodNotice {
 
 class _MonthCalendarCard extends StatelessWidget {
   const _MonthCalendarCard({
+    super.key,
     required this.month,
     required this.selectedDate,
     required this.compactMode,
