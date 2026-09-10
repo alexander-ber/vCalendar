@@ -1,10 +1,12 @@
 import 'dart:convert';
 import 'dart:io';
 
+import 'package:flutter/foundation.dart' show compute;
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart' show rootBundle;
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:path_provider/path_provider.dart';
+import 'package:timezone/data/latest.dart' as tzdata;
 
 import '../../app/app_settings.dart';
 import '../../app/app_theme.dart';
@@ -25,6 +27,33 @@ import '../../domain/services/panjika_yoga_service.dart';
 import '../../domain/services/panchanga_calculator.dart';
 import '../../domain/services/panchanga_formatter.dart';
 import '../../domain/services/parana_engine.dart';
+
+/// Argument bundle for [_computePanchangaRangeIsolate] - both fields are
+/// plain data (no closures/native resources), so they cross the isolate
+/// boundary safely.
+class _PanchangaRangeArgs {
+  const _PanchangaRangeArgs({required this.location, required this.dates});
+
+  final CalendarLocation location;
+  final List<DateTime> dates;
+}
+
+/// Runs in a spawned isolate (via `compute()`), never the UI isolate, so no
+/// matter how long real astronomy for a wide date range takes, it can never
+/// cause a dropped frame - unlike the chunked-with-yields approach tried
+/// first, which measurably still let occasional big blocks slip through
+/// under load (confirmed via integration_test/swipe_perf_test.dart and,
+/// more importantly, on a real phone). Each spawned isolate has its own
+/// fresh memory, so the timezone database (loaded once on the main isolate
+/// in main.dart) needs reloading here too.
+List<PanchangaDay> _computePanchangaRangeIsolate(_PanchangaRangeArgs args) {
+  tzdata.initializeTimeZones();
+  const calculator = PanchangaCalculator();
+  return [
+    for (final date in args.dates)
+      calculator.calculateDay(date: date, location: args.location),
+  ];
+}
 
 const _eventFilterDefinitions = [
   _EventFilterDefinition(
@@ -877,11 +906,17 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   /// Warms [_panchangaCache] for every day [_monthPageDataFor] will need
-  /// for [month] (including the +-15 day padding [_computeEventsMap] uses),
-  /// one day at a time with a real event-loop yield in between, so the
-  /// expensive part never runs as a single long synchronous block. Once
-  /// every day is cached, the final [_monthPageDataFor] call just re-reads
-  /// them and finishes near-instantly.
+  /// for [month], by sending the whole missing date range to
+  /// [_computePanchangaRangeIsolate] in one spawned isolate - genuinely off
+  /// the UI thread, unlike the day-by-day chunked-with-yields version this
+  /// replaced, which still measurably let big blocks through under load
+  /// (confirmed on a real device, not just guessed). The window is wide
+  /// (+-200 days, not just the visible month's own +-15) so it also covers
+  /// what [_MasaPeriodNoticeCard]'s period-boundary walk needs (Chaturmasya
+  /// spans ~4 months) - already-cached dates are filtered out first, so
+  /// repeated calls for overlapping months only ever compute what's
+  /// genuinely new. Once the range is cached, the final [_monthPageDataFor]
+  /// call just re-reads it and finishes near-instantly.
   Future<void> _prefetchMonthAsync({
     required DateTime month,
     required CalendarLocation? selectedLocation,
@@ -897,18 +932,31 @@ class _HomeScreenState extends State<HomeScreen> {
       );
       final visibleDays = days.where((d) => d.inCurrentMonth).toList();
       if (visibleDays.isNotEmpty) {
-        final from = addCalendarDays(visibleDays.first.date, -15);
-        final to = addCalendarDays(visibleDays.last.date, 15);
+        final from = addCalendarDays(visibleDays.first.date, -200);
+        final to = addCalendarDays(visibleDays.last.date, 200);
+        final missingDates = <DateTime>[];
         var cursor = from;
         while (!cursor.isAfter(to)) {
-          if (!mounted) return;
-          _calculateDay(date: cursor, location: selectedLocation);
+          final panchangaKey = '${selectedLocation.id}:${_dateKey(cursor)}';
+          if (!_panchangaCache.containsKey(panchangaKey)) {
+            missingDates.add(cursor);
+          }
           cursor = addCalendarDays(cursor, 1);
-          // Yields via the event loop's timer queue, which always makes
-          // progress - unlike SchedulerBinding.endOfFrame, which only
-          // resolves once a new frame is actually scheduled, and nothing
-          // here (a plain computation, no setState) schedules one.
-          await Future<void>.delayed(Duration.zero);
+        }
+        if (missingDates.isNotEmpty) {
+          final computed = await compute(
+            _computePanchangaRangeIsolate,
+            _PanchangaRangeArgs(
+              location: selectedLocation,
+              dates: missingDates,
+            ),
+          );
+          if (!mounted) return;
+          for (var i = 0; i < missingDates.length; i += 1) {
+            final panchangaKey =
+                '${selectedLocation.id}:${_dateKey(missingDates[i])}';
+            _panchangaCache[panchangaKey] = computed[i];
+          }
         }
       }
     }
