@@ -2719,6 +2719,35 @@ export const EVENTS = [
     }
   },
   {
+    "id": "lalita_saptami",
+    "name": "Lalita Saptami",
+    "type": "vaishnava_appearance",
+    "category": "vaishnava_appearance",
+    "scope": "core_gaudiya",
+    "subject": "Lalita Saptami - Den Yavleniya Shrimati Lality Devi",
+    "gaudiya_masa": "Hrishikesha",
+    "paksha": "Gaura",
+    "tithi": "Saptami",
+    "timing_rule": "sunrise_based",
+    "allow_in_adhika": false,
+    "priority": "medium",
+    "source_status": "confirmed",
+    "description": "Appearance day of Srimati Lalita Devi, foremost of Srimati Radharani's eight principal gopi friends (ashta-sakhis), observed one day before Radhashtami.",
+    "source_url": "http://harekrishnazp.info/materialy/vajshnavskij-kalendar/849-shrimati-radkharani-radkhashtami.html",
+    "i18n": {
+      "en": {
+        "name": "Lalita Saptami",
+        "description": "Appearance day of Srimati Lalita Devi, foremost of Srimati Radharani's eight principal gopi friends (ashta-sakhis), observed one day before Radhashtami.",
+        "full_description": "Lalita Saptami marks the appearance of Srimati Lalita Devi, the leader of the ashta-sakhis - the eight principal confidantes of Srimati Radharani in Her intimate pastimes with Lord Krishna in Vrindavan. Among all the sakhis, Lalita is considered the foremost (mukhya-sakhi), constantly engaged in arranging and protecting the loving meetings of the Divine Couple.\n\nLalita Devi is described as fiercely devoted and outspoken in her love, never hesitating to admonish even Krishna Himself if She feels He has caused Radharani any distress. This intensity of loving service is seen by Vaishnava acharyas as a perfect expression of sakhya and dasya combined with the deepest madhurya-rasa devotion - she has no interest apart from the happiness of Radha and Krishna together.\n\nAppearing on Bhadrapada Shukla Saptami, the day immediately before Radhashtami, Lalita Devi's appearance is traditionally remembered as preparing the way for Radharani's own appearance day. Devotees mark this day with remembrance of Lalita Devi's exemplary service and pray for a taste of her selfless dedication to the pleasure of Sri Sri Radha-Krishna."
+      },
+      "ru": {
+        "name": "Лалита Саптами",
+        "description": "День явления Шримати Лалиты Деви, главной среди восьми главных подруг Шримати Радхарани (аштасакхи), отмечается за один день до Радхаштами.",
+        "full_description": "Лалита Саптами - день явления Шримати Лалиты Деви, предводительницы аштасакхи - восьми главных наперсниц Шримати Радхарани в Её сокровенных играх с Господом Кришной во Вриндаване. Среди всех сакхи Лалита считается главной (мукхья-сакхи) - она неизменно занята тем, что устраивает и оберегает встречи Божественной Четы, полные любви.\n\nЛалита Деви описывается как пылко преданная и бесстрашно прямая в своей любви - она никогда не колеблется упрекнуть даже Самого Кришну, если чувствует, что Он причинил Радхарани хоть малейшее огорчение. Ачарьи-вайшнавы видят в этой пламенной преданности совершенное выражение сакхья- и дасья-расы, слитых с глубочайшей мадхурья-бхакти: у неё нет иного интереса, кроме счастья Радхи и Кришны вместе.\n\nЯвившись в Бхадрапада Шукла Саптами, за день до Радхаштами, Лалита Деви, по преданию, готовит путь для явления Самой Радхарани. В этот день преданные вспоминают безупречное служение Лалиты Деви и молятся о том, чтобы обрести хотя бы каплю её бескорыстной преданности удовольствию Шри Шри Радхи-Кришны."
+      }
+    }
+  },
+  {
     "id": "hkzp_541_радхаштами_день_явления_шримати_радхарани",
     "name": "Radkhashtami - Den Yavleniya Shrimati Radkharani",
     "type": "vaishnava_appearance",
