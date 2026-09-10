@@ -254,6 +254,7 @@ class _HomeScreenState extends State<HomeScreen> {
   late DateTime _periodTo;
   final Map<String, PanchangaDay> _panchangaCache = {};
   final Map<String, _MonthPageData> _monthPageCache = {};
+  DateTime? _lastPrefetchedMonth;
   CalendarLocation? _gpsLocation;
   String? _gpsNearestLocationId;
 
@@ -354,6 +355,11 @@ class _HomeScreenState extends State<HomeScreen> {
             final state = snapshot.requireData;
             final storedLocation = _storedLocation(state.locations);
             final selectedLocation = _gpsLocation ?? storedLocation;
+            _prefetchAdjacentMonths(
+              month: _visibleMonth,
+              selectedLocation: selectedLocation,
+              events: state.events,
+            );
             final compactMode = widget.settings.compactMode && !isTablet;
             final monthDays = _monthGridService.buildMonth(
               month: _visibleMonth,
@@ -789,6 +795,47 @@ class _HomeScreenState extends State<HomeScreen> {
   /// month, then applies the user's active category filters - the engine
   /// itself has no UI-settings knowledge, matching how the web app also
   /// keeps filtering as a display-layer concern.
+  /// Warms [_monthPageCache] for the months next to [month] once it's
+  /// settled as `_visibleMonth`, so the *first* touch of a swipe never
+  /// pays for real astronomy synchronously mid-drag/mid-frame - by the
+  /// time the user can plausibly swipe again, the neighbor page's data is
+  /// already sitting in the cache and [_monthPageDataFor] returns
+  /// instantly. Runs once per month (guarded by [_lastPrefetchedMonth])
+  /// and deferred to after the current frame via a post-frame callback, so
+  /// it never competes with the frame that's actually animating/settling.
+  void _prefetchAdjacentMonths({
+    required DateTime month,
+    required CalendarLocation? selectedLocation,
+    required List<MobileEvent> events,
+  }) {
+    final key = DateTime(month.year, month.month);
+    if (_lastPrefetchedMonth != null &&
+        _lastPrefetchedMonth!.year == key.year &&
+        _lastPrefetchedMonth!.month == key.month) {
+      return;
+    }
+    _lastPrefetchedMonth = key;
+    // Each month's astronomy costs ~200-300ms - split the two neighbors
+    // across separate frames (rather than one ~500ms burst) so neither
+    // one risks a single long, visible hitch.
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (!mounted) return;
+      _monthPageDataFor(
+        month: DateTime(key.year, key.month - 1),
+        selectedLocation: selectedLocation,
+        events: events,
+      );
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (!mounted) return;
+        _monthPageDataFor(
+          month: DateTime(key.year, key.month + 1),
+          selectedLocation: selectedLocation,
+          events: events,
+        );
+      });
+    });
+  }
+
   /// Computes (and caches) the day grid + event dots for one calendar page
   /// (an arbitrary month, not just [_visibleMonth]) - [_MonthCalendarCard]
   /// calls this per page as the user swipes, including for the
