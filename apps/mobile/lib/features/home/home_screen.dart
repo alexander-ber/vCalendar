@@ -249,11 +249,11 @@ class _HomeScreenState extends State<HomeScreen> {
   late CalendarEventEngine _calendarEventEngine;
   late Future<_HomeState> _state;
   late DateTime _visibleMonth;
-  int _monthSlideDirection = 1;
   late DateTime _selectedDate;
   late DateTime _periodFrom;
   late DateTime _periodTo;
   final Map<String, PanchangaDay> _panchangaCache = {};
+  final Map<String, _MonthPageData> _monthPageCache = {};
   CalendarLocation? _gpsLocation;
   String? _gpsNearestLocationId;
 
@@ -278,6 +278,7 @@ class _HomeScreenState extends State<HomeScreen> {
     super.didUpdateWidget(oldWidget);
     if (oldWidget.settings.lang != widget.settings.lang ||
         oldWidget.settings.locationId != widget.settings.locationId) {
+      _monthPageCache.clear();
       _state = _load();
     }
   }
@@ -314,6 +315,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
   void _reload() {
     setState(() {
+      _monthPageCache.clear();
       _state = _load();
     });
   }
@@ -374,10 +376,6 @@ class _HomeScreenState extends State<HomeScreen> {
                           location: selectedLocation,
                         ),
                   ];
-            final calendarDayTones = _calendarDayTones(
-              panchangaDays: panchangaMonthDays,
-              eventMap: eventMap,
-            );
             final selectedPanchanga = selectedLocation == null
                 ? null
                 : _calculateDay(
@@ -461,58 +459,30 @@ class _HomeScreenState extends State<HomeScreen> {
                         ),
                         const SizedBox(height: 16),
                       ],
-                      _SwipeableMonthCard(
-                        monthKey: '${_visibleMonth.year}-${_visibleMonth.month}',
-                        enterFromRight: _monthSlideDirection > 0,
-                        onSwipePrevious: () => _goToMonth(
-                          DateTime(_visibleMonth.year, _visibleMonth.month - 1),
-                          direction: -1,
+                      _MonthCalendarCard(
+                        month: _visibleMonth,
+                        selectedDate: _selectedDate,
+                        compactMode: compactMode,
+                        weekStart: selectedLocation?.weekStart ?? 1,
+                        isRu: _isRu,
+                        pageDataFor: (month) => _monthPageDataFor(
+                          month: month,
+                          selectedLocation: selectedLocation,
+                          events: state.events,
                         ),
-                        onSwipeNext: () => _goToMonth(
-                          DateTime(_visibleMonth.year, _visibleMonth.month + 1),
-                          direction: 1,
-                        ),
-                        child: _MonthCalendarCard(
-                          month: _visibleMonth,
-                          selectedDate: _selectedDate,
-                          compactMode: compactMode,
-                          weekStart: selectedLocation?.weekStart ?? 1,
-                          isRu: _isRu,
-                          days: monthDays,
-                          eventCounts: {
-                            for (final entry in calendarDayTones.entries)
-                              entry.key: entry.value.length,
-                          },
-                          eventCategories: {
-                            for (final entry in calendarDayTones.entries)
-                              entry.key: entry.value.first,
-                          },
-                          onlyDaysWithEvents:
-                              widget.settings.onlyDaysWithEvents,
-                          digitFont: widget.settings.calendarDigitFont,
-                          digitBold: widget.settings.calendarDigitBold,
-                          digitItalic: widget.settings.calendarDigitItalic,
-                          digitScale: widget.settings.calendarDigitScale,
-                          onMonthPickerRequested: () =>
-                              _openMonthPicker(initialMonth: _visibleMonth),
-                          onPreviousMonth: () => _goToMonth(
-                            DateTime(
-                              _visibleMonth.year,
-                              _visibleMonth.month - 1,
-                            ),
-                            direction: -1,
-                          ),
-                          onNextMonth: () => _goToMonth(
-                            DateTime(
-                              _visibleMonth.year,
-                              _visibleMonth.month + 1,
-                            ),
-                            direction: 1,
-                          ),
-                          onDaySelected: (date) {
-                            setState(() => _selectedDate = date);
-                          },
-                        ),
+                        onlyDaysWithEvents: widget.settings.onlyDaysWithEvents,
+                        digitFont: widget.settings.calendarDigitFont,
+                        digitBold: widget.settings.calendarDigitBold,
+                        digitItalic: widget.settings.calendarDigitItalic,
+                        digitScale: widget.settings.calendarDigitScale,
+                        onMonthPickerRequested: () =>
+                            _openMonthPicker(initialMonth: _visibleMonth),
+                        onMonthChanged: (month) {
+                          setState(() => _visibleMonth = month);
+                        },
+                        onDaySelected: (date) {
+                          setState(() => _selectedDate = date);
+                        },
                       ),
                       const SizedBox(height: 16),
                       if (panchangaMonthDays.isNotEmpty) ...[
@@ -652,13 +622,6 @@ class _HomeScreenState extends State<HomeScreen> {
         );
       },
     );
-  }
-
-  void _goToMonth(DateTime target, {required int direction}) {
-    setState(() {
-      _monthSlideDirection = direction;
-      _visibleMonth = DateTime(target.year, target.month);
-    });
   }
 
   Future<void> _openMonthPicker({required DateTime initialMonth}) async {
@@ -826,6 +789,57 @@ class _HomeScreenState extends State<HomeScreen> {
   /// month, then applies the user's active category filters - the engine
   /// itself has no UI-settings knowledge, matching how the web app also
   /// keeps filtering as a display-layer concern.
+  /// Computes (and caches) the day grid + event dots for one calendar page
+  /// (an arbitrary month, not just [_visibleMonth]) - [_MonthCalendarCard]
+  /// calls this per page as the user swipes, including for the
+  /// not-yet-current neighbor page while a drag is in flight. Cached by
+  /// month+location since it re-runs real astronomy for every visible day;
+  /// cleared wherever [_state] is reassigned (content changed) - see
+  /// [_reload]/[didUpdateWidget].
+  _MonthPageData _monthPageDataFor({
+    required DateTime month,
+    required CalendarLocation? selectedLocation,
+    required List<MobileEvent> events,
+  }) {
+    final cacheKey = '${month.year}-${month.month}-${selectedLocation?.id}';
+    final cached = _monthPageCache[cacheKey];
+    if (cached != null) return cached;
+
+    final days = _monthGridService.buildMonth(
+      month: month,
+      weekStart: selectedLocation?.weekStart ?? 1,
+    );
+    final eventMap = selectedLocation == null
+        ? <String, List<MobileEvent>>{}
+        : _eventsForVisibleDays(
+            days: days,
+            location: selectedLocation,
+            events: events,
+          );
+    final panchangaDays = selectedLocation == null
+        ? <PanchangaDay>[]
+        : [
+            for (final day in days)
+              if (day.inCurrentMonth)
+                _calculateDay(date: day.date, location: selectedLocation),
+          ];
+    final tones = _calendarDayTones(
+      panchangaDays: panchangaDays,
+      eventMap: eventMap,
+    );
+    final data = _MonthPageData(
+      days: days,
+      eventCounts: {
+        for (final entry in tones.entries) entry.key: entry.value.length,
+      },
+      eventCategories: {
+        for (final entry in tones.entries) entry.key: entry.value.first,
+      },
+    );
+    _monthPageCache[cacheKey] = data;
+    return data;
+  }
+
   Map<String, List<MobileEvent>> _eventsForVisibleDays({
     required List<MonthDay> days,
     required CalendarLocation location,
@@ -2553,152 +2567,50 @@ class _PeriodNotice {
   final String subtitle;
 }
 
-/// Wraps the month card with a real, finger-following horizontal drag
-/// (not just an animate-after-release switch), so a swipe visibly drags
-/// the card before deciding whether to complete or spring back. On
-/// completion it slides the old card fully off-screen, THEN calls
-/// [onSwipePrevious]/[onSwipeNext] (which changes `_visibleMonth` in the
-/// parent - the one place that pays for recomputing the month's
-/// astronomy/events data) and slides the new [child] in from the
-/// opposite edge. Drag-update frames only `setState` this small widget,
-/// not the whole home screen, so dragging itself stays cheap regardless
-/// of how expensive building [child] is.
-class _SwipeableMonthCard extends StatefulWidget {
-  const _SwipeableMonthCard({
-    required this.monthKey,
-    required this.enterFromRight,
-    required this.onSwipePrevious,
-    required this.onSwipeNext,
-    required this.child,
+/// The day grid + event dots for one calendar page - everything
+/// [_MonthCalendarCard] needs to render a month other than the current
+/// `_visibleMonth`, computed on demand by
+/// [_HomeScreenState._monthPageDataFor] as the PageView needs it.
+class _MonthPageData {
+  const _MonthPageData({
+    required this.days,
+    required this.eventCounts,
+    required this.eventCategories,
   });
 
-  /// Identifies which month [child] currently represents (e.g.
-  /// `"2026-9"`). A change signals the parent already swapped [child] for
-  /// a different month, triggering the slide-in entrance animation.
-  final String monthKey;
-
-  /// Which side the *next* entrance animation should slide in from, as
-  /// last set by the parent (via a swipe callback or the prev/next
-  /// buttons) - read at the moment [monthKey] changes.
-  final bool enterFromRight;
-  final VoidCallback onSwipePrevious;
-  final VoidCallback onSwipeNext;
-  final Widget child;
-
-  @override
-  State<_SwipeableMonthCard> createState() => _SwipeableMonthCardState();
+  final List<MonthDay> days;
+  final Map<String, int> eventCounts;
+  final Map<String, String> eventCategories;
 }
 
-class _SwipeableMonthCardState extends State<_SwipeableMonthCard>
-    with SingleTickerProviderStateMixin {
-  late final AnimationController _controller = AnimationController(
-    vsync: this,
-  );
-  double _offset = 0;
-  double _width = 360;
-
-  @override
-  void didUpdateWidget(covariant _SwipeableMonthCard old) {
-    super.didUpdateWidget(old);
-    if (old.monthKey != widget.monthKey) {
-      _offset = (widget.enterFromRight ? 1 : -1) * _width;
-      _animateTo(0, duration: const Duration(milliseconds: 230), curve: Curves.easeOutCubic);
-    }
-  }
-
-  @override
-  void dispose() {
-    _controller.dispose();
-    super.dispose();
-  }
-
-  Future<void> _animateTo(
-    double to, {
-    required Duration duration,
-    required Curve curve,
-  }) async {
-    final animation = Tween<double>(
-      begin: _offset,
-      end: to,
-    ).chain(CurveTween(curve: curve)).animate(_controller);
-    void listener() => setState(() => _offset = animation.value);
-    animation.addListener(listener);
-    _controller
-      ..duration = duration
-      ..value = 0;
-    try {
-      await _controller.forward();
-    } finally {
-      animation.removeListener(listener);
-    }
-  }
-
-  void _onDragUpdate(DragUpdateDetails details) {
-    if (_controller.isAnimating) return;
-    setState(() => _offset += details.delta.dx);
-  }
-
-  Future<void> _onDragEnd(DragEndDetails details) async {
-    if (_controller.isAnimating) return;
-    final velocity = details.primaryVelocity ?? 0;
-    final threshold = _width * 0.22;
-    final shouldComplete = _offset.abs() > threshold || velocity.abs() > 600;
-    if (!shouldComplete) {
-      await _animateTo(0, duration: const Duration(milliseconds: 180), curve: Curves.easeOutCubic);
-      return;
-    }
-    final goingPrevious = _offset > 0;
-    await _animateTo(
-      goingPrevious ? _width : -_width,
-      duration: const Duration(milliseconds: 150),
-      curve: Curves.easeIn,
-    );
-    if (goingPrevious) {
-      widget.onSwipePrevious();
-    } else {
-      widget.onSwipeNext();
-    }
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return LayoutBuilder(
-      builder: (context, constraints) {
-        _width = constraints.maxWidth;
-        return GestureDetector(
-          behavior: HitTestBehavior.translucent,
-          onHorizontalDragUpdate: _onDragUpdate,
-          onHorizontalDragEnd: _onDragEnd,
-          child: ClipRect(
-            child: Transform.translate(
-              offset: Offset(_offset, 0),
-              child: widget.child,
-            ),
-          ),
-        );
-      },
-    );
-  }
-}
-
-class _MonthCalendarCard extends StatelessWidget {
+/// Month calendar card with a real, native swipe: the day grid is a
+/// [PageView] (via a virtual month-index scheme, so any offset just falls
+/// out of `DateTime`'s own month-overflow normalization), giving Flutter's
+/// own finger-tracking/fling physics instead of a hand-rolled drag - no
+/// custom state machine to get wrong. The header (prev/next buttons, month
+/// label, weekday row) stays outside the pager and never itself slides, so
+/// it can't end up half off-screen mid-swipe.
+///
+/// [pageDataFor] is called per page, including for the neighbor page while
+/// a drag is in flight - the parent memoizes it (see
+/// `_HomeScreenState._monthPageDataFor`) so repeated calls for the same
+/// month/location are cheap; only an actual month change pays for
+/// recomputing astronomy for that month's visible days.
+class _MonthCalendarCard extends StatefulWidget {
   const _MonthCalendarCard({
     required this.month,
     required this.selectedDate,
     required this.compactMode,
     required this.weekStart,
     required this.isRu,
-    required this.days,
-    required this.eventCounts,
-    required this.eventCategories,
+    required this.pageDataFor,
     required this.onlyDaysWithEvents,
     required this.digitFont,
     required this.digitBold,
     required this.digitItalic,
     required this.digitScale,
     required this.onMonthPickerRequested,
-    required this.onPreviousMonth,
-    required this.onNextMonth,
+    required this.onMonthChanged,
     required this.onDaySelected,
   });
 
@@ -2707,45 +2619,117 @@ class _MonthCalendarCard extends StatelessWidget {
   final bool compactMode;
   final int weekStart;
   final bool isRu;
-  final List<MonthDay> days;
-  final Map<String, int> eventCounts;
-  final Map<String, String> eventCategories;
+  final _MonthPageData Function(DateTime month) pageDataFor;
   final bool onlyDaysWithEvents;
   final String digitFont;
   final bool digitBold;
   final bool digitItalic;
   final double digitScale;
   final VoidCallback onMonthPickerRequested;
-  final VoidCallback onPreviousMonth;
-  final VoidCallback onNextMonth;
+  final ValueChanged<DateTime> onMonthChanged;
   final ValueChanged<DateTime> onDaySelected;
 
   @override
+  State<_MonthCalendarCard> createState() => _MonthCalendarCardState();
+}
+
+class _MonthCalendarCardState extends State<_MonthCalendarCard> {
+  static const _basePage = 6000;
+  late final PageController _controller;
+  late final DateTime _baseline;
+  bool _internalChange = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _baseline = DateTime(widget.month.year, widget.month.month);
+    _controller = PageController(initialPage: _basePage);
+  }
+
+  @override
+  void didUpdateWidget(covariant _MonthCalendarCard old) {
+    super.didUpdateWidget(old);
+    final changed =
+        widget.month.year != old.month.year ||
+        widget.month.month != old.month.month;
+    if (!changed) return;
+    if (_internalChange) {
+      // We drove this change ourselves via onPageChanged - the controller
+      // is already sitting on the right page.
+      _internalChange = false;
+      return;
+    }
+    // External jump (month picker, search jump-to-event, day tap that
+    // crosses a month boundary) - resync without animating through every
+    // month in between.
+    final target = _indexForMonth(widget.month);
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (_controller.hasClients) _controller.jumpToPage(target);
+    });
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
+  int _indexForMonth(DateTime month) =>
+      _basePage +
+      (month.year - _baseline.year) * 12 +
+      (month.month - _baseline.month);
+
+  DateTime _monthForIndex(int index) {
+    final offset = index - _basePage;
+    return DateTime(_baseline.year, _baseline.month + offset);
+  }
+
+  void _handlePageChanged(int index) {
+    _internalChange = true;
+    widget.onMonthChanged(_monthForIndex(index));
+  }
+
+  void _goToPreviousMonth() {
+    _controller.previousPage(
+      duration: const Duration(milliseconds: 260),
+      curve: Curves.easeOutCubic,
+    );
+  }
+
+  void _goToNextMonth() {
+    _controller.nextPage(
+      duration: const Duration(milliseconds: 260),
+      curve: Curves.easeOutCubic,
+    );
+  }
+
+  @override
   Widget build(BuildContext context) {
-    final labels = _weekdayLabels(weekStart, isRu);
+    final labels = _weekdayLabels(widget.weekStart, widget.isRu);
+    final aspectRatio = widget.compactMode ? 0.88 : 1.04;
 
     return Card(
       child: Padding(
-        padding: EdgeInsets.all(compactMode ? 14 : 18),
+        padding: EdgeInsets.all(widget.compactMode ? 14 : 18),
         child: Column(
           children: [
             Row(
               children: [
                 IconButton.filledTonal(
-                  onPressed: onPreviousMonth,
+                  onPressed: _goToPreviousMonth,
                   icon: const Icon(Icons.chevron_left),
                 ),
                 Expanded(
                   child: Center(
                     child: _MonthPickerButton(
-                      label: _monthLabel(month, isRu),
-                      onPressed: onMonthPickerRequested,
-                      compactMode: compactMode,
+                      label: _monthLabel(widget.month, widget.isRu),
+                      onPressed: widget.onMonthPickerRequested,
+                      compactMode: widget.compactMode,
                     ),
                   ),
                 ),
                 IconButton.filledTonal(
-                  onPressed: onNextMonth,
+                  onPressed: _goToNextMonth,
                   icon: const Icon(Icons.chevron_right),
                 ),
               ],
@@ -2773,31 +2757,51 @@ class _MonthCalendarCard extends StatelessWidget {
                 );
               },
             ),
-            GridView.builder(
-              shrinkWrap: true,
-              physics: const NeverScrollableScrollPhysics(),
-              itemCount: days.length,
-              gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                crossAxisCount: 7,
-                childAspectRatio: compactMode ? 0.88 : 1.04,
-              ),
-              itemBuilder: (context, index) {
-                final day = days[index];
-                return _DayCell(
-                  day: day,
-                  selected: _sameDate(day.date, selectedDate),
-                  compactMode: compactMode,
-                  eventCount: eventCounts[_dateKey(day.date)] ?? 0,
-                  eventCategory: eventCategories[_dateKey(day.date)],
-                  dimEmptyEventDay:
-                      onlyDaysWithEvents &&
-                      day.inCurrentMonth &&
-                      (eventCounts[_dateKey(day.date)] ?? 0) == 0,
-                  digitFont: digitFont,
-                  digitBold: digitBold,
-                  digitItalic: digitItalic,
-                  digitScale: digitScale,
-                  onTap: () => onDaySelected(day.date),
+            LayoutBuilder(
+              builder: (context, constraints) {
+                final cellWidth = constraints.maxWidth / 7;
+                final gridHeight = (cellWidth / aspectRatio) * 6;
+                return SizedBox(
+                  height: gridHeight,
+                  child: PageView.builder(
+                    controller: _controller,
+                    onPageChanged: _handlePageChanged,
+                    itemBuilder: (context, index) {
+                      final month = _monthForIndex(index);
+                      final data = widget.pageDataFor(month);
+                      return GridView.builder(
+                        physics: const NeverScrollableScrollPhysics(),
+                        itemCount: data.days.length,
+                        gridDelegate:
+                            SliverGridDelegateWithFixedCrossAxisCount(
+                              crossAxisCount: 7,
+                              childAspectRatio: aspectRatio,
+                            ),
+                        itemBuilder: (context, i) {
+                          final day = data.days[i];
+                          return _DayCell(
+                            day: day,
+                            selected: _sameDate(day.date, widget.selectedDate),
+                            compactMode: widget.compactMode,
+                            eventCount:
+                                data.eventCounts[_dateKey(day.date)] ?? 0,
+                            eventCategory:
+                                data.eventCategories[_dateKey(day.date)],
+                            dimEmptyEventDay:
+                                widget.onlyDaysWithEvents &&
+                                day.inCurrentMonth &&
+                                (data.eventCounts[_dateKey(day.date)] ?? 0) ==
+                                    0,
+                            digitFont: widget.digitFont,
+                            digitBold: widget.digitBold,
+                            digitItalic: widget.digitItalic,
+                            digitScale: widget.digitScale,
+                            onTap: () => widget.onDaySelected(day.date),
+                          );
+                        },
+                      );
+                    },
+                  ),
                 );
               },
             ),
