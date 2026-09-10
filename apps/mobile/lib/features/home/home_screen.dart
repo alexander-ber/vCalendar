@@ -253,7 +253,10 @@ class _HomeScreenState extends State<HomeScreen> {
   late DateTime _periodFrom;
   late DateTime _periodTo;
   final Map<String, PanchangaDay> _panchangaCache = {};
+  final Map<String, List<PanchangaDay>> _periodBoundaryCache = {};
+  final Set<String> _periodBoundaryLoading = {};
   final Map<String, _MonthPageData> _monthPageCache = {};
+  final Set<String> _monthPageLoading = {};
   DateTime? _lastPrefetchedMonth;
   CalendarLocation? _gpsLocation;
   String? _gpsNearestLocationId;
@@ -280,6 +283,7 @@ class _HomeScreenState extends State<HomeScreen> {
     if (oldWidget.settings.lang != widget.settings.lang ||
         oldWidget.settings.locationId != widget.settings.locationId) {
       _monthPageCache.clear();
+      _periodBoundaryCache.clear();
       _state = _load();
     }
   }
@@ -317,6 +321,7 @@ class _HomeScreenState extends State<HomeScreen> {
   void _reload() {
     setState(() {
       _monthPageCache.clear();
+      _periodBoundaryCache.clear();
       _state = _load();
     });
   }
@@ -361,27 +366,18 @@ class _HomeScreenState extends State<HomeScreen> {
               events: state.events,
             );
             final compactMode = widget.settings.compactMode && !isTablet;
-            final monthDays = _monthGridService.buildMonth(
+            // Non-blocking: same cache/async-load _MonthCalendarCard's
+            // PageView pages use (see _MonthPageData's doc) - a null here
+            // just means _visibleMonth's astronomy hasn't finished warming
+            // yet, so the selected-day card/Masa banner briefly show empty
+            // instead of freezing a frame on ~60 days of real computation.
+            final monthPageData = _monthPageDataIfReady(
               month: _visibleMonth,
-              weekStart: selectedLocation?.weekStart ?? 1,
+              selectedLocation: selectedLocation,
+              events: state.events,
             );
-            final eventMap = selectedLocation == null
-                ? <String, List<MobileEvent>>{}
-                : _eventsForVisibleDays(
-                    days: monthDays,
-                    location: selectedLocation,
-                    events: state.events,
-                  );
-            final panchangaMonthDays = selectedLocation == null
-                ? <PanchangaDay>[]
-                : [
-                    for (final day in monthDays)
-                      if (day.inCurrentMonth)
-                        _calculateDay(
-                          date: day.date,
-                          location: selectedLocation,
-                        ),
-                  ];
+            final eventMap = monthPageData?.eventMap ?? <String, List<MobileEvent>>{};
+            final panchangaMonthDays = monthPageData?.panchangaDays ?? <PanchangaDay>[];
             final selectedPanchanga = selectedLocation == null
                 ? null
                 : _calculateDay(
@@ -471,7 +467,7 @@ class _HomeScreenState extends State<HomeScreen> {
                         compactMode: compactMode,
                         weekStart: selectedLocation?.weekStart ?? 1,
                         isRu: _isRu,
-                        pageDataFor: (month) => _monthPageDataFor(
+                        pageDataFor: (month) => _monthPageDataIfReady(
                           month: month,
                           selectedLocation: selectedLocation,
                           events: state.events,
@@ -497,6 +493,11 @@ class _HomeScreenState extends State<HomeScreen> {
                           location: selectedLocation,
                           calculateDay: (date, location) =>
                               _calculateDay(date: date, location: location),
+                          boundaryCache: _periodBoundaryCache,
+                          boundaryLoading: _periodBoundaryLoading,
+                          onBoundaryReady: () {
+                            if (mounted) setState(() {});
+                          },
                           isRu: _isRu,
                         ),
                         const SizedBox(height: 16),
@@ -791,18 +792,17 @@ class _HomeScreenState extends State<HomeScreen> {
         locations.first;
   }
 
-  /// Uses [CalendarEventEngine] (via [_computeEventsMap]) for the visible
-  /// month, then applies the user's active category filters - the engine
-  /// itself has no UI-settings knowledge, matching how the web app also
-  /// keeps filtering as a display-layer concern.
   /// Warms [_monthPageCache] for the months next to [month] once it's
-  /// settled as `_visibleMonth`, so the *first* touch of a swipe never
-  /// pays for real astronomy synchronously mid-drag/mid-frame - by the
-  /// time the user can plausibly swipe again, the neighbor page's data is
-  /// already sitting in the cache and [_monthPageDataFor] returns
-  /// instantly. Runs once per month (guarded by [_lastPrefetchedMonth])
-  /// and deferred to after the current frame via a post-frame callback, so
-  /// it never competes with the frame that's actually animating/settling.
+  /// settled as `_visibleMonth`, so swiping there usually finds it already
+  /// cached. Runs once per month (guarded by [_lastPrefetchedMonth]),
+  /// deferred to after the current frame so it never competes with the
+  /// frame that's actually animating/settling.
+  ///
+  /// This is a head start, not a guarantee - swiping sooner than the
+  /// background warm-up can finish is normal (confirmed with
+  /// integration_test/swipe_perf_test.dart's real FrameTiming capture) and
+  /// is handled by [_monthPageDataIfReady] showing a placeholder instead of
+  /// computing live, not by this prefetch racing to win.
   void _prefetchAdjacentMonths({
     required DateTime month,
     required CalendarLocation? selectedLocation,
@@ -815,25 +815,109 @@ class _HomeScreenState extends State<HomeScreen> {
       return;
     }
     _lastPrefetchedMonth = key;
-    // Each month's astronomy costs ~200-300ms - split the two neighbors
-    // across separate frames (rather than one ~500ms burst) so neither
-    // one risks a single long, visible hitch.
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (!mounted) return;
-      _monthPageDataFor(
+      _ensureMonthPageWarm(
         month: DateTime(key.year, key.month - 1),
         selectedLocation: selectedLocation,
         events: events,
       );
-      WidgetsBinding.instance.addPostFrameCallback((_) {
-        if (!mounted) return;
-        _monthPageDataFor(
-          month: DateTime(key.year, key.month + 1),
-          selectedLocation: selectedLocation,
-          events: events,
-        );
-      });
+      _ensureMonthPageWarm(
+        month: DateTime(key.year, key.month + 1),
+        selectedLocation: selectedLocation,
+        events: events,
+      );
     });
+  }
+
+  /// Non-blocking read for live [PageView] builds: returns the cached page
+  /// instantly, or `null` on a miss - [_MonthCalendarCard] shows a
+  /// lightweight placeholder for `null` instead of blocking a frame on
+  /// real astronomy. Also kicks off (deduped via [_monthPageLoading]) the
+  /// same background warm-up [_prefetchAdjacentMonths] uses, so whichever
+  /// finishes first - background prefetch or this on-demand load - the
+  /// page rebuilds with real data once it's ready.
+  _MonthPageData? _monthPageDataIfReady({
+    required DateTime month,
+    required CalendarLocation? selectedLocation,
+    required List<MobileEvent> events,
+  }) {
+    final cacheKey = '${month.year}-${month.month}-${selectedLocation?.id}';
+    final cached = _monthPageCache[cacheKey];
+    if (cached != null) return cached;
+    _ensureMonthPageWarm(
+      month: month,
+      selectedLocation: selectedLocation,
+      events: events,
+    );
+    return null;
+  }
+
+  /// Starts [_prefetchMonthAsync] for [month] unless it's already cached or
+  /// already loading (tracked in [_monthPageLoading], shared between
+  /// [_prefetchAdjacentMonths] and [_monthPageDataIfReady] so the two never
+  /// duplicate work for the same page) - rebuilds once it completes so any
+  /// placeholder currently showing that page picks up the real data.
+  void _ensureMonthPageWarm({
+    required DateTime month,
+    required CalendarLocation? selectedLocation,
+    required List<MobileEvent> events,
+  }) {
+    final cacheKey = '${month.year}-${month.month}-${selectedLocation?.id}';
+    if (_monthPageCache.containsKey(cacheKey)) return;
+    if (!_monthPageLoading.add(cacheKey)) return;
+    _prefetchMonthAsync(
+      month: month,
+      selectedLocation: selectedLocation,
+      events: events,
+    ).then((_) {
+      _monthPageLoading.remove(cacheKey);
+      if (mounted) setState(() {});
+    });
+  }
+
+  /// Warms [_panchangaCache] for every day [_monthPageDataFor] will need
+  /// for [month] (including the +-15 day padding [_computeEventsMap] uses),
+  /// one day at a time with a real event-loop yield in between, so the
+  /// expensive part never runs as a single long synchronous block. Once
+  /// every day is cached, the final [_monthPageDataFor] call just re-reads
+  /// them and finishes near-instantly.
+  Future<void> _prefetchMonthAsync({
+    required DateTime month,
+    required CalendarLocation? selectedLocation,
+    required List<MobileEvent> events,
+  }) async {
+    final cacheKey = '${month.year}-${month.month}-${selectedLocation?.id}';
+    if (_monthPageCache.containsKey(cacheKey)) return;
+
+    if (selectedLocation != null) {
+      final days = _monthGridService.buildMonth(
+        month: month,
+        weekStart: selectedLocation.weekStart,
+      );
+      final visibleDays = days.where((d) => d.inCurrentMonth).toList();
+      if (visibleDays.isNotEmpty) {
+        final from = addCalendarDays(visibleDays.first.date, -15);
+        final to = addCalendarDays(visibleDays.last.date, 15);
+        var cursor = from;
+        while (!cursor.isAfter(to)) {
+          if (!mounted) return;
+          _calculateDay(date: cursor, location: selectedLocation);
+          cursor = addCalendarDays(cursor, 1);
+          // Yields via the event loop's timer queue, which always makes
+          // progress - unlike SchedulerBinding.endOfFrame, which only
+          // resolves once a new frame is actually scheduled, and nothing
+          // here (a plain computation, no setState) schedules one.
+          await Future<void>.delayed(Duration.zero);
+        }
+      }
+    }
+    if (!mounted) return;
+    _monthPageDataFor(
+      month: month,
+      selectedLocation: selectedLocation,
+      events: events,
+    );
   }
 
   /// Computes (and caches) the day grid + event dots for one calendar page
@@ -882,6 +966,8 @@ class _HomeScreenState extends State<HomeScreen> {
       eventCategories: {
         for (final entry in tones.entries) entry.key: entry.value.first,
       },
+      panchangaDays: panchangaDays,
+      eventMap: eventMap,
     );
     _monthPageCache[cacheKey] = data;
     return data;
@@ -2404,6 +2490,9 @@ class _MasaPeriodNoticeCard extends StatelessWidget {
     required this.days,
     required this.location,
     required this.calculateDay,
+    required this.boundaryCache,
+    required this.boundaryLoading,
+    required this.onBoundaryReady,
     required this.isRu,
   });
 
@@ -2411,6 +2500,25 @@ class _MasaPeriodNoticeCard extends StatelessWidget {
   final CalendarLocation? location;
   final PanchangaDay Function(DateTime date, CalendarLocation location)
   calculateDay;
+
+  /// Owned by `_HomeScreenState`, keyed by `'<notice type>:<location id>'`,
+  /// so the boundary of a multi-month observance (Chaturmasya spans ~4
+  /// months) is discovered once and reused across every rebuild/swipe
+  /// while it's still the visible season, instead of [_expandPeriod]
+  /// re-walking up to 370 days each way on every build - that re-walk,
+  /// not [calculateDay]'s own per-day cache, was the real cost: measured
+  /// at ~340ms mid-swipe via integration_test/swipe_perf_test.dart.
+  final Map<String, List<PanchangaDay>> boundaryCache;
+
+  /// Dedup guard (also owned by `_HomeScreenState`) so a still-in-flight
+  /// async discovery for a given key doesn't get started a second time by
+  /// an unrelated rebuild before it finishes.
+  final Set<String> boundaryLoading;
+
+  /// Called once a background discovery finishes filling [boundaryCache] -
+  /// `_HomeScreenState` just does `setState((){})` so this card (and
+  /// anything else) rebuilds with the now-accurate range.
+  final VoidCallback onBoundaryReady;
   final bool isRu;
 
   @override
@@ -2456,6 +2564,7 @@ class _MasaPeriodNoticeCard extends StatelessWidget {
   List<_PeriodNotice> _notices() {
     return [
       _notice(
+        'adhika',
         days.where((day) => day.masaType == 'adhika').toList(growable: false),
         predicate: (day) => day.masaType == 'adhika',
         activeTitle: isRu
@@ -2466,12 +2575,14 @@ class _MasaPeriodNoticeCard extends StatelessWidget {
             : 'Purushottama Maas starts',
       ),
       _notice(
+        'chaturmasya',
         days.where(_isChaturmasyaDay).toList(growable: false),
         predicate: _isChaturmasyaDay,
         activeTitle: isRu ? 'Идёт Чатурмасья' : 'Chaturmasya is active',
         upcomingTitle: isRu ? 'Чатурмасья начнётся' : 'Chaturmasya starts',
       ),
       _notice(
+        'karttik',
         days.where(_isKarttikDay).toList(growable: false),
         predicate: _isKarttikDay,
         activeTitle: isRu
@@ -2482,6 +2593,7 @@ class _MasaPeriodNoticeCard extends StatelessWidget {
             : 'Karttik / Damodara month starts',
       ),
       _notice(
+        'bhishma_panchaka',
         days.where(_isBhishmaPanchakaDay).toList(growable: false),
         predicate: _isBhishmaPanchakaDay,
         activeTitle: isRu
@@ -2495,13 +2607,14 @@ class _MasaPeriodNoticeCard extends StatelessWidget {
   }
 
   _PeriodNotice? _notice(
+    String noticeType,
     List<PanchangaDay> periodDays, {
     required bool Function(PanchangaDay day) predicate,
     required String activeTitle,
     required String upcomingTitle,
   }) {
     if (periodDays.isEmpty) return null;
-    final expanded = _expandPeriod(periodDays, predicate);
+    final expanded = _expandPeriod(noticeType, periodDays, predicate);
     final today = _dateOnly(DateTime.now());
     final first = _dateOnly(expanded.first.date);
     final last = _dateOnly(expanded.last.date);
@@ -2515,27 +2628,75 @@ class _MasaPeriodNoticeCard extends StatelessWidget {
   }
 
   List<PanchangaDay> _expandPeriod(
+    String noticeType,
     List<PanchangaDay> visibleDays,
     bool Function(PanchangaDay day) predicate,
   ) {
     final currentLocation = location;
     if (currentLocation == null) return visibleDays;
-    var first = visibleDays.first;
-    var last = visibleDays.last;
 
+    final cacheKey = '$noticeType:${currentLocation.id}';
+    final cachedBoundary = boundaryCache[cacheKey];
+    if (cachedBoundary != null) {
+      final cachedStart = cachedBoundary.first.date;
+      final cachedEnd = cachedBoundary.last.date;
+      // Reuse only while the currently visible days still fall inside the
+      // previously discovered season - otherwise this is a different
+      // occurrence (e.g. jumped far away) and needs a fresh walk.
+      if (!visibleDays.first.date.isBefore(cachedStart) &&
+          !visibleDays.last.date.isAfter(cachedEnd)) {
+        return cachedBoundary;
+      }
+    }
+
+    // Not cached (or a different season) - the full walk can be expensive
+    // (Chaturmasya spans ~4 months, so up to ~120 real astronomy calls) so
+    // it never runs synchronously in build(). Kick off an async discovery
+    // (deduped via boundaryLoading) and show the currently visible month
+    // as a rough placeholder range meanwhile - the real range replaces it
+    // within about a second once discovery finishes and calls
+    // [onBoundaryReady].
+    if (boundaryLoading.add(cacheKey)) {
+      _discoverPeriodBoundaryAsync(
+        cacheKey: cacheKey,
+        seedFirst: visibleDays.first,
+        seedLast: visibleDays.last,
+        location: currentLocation,
+        predicate: predicate,
+      );
+    }
+    return visibleDays;
+  }
+
+  Future<void> _discoverPeriodBoundaryAsync({
+    required String cacheKey,
+    required PanchangaDay seedFirst,
+    required PanchangaDay seedLast,
+    required CalendarLocation location,
+    required bool Function(PanchangaDay day) predicate,
+  }) async {
+    var first = seedFirst;
+    var last = seedLast;
     for (var i = 0; i < 370; i += 1) {
       final previousDate = addCalendarDays(first.date, -1);
-      final previous = calculateDay(previousDate, currentLocation);
+      final previous = calculateDay(previousDate, location);
       if (!predicate(previous)) break;
       first = previous;
+      // Yields via the event loop's timer queue between days, same as
+      // _HomeScreenState._prefetchMonthAsync, so this long walk never
+      // blocks a single frame either.
+      await Future<void>.delayed(Duration.zero);
     }
     for (var i = 0; i < 370; i += 1) {
       final nextDate = addCalendarDays(last.date, 1);
-      final next = calculateDay(nextDate, currentLocation);
+      final next = calculateDay(nextDate, location);
       if (!predicate(next)) break;
       last = next;
+      await Future<void>.delayed(Duration.zero);
     }
-    return [first, last];
+    boundaryCache[cacheKey] = [first, last];
+    boundaryLoading.remove(cacheKey);
+    onBoundaryReady();
   }
 
   bool _isChaturmasyaDay(PanchangaDay day) {
@@ -2614,20 +2775,28 @@ class _PeriodNotice {
   final String subtitle;
 }
 
-/// The day grid + event dots for one calendar page - everything
-/// [_MonthCalendarCard] needs to render a month other than the current
-/// `_visibleMonth`, computed on demand by
-/// [_HomeScreenState._monthPageDataFor] as the PageView needs it.
+/// Everything [_HomeScreenState] needs for one calendar month - the day
+/// grid + event dots for [_MonthCalendarCard]'s PageView pages, and the
+/// full [panchangaDays]/[eventMap] the "selected day" card,
+/// [_MasaPeriodNoticeCard], and the Chaturmasya-style banners need for
+/// `_visibleMonth` specifically. Both consumers share one cache/async-load
+/// path (`_HomeScreenState._monthPageDataFor`/`_monthPageDataIfReady`) so
+/// a month never gets computed twice, and *nothing* that depends on
+/// `_visibleMonth` blocks a frame on real astronomy - not just the grid.
 class _MonthPageData {
   const _MonthPageData({
     required this.days,
     required this.eventCounts,
     required this.eventCategories,
+    required this.panchangaDays,
+    required this.eventMap,
   });
 
   final List<MonthDay> days;
   final Map<String, int> eventCounts;
   final Map<String, String> eventCategories;
+  final List<PanchangaDay> panchangaDays;
+  final Map<String, List<MobileEvent>> eventMap;
 }
 
 /// Month calendar card with a real, native swipe: the day grid is a
@@ -2666,7 +2835,7 @@ class _MonthCalendarCard extends StatefulWidget {
   final bool compactMode;
   final int weekStart;
   final bool isRu;
-  final _MonthPageData Function(DateTime month) pageDataFor;
+  final _MonthPageData? Function(DateTime month) pageDataFor;
   final bool onlyDaysWithEvents;
   final String digitFont;
   final bool digitBold;
@@ -2816,6 +2985,15 @@ class _MonthCalendarCardState extends State<_MonthCalendarCard> {
                     itemBuilder: (context, index) {
                       final month = _monthForIndex(index);
                       final data = widget.pageDataFor(month);
+                      if (data == null) {
+                        // Cache miss and not ready yet - never block this
+                        // frame on real astronomy; a rebuild lands once
+                        // the background load (kicked off by pageDataFor
+                        // itself) finishes.
+                        return const Center(
+                          child: CircularProgressIndicator(),
+                        );
+                      }
                       return GridView.builder(
                         physics: const NeverScrollableScrollPhysics(),
                         itemCount: data.days.length,
