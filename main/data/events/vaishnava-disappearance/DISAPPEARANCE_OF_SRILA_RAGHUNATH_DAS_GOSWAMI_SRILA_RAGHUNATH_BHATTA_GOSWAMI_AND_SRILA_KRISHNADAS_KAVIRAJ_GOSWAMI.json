@@ -12,6 +12,8 @@
     "allow_in_adhika": false
   },
   "source_status": "tithi_rule_from_scsmath_541",
+  "disabled": true,
+  "disabled_reason": "Combined under one title but the full_description is entirely Raghunath Das Goswami's biography - Raghunath Bhatta Goswami and Krishnadas Kaviraj Goswami each have their own distinct full-description legacy records (DISAPPEARANCE_OF_RAGKHUNATKHI_BKHATTY_GOSVAMI, DISAPPEARANCE_OF_KRISHNADASA_KAVIRADZHA_GOSVAMI) and Raghunath Das Goswami has his own too (DISAPPEARANCE_OF_RAGKHUNATKHI_DASA_GOSVAMI, identical text). Per user preference, kept as 3 separate cards instead of one combined card that would discard two of the three biographies. Those three records were re-enabled; this combined record is disabled rather than deleted for source/attribution history.",
   "sources": [
     {
       "type": "description",
