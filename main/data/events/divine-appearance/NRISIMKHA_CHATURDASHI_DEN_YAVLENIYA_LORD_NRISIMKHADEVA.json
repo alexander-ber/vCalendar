@@ -14,6 +14,8 @@
   },
   "priority": "medium",
   "source_status": "matched_by_name_type_tithi",
+  "disabled": true,
+  "disabled_reason": "Duplicate of the canonical record avatar/SRI_NRSIMHA_CHATURDASHI (identical source text, same observance, higher priority/source_status). Both records matched the same day every year, producing two cards for the same festival. Kept disabled rather than deleted for source/attribution history.",
   "sources": [
     {
       "type": "description",

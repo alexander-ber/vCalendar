@@ -415,6 +415,7 @@ export const EVENTS = [
     "allow_in_adhika": false,
     "priority": "medium",
     "source_status": "matched_by_name_type_tithi",
+    "disabled": true,
     "description": "Imported calendar reference for \"Гаура-Пурнима - день явления Господа Шри Чайтаньи Махапрабху (пост)\". English summary still needs editorial translation; the Russian source summary is linked in source_url.",
     "source_url": "http://harekrishnazp.info/materialy/vajshnavskij-kalendar/547-gaura-purnima.html",
     "i18n": {
@@ -474,6 +475,7 @@ export const EVENTS = [
     "allow_in_adhika": false,
     "priority": "medium",
     "source_status": "matched_by_name_type_tithi",
+    "disabled": true,
     "description": "Imported calendar reference for \"Нрисимха Чатурдаши - день явления Господа Нрисимхадева (пост)\". English summary still needs editorial translation; the Russian source summary is linked in source_url.",
     "source_url": "http://harekrishnazp.info/materialy/vajshnavskij-kalendar/683-nrisimkhadev.html",
     "i18n": {
@@ -555,7 +557,7 @@ export const EVENTS = [
     "subject": "Вараха Двадаши - день явления Господа Варахадева",
     "gaudiya_masa": "Madhava",
     "paksha": "Gaura",
-    "tithi": "Trayodashi",
+    "tithi": "Dvadashi",
     "timing_rule": "sunrise_based",
     "allow_in_adhika": false,
     "priority": "medium",
@@ -2091,6 +2093,35 @@ export const EVENTS = [
     }
   },
   {
+    "id": "sita_thakurani_appearance",
+    "name": "Appearance of Srimati Sita Thakurani",
+    "type": "vaishnava_appearance",
+    "category": "vaishnava_appearance",
+    "scope": "core_gaudiya",
+    "subject": "Shrimati Sita Thakurani, wife of Sri Advaita Acharya",
+    "gaudiya_masa": "Hrishikesha",
+    "paksha": "Gaura",
+    "tithi": "Chaturthi",
+    "timing_rule": "sunrise_based",
+    "allow_in_adhika": false,
+    "priority": "medium",
+    "source_status": "confirmed",
+    "description": "Appearance day of Srimati Sita Thakurani, the eternal consort of Sri Advaita Acharya, one of the Panca-tattva of Gaudiya Vaishnavism.",
+    "source_url": "http://harekrishnazp.info/materialy/vajshnavskij-kalendar/676-shrimati-sita-devi.html",
+    "i18n": {
+      "en": {
+        "name": "Appearance of Srimati Sita Thakurani",
+        "description": "Appearance day of Srimati Sita Thakurani, the eternal consort of Sri Advaita Acharya, one of the Panca-tattva of Gaudiya Vaishnavism.",
+        "full_description": "Srimati Sita Thakurani is the eternal consort of Sri Advaita Acharya, one of the five features (Panca-tattva) of the Lord's combined appearance as Sri Chaitanya Mahaprabhu. Just as Advaita Acharya is worshiped for His fervent prayers and loud calls that are said to have hastened the Lord's appearance, Sita Thakurani is revered as His constant, equally devoted companion in that same longing and service.\n\nSita Thakurani is considered an expansion of Yogamaya, the Lord's internal potency, and is honored together with Advaita Acharya at their household deities in Shantipur, which remains a major center of Gaudiya Vaishnava pilgrimage to this day. She is remembered as an ideal of household devotional life - caring for her family, including their sons, while never wavering from wholehearted service and remembrance of the Lord.\n\nDevotees observe this day by remembering Sita Thakurani's exemplary chastity, devotion, and service, praying to develop a similar unwavering dedication to the Lord and His devotees within one's own life and household."
+      },
+      "ru": {
+        "name": "Явление Шримати Ситы Тхакурани",
+        "description": "День явления Шримати Ситы Тхакурани, вечной супруги Шри Адвайты Ачарьи, одного из Панча-таттвы гаудия-вайшнавизма.",
+        "full_description": "Шримати Сита Тхакурани - вечная супруга Шри Адвайты Ачарьи, одного из пяти аспектов явления Господа как Шри Чайтаньи Махапрабху (Панча-таттвы). Подобно тому, как Адвайта Ачарья почитается за Свои пламенные молитвы и громкие обращения к Господу, которые, как считается, ускорили Его явление, Сита Тхакурани почитается как Его постоянная спутница, разделявшая ту же тоску по Господу и то же служение Ему.\n\nСита Тхакурани считается экспансией Йогамайи, внутренней энергии Господа, и почитается вместе с Адвайтой Ачарьей у Их домашних Божеств в Шантипуре, который и по сей день остаётся важным местом паломничества гаудия-вайшнавов. Она вспоминается как идеал преданного служения в семейной жизни - заботясь о своей семье, включая сыновей, она никогда не отклонялась от искреннего служения и памятования о Господе.\n\nВ этот день преданные вспоминают безупречную целомудренность, преданность и служение Ситы Тхакурани, молясь развить в себе и в своей семье такую же непоколебимую преданность Господу и Его слугам."
+      }
+    }
+  },
+  {
     "id": "hkzp_541_день_явления_шримати_ситы_деви",
     "name": "Appearance of Shrimati Sity Devi",
     "type": "vaishnava_appearance",
@@ -3013,6 +3044,7 @@ export const EVENTS = [
     "allow_in_adhika": false,
     "priority": "medium",
     "source_status": "matched_by_name_type_tithi",
+    "disabled": true,
     "description": "Imported calendar reference for \"День ухода Гададхары Пандита\". English summary still needs editorial translation; the Russian source summary is linked in source_url.",
     "source_url": "http://harekrishnazp.info/materialy/vajshnavskij-kalendar/765-gadadkhara-pandit.html",
     "i18n": {
@@ -3041,6 +3073,7 @@ export const EVENTS = [
     "allow_in_adhika": false,
     "priority": "medium",
     "source_status": "matched_by_name_type_tithi",
+    "disabled": true,
     "description": "Imported calendar reference for \"День ухода Гауридаса Пандита\". English summary still needs editorial translation; the Russian source summary is linked in source_url.",
     "source_url": "http://harekrishnazp.info/materialy/vajshnavskij-kalendar/816-gauridas-pandit.html",
     "i18n": {
@@ -3184,6 +3217,7 @@ export const EVENTS = [
     "allow_in_adhika": false,
     "priority": "medium",
     "source_status": "matched_by_name_type_tithi",
+    "disabled": true,
     "description": "Imported calendar reference for \"День ухода Кришнадаса Кавираджа Госвами\". English summary still needs editorial translation; the Russian source summary is linked in source_url.",
     "source_url": "http://harekrishnazp.info/materialy/vajshnavskij-kalendar/1282-krishnadas-kaviradzh-gosvami.html",
     "i18n": {
@@ -3412,6 +3446,7 @@ export const EVENTS = [
     "allow_in_adhika": false,
     "priority": "medium",
     "source_status": "matched_by_name_type_tithi",
+    "disabled": true,
     "description": "Imported calendar reference for \"День ухода Рагхунатхи Бхатты Госвами\". English summary still needs editorial translation; the Russian source summary is linked in source_url.",
     "source_url": "http://harekrishnazp.info/materialy/vajshnavskij-kalendar/1281-ragkhunatkha-bkhatta-gosvami.html",
     "i18n": {
@@ -3440,6 +3475,7 @@ export const EVENTS = [
     "allow_in_adhika": false,
     "priority": "medium",
     "source_status": "matched_by_name_type_tithi",
+    "disabled": true,
     "description": "Imported calendar reference for \"День ухода Рагхунатхи Даса Госвами\". English summary still needs editorial translation; the Russian source summary is linked in source_url.",
     "source_url": "http://harekrishnazp.info/materialy/vajshnavskij-kalendar/1034-ragkhunatkha-das-gosvami.html",
     "i18n": {
@@ -4018,7 +4054,7 @@ export const EVENTS = [
     "category": "vaishnava_disappearance",
     "subject": "Srila Raghunath Das Goswami; Srila Raghunath Bhatta Goswami; Srila Krishnadas Kaviraj Goswami",
     "gaudiya_masa": "Padmanabha",
-    "paksha": "Krishna",
+    "paksha": "Gaura",
     "tithi": "Dvadashi",
     "timing_rule": "sunrise_based",
     "allow_in_adhika": false,

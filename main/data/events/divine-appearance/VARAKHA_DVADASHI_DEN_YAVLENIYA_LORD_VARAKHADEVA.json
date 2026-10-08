@@ -8,12 +8,13 @@
   "rules": {
     "gaudiya_masa": "Madhava",
     "paksha": "Gaura",
-    "tithi": "Trayodashi",
+    "tithi": "Dvadashi",
     "timing_rule": "sunrise_based",
     "allow_in_adhika": false
   },
   "priority": "medium",
   "source_status": "matched_by_name_type_tithi",
+  "correction_note": "rules.tithi was previously \"Trayodashi\", contradicting the record's own name/id (\"Varakha DVADASHI\") and causing it to collide with NITYANANDA_TRAYODASHI_DEN_YAVLENIYA_LORD_NITYANANDY on the same day every year. Corrected to Dvadashi to match the record's own declared name.",
   "sources": [
     {
       "type": "description",

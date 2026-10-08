@@ -14,6 +14,8 @@
   },
   "priority": "medium",
   "source_status": "matched_by_name_type_tithi",
+  "disabled": true,
+  "disabled_reason": "Superseded by the combined canonical record DISAPPEARANCE_OF_SRILA_RUPA_GOSWAMI_AND_SRILA_GAURI_DAS_PANDIT_GOSWAMI, which already covers this personality on the same tithi (Sridhara, Gaura Dvadashi) and has higher-quality combined content. Was firing as a live duplicate alongside the canonical record on 2026-08-24 before being disabled. Kept disabled rather than deleted for source/attribution history.",
   "sources": [
     {
       "type": "description",

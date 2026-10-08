@@ -14,6 +14,8 @@
   },
   "priority": "medium",
   "source_status": "matched_by_name_type_tithi",
+  "disabled": true,
+  "disabled_reason": "Superseded by the combined canonical record DISAPPEARANCE_OF_SRILA_RAGHUNATH_DAS_GOSWAMI_SRILA_RAGHUNATH_BHATTA_GOSWAMI_AND_SRILA_KRISHNADAS_KAVIRAJ_GOSWAMI, which already covers this personality on the same tithi (Padmanabha, Gaura Dvadashi) and has higher-quality combined content. Kept disabled rather than deleted for source/attribution history.",
   "sources": [
     {
       "type": "description",
