@@ -14,6 +14,8 @@
   },
   "priority": "medium",
   "source_status": "matched_by_name_type_tithi",
+  "disabled": true,
+  "disabled_reason": "Mislabeled duplicate: subject says 'Gadadhara Pandita' but the full biography text is verbatim the same as DISAPPEARANCE_OF_GADADKHARY_DASA_GOSVAMI and is actually about Gadadhara Das (a disciple), not Gadadhara Pandit (one of the Pancha-tattva, already covered by the combined canonical record DISAPPEARANCE_OF_SRILA_GADADHAR_PANDIT_AND_SRILA_BHAKTI_VINOD_THAKUR). Its rules (Vamana, Krishna, Amavasya) also contradict its own biography text, which says the person departed 'on the eighth day after the full moon in Kartika' (Krishna Ashtami), matching GADADKHARY_DASA_GOSVAMI's rules instead. Kept disabled rather than deleted for source/attribution history.",
   "sources": [
     {
       "type": "description",

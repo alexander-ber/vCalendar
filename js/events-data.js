@@ -415,6 +415,7 @@ export const EVENTS = [
     "allow_in_adhika": false,
     "priority": "medium",
     "source_status": "matched_by_name_type_tithi",
+    "disabled": true,
     "description": "Imported calendar reference for \"Гаура-Пурнима - день явления Господа Шри Чайтаньи Махапрабху (пост)\". English summary still needs editorial translation; the Russian source summary is linked in source_url.",
     "source_url": "http://harekrishnazp.info/materialy/vajshnavskij-kalendar/547-gaura-purnima.html",
     "i18n": {
@@ -474,6 +475,7 @@ export const EVENTS = [
     "allow_in_adhika": false,
     "priority": "medium",
     "source_status": "matched_by_name_type_tithi",
+    "disabled": true,
     "description": "Imported calendar reference for \"Нрисимха Чатурдаши - день явления Господа Нрисимхадева (пост)\". English summary still needs editorial translation; the Russian source summary is linked in source_url.",
     "source_url": "http://harekrishnazp.info/materialy/vajshnavskij-kalendar/683-nrisimkhadev.html",
     "i18n": {
@@ -555,7 +557,7 @@ export const EVENTS = [
     "subject": "Вараха Двадаши - день явления Господа Варахадева",
     "gaudiya_masa": "Madhava",
     "paksha": "Gaura",
-    "tithi": "Trayodashi",
+    "tithi": "Dvadashi",
     "timing_rule": "sunrise_based",
     "allow_in_adhika": false,
     "priority": "medium",
@@ -3042,6 +3044,7 @@ export const EVENTS = [
     "allow_in_adhika": false,
     "priority": "medium",
     "source_status": "matched_by_name_type_tithi",
+    "disabled": true,
     "description": "Imported calendar reference for \"День ухода Гададхары Пандита\". English summary still needs editorial translation; the Russian source summary is linked in source_url.",
     "source_url": "http://harekrishnazp.info/materialy/vajshnavskij-kalendar/765-gadadkhara-pandit.html",
     "i18n": {
@@ -3070,6 +3073,7 @@ export const EVENTS = [
     "allow_in_adhika": false,
     "priority": "medium",
     "source_status": "matched_by_name_type_tithi",
+    "disabled": true,
     "description": "Imported calendar reference for \"День ухода Гауридаса Пандита\". English summary still needs editorial translation; the Russian source summary is linked in source_url.",
     "source_url": "http://harekrishnazp.info/materialy/vajshnavskij-kalendar/816-gauridas-pandit.html",
     "i18n": {
@@ -3213,6 +3217,7 @@ export const EVENTS = [
     "allow_in_adhika": false,
     "priority": "medium",
     "source_status": "matched_by_name_type_tithi",
+    "disabled": true,
     "description": "Imported calendar reference for \"День ухода Кришнадаса Кавираджа Госвами\". English summary still needs editorial translation; the Russian source summary is linked in source_url.",
     "source_url": "http://harekrishnazp.info/materialy/vajshnavskij-kalendar/1282-krishnadas-kaviradzh-gosvami.html",
     "i18n": {
@@ -3441,6 +3446,7 @@ export const EVENTS = [
     "allow_in_adhika": false,
     "priority": "medium",
     "source_status": "matched_by_name_type_tithi",
+    "disabled": true,
     "description": "Imported calendar reference for \"День ухода Рагхунатхи Бхатты Госвами\". English summary still needs editorial translation; the Russian source summary is linked in source_url.",
     "source_url": "http://harekrishnazp.info/materialy/vajshnavskij-kalendar/1281-ragkhunatkha-bkhatta-gosvami.html",
     "i18n": {
@@ -3469,6 +3475,7 @@ export const EVENTS = [
     "allow_in_adhika": false,
     "priority": "medium",
     "source_status": "matched_by_name_type_tithi",
+    "disabled": true,
     "description": "Imported calendar reference for \"День ухода Рагхунатхи Даса Госвами\". English summary still needs editorial translation; the Russian source summary is linked in source_url.",
     "source_url": "http://harekrishnazp.info/materialy/vajshnavskij-kalendar/1034-ragkhunatkha-das-gosvami.html",
     "i18n": {
@@ -4047,7 +4054,7 @@ export const EVENTS = [
     "category": "vaishnava_disappearance",
     "subject": "Srila Raghunath Das Goswami; Srila Raghunath Bhatta Goswami; Srila Krishnadas Kaviraj Goswami",
     "gaudiya_masa": "Padmanabha",
-    "paksha": "Krishna",
+    "paksha": "Gaura",
     "tithi": "Dvadashi",
     "timing_rule": "sunrise_based",
     "allow_in_adhika": false,
