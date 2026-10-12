@@ -3536,7 +3536,6 @@ class _SelectedDayCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final colors = Theme.of(context).extension<VCalendarColors>()!;
     final currentLocation = location;
     final currentPanchanga = panchanga;
     final paranaTomorrow = currentLocation == null
@@ -3561,51 +3560,30 @@ class _SelectedDayCard extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text(
-              isRu ? 'Выбранный день' : 'Selected day',
-              style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                fontSize: 19,
-                fontWeight: FontWeight.w600,
-              ),
-            ),
-            const SizedBox(height: 12),
-            Text(
-              _dateLabel(date, isRu),
-              style: Theme.of(context).textTheme.titleSmall?.copyWith(
-                fontSize: 16,
-                fontWeight: FontWeight.w600,
-              ),
-            ),
-            const SizedBox(height: 6),
-            Text(
-              currentLocation == null
-                  ? (isRu ? 'Место не выбрано' : 'No location selected')
-                  : '${currentLocation.name} · ${currentLocation.timezone}',
-              style: TextStyle(color: colors.mutedText),
-            ),
-            const SizedBox(height: 12),
             if (currentLocation == null || currentPanchanga == null)
               Text(isRu ? 'Выберите место.' : 'Select a location.')
             else ...[
-              Container(
-                padding: const EdgeInsets.all(12),
-                decoration: BoxDecoration(
-                  border: Border.all(
-                    color: Theme.of(context).colorScheme.primary,
-                    width: 2,
+              if (events.isNotEmpty) ...[
+                Container(
+                  padding: const EdgeInsets.all(12),
+                  decoration: BoxDecoration(
+                    border: Border.all(
+                      color: Theme.of(context).colorScheme.primary,
+                      width: 2,
+                    ),
+                    borderRadius: BorderRadius.circular(16),
                   ),
-                  borderRadius: BorderRadius.circular(16),
+                  child: _EventsSection(
+                    events: events,
+                    panchanga: currentPanchanga,
+                    parana: paranaForSelectedDay,
+                    janmashtamiParana: janmashtamiParanaForSelectedDay,
+                    timezone: currentLocation.timezone,
+                    isRu: isRu,
+                  ),
                 ),
-                child: _EventsSection(
-                  events: events,
-                  panchanga: currentPanchanga,
-                  parana: paranaForSelectedDay,
-                  janmashtamiParana: janmashtamiParanaForSelectedDay,
-                  timezone: currentLocation.timezone,
-                  isRu: isRu,
-                ),
-              ),
-              const SizedBox(height: 14),
+                const SizedBox(height: 14),
+              ],
               if (paranaTomorrow != null) ...[
                 _EventTile(
                   event: paranaTomorrow.event,
@@ -3670,61 +3648,6 @@ class _SelectedDayCard extends StatelessWidget {
       'Govinda': 'Говинда',
     };
     return ru[value] ?? value;
-  }
-
-  String _dateLabel(DateTime date, bool isRu) {
-    final weekdays = isRu
-        ? [
-            'понедельник',
-            'вторник',
-            'среда',
-            'четверг',
-            'пятница',
-            'суббота',
-            'воскресенье',
-          ]
-        : [
-            'Monday',
-            'Tuesday',
-            'Wednesday',
-            'Thursday',
-            'Friday',
-            'Saturday',
-            'Sunday',
-          ];
-    final months = isRu
-        ? [
-            'января',
-            'февраля',
-            'марта',
-            'апреля',
-            'мая',
-            'июня',
-            'июля',
-            'августа',
-            'сентября',
-            'октября',
-            'ноября',
-            'декабря',
-          ]
-        : [
-            'January',
-            'February',
-            'March',
-            'April',
-            'May',
-            'June',
-            'July',
-            'August',
-            'September',
-            'October',
-            'November',
-            'December',
-          ];
-    if (isRu) {
-      return '${weekdays[date.weekday - 1]}, ${date.day} ${months[date.month - 1]} ${date.year} г.';
-    }
-    return '${weekdays[date.weekday - 1]}, ${months[date.month - 1]} ${date.day}, ${date.year}';
   }
 
   String _tithiLabel(int number, bool isRu) {
@@ -4619,25 +4542,12 @@ class _EventsSection extends StatelessWidget {
     final paranaWindow = _paranaWindowLabel(parana);
     final janmashtamiParanaWindow = _paranaWindowLabel(janmashtamiParana);
     if (events.isEmpty) {
-      return Text(
-        isRu ? 'Событий на этот день пока нет.' : 'No events for this day yet.',
-        style: TextStyle(
-          color: Theme.of(context).extension<VCalendarColors>()!.mutedText,
-        ),
-      );
+      return const SizedBox.shrink();
     }
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(
-          isRu ? 'События' : 'Events',
-          style: Theme.of(context).textTheme.titleSmall?.copyWith(
-            fontSize: 18,
-            fontWeight: FontWeight.w600,
-          ),
-        ),
-        const SizedBox(height: 8),
         for (final event in events)
           _EventTile(
             event: event,

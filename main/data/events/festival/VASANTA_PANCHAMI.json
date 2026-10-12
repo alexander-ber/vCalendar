@@ -14,6 +14,8 @@
   },
   "priority": "medium",
   "source_status": "matched_by_name_type_tithi",
+  "disabled": true,
+  "disabled_reason": "Exact duplicate of SARASVATI_PUDZHA (same source URL, same rules/day, byte-identical RU content in both short and full description) - both names refer to the same observance, which the article itself explains. Kept SARASVATI_PUDZHA as the active record since its id matches the source article's own slug; disabled this one rather than deleted for source/attribution history. Found while investigating a user-reported event duplication on a different day (Karttik, 2026-10-26) and sweeping data/events/festival/ for the same pattern.",
   "sources": [
     {
       "type": "description",

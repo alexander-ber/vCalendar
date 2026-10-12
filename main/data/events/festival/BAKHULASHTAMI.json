@@ -14,6 +14,8 @@
   },
   "priority": "medium",
   "source_status": "matched_by_name_type_tithi",
+  "disabled": true,
+  "disabled_reason": "Exact duplicate of vaishnava-appearance/APPEARANCE_OF_RADKHA_KUNDY_SNANA_DANA (same source URL, same rules/day, byte-identical content in both short and full description) - both names refer to the same observance (Radha Kunda's appearance, traditionally dated to Bakulashtami). Kept APPEARANCE_OF_RADKHA_KUNDY_SNANA_DANA as the active record since its title and category (vaishnava_appearance) better match what the source article actually describes; disabled this one rather than deleted for source/attribution history. Found while sweeping data/events/ for the same duplicate-import pattern after a user-reported duplication on 2026-10-26.",
   "sources": [
     {
       "type": "description",
