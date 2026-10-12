@@ -171,6 +171,7 @@ class ContentUpdateService {
 
     final rows = await db.transaction((txn) async {
       var count = 0;
+      final seenIds = <String>[];
       for (final item in items) {
         final id = item['id'];
         if (id is! String || id.trim().isEmpty) continue;
@@ -178,7 +179,22 @@ class ContentUpdateService {
         for (final lang in const ['en', 'ru']) {
           await _upsertEventI18nFromSource(txn, id, lang, item);
         }
+        seenIds.add(id);
         count += 1;
+      }
+      // data/events.json is the full authoritative set on every sync (not a
+      // delta), so any row whose id isn't in this download is stale - most
+      // often a seed-built row whose id casing no longer matches (SQLite
+      // text primary keys are case-sensitive, so e.g. a seed's "KARTTIK_BEGIN"
+      // and a synced "karttik_begin" would otherwise coexist as two rows and
+      // show the same event twice). event_i18n rows cascade-delete with it.
+      if (seenIds.isNotEmpty) {
+        final placeholders = List.filled(seenIds.length, '?').join(',');
+        await txn.delete(
+          'events',
+          where: 'id not in ($placeholders)',
+          whereArgs: seenIds,
+        );
       }
       await txn.insert('content_packs', {
         'lang': _eventsPackLang,
