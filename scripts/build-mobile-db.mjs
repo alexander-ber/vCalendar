@@ -46,7 +46,15 @@ function normalizeEvent(raw) {
   const rules = raw.rules ?? {};
   const i18n = raw.i18n ?? translationsToI18n(raw.translations);
   return {
-    id: raw.runtime_id ?? raw.id,
+    // Must match scripts/build-events-db.mjs's `content.runtime_id ||
+    // content.id.toLowerCase()` exactly - this id is the SQLite primary
+    // key, and ContentUpdateService later upserts rows by this same id
+    // (verbatim from data/events.json) on every content sync. If the two
+    // generators ever disagree on casing for an event with no runtime_id,
+    // the seed's uppercase row and the synced lowercase row coexist as two
+    // separate primary keys (SQLite text PKs are case-sensitive), showing
+    // the event twice - this bit the real Karttik events in production.
+    id: raw.runtime_id ?? raw.id.toLowerCase(),
     category: raw.category ?? "event",
     eventType: raw.type ?? raw.event_type ?? "event",
     scope: raw.scope ?? null,

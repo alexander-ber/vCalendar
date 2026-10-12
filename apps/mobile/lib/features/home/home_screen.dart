@@ -3564,23 +3564,13 @@ class _SelectedDayCard extends StatelessWidget {
               Text(isRu ? 'Выберите место.' : 'Select a location.')
             else ...[
               if (events.isNotEmpty) ...[
-                Container(
-                  padding: const EdgeInsets.all(12),
-                  decoration: BoxDecoration(
-                    border: Border.all(
-                      color: Theme.of(context).colorScheme.primary,
-                      width: 2,
-                    ),
-                    borderRadius: BorderRadius.circular(16),
-                  ),
-                  child: _EventsSection(
-                    events: events,
-                    panchanga: currentPanchanga,
-                    parana: paranaForSelectedDay,
-                    janmashtamiParana: janmashtamiParanaForSelectedDay,
-                    timezone: currentLocation.timezone,
-                    isRu: isRu,
-                  ),
+                _EventsSection(
+                  events: events,
+                  panchanga: currentPanchanga,
+                  parana: paranaForSelectedDay,
+                  janmashtamiParana: janmashtamiParanaForSelectedDay,
+                  timezone: currentLocation.timezone,
+                  isRu: isRu,
                 ),
                 const SizedBox(height: 14),
               ],
