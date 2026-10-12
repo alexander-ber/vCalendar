@@ -516,21 +516,6 @@ class _HomeScreenState extends State<HomeScreen> {
                         },
                       ),
                       const SizedBox(height: 16),
-                      if (panchangaMonthDays.isNotEmpty) ...[
-                        _MasaPeriodNoticeCard(
-                          days: panchangaMonthDays,
-                          location: selectedLocation,
-                          calculateDay: (date, location) =>
-                              _calculateDay(date: date, location: location),
-                          boundaryCache: _periodBoundaryCache,
-                          boundaryLoading: _periodBoundaryLoading,
-                          onBoundaryReady: () {
-                            if (mounted) setState(() {});
-                          },
-                          isRu: _isRu,
-                        ),
-                        const SizedBox(height: 16),
-                      ],
                       AnimatedSwitcher(
                         duration: const Duration(milliseconds: 240),
                         switchInCurve: Curves.easeOutCubic,
@@ -571,6 +556,21 @@ class _HomeScreenState extends State<HomeScreen> {
                           isRu: _isRu,
                         ),
                       ),
+                      if (panchangaMonthDays.isNotEmpty) ...[
+                        const SizedBox(height: 16),
+                        _MasaPeriodNoticeCard(
+                          days: panchangaMonthDays,
+                          location: selectedLocation,
+                          calculateDay: (date, location) =>
+                              _calculateDay(date: date, location: location),
+                          boundaryCache: _periodBoundaryCache,
+                          boundaryLoading: _periodBoundaryLoading,
+                          onBoundaryReady: () {
+                            if (mounted) setState(() {});
+                          },
+                          isRu: _isRu,
+                        ),
+                      ],
                       const SizedBox(height: 16),
                       _SeedSummaryCard(summary: state.summary, isRu: _isRu),
                     ],
@@ -3587,6 +3587,25 @@ class _SelectedDayCard extends StatelessWidget {
             if (currentLocation == null || currentPanchanga == null)
               Text(isRu ? 'Выберите место.' : 'Select a location.')
             else ...[
+              Container(
+                padding: const EdgeInsets.all(12),
+                decoration: BoxDecoration(
+                  border: Border.all(
+                    color: Theme.of(context).colorScheme.primary,
+                    width: 2,
+                  ),
+                  borderRadius: BorderRadius.circular(16),
+                ),
+                child: _EventsSection(
+                  events: events,
+                  panchanga: currentPanchanga,
+                  parana: paranaForSelectedDay,
+                  janmashtamiParana: janmashtamiParanaForSelectedDay,
+                  timezone: currentLocation.timezone,
+                  isRu: isRu,
+                ),
+              ),
+              const SizedBox(height: 14),
               if (paranaTomorrow != null) ...[
                 _EventTile(
                   event: paranaTomorrow.event,
@@ -3601,15 +3620,6 @@ class _SelectedDayCard extends StatelessWidget {
                 ),
                 const SizedBox(height: 12),
               ],
-              _EventsSection(
-                events: events,
-                panchanga: currentPanchanga,
-                parana: paranaForSelectedDay,
-                janmashtamiParana: janmashtamiParanaForSelectedDay,
-                timezone: currentLocation.timezone,
-                isRu: isRu,
-              ),
-              const SizedBox(height: 14),
               _PanchangaSummaryGrid(
                 panchanga: currentPanchanga,
                 timezone: currentLocation.timezone,

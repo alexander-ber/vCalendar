@@ -1878,6 +1878,13 @@ button:not(.day):not(.compact-day):not(.theme-toggle):not(.language-toggle):not(
   line-height: 1.25;
 }
 
+.selected-day-events-block {
+  border: 2px solid var(--accent);
+  border-radius: 12px;
+  padding: 12px;
+  margin-bottom: 18px;
+}
+
 .event-details-panel {
   display: grid;
   gap: 8px;

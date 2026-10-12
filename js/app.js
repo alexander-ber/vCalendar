@@ -948,8 +948,10 @@ function renderDetails(day, options = {}) {
   const paranaEvents = model.events.filter((event) => event.type === "parana");
   const detailEvents = model.events.filter((event) => event.type !== "parana");
   dayDetails.innerHTML = `
-    ${renderParanaPanel(paranaEvents)}
-    ${detailEvents.length ? renderEventDetails(detailEvents) : paranaEvents.length ? "" : `<div class="events-empty">${tr("noEvents")}</div>`}
+    <div class="selected-day-events-block">
+      ${renderParanaPanel(paranaEvents)}
+      ${detailEvents.length ? renderEventDetails(detailEvents) : paranaEvents.length ? "" : `<div class="events-empty">${tr("noEvents")}</div>`}
+    </div>
     ${renderEkadashiParanaPreview(ekadashiEvents, day.location.timezone)}
     ${renderSanskritTermsHelp()}
     <details id="selectedDayPanel" class="collapsible-panel selected-day-collapsible" ${options.scrollToDetails || options.scrollToEventDetails || options.openSelectedDay ? "open" : ""}>
