@@ -3024,7 +3024,14 @@ class _MonthCalendarCardState extends State<_MonthCalendarCard> {
             LayoutBuilder(
               builder: (context, constraints) {
                 final cellWidth = constraints.maxWidth / 7;
-                final gridHeight = (cellWidth / aspectRatio) * 6;
+                // Rows actually needed by the visible month (5 for most,
+                // 6 when the month spans 6 weeks) - was hardcoded to 6,
+                // leaving a blank row of empty space under 5-row months.
+                final visibleData = widget.pageDataFor(widget.month);
+                final rowCount = visibleData == null
+                    ? 6
+                    : (visibleData.days.length / 7).ceil();
+                final gridHeight = (cellWidth / aspectRatio) * rowCount;
                 return SizedBox(
                   height: gridHeight,
                   child: PageView.builder(
