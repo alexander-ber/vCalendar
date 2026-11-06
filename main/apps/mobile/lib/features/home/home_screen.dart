@@ -2586,7 +2586,7 @@ class _MasaPeriodNoticeCard extends StatelessWidget {
               Text(
                 notices[index].title,
                 style: Theme.of(context).textTheme.titleSmall?.copyWith(
-                  fontSize: 8.5,
+                  fontSize: 11,
                   fontWeight: FontWeight.w600,
                   color: scheme.onSecondaryContainer,
                 ),
@@ -2596,7 +2596,7 @@ class _MasaPeriodNoticeCard extends StatelessWidget {
                 Text(
                   notices[index].subtitle,
                   style: TextStyle(
-                    fontSize: 7,
+                    fontSize: 9.5,
                     color: scheme.onSecondaryContainer.withValues(alpha: 0.76),
                     fontWeight: FontWeight.w500,
                   ),
