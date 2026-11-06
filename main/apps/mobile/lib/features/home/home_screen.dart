@@ -554,23 +554,22 @@ class _HomeScreenState extends State<HomeScreen> {
                                   selectedPanchanga.sunrise,
                                 ),
                           isRu: _isRu,
+                          periodNotice: panchangaMonthDays.isEmpty
+                              ? null
+                              : _MasaPeriodNoticeCard(
+                                  days: panchangaMonthDays,
+                                  location: selectedLocation,
+                                  calculateDay: (date, location) =>
+                                      _calculateDay(date: date, location: location),
+                                  boundaryCache: _periodBoundaryCache,
+                                  boundaryLoading: _periodBoundaryLoading,
+                                  onBoundaryReady: () {
+                                    if (mounted) setState(() {});
+                                  },
+                                  isRu: _isRu,
+                                ),
                         ),
                       ),
-                      if (panchangaMonthDays.isNotEmpty) ...[
-                        const SizedBox(height: 16),
-                        _MasaPeriodNoticeCard(
-                          days: panchangaMonthDays,
-                          location: selectedLocation,
-                          calculateDay: (date, location) =>
-                              _calculateDay(date: date, location: location),
-                          boundaryCache: _periodBoundaryCache,
-                          boundaryLoading: _periodBoundaryLoading,
-                          onBoundaryReady: () {
-                            if (mounted) setState(() {});
-                          },
-                          isRu: _isRu,
-                        ),
-                      ],
                       const SizedBox(height: 16),
                       _SeedSummaryCard(summary: state.summary, isRu: _isRu),
                     ],
@@ -2587,7 +2586,7 @@ class _MasaPeriodNoticeCard extends StatelessWidget {
               Text(
                 notices[index].title,
                 style: Theme.of(context).textTheme.titleSmall?.copyWith(
-                  fontSize: 17,
+                  fontSize: 8.5,
                   fontWeight: FontWeight.w600,
                   color: scheme.onSecondaryContainer,
                 ),
@@ -2597,6 +2596,7 @@ class _MasaPeriodNoticeCard extends StatelessWidget {
                 Text(
                   notices[index].subtitle,
                   style: TextStyle(
+                    fontSize: 7,
                     color: scheme.onSecondaryContainer.withValues(alpha: 0.76),
                     fontWeight: FontWeight.w500,
                   ),
@@ -3520,6 +3520,7 @@ class _SelectedDayCard extends StatelessWidget {
     required this.janmashtamiParanaForNextDay,
     required this.bengaliSolarMonth,
     required this.isRu,
+    this.periodNotice,
   });
 
   final DateTime date;
@@ -3533,6 +3534,7 @@ class _SelectedDayCard extends StatelessWidget {
   final ParanaResult? janmashtamiParanaForNextDay;
   final String? bengaliSolarMonth;
   final bool isRu;
+  final Widget? periodNotice;
 
   @override
   Widget build(BuildContext context) {
@@ -3574,6 +3576,7 @@ class _SelectedDayCard extends StatelessWidget {
                 ),
                 const SizedBox(height: 14),
               ],
+              if (periodNotice != null) ...[periodNotice!, const SizedBox(height: 14)],
               if (paranaTomorrow != null) ...[
                 _EventTile(
                   event: paranaTomorrow.event,
