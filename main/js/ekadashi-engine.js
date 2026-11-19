@@ -416,8 +416,6 @@ function classifyEkadashiDay(days, index, location, rules, mahadvadashiByDate) {
   const nextAtSunrise = nextDay.lunar.tithi_at_sunrise.number;
   const tomorrowMahadvadashi = mahadvadashiByDate.get(nextDay.date);
   const previousDayHasPostSunriseEkadashi = isDashamiSunriseBeforePostSunriseEkadashi(previousDay, day, targetNumber);
-  const shiftedCandidateDate = previousDayHasPostSunriseEkadashi ? previousDay.date : day.date;
-  const shiftedNoFastReason = previousDayHasPostSunriseEkadashi ? "dashami_viddha_at_sunrise" : null;
 
   if (isDashamiBeforeEkadashi(atArunodaya, atSunrise)) {
     return {
@@ -476,17 +474,22 @@ function classifyEkadashiDay(days, index, location, rules, mahadvadashiByDate) {
   }
 
   if (previousAtSunrise !== targetNumber && atArunodaya === targetNumber && nextAtSunrise === trayodashiNumber) {
+    // SCS Math convention: when Ekadashi begins after the previous day's own
+    // sunrise (Dashami was present there), the fast is observed on that
+    // earlier day rather than on the day Ekadashi first reaches a sunrise -
+    // confirmed against scsmathinternational.com's published calendar.
+    const fastDay = previousDayHasPostSunriseEkadashi ? previousDay : day;
     return buildEkadashiEvent({
-      day,
+      day: fastDay,
       location,
       rules,
       targetNumber,
       classification: previousDayHasPostSunriseEkadashi ? "trisprsa_after_dashami_sunrise" : "trisprsa",
-      candidateDate: shiftedCandidateDate,
-      fastDate: day.date,
+      candidateDate: fastDay.date,
+      fastDate: fastDay.date,
       fastDayType: previousDayHasPostSunriseEkadashi ? "trisprsa_after_dashami_sunrise" : "trisprsa",
       paranaType: "trisprsa",
-      noFastReason: shiftedNoFastReason
+      noFastReason: null
     });
   }
 
@@ -509,17 +512,23 @@ function classifyEkadashiDay(days, index, location, rules, mahadvadashiByDate) {
   }
 
   if (previousAtSunrise !== targetNumber && atArunodaya === targetNumber && nextAtSunrise === dvadashiNumber) {
+    // NOT the kshaya-Dvadashi case (Dvadashi touches tomorrow's sunrise
+    // normally) - previousDayHasPostSunriseEkadashi is true for nearly
+    // every ordinary Ekadashi here too (Ekadashi simply arrived overnight,
+    // which trivially "occurs between" the two sunrises), so it must NOT
+    // shift fastDate the way the trisprsa branch does, or every ordinary
+    // Ekadashi would move a day earlier. Keep it label-only, as before.
     return buildEkadashiEvent({
       day,
       location,
       rules,
       targetNumber,
       classification: previousDayHasPostSunriseEkadashi ? "suddha_after_dashami_sunrise" : "suddha_ekadashi",
-      candidateDate: shiftedCandidateDate,
+      candidateDate: day.date,
       fastDate: day.date,
       fastDayType: previousDayHasPostSunriseEkadashi ? "suddha_after_dashami_sunrise" : "normal_ekadashi",
       paranaType: "normal_ekadashi",
-      noFastReason: shiftedNoFastReason
+      noFastReason: null
     });
   }
 

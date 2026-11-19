@@ -1,3 +1,5 @@
+import 'package:timezone/timezone.dart' as tz;
+
 import '../date_utils.dart';
 import '../models/calendar_location.dart';
 import '../rules/fact_functions.dart';
@@ -102,25 +104,33 @@ class ParanaEngine {
         ? trayodashiNumber
         : dvadashiNumber;
 
+    // Dvadashi can start shortly after the parana day's own sunrise rather
+    // than already being underway (e.g. when the fast was shifted a day
+    // earlier under the SCS Math Ekadashi convention) - try backward
+    // (already started) before forward (about to start).
     final dvadashiStart =
         search.tithiStartBefore(
           astronomy.sunrise,
           dvadashiNumber,
           maxHours: 48,
         ) ??
+        search.tithiStartAfter(
+          astronomy.sunrise,
+          dvadashiNumber,
+          maxHours: 48,
+        ) ??
         astronomy.sunrise;
-    final sunriseTithiNumber = calculator.tithiInfo(astronomy.sunrise).number;
-    final paranaTithiEnd = sunriseTithiNumber == paranaTithiNumber
-        ? search.tithiEndAfter(
-            astronomy.sunrise,
-            paranaTithiNumber,
-            maxHours: 48,
-          )
-        : search.tithiEndBefore(
-            astronomy.sunrise,
-            paranaTithiNumber,
-            maxHours: 48,
-          );
+    // Same reasoning: the parana tithi may be about to start (forward
+    // search) rather than already underway or already over (backward
+    // search) - try forward first since it subsumes the already-underway
+    // case too, then fall back to backward.
+    final paranaTithiEnd =
+        search.tithiEndAfter(astronomy.sunrise, paranaTithiNumber, maxHours: 48) ??
+        search.tithiEndBefore(
+          astronomy.sunrise,
+          paranaTithiNumber,
+          maxHours: 48,
+        );
 
     if (paranaTithiEnd == null) {
       return ParanaResult(
@@ -155,28 +165,56 @@ class ParanaEngine {
           )
         : astronomy.sunrise;
 
-    final daylightMs = astronomy.sunset
-        .difference(astronomy.sunrise)
-        .inMilliseconds;
-    final pratahEnd = astronomy.sunrise.add(
-      Duration(milliseconds: (_pratahFraction * daylightMs).round()),
-    );
-    final oneFifthEnd = astronomy.sunrise.add(
-      Duration(milliseconds: (_oneFifthFraction * daylightMs).round()),
-    );
-
     final isNormal = fastDayType == _normalFastDayType;
     final isTrisprsa = _trisprsaFastDayTypes.contains(fastDayType);
     final isSunriseBegin = !isNormal;
+
+    // Hari-vasara can end on a later calendar day than paranaDate
+    // (fastDate+1) - e.g. a fast shifted a day earlier under the SCS Math
+    // Ekadashi convention can leave Dvadashi not yet underway on
+    // paranaDate's own sunrise. The daylight-fraction limits (pratah/
+    // one-fifth) belong to whichever day the parana actually happens on,
+    // so re-fetch that day's astronomy instead of assuming it's always
+    // paranaDate.
+    var dayAstro = astronomy;
+    if (!isSunriseBegin && hariVasaraEnd.isAfter(astronomy.sunrise)) {
+      final hariVasaraLocal = tz.TZDateTime.from(
+        hariVasaraEnd,
+        tz.getLocation(location.timezone),
+      );
+      final hariVasaraDate = DateTime.utc(
+        hariVasaraLocal.year,
+        hariVasaraLocal.month,
+        hariVasaraLocal.day,
+      );
+      if (hariVasaraDate != paranaDate) {
+        final altAstro = calculator.calculateDay(
+          date: hariVasaraDate,
+          location: location,
+        );
+        dayAstro = altAstro;
+      }
+    }
+
+    final daylightMs = dayAstro.sunset
+        .difference(dayAstro.sunrise)
+        .inMilliseconds;
+    final pratahEnd = dayAstro.sunrise.add(
+      Duration(milliseconds: (_pratahFraction * daylightMs).round()),
+    );
+    final oneFifthEnd = dayAstro.sunrise.add(
+      Duration(milliseconds: (_oneFifthFraction * daylightMs).round()),
+    );
+
     final dvadashiEndedBeforeSunrise = dvadashiEnd != null
         ? dvadashiEnd.isBefore(astronomy.sunrise)
         : true;
 
     final start = isSunriseBegin
         ? astronomy.sunrise
-        : (hariVasaraEnd.isAfter(astronomy.sunrise)
+        : (hariVasaraEnd.isAfter(dayAstro.sunrise)
               ? hariVasaraEnd
-              : astronomy.sunrise);
+              : dayAstro.sunrise);
     final preferredEndCandidate = isTrisprsa
         ? pratahEnd
         : (paranaTithiEnd.isBefore(pratahEnd) ? paranaTithiEnd : pratahEnd);
