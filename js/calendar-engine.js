@@ -11,9 +11,9 @@ import {
   zonedDateToUtc
 } from "./date-utils.js?v=20260528-8";
 import { masaForDate } from "./masa-engine.js?v=20260704-1";
-import { buildEkadashiEvents } from "./ekadashi-engine.js?v=20260703-1";
+import { buildEkadashiEvents } from "./ekadashi-engine.js?v=20261119-1";
 import { matchEventsForDay } from "./event-matcher.js?v=20260703-1";
-import { computeSimpleTithiParana } from "./parana-engine.js?v=20260906-1";
+import { computeSimpleTithiParana } from "./parana-engine.js?v=20261119-1";
 import { calculateAmritaMahendra } from "./amrita-mahendra-engine.js?v=20260704-1";
 import { amritaMahendraTemplateForDay } from "./amrita-mahendra-data.js?v=20260711-1";
 
