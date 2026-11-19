@@ -303,7 +303,23 @@ class _HomeScreenState extends State<HomeScreen> {
     _database = AppDatabase();
     _repository = MobileCalendarRepository(_database);
     _contentUpdateService = ContentUpdateService(_database);
-    _state = _load(checkContentUpdates: true);
+    // Load from the bundled SQLite seed immediately - the calendar should
+    // never wait on a network round-trip just to show data that's already
+    // on disk. The content-update check (manifest fetch + possibly an
+    // events.json download, each its own network round-trip) used to run
+    // *before* this, blocking the first paint for ~seconds on a normal
+    // connection and far longer on a slow one. It now runs after, in the
+    // background, and only triggers a reload if it actually installed
+    // something.
+    _state = _load();
+    if (widget.settings.contentAutoUpdate) {
+      _runStartupContentUpdateInBackground();
+    }
+  }
+
+  Future<void> _runStartupContentUpdateInBackground() async {
+    await _checkStartupContentUpdates();
+    if (mounted) _reload();
   }
 
   @override
@@ -317,18 +333,25 @@ class _HomeScreenState extends State<HomeScreen> {
     }
   }
 
-  Future<_HomeState> _load({bool checkContentUpdates = false}) async {
-    if (checkContentUpdates && widget.settings.contentAutoUpdate) {
-      await _checkStartupContentUpdates();
-    }
-    final summary = await _repository.loadSummary(lang: widget.settings.lang);
-    final locations = await _repository.loadLocations(
+  Future<_HomeState> _load() async {
+    // Six independent reads (five SQLite queries plus a bundled-asset file
+    // read) - kick them all off before awaiting any of them instead of
+    // paying for them one after another.
+    final summaryFuture = _repository.loadSummary(lang: widget.settings.lang);
+    final locationsFuture = _repository.loadLocations(
       lang: widget.settings.lang,
     );
-    final events = await _repository.loadRuleEvents(lang: widget.settings.lang);
-    final languages = await _repository.loadAvailableLanguages();
-    final glossary = await _repository.loadGlossary(lang: widget.settings.lang);
-    final engineRules = await _loadEngineRules();
+    final eventsFuture = _repository.loadRuleEvents(lang: widget.settings.lang);
+    final languagesFuture = _repository.loadAvailableLanguages();
+    final glossaryFuture = _repository.loadGlossary(lang: widget.settings.lang);
+    final engineRulesFuture = _loadEngineRules();
+
+    final summary = await summaryFuture;
+    final locations = await locationsFuture;
+    final events = await eventsFuture;
+    final languages = await languagesFuture;
+    final glossary = await glossaryFuture;
+    final engineRules = await engineRulesFuture;
     _calendarEventEngine = CalendarEventEngine(
       engineRules,
       calculator: _panchangaCalculator,

@@ -11,22 +11,17 @@ class MobileCalendarRepository {
 
   Future<MobileSeedSummary> loadSummary({required String lang}) async {
     final db = await _database.open();
-    final eventCount =
-        Sqflite.firstIntValue(
-          await db.rawQuery('select count(*) from events'),
-        ) ??
-        0;
-    final ekadashiCount =
-        Sqflite.firstIntValue(
-          await db.rawQuery('select count(*) from ekadashi'),
-        ) ??
-        0;
-    final locationCount =
-        Sqflite.firstIntValue(
-          await db.rawQuery('select count(*) from locations'),
-        ) ??
-        0;
-    final seedCreatedAt = await _metaValue(db, 'seed_created_at');
+    // Four independent reads - kick them all off before awaiting any of
+    // them, instead of paying four sequential method-channel round-trips.
+    final eventCountFuture = db.rawQuery('select count(*) from events');
+    final ekadashiCountFuture = db.rawQuery('select count(*) from ekadashi');
+    final locationCountFuture = db.rawQuery('select count(*) from locations');
+    final seedCreatedAtFuture = _metaValue(db, 'seed_created_at');
+
+    final eventCount = Sqflite.firstIntValue(await eventCountFuture) ?? 0;
+    final ekadashiCount = Sqflite.firstIntValue(await ekadashiCountFuture) ?? 0;
+    final locationCount = Sqflite.firstIntValue(await locationCountFuture) ?? 0;
+    final seedCreatedAt = await seedCreatedAtFuture;
 
     return MobileSeedSummary(
       eventCount: eventCount,

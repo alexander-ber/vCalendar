@@ -310,7 +310,12 @@ class ContentUpdateService {
   }
 
   Future<Map<String, Object?>> _downloadJson(Uri url) async {
-    final response = await _client.get(url);
+    // http.Client has no built-in timeout - without one, a stalled
+    // connection can hang this call (and whatever awaits it) far longer
+    // than any reasonable UX budget, especially now that the startup check
+    // runs in the background and could otherwise keep retrying/hanging
+    // long after the user has started using the app.
+    final response = await _client.get(url).timeout(const Duration(seconds: 10));
     if (response.statusCode < 200 || response.statusCode >= 300) {
       throw ContentUpdateException(
         'Cannot download ${url.toString()} (${response.statusCode}).',
