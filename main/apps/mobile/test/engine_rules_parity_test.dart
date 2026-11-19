@@ -508,9 +508,22 @@ void main() {
             // observance_offset_days - the two are not comparable per-day
             // without also porting the shift itself (separate from Phase D's
             // core matching, tracked as follow-up orchestration work).
+            //
+            // hkzp_541_бхишма_панчака ("Beginning of Bhishma Panchaka") gets
+            // the same kind of dynamic relocation (see
+            // relocateBhishmaPanchakaBeginEvent in js/calendar-engine.js /
+            // CalendarEventEngine._relocateBhishmaPanchakaBeginEvent in
+            // Dart), but driven by the Ekadashi/Unmilani classification
+            // rather than a static observance_offset_days field, so it
+            // needs the same exclusion here.
+            const relocatedEventIds = {'hkzp_541_бхишма_панчака'};
             final matchedIds = matched
                 .map((e) => e.id)
-                .where((id) => eventRuleById[id]?.observanceOffsetDays == 0)
+                .where(
+                  (id) =>
+                      eventRuleById[id]?.observanceOffsetDays == 0 &&
+                      !relocatedEventIds.contains(id),
+                )
                 .toSet();
 
             // Only compare against fixture events that matchEventsForDay
@@ -523,6 +536,7 @@ void main() {
             for (final rawEvent in fixtureCase['events'] as List) {
               final event = Map<String, dynamic>.from(rawEvent as Map);
               final id = event['id'] as String;
+              if (relocatedEventIds.contains(id)) continue;
               final rule = eventRuleById[id];
               if (rule == null) continue;
               if (rule.anchorEventId != null) continue;
