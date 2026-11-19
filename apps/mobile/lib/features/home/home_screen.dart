@@ -319,8 +319,15 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   Future<void> _runStartupContentUpdateInBackground() async {
-    await _checkStartupContentUpdates();
-    if (mounted) _reload();
+    final installed = await _checkStartupContentUpdates();
+    // Only reload (which resets _state to a fresh Future, dropping the
+    // FutureBuilder back to its full-screen spinner, plus clears the
+    // calendar grid's astronomy caches) when something actually changed.
+    // Calling it unconditionally - the previous bug here - made every
+    // startup show a pointless second "reload flash" a couple of seconds
+    // after the first paint, even when the content check found nothing
+    // new to install.
+    if (mounted && installed) _reload();
   }
 
   @override
@@ -651,13 +658,15 @@ class _HomeScreenState extends State<HomeScreen> {
     return result;
   }
 
-  Future<void> _checkStartupContentUpdates() async {
+  Future<bool> _checkStartupContentUpdates() async {
     try {
       final result = await _contentUpdateService.checkAndInstall();
       await _preferences.markContentUpdateChecked(result.checkedAt);
+      return result.installedFiles > 0;
     } catch (error) {
       await _preferences.markContentUpdateChecked(DateTime.now().toUtc());
       debugPrint('Startup content update skipped: $error');
+      return false;
     }
   }
 
