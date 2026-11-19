@@ -379,12 +379,6 @@ class EkadashiClassifier {
           day,
           targetNumber,
         );
-    final shiftedCandidateDate = previousDayHasPostSunriseEkadashi
-        ? _dateKey(previousDay!.date)
-        : _dateKey(day.date);
-    final shiftedNoFastReason = previousDayHasPostSunriseEkadashi
-        ? 'dashami_viddha_at_sunrise'
-        : null;
 
     if (_isDashamiBeforeEkadashi(atArunodaya, atSunrise)) {
       return EkadashiNoFastMarker(
@@ -455,19 +449,26 @@ class EkadashiClassifier {
     if (previousAtSunrise != targetNumber &&
         atArunodaya == targetNumber &&
         nextAtSunrise == trayodashiNumber) {
+      // SCS Math convention: when Ekadashi begins after the previous day's
+      // own sunrise (Dashami was present there) and Dvadashi is kshaya
+      // (skipped at every sunrise, hence nextAtSunrise lands on
+      // Trayodashi), the fast is observed on that earlier day - mirrors
+      // js/ekadashi-engine.js's identical fix, confirmed against
+      // scsmathinternational.com's published calendar.
       final classification = previousDayHasPostSunriseEkadashi
           ? 'trisprsa_after_dashami_sunrise'
           : 'trisprsa';
+      final fastDay = previousDayHasPostSunriseEkadashi ? previousDay! : day;
       return _buildFast(
-        day: day,
+        day: fastDay,
         location: location,
         targetNumber: targetNumber,
         classification: classification,
-        candidateDate: shiftedCandidateDate,
-        fastDate: _dateKey(day.date),
+        candidateDate: _dateKey(fastDay.date),
+        fastDate: _dateKey(fastDay.date),
         fastDayType: classification,
         paranaType: 'trisprsa',
-        candidateNoFastReason: shiftedNoFastReason,
+        candidateNoFastReason: null,
       );
     }
 
@@ -494,6 +495,12 @@ class EkadashiClassifier {
     if (previousAtSunrise != targetNumber &&
         atArunodaya == targetNumber &&
         nextAtSunrise == dvadashiNumber) {
+      // NOT the kshaya-Dvadashi case (Dvadashi touches tomorrow's sunrise
+      // normally) - previousDayHasPostSunriseEkadashi is true for nearly
+      // every ordinary Ekadashi here too (Ekadashi simply arrived
+      // overnight), so it must NOT shift fastDate the way the trisprsa
+      // branch above does, or every ordinary Ekadashi would move a day
+      // earlier. Keep it label-only, as before.
       final classification = previousDayHasPostSunriseEkadashi
           ? 'suddha_after_dashami_sunrise'
           : 'suddha_ekadashi';
@@ -505,11 +512,11 @@ class EkadashiClassifier {
         location: location,
         targetNumber: targetNumber,
         classification: classification,
-        candidateDate: shiftedCandidateDate,
+        candidateDate: _dateKey(day.date),
         fastDate: _dateKey(day.date),
         fastDayType: fastDayType,
         paranaType: 'normal_ekadashi',
-        candidateNoFastReason: shiftedNoFastReason,
+        candidateNoFastReason: null,
       );
     }
 

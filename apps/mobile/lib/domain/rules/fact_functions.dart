@@ -39,6 +39,31 @@ class TithiBoundarySearch {
     return null;
   }
 
+  /// Searching FORWARD from [reference], finds the start of the next
+  /// upcoming occurrence of [target] (not-target -> target) - needed when
+  /// [target] hasn't begun yet at [reference] (e.g. Dvadashi starting
+  /// shortly after the parana day's own sunrise, rather than already being
+  /// underway). Mirrors js/parana-engine.js's `findTithiStartAfter`.
+  DateTime? tithiStartAfter(
+    DateTime reference,
+    int target, {
+    int maxHours = 48,
+  }) {
+    var left = reference;
+    var right = left.add(const Duration(hours: 1));
+    final max = reference.millisecondsSinceEpoch + maxHours * _hourMs;
+    while (right.millisecondsSinceEpoch <= max) {
+      final leftNumber = _calculator.tithiInfo(left).number;
+      final rightNumber = _calculator.tithiInfo(right).number;
+      if (leftNumber != target && rightNumber == target) {
+        return _bisect(left, right, target, moveRightWhenTarget: true);
+      }
+      left = right;
+      right = right.add(const Duration(hours: 1));
+    }
+    return null;
+  }
+
   /// Searching FORWARD from [reference] (assumed to already be inside
   /// [target]), finds when [target] ends. Mirrors:
   /// - js/ekadashi-engine.js:83-100 `findTithiEndAfter`
