@@ -6,7 +6,7 @@
     <title>Шри Чайтанья Шридхар Сева Ашрам</title>
     <link rel="icon" href="assets/vcalendar-logo.svg?v=20260725-1" type="image/svg+xml">
     <link rel="apple-touch-icon" href="assets/vcalendar-logo.svg?v=20260725-1">
-    <link rel="stylesheet" href="styles.css?v=20260813-1">
+    <link rel="stylesheet" href="styles.css?v=20261119-2">
   </head>
   <body>
     <main class="app-shell">
@@ -175,13 +175,15 @@
         </div>
       </section>
 
-      <section class="details" tabindex="-1">
-        <div id="dayDetails" class="details-body" data-i18n="selectDay">Select a day in the calendar.</div>
-      </section>
+      <div id="dayEventsBlock" class="day-events-block" data-i18n="selectDay">Select a day in the calendar.</div>
 
       <div id="masaNotice" class="masa-notice" hidden></div>
+
+      <section class="details" tabindex="-1">
+        <div id="dayDetails" class="details-body"></div>
+      </section>
     </main>
 
-    <script type="module" src="js/app.js?v=20261119-1"></script>
+    <script type="module" src="js/app.js?v=20261119-2"></script>
   </body>
 </html>

@@ -1,4 +1,4 @@
-import { generateCalendarRange, periodMarkerForDate, viewModelForDay } from "./calendar-engine.js?v=20261119-1";
+import { generateCalendarRange, periodMarkerForDate, viewModelForDay } from "./calendar-engine.js?v=20261119-2";
 import { EVENTS } from "./events-data.js?v=20260709-1";
 import { LOCATIONS } from "./locations-data.js?v=20260704-1";
 import { RULES } from "./rules-data.js?v=20260703-1";
@@ -50,6 +50,7 @@ const masaNotice = document.querySelector("#masaNotice");
 const calendarHeader = document.querySelector("#calendarHeader");
 const calendarGrid = document.querySelector("#calendarGrid");
 const dayDetails = document.querySelector("#dayDetails");
+const dayEventsBlock = document.querySelector("#dayEventsBlock");
 
 let selectedDate = null;
 let currentLanguage = "ru";
@@ -947,11 +948,13 @@ function renderDetails(day, options = {}) {
   const ekadashiCalculationEvents = model.events.filter((event) => event.type === "ekadashi" || event.type === "ekadashi_notice");
   const paranaEvents = model.events.filter((event) => event.type === "parana");
   const detailEvents = model.events.filter((event) => event.type !== "parana");
-  dayDetails.innerHTML = `
+  dayEventsBlock.innerHTML = `
     <div class="selected-day-events-block">
       ${renderParanaPanel(paranaEvents)}
       ${detailEvents.length ? renderEventDetails(detailEvents) : paranaEvents.length ? "" : `<div class="events-empty">${tr("noEvents")}</div>`}
     </div>
+  `;
+  dayDetails.innerHTML = `
     ${renderEkadashiParanaPreview(ekadashiEvents, day.location.timezone)}
     ${renderSanskritTermsHelp()}
     <details id="selectedDayPanel" class="collapsible-panel selected-day-collapsible" ${options.scrollToDetails || options.scrollToEventDetails || options.openSelectedDay ? "open" : ""}>
@@ -1399,7 +1402,8 @@ function renderCalendar() {
   calendarStatus.textContent = "";
   if (!visibleDays.length) {
     calendarGrid.innerHTML = `<div class="calendar-loading">${tr("noEventDays")}</div>`;
-    dayDetails.textContent = tr("selectDay");
+    dayEventsBlock.textContent = tr("selectDay");
+    dayDetails.textContent = "";
     return;
   }
 
@@ -1737,7 +1741,8 @@ function ensureRenderablePeriod() {
   if (daysBetweenInclusive(periodFromInput.value, periodToInput.value) <= MAX_RENDER_DAYS) return true;
   calendarGrid.innerHTML = `<div class="calendar-loading">${tr("periodTooLarge")}</div>`;
   calendarStatus.textContent = tr("periodTooLarge");
-  dayDetails.textContent = tr("selectDay");
+  dayEventsBlock.textContent = tr("selectDay");
+  dayDetails.textContent = "";
   return false;
 }
 
@@ -2326,7 +2331,10 @@ function setLanguage(language) {
   renderVaishnavaJumpOptions();
   syncCalendarPicker();
   updateFontSizeButtons();
-  if (!selectedDate) dayDetails.textContent = tr("selectDay");
+  if (!selectedDate) {
+    dayEventsBlock.textContent = tr("selectDay");
+    dayDetails.textContent = "";
+  }
   updateThemeButtons();
 }
 
