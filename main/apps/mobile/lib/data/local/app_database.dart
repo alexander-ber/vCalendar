@@ -10,11 +10,21 @@ class AppDatabase {
 
   final String seedAssetPath;
   Database? _database;
+  Future<Database>? _opening;
 
-  Future<Database> open() async {
+  /// Memoizes the in-flight open, not just the resolved [Database] - two
+  /// concurrent callers before the first completes (e.g. the repository's
+  /// several independent loads now kicked off together on startup) must
+  /// await the *same* open, not each independently re-copy the seed file
+  /// and call [openDatabase] a second time while the first is still
+  /// running.
+  Future<Database> open() {
     final existing = _database;
-    if (existing != null) return existing;
+    if (existing != null) return Future.value(existing);
+    return _opening ??= _openInternal();
+  }
 
+  Future<Database> _openInternal() async {
     final docsDir = await getApplicationDocumentsDirectory();
     final dbPath = p.join(docsDir.path, 'vcalendar.sqlite');
     final signaturePath = p.join(docsDir.path, 'vcalendar.seed.sig');
@@ -61,6 +71,7 @@ class AppDatabase {
     final existing = _database;
     if (existing == null) return;
     _database = null;
+    _opening = null;
     await existing.close();
   }
 }
