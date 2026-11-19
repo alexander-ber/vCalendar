@@ -878,16 +878,18 @@ class _HomeScreenState extends State<HomeScreen> {
     _lastPrefetchedMonth = key;
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (!mounted) return;
-      _ensureMonthPageWarm(
-        month: DateTime(key.year, key.month - 1),
-        selectedLocation: selectedLocation,
-        events: events,
-      );
-      _ensureMonthPageWarm(
-        month: DateTime(key.year, key.month + 1),
-        selectedLocation: selectedLocation,
-        events: events,
-      );
+      // +-2, not just +-1: PageView's `allowImplicitScrolling` only
+      // pre-builds one page past the edge, so a quick multi-month swipe
+      // (or a fast fling) can still outrun a +-1 warm-up and land on an
+      // uncached page. Going out to +-2 gives swiping enough of a head
+      // start to stay ahead of that in normal use.
+      for (final offset in [-2, -1, 1, 2]) {
+        _ensureMonthPageWarm(
+          month: DateTime(key.year, key.month + offset),
+          selectedLocation: selectedLocation,
+          events: events,
+        );
+      }
     });
   }
 
@@ -3111,6 +3113,12 @@ class _MonthCalendarCardState extends State<_MonthCalendarCard> {
                   child: PageView.builder(
                     controller: _controller,
                     onPageChanged: _handlePageChanged,
+                    // Pre-builds the next/previous page off-screen instead
+                    // of only when it scrolls into view, so the page's own
+                    // GridView build cost doesn't land on the drag frame
+                    // itself - that cold-build-mid-gesture was the main
+                    // source of the swipe stutter.
+                    allowImplicitScrolling: true,
                     itemBuilder: (context, index) {
                       final month = _monthForIndex(index);
                       final data = widget.pageDataFor(month);
