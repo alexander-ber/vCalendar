@@ -2771,10 +2771,27 @@ class _MasaPeriodNoticeCard extends StatelessWidget {
 
   bool _isBhishmaPanchakaDay(PanchangaDay day) {
     final tithi = day.tithiAtSunrise.number;
-    return day.normalMasaName == 'Damodara' &&
-        day.tithiAtSunrise.paksha == 'Gaura' &&
-        tithi >= 11 &&
-        tithi <= 15;
+    final inDamodaraGaura =
+        day.normalMasaName == 'Damodara' && day.tithiAtSunrise.paksha == 'Gaura';
+    if (inDamodaraGaura && tithi >= 11 && tithi <= 15) return true;
+    // Kshaya-Dvadashi edge case: Ekadashi begins after this day's own
+    // sunrise (Dashami is still present here), so the Ekadashi engine
+    // shifts the fast - and with it Bhishma Panchaka's start - onto this
+    // day instead of the day Ekadashi reaches a sunrise. Mirrors
+    // CalendarEventEngine's isBhishmaPanchakaFastDay / EkadashiClassifier's
+    // trisprsa_after_dashami_sunrise, but re-derived from bare tithi facts
+    // since this predicate runs on standalone days with no attached events.
+    final currentLocation = location;
+    if (inDamodaraGaura && tithi == 10 && currentLocation != null) {
+      final next = calculateDay(addCalendarDays(day.date, 1), currentLocation);
+      if (next.tithiAtSunrise.number != 11) return false;
+      final dayAfterNext = calculateDay(
+        addCalendarDays(day.date, 2),
+        currentLocation,
+      );
+      return dayAfterNext.tithiAtSunrise.number == 13;
+    }
+    return false;
   }
 
   DateTime _dateOnly(DateTime date) =>

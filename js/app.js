@@ -1766,7 +1766,24 @@ function isKarttikDay(day) {
 
 function isBhishmaPanchakaDay(day) {
   const tithi = day.lunar.tithi_at_sunrise.number;
-  return day.masa.normal_masa_name === "Damodara" && day.lunar.paksha === "Gaura" && tithi >= 11 && tithi <= 15;
+  const inDamodaraGaura = day.masa.normal_masa_name === "Damodara" && day.lunar.paksha === "Gaura";
+  if (inDamodaraGaura && tithi >= 11 && tithi <= 15) return true;
+  // Kshaya-Dvadashi edge case: Ekadashi begins after this day's own sunrise
+  // (Dashami is still present here), so the Ekadashi engine shifts the
+  // fast - and with it Bhishma Panchaka's start - onto this day instead of
+  // the day Ekadashi reaches a sunrise. Mirrors js/calendar-engine.js's
+  // isBhishmaPanchakaFastDay / js/ekadashi-engine.js's
+  // trisprsa_after_dashami_sunrise classification, but re-derived from bare
+  // tithi facts since this predicate runs on lightweight period markers
+  // with no attached events.
+  if (inDamodaraGaura && tithi === 10) {
+    const location = selectedCalendarLocation();
+    const next = calculatePeriodMarker(shiftIsoDateByDays(day.date, 1), location);
+    if (next.lunar.tithi_at_sunrise.number !== 11) return false;
+    const dayAfterNext = calculatePeriodMarker(shiftIsoDateByDays(day.date, 2), location);
+    return dayAfterNext.lunar.tithi_at_sunrise.number === 13;
+  }
+  return false;
 }
 
 function isChaturmasyaDay(day) {

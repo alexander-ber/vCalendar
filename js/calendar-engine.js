@@ -344,9 +344,20 @@ function addAnchorDependentEvents(days, events) {
   }
 }
 
-function isBhishmaPanchakaDay(day) {
-  const tithi = day.lunar.tithi_at_sunrise.number;
-  return day.masa.normal_masa_name === "Damodara" && day.lunar.paksha === "Gaura" && tithi >= 11 && tithi <= 15;
+// Pure tithi-at-sunrise ranges (Ekadashi..Purnima) assume every tithi in
+// that span touches a sunrise, which isn't true when Dvadashi is kshaya and
+// the Ekadashi fast is shifted a day earlier (see js/ekadashi-engine.js's
+// "trisprsa_after_dashami_sunrise" case) - that collapsed Bhishma Panchaka
+// to 4 days instead of 5. Anchor to the actual matched Ekadashi fast event
+// instead, then mark that day plus the next 4 calendar days, matching how
+// Sri Chaitanya Saraswat Math's own calendar lists it (one date per tithi,
+// regardless of sunrise contact).
+function isBhishmaPanchakaFastDay(day) {
+  return (
+    day.masa.normal_masa_name === "Damodara" &&
+    day.lunar.paksha === "Gaura" &&
+    day.events.some((event) => event.type === "ekadashi")
+  );
 }
 
 function hasBhishmaPanchakaEvent(day) {
@@ -380,10 +391,43 @@ function bhishmaPanchakaActiveEvent(day) {
   };
 }
 
+// The "Beginning of Bhishma Panchaka" record (data/events/festival/
+// BKHISHMA_PANCHAKA.json, id hkzp_541_бхишма_панчака) is matched
+// independently by the generic masa/paksha/tithi event-matcher, which
+// doesn't know about the Ekadashi engine's fast-date shift (or Unmilani/
+// Vyanjuli-style double-sunrise deferrals) either - so it can land a day
+// before OR after the real fast day (observed both ways: "Dashami at
+// sunrise, Ekadashi starts later" shifts it a day late; Ekadashi touching
+// two consecutive sunrises with the fast deferred to the second one shifts
+// it a day early). Relocate it onto the correct fast day instead of
+// leaving it on the wrong one (and leaving the real fast day with only
+// the generic "active" marker, not the sourced "Beginning" content).
+const BHISHMA_PANCHAKA_BEGIN_ID = "hkzp_541_бхишма_панчака";
+
+function relocateBhishmaPanchakaBeginEvent(days, fastDayIndex) {
+  const fastDay = days[fastDayIndex];
+  if (fastDay.events.some((event) => event.id === BHISHMA_PANCHAKA_BEGIN_ID)) return;
+  for (let offset = -1; offset < 5; offset += 1) {
+    if (offset === 0) continue;
+    const day = days[fastDayIndex + offset];
+    if (!day) continue;
+    const index = day.events.findIndex((event) => event.id === BHISHMA_PANCHAKA_BEGIN_ID);
+    if (index === -1) continue;
+    const [event] = day.events.splice(index, 1);
+    fastDay.events.push(event);
+    return;
+  }
+}
+
 function addBhishmaPanchakaActiveEvents(days) {
-  for (const day of days) {
-    if (isBhishmaPanchakaDay(day) && !hasBhishmaPanchakaEvent(day)) {
-      addEventOnce(day, bhishmaPanchakaActiveEvent(day));
+  for (let i = 0; i < days.length; i += 1) {
+    if (!isBhishmaPanchakaFastDay(days[i])) continue;
+    relocateBhishmaPanchakaBeginEvent(days, i);
+    for (let offset = 0; offset < 5; offset += 1) {
+      const day = days[i + offset];
+      if (day && !hasBhishmaPanchakaEvent(day)) {
+        addEventOnce(day, bhishmaPanchakaActiveEvent(day));
+      }
     }
   }
 }

@@ -361,6 +361,46 @@ class CalendarEventEngine {
 
   // ---- Purushottama boundary + Bhishma Panchaka ----
 
+  static const _bhishmaPanchakaBeginId = 'hkzp_541_бхишма_панчака';
+
+  bool _hasBhishmaPanchakaEvent(List<MobileEvent> list) {
+    return list.any(
+      (e) => RegExp(
+        'bhishma|bkhishma|бхишма',
+        caseSensitive: false,
+      ).hasMatch('${e.id} ${e.name}'),
+    );
+  }
+
+  /// The "Beginning of Bhishma Panchaka" record (id hkzp_541_бхишма_панчака)
+  /// is matched independently by the generic event-matcher, which doesn't
+  /// know about the Ekadashi fast-date shift (or Unmilani/Vyanjuli-style
+  /// double-sunrise deferrals) either - so it can land a day before or
+  /// after the real fast day. Relocate it onto the correct fast day.
+  /// Mirrors js/calendar-engine.js's relocateBhishmaPanchakaBeginEvent.
+  void _relocateBhishmaPanchakaBeginEvent(
+    List<PanchangaDay> days,
+    Map<String, List<MobileEvent>> byDate,
+    int fastDayIndex,
+  ) {
+    final fastKey = _dateKey(days[fastDayIndex].date);
+    final fastList = byDate.putIfAbsent(fastKey, () => []);
+    if (fastList.any((e) => e.id == _bhishmaPanchakaBeginId)) return;
+    for (var offset = -1; offset < 5; offset += 1) {
+      if (offset == 0) continue;
+      final index = fastDayIndex + offset;
+      if (index < 0 || index >= days.length) continue;
+      final key = _dateKey(days[index].date);
+      final list = byDate[key];
+      if (list == null) continue;
+      final eventIndex = list.indexWhere((e) => e.id == _bhishmaPanchakaBeginId);
+      if (eventIndex == -1) continue;
+      final event = list.removeAt(eventIndex);
+      fastList.add(event);
+      return;
+    }
+  }
+
   void _addBoundaryAndBhishmaEvents(
     List<PanchangaDay> days,
     Map<String, List<MobileEvent>> byDate,
@@ -382,14 +422,18 @@ class CalendarEventEngine {
         if (!list.any((e) => e.id == event.id)) list.add(event);
       }
 
-      if (_generated.isBhishmaPanchakaDay(day) &&
-          !list.any(
-            (e) => RegExp(
-              'bhishma|bkhishma|бхишма',
-              caseSensitive: false,
-            ).hasMatch('${e.id} ${e.name}'),
-          )) {
-        list.add(_generated.bhishmaPanchakaActiveEvent(day: day, isRu: isRu));
+      if (!_generated.isBhishmaPanchakaFastDay(day, list)) continue;
+      _relocateBhishmaPanchakaBeginEvent(days, byDate, i);
+      for (var offset = 0; offset < 5; offset += 1) {
+        final index = i + offset;
+        if (index >= days.length) continue;
+        final dayKey = _dateKey(days[index].date);
+        final dayList = byDate.putIfAbsent(dayKey, () => []);
+        if (!_hasBhishmaPanchakaEvent(dayList)) {
+          dayList.add(
+            _generated.bhishmaPanchakaActiveEvent(day: days[index], isRu: isRu),
+          );
+        }
       }
     }
   }

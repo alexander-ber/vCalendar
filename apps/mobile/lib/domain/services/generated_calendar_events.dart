@@ -64,15 +64,17 @@ class GeneratedCalendarEvents {
     return events;
   }
 
-  /// Mirrors js/calendar-engine.js:346-388 `addBhishmaPanchakaActiveEvents`
-  /// (the `hasBhishmaPanchakaEvent` de-dup check is the caller's
-  /// responsibility here, since it depends on the full day's event list).
-  bool isBhishmaPanchakaDay(PanchangaDay day) {
-    final tithi = day.tithiAtSunrise.number;
+  /// Mirrors js/calendar-engine.js's `isBhishmaPanchakaFastDay` (the
+  /// `hasBhishmaPanchakaEvent` de-dup check is the caller's responsibility
+  /// here, since it depends on the full day's event list). Anchors to the
+  /// actual matched Ekadashi fast event rather than a pure tithi-at-sunrise
+  /// range, which collapses from 5 days to 4 when Dvadashi is kshaya and
+  /// the fast is shifted a day earlier (see ekadashi_classifier.dart's
+  /// trisprsa_after_dashami_sunrise handling).
+  bool isBhishmaPanchakaFastDay(PanchangaDay day, List<MobileEvent> dayEvents) {
     return day.normalMasaName == 'Damodara' &&
         day.tithiAtSunrise.paksha == 'Gaura' &&
-        tithi >= 11 &&
-        tithi <= 15;
+        dayEvents.any((event) => event.eventType == 'ekadashi');
   }
 
   MobileEvent bhishmaPanchakaActiveEvent({
