@@ -419,11 +419,18 @@ function relocateBhishmaPanchakaBeginEvent(days, fastDayIndex) {
   }
 }
 
+// Only the start (Ekadashi) and end (Purnima) days get an event card -
+// days 2-4 of the five-day span are covered by the masaNotice period
+// banner (js/app.js's isBhishmaPanchakaDay/periodNotice), not by a
+// separate event on every single day. bhishmaPanchakaActiveEvent() is
+// kept as a fallback only for whichever of those two boundary days
+// doesn't already carry the real sourced BEGIN/END record (e.g. if a
+// date shift ever causes one of them to miss its match).
 function addBhishmaPanchakaActiveEvents(days) {
   for (let i = 0; i < days.length; i += 1) {
     if (!isBhishmaPanchakaFastDay(days[i])) continue;
     relocateBhishmaPanchakaBeginEvent(days, i);
-    for (let offset = 0; offset < 5; offset += 1) {
+    for (const offset of [0, 4]) {
       const day = days[i + offset];
       if (day && !hasBhishmaPanchakaEvent(day)) {
         addEventOnce(day, bhishmaPanchakaActiveEvent(day));

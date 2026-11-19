@@ -1,3 +1,4 @@
+import 'dart:async' show unawaited;
 import 'dart:convert';
 import 'dart:io';
 
@@ -928,17 +929,21 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   /// Warms [_panchangaCache] for every day [_monthPageDataFor] will need
-  /// for [month], by sending the whole missing date range to
-  /// [_computePanchangaRangeIsolate] in one spawned isolate - genuinely off
-  /// the UI thread, unlike the day-by-day chunked-with-yields version this
-  /// replaced, which still measurably let big blocks through under load
-  /// (confirmed on a real device, not just guessed). The window is wide
-  /// (+-200 days, not just the visible month's own +-15) so it also covers
-  /// what [_MasaPeriodNoticeCard]'s period-boundary walk needs (Chaturmasya
-  /// spans ~4 months) - already-cached dates are filtered out first, so
-  /// repeated calls for overlapping months only ever compute what's
-  /// genuinely new. Once the range is cached, the final [_monthPageDataFor]
-  /// call just re-reads it and finishes near-instantly.
+  /// for [month], genuinely off the UI thread via [_computePanchangaRangeIsolate]
+  /// (unlike the day-by-day chunked-with-yields version this replaced,
+  /// which still measurably let big blocks through under load - confirmed
+  /// on a real device, not just guessed).
+  ///
+  /// Only the visible month's own ~30-42 days are computed and awaited
+  /// here, so the grid can render as soon as that (fast) isolate call
+  /// returns. The much wider +-200 day window [_MasaPeriodNoticeCard]'s
+  /// period-boundary walk needs (Chaturmasya spans ~4 months) is then
+  /// warmed separately in the background (fired via [unawaited]), so a
+  /// cold start isn't stuck computing ~400 days of real astronomy before
+  /// showing anything - that one-shot blocking call was the actual ~3-4s
+  /// startup stall (confirmed on a real device: the day-info card, which
+  /// doesn't go through this path, already rendered instantly while the
+  /// grid sat on a spinner waiting for the full window).
   Future<void> _prefetchMonthAsync({
     required DateTime month,
     required CalendarLocation? selectedLocation,
@@ -954,32 +959,21 @@ class _HomeScreenState extends State<HomeScreen> {
       );
       final visibleDays = days.where((d) => d.inCurrentMonth).toList();
       if (visibleDays.isNotEmpty) {
-        final from = addCalendarDays(visibleDays.first.date, -200);
-        final to = addCalendarDays(visibleDays.last.date, 200);
-        final missingDates = <DateTime>[];
-        var cursor = from;
-        while (!cursor.isAfter(to)) {
-          final panchangaKey = '${selectedLocation.id}:${_dateKey(cursor)}';
-          if (!_panchangaCache.containsKey(panchangaKey)) {
-            missingDates.add(cursor);
-          }
-          cursor = addCalendarDays(cursor, 1);
-        }
-        if (missingDates.isNotEmpty) {
-          final computed = await compute(
-            _computePanchangaRangeIsolate,
-            _PanchangaRangeArgs(
-              location: selectedLocation,
-              dates: missingDates,
-            ),
-          );
-          if (!mounted) return;
-          for (var i = 0; i < missingDates.length; i += 1) {
-            final panchangaKey =
-                '${selectedLocation.id}:${_dateKey(missingDates[i])}';
-            _panchangaCache[panchangaKey] = computed[i];
-          }
-        }
+        await _ensurePanchangaRangeCached(
+          selectedLocation: selectedLocation,
+          from: visibleDays.first.date,
+          to: visibleDays.last.date,
+        );
+        if (!mounted) return;
+        unawaited(
+          _ensurePanchangaRangeCached(
+            selectedLocation: selectedLocation,
+            from: addCalendarDays(visibleDays.first.date, -200),
+            to: addCalendarDays(visibleDays.last.date, 200),
+          ).then((_) {
+            if (mounted) setState(() {});
+          }),
+        );
       }
     }
     if (!mounted) return;
@@ -988,6 +982,37 @@ class _HomeScreenState extends State<HomeScreen> {
       selectedLocation: selectedLocation,
       events: events,
     );
+  }
+
+  /// Computes and caches every [from]..[to] day not already in
+  /// [_panchangaCache], in one spawned isolate - already-cached dates are
+  /// filtered out first, so repeated/overlapping calls only ever compute
+  /// what's genuinely new.
+  Future<void> _ensurePanchangaRangeCached({
+    required CalendarLocation selectedLocation,
+    required DateTime from,
+    required DateTime to,
+  }) async {
+    final missingDates = <DateTime>[];
+    var cursor = from;
+    while (!cursor.isAfter(to)) {
+      final panchangaKey = '${selectedLocation.id}:${_dateKey(cursor)}';
+      if (!_panchangaCache.containsKey(panchangaKey)) {
+        missingDates.add(cursor);
+      }
+      cursor = addCalendarDays(cursor, 1);
+    }
+    if (missingDates.isEmpty) return;
+    final computed = await compute(
+      _computePanchangaRangeIsolate,
+      _PanchangaRangeArgs(location: selectedLocation, dates: missingDates),
+    );
+    if (!mounted) return;
+    for (var i = 0; i < missingDates.length; i += 1) {
+      final panchangaKey =
+          '${selectedLocation.id}:${_dateKey(missingDates[i])}';
+      _panchangaCache[panchangaKey] = computed[i];
+    }
   }
 
   /// Computes (and caches) the day grid + event dots for one calendar page

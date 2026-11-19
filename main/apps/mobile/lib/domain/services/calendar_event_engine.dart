@@ -424,7 +424,10 @@ class CalendarEventEngine {
 
       if (!_generated.isBhishmaPanchakaFastDay(day, list)) continue;
       _relocateBhishmaPanchakaBeginEvent(days, byDate, i);
-      for (var offset = 0; offset < 5; offset += 1) {
+      // Only the start (offset 0) and end (offset 4) days get an event
+      // card; days 2-4 of the five-day span are covered by the period
+      // notice banner, not by a separate event on every single day.
+      for (final offset in [0, 4]) {
         final index = i + offset;
         if (index >= days.length) continue;
         final dayKey = _dateKey(days[index].date);
